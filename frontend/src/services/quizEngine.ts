@@ -18,15 +18,10 @@ interface QuizWithHints extends QuizData {
   hint3: string;
 }
 
-// 実際のクイズデータは、各ジャンルごとにJSONファイルとして保持し、必要に応じて動的にインポートすることを想定
-// 今回はサンプルとしてanimals.jsonを直接読み込む形をシミュレート
 import animalsQuizzes from '../../../data/quizzes/animals.json';
-// 他のジャンルも同様にインポートを想定
-// import insectsQuizzes from '../../../data/quizzes/insects.json';
 
 const allQuizzes: QuizData[] = [
   ...animalsQuizzes,
-  // ...otherQuizzes,
 ];
 
 /**
@@ -99,29 +94,6 @@ export const getShuffledOptions = (quiz: QuizData): string[] => {
  */
 export const checkAnswer = (quiz: QuizData, userAnswer: string): boolean => {
   return quiz.answer === userAnswer;
-};
-
-// 既読管理のためのユーティリティ関数
-const getPlayedQuizzesKey = (genre: string, difficulty: number): string =>
-  `playedQuizzes-${genre}-${difficulty}`;
-
-export const getPlayedQuizIds = (genre: string, difficulty: number): Set<string> => {
-  if (typeof window === 'undefined') return new Set(); // SSR対策
-  const key = getPlayedQuizzesKey(genre, difficulty);
-  const storedIds = localStorage.getItem(key);
-  return storedIds ? new Set(JSON.parse(storedIds)) : new Set();
-};
-
-export const addPlayedQuizId = (genre: string, difficulty: number, quizId: string): void => {
-  if (typeof window === 'undefined') return;
-  const playedIds = getPlayedQuizIds(genre, difficulty);
-  playedIds.add(quizId);
-  localStorage.setItem(getPlayedQuizzesKey(genre, difficulty), JSON.stringify(Array.from(playedIds)));
-};
-
-export const resetPlayedQuizIds = (genre: string, difficulty: number): void => {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(getPlayedQuizzesKey(genre, difficulty));
 };
 
 export const getAllAvailableQuizzesCount = (genre: string, difficulty: number): number => {

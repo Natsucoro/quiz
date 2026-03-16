@@ -3,91 +3,36 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Settings from '../common/Settings/Settings';
-import { getLoginStatus } from '../common/Login/Login';
 import { unlockAudioContext, speak, stopSpeaking } from '../../services/speechSynthesis';
 import { useOffline } from '../../hooks/useOffline';
-import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount, getPlayedQuizIds } from '../../services/quizEngine';
-import Toast from '../common/Toast/Toast'; // 指示事項5: Toastコンポーネントをインポート
-
-// 各画面で共通利用する状態や関数を渡すためのインターフェースを定義
-interface QuizAppState {
-  currentPage: 'TOP' | 'GAME' | 'RESULT';
-  setCurrentPage: (page: 'TOP' | 'GAME' | 'RESULT') => void;
-  selectedGenre: string;
-  setSelectedGenre: (genre: string) => void;
-  selectedDifficulty: number;
-  setSelectedDifficulty: (difficulty: number) => void;
-  isHandsFreeMode: boolean;
-  setIsHandsFreeMode: (mode: boolean) => void;
-  isMuted: boolean;
-  setIsMuted: (muted: boolean) => void;
-  isLoggedIn: boolean;
-  isPremiumUser: boolean;
-  setIsLoggedIn: (status: boolean) => void;
-  setIsPremiumUser: (status: (prev: boolean) => boolean) => void; // setStateの関数型更新に対応
-  isSpeakingAllowed: boolean; // 音声コンテキストがアンロックされたか
-  setIsSpeakingAllowed: (status: boolean) => void;
-}
-
-// 共通のコンテキストを作成 (App.tsx がないため、仮のグローバル状態として想定)
-// 実際のアプリケーションでは、App.tsx で Context.Provider を利用します
-// 今回は、各ファイルが独立して動作しつつ、連携する形式を取ります
-// そのため、TopPageはpropsとしてこれらの関数を受け取る形式とします。
+import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount } from '../../services/quizEngine';
+import Toast from '../common/Toast/Toast';
+import { useSettingsStore } from '../../store/settingsStore';
+import { usePurchaseStore } from '../../store/purchaseStore';
 
 interface TopPageProps {
-    setCurrentPage: (page: 'TOP' | 'GAME' | 'RESULT') => void;
-    setSelectedGenre: (genre: string) => void;
-    setSelectedDifficulty: (difficulty: number) => void;
-    isHandsFreeMode: boolean;
-    setIsHandsFreeMode: (mode: boolean) => void;
-    isMuted: boolean;
-    setIsMuted: (muted: boolean) => void;
-    isLoggedIn: boolean;
-    isPremiumUser: boolean;
-    setIsLoggedIn: (status: boolean) => void;
-    setIsPremiumUser: (status: (prev: boolean) => boolean) => void; // setStateの関数型更新に対応
-    isSpeakingAllowed: boolean;
-    setIsSpeakingAllowed: (status: boolean) => void;
-    resetQuizState: () => void; // GamePageの状態をリセットするためのコールバック
+  onStart: (genre: string, difficulty: number) => void;
+  initialView?: 'genre' | 'difficulty';
 }
 
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
 const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
-const MAX_QUIZZES_FOR_GUEST = 10; // ゲストが各難易度でプレイできる最大問題数
 
-const TopPage: React.FC<TopPageProps> = ({
-  setCurrentPage,
-  setSelectedGenre,
-  setSelectedDifficulty,
-  isHandsFreeMode,
-  setIsHandsFreeMode,
-  isMuted,
-  setIsMuted,
-  isLoggedIn,
-  isPremiumUser,
-  setIsLoggedIn,
-  setIsPremiumUser,
-  isSpeakingAllowed,
-  setIsSpeakingAllowed,
-  resetQuizState,
-}) => {
+const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => {
+  const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
+  const { isLoggedIn, isPurchased } = usePurchaseStore();
+  const isPremiumUser = isLoggedIn;
   const [showSettings, setShowSettings] = useState(false);
+  const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
   const isOffline = useOffline();
-  const [toastMessage, setToastMessage] = useState<string | null>(null); // 指示事項5: Toastメッセージの状態
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const initialGenre = localStorage.getItem(TOP_PAGE_GENRE_KEY) || getAvailableGenres()[0];
   const initialDifficulty = parseInt(localStorage.getItem(TOP_PAGE_DIFFICULTY_KEY) || '1', 10);
 
   const [localSelectedGenre, setLocalSelectedGenre] = useState<string>(initialGenre);
   const [localSelectedDifficulty, setLocalSelectedDifficulty] = useState<number>(initialDifficulty);
-  const [showDifficultySelection, setShowDifficultySelection] = useState<boolean>(false);
-
-  useEffect(() => {
-    const { isLoggedIn: storedIsLoggedIn, isPremium: storedIsPremium } = getLoginStatus();
-    setIsLoggedIn(storedIsLoggedIn);
-    // setIsPremiumUser は関数型更新に対応
-    setIsPremiumUser(() => storedIsPremium);
-  }, [setIsLoggedIn, setIsPremiumUser]);
+  const [showDifficultySelection, setShowDifficultySelection] = useState<boolean>(initialView === 'difficulty');
 
   useEffect(() => {
     localStorage.setItem(TOP_PAGE_GENRE_KEY, localSelectedGenre);
@@ -95,23 +40,11 @@ const TopPage: React.FC<TopPageProps> = ({
   }, [localSelectedGenre, localSelectedDifficulty]);
 
   const handleStartQuiz = async () => {
-    // iOS Safari対策: 音声コンテキストをアンロック
     if (!isSpeakingAllowed) {
-        await unlockAudioContext();
-        setIsSpeakingAllowed(true); // アンロック成功
+      await unlockAudioContext();
+      setIsSpeakingAllowed(true);
     }
-
-    if (!isMuted && isHandsFreeMode && !isSpeakingAllowed) {
-        // ハンズフリーモードでミュート解除状態だが、音声アンロックがまだの場合、
-        // ユーザーにアンロックを促す（ただし、上記のunlockAudioContextで対応済み）
-        // ここでは念のため
-        speak("クイズを開始します。準備は良いですか？");
-    }
-
-    setSelectedGenre(localSelectedGenre);
-    setSelectedDifficulty(localSelectedDifficulty);
-    resetQuizState(); // GamePageの状態をリセット
-    setCurrentPage('GAME');
+    onStart(localSelectedGenre, localSelectedDifficulty);
   };
 
   const handleToggleMute = useCallback(() => {
@@ -129,16 +62,8 @@ const TopPage: React.FC<TopPageProps> = ({
   }, [isMuted, setIsMuted, isSpeakingAllowed, setIsSpeakingAllowed]);
 
 
-  const handleSettingsLoginStatusChange = (isLoggedIn: boolean, isPremium: boolean) => {
-    setIsLoggedIn(isLoggedIn);
-    setIsPremiumUser(() => isPremium); // 関数型更新に対応
-  };
-
   const handleGoHomeConfirm = () => {
-    if (window.confirm('クイズを中断しますか？スコアはリセットされます。')) {
-      // 実際にはGamePageからTopPageへ戻る際に呼ばれることを想定
-      // ここでは何もしない
-    }
+    // TopPageではすでにHOMEのため何もしない
   };
 
   const genres = getAvailableGenres();
@@ -193,20 +118,17 @@ const TopPage: React.FC<TopPageProps> = ({
     // Toastコンポーネントがduration後にonCloseを呼ぶので、別途クリアは不要
   }, []);
 
-  // 指示事項5: 難易度ボタンクリック時の処理をuseCallbackでラップ
-  const handleDifficultyButtonClick = useCallback((difficulty: number, isLocked: boolean, maxGuestQuizzesReached: boolean) => {
+  const handleDifficultyButtonClick = useCallback((difficulty: number, isLocked: boolean) => {
     if (isLocked) {
-        if (isOffline) {
-            showToast('オフラインのため購入できません。接続後にお試しください。');
-        } else {
-            showToast('購入画面へ遷移します。（ダミー）');
-        }
-    } else if (maxGuestQuizzesReached) {
-        showToast(`ゲストユーザーは各難易度${MAX_QUIZZES_FOR_GUEST}問までです。購入して続きをプレイしましょう！`);
+      if (isOffline) {
+        showToast('オフラインのため購入できません。接続後にお試しください。');
+      } else {
+        showToast('購入画面へ遷移します。（ダミー）');
+      }
     } else {
-        setLocalSelectedDifficulty(difficulty);
+      setLocalSelectedDifficulty(difficulty);
     }
-  }, [isOffline, showToast, setLocalSelectedDifficulty]);
+  }, [isOffline, showToast]);
 
 
   const difficultiesForSelectedGenre = getAvailableDifficultiesForGenre(localSelectedGenre);
@@ -255,42 +177,23 @@ const TopPage: React.FC<TopPageProps> = ({
           </h2>
           <div style={difficultyGridStyle}>
             {difficultiesForSelectedGenre.map((difficulty) => {
-              const isLocked = !isPremiumUser && (difficulty === 3 || difficulty === 4 || difficulty === 5 || difficulty === 8 || difficulty === 9 || difficulty === 10);
-              const playedQuizzesCount = getPlayedQuizIds(localSelectedGenre, difficulty).size;
-              const actualTotalQuizzesInDifficulty = getAllAvailableQuizzesCount(localSelectedGenre, difficulty); // その難易度にある全問題数
-
-              // 指示事項4: ゲストユーザー向けの問題数表示の整合性を確保
-              const isGuestAllowedDifficulty = (difficulty === 1 || difficulty === 2 || difficulty === 6 || difficulty === 7);
-              const displayTotalQuizzes = !isPremiumUser && isGuestAllowedDifficulty
-                                        ? Math.min(MAX_QUIZZES_FOR_GUEST, actualTotalQuizzesInDifficulty)
-                                        : actualTotalQuizzesInDifficulty; // プレミアムユーザーは全問題数
-
-              const displayQuizzesRemaining = Math.max(0, displayTotalQuizzes - playedQuizzesCount);
-              
-              const maxGuestQuizzesReached = !isPremiumUser && isGuestAllowedDifficulty && playedQuizzesCount >= MAX_QUIZZES_FOR_GUEST;
-
+              const isLocked = !isPremiumUser && [3, 4, 5, 8, 9, 10].includes(difficulty);
+              const totalCount = getAllAvailableQuizzesCount(localSelectedGenre, difficulty);
               return (
                 <button
                   key={difficulty}
-                  onClick={() => handleDifficultyButtonClick(difficulty, isLocked, maxGuestQuizzesReached)} // 指示事項5: 修正したハンドラを呼び出し
+                  onClick={() => handleDifficultyButtonClick(difficulty, isLocked)}
                   style={{
                     ...difficultyButtonStyle,
                     backgroundColor: localSelectedDifficulty === difficulty ? '#FFD700' : (isLocked ? '#D3D3D3' : '#98FB98'),
                     boxShadow: localSelectedDifficulty === difficulty ? '0 5px #DAA520' : (isLocked ? '0 4px #A9A9A9' : '0 4px #7CCD7C'),
-                    cursor: isLocked || maxGuestQuizzesReached ? 'not-allowed' : 'pointer',
-                    '--shadow-color': localSelectedDifficulty === difficulty ? '#DAA520' : (isLocked ? '#A9A9A9' : '#7CCD7C'),
-                  } as React.CSSProperties} // 型アサーション
-                  disabled={maxGuestQuizzesReached}
+                    cursor: isLocked ? 'not-allowed' : 'pointer',
+                  } as React.CSSProperties}
                 >
                   {getDifficultyLabel(difficulty)}
                   {isLocked && <span style={lockIconStyle}>🔒</span>}
-                  {maxGuestQuizzesReached && !isLocked && <span style={lockIconStyle}>🔒 {MAX_QUIZZES_FOR_GUEST}問完了</span>}
-                  {isLocked && <p style={purchaseTextStyle}>150円で解放＆この難易度の全問題プレイ可能！</p>} {/* 指示事項1: テキスト修正 */}
-                  {(!isLocked && !maxGuestQuizzesReached) && (
-                    <p style={playedCountStyle}>
-                        残り: {displayQuizzesRemaining}/{displayTotalQuizzes}問
-                    </p>
-                  )}
+                  {isLocked && <p style={purchaseTextStyle}>150円で解放！</p>}
+                  {!isLocked && <p style={playedCountStyle}>全{totalCount}問からランダム出題</p>}
                 </button>
               );
             })}
@@ -302,10 +205,7 @@ const TopPage: React.FC<TopPageProps> = ({
             <button
               onClick={handleStartQuiz}
               style={{ ...buttonStyle, '--shadow-color': '#CD5C91' } as React.CSSProperties}
-              disabled={
-                  (!isPremiumUser && (localSelectedDifficulty === 3 || localSelectedDifficulty === 4 || localSelectedDifficulty === 5 || localSelectedDifficulty === 8 || localSelectedDifficulty === 9 || localSelectedDifficulty === 10)) || // ロックされた難易度
-                  ((!isPremiumUser && (localSelectedDifficulty === 1 || localSelectedDifficulty === 2 || localSelectedDifficulty === 6 || localSelectedDifficulty === 7)) && (getPlayedQuizIds(localSelectedGenre, localSelectedDifficulty).size >= MAX_QUIZZES_FOR_GUEST)) // ゲストの10問制限
-              }
+              disabled={!isPremiumUser && [3, 4, 5, 8, 9, 10].includes(localSelectedDifficulty)}
             >
               クイズを開始する
             </button>
@@ -317,9 +217,8 @@ const TopPage: React.FC<TopPageProps> = ({
       {showSettings && (
         <Settings
           onClose={() => setShowSettings(false)}
-          onLoginStatusChange={handleSettingsLoginStatusChange}
+          onLoginStatusChange={() => {}}
           currentView="TOP"
-          onResetPlayedQuizzes={() => { /* 既読リセット後にTopPageに何らかの更新が必要な場合 */ }}
         />
       )}
       {/* 指示事項5: Toastコンポーネントを配置 */}

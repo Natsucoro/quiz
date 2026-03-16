@@ -4,17 +4,15 @@
 import React, { useState, useEffect } from 'react';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
 import Login, { getLoginStatus, saveLoginStatus } from '../Login/Login';
-import { getAvailableGenres, getAvailableDifficultiesForGenre, resetPlayedQuizIds } from '../../../services/quizEngine';
+import { getAvailableGenres, getAvailableDifficultiesForGenre } from '../../../services/quizEngine';
 
 interface SettingsProps {
   onClose: () => void;
   onLoginStatusChange: (isLoggedIn: boolean, isPremium: boolean) => void;
-  // 現在のページの状態（TOP, GAMEなど）を想定し、クイズ本編中に既読リセットされるのを避けるため
   currentView: 'TOP' | 'GAME' | 'RESULT';
-  onResetPlayedQuizzes: () => void; // 親コンポーネントに既読リセットを伝えるコールバック
 }
 
-const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, currentView, onResetPlayedQuizzes }) => {
+const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, currentView }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginStatus, setLoginStatus] = useState(getLoginStatus());
@@ -47,32 +45,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
     setShowLoginModal(false);
   };
 
-  const handleResetPlayedQuizzes = (genre?: string, difficulty?: number) => {
-    if (window.confirm('本当に既読問題をリセットしますか？')) {
-      if (genre && difficulty) {
-        resetPlayedQuizIds(genre, difficulty);
-        alert(`${genre} (難易度: ${difficulty}) の既読問題をリセットしました。`);
-      } else {
-        // 全ての既読をリセット
-        const genres = getAvailableGenres();
-        genres.forEach(g => {
-          const difficulties = getAvailableDifficultiesForGenre(g);
-          difficulties.forEach(d => {
-            resetPlayedQuizIds(g, d);
-          });
-        });
-        alert('全ての既読問題をリセットしました。');
-      }
-      onResetPlayedQuizzes(); // 親コンポーネントにリセットを通知
-    }
-  };
-
-  // 全てのジャンルと難易度を取得
-  const allGenres = getAvailableGenres();
-  const allGenreDifficultyPairs = allGenres.flatMap(genre =>
-    getAvailableDifficultiesForGenre(genre).map(difficulty => ({ genre, difficulty }))
-  );
-
   return (
     <>
       <div style={modalOverlayStyle}>
@@ -104,48 +76,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
             {loginStatus.isLoggedIn && (
               <button style={{ ...buttonStyle, backgroundColor: '#87CEEB' }}>購入履歴の確認</button>
             )}
-          </div>
-
-          <div style={settingSectionStyle}>
-            <h3 style={settingSectionTitleStyle}>既読管理</h3>
-            <p style={{fontSize: '0.9em', color: '#666'}}>
-              {currentView === 'GAME' ? 'クイズ本編中は個別のリセットができません。' : ''}
-            </p>
-            <div style={resetButtonsContainerStyle}>
-                {allGenreDifficultyPairs.map(pair => (
-                <button
-                    key={`${pair.genre}-${pair.difficulty}`}
-                    onClick={() => handleResetPlayedQuizzes(pair.genre, pair.difficulty)}
-                    style={{
-                    ...buttonStyle,
-                    backgroundColor: '#F08080',
-                    fontSize: '0.8em',
-                    padding: '8px 15px',
-                    margin: '5px',
-                    opacity: currentView === 'GAME' ? 0.6 : 1, // クイズ中は無効化
-                    cursor: currentView === 'GAME' ? 'not-allowed' : 'pointer'
-                    }}
-                    disabled={currentView === 'GAME'}
-                >
-                    {pair.genre} Lv.{pair.difficulty} リセット
-                </button>
-                ))}
-                <button
-                    onClick={() => handleResetPlayedQuizzes()} // 引数なしで全体リセット
-                    style={{
-                    ...buttonStyle,
-                    backgroundColor: '#DC143C',
-                    fontSize: '0.9em',
-                    padding: '10px 20px',
-                    marginTop: '15px',
-                    opacity: currentView === 'GAME' ? 0.6 : 1,
-                    cursor: currentView === 'GAME' ? 'not-allowed' : 'pointer'
-                    }}
-                    disabled={currentView === 'GAME'}
-                >
-                    全ての既読をリセット
-                </button>
-            </div>
           </div>
 
           <div style={settingSectionStyle}>
@@ -248,13 +178,6 @@ const loginStatusStyle: React.CSSProperties = {
   fontSize: '1em',
   color: '#333',
   marginBottom: '10px',
-};
-
-const resetButtonsContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'center',
-  marginTop: '10px',
 };
 
 const linkStyle: React.CSSProperties = {
