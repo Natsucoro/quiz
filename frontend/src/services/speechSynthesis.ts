@@ -55,7 +55,13 @@ export const unlockAudioContext = () => {
 
 
 /**
- * 指定されたテキストを読み上げます。
+ * {漢字|よみ} 記法をよみだけに変換します。
+ */
+export const toReadableText = (text: string): string =>
+  text.replace(/\{([^|]+)\|([^}]+)\}/g, '$2');
+
+/**
+ * 指定されたテキストを読み上げます。{漢字|よみ} 記法を自動変換します。
  * @param text 読み上げるテキスト
  */
 export const speak = (text: string) => {

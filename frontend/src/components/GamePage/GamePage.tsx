@@ -8,10 +8,16 @@ import {
   getShuffledOptions,
   checkAnswer,
 } from '../../services/quizEngine';
-import { speak, stopSpeaking } from '../../services/speechSynthesis';
+import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthesis';
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
+
+const renderRuby = (text: string): React.ReactNode[] =>
+  text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
+    const m = part.match(/\{([^|]+)\|([^}]+)\}/);
+    return m ? <ruby key={i}>{m[1]}<rt>{m[2]}</rt></ruby> : part;
+  });
 
 const playCorrectSound = () => {
   const ctx = new AudioContext();
@@ -67,6 +73,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [conciergeMessage, setConciergeMessage] = useState<string | null>(null);
+  const [effectKey, setEffectKey] = useState<{ type: 'correct' | 'incorrect'; id: number } | null>(null);
 
   const quizSequenceRef = useRef<number>(0);
   // 循環依存を避けるためにhandlerをrefで保持
@@ -102,7 +109,8 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       hasAnsweredIncorrectlyRef.current = false;
       playedIdsThisSession.current = new Set([...playedIdsThisSession.current, nextQuiz.id]);
       if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
-        speak(`第${questionIndex + 1}問。${nextQuiz.question}`);
+        const q = toReadableText(nextQuiz.questionRuby ?? nextQuiz.question);
+        speak(`第${questionIndex + 1}問。${q}`);
         setConciergeMessage(null);
       }
     } else if (initializedRef.current) {
@@ -145,8 +153,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
   handleNextQuestionRef.current = handleNextQuestion;
 
-  // 正解・降参後に自動で次の問題へ
+  // 正解・降参後に自動で次の問題へ（ハンズフリーモードのみ）
   useEffect(() => {
+    if (!isHandsFreeMode) return;
     if (feedback === 'correct' || feedback === 'surrender') {
       const seq = quizSequenceRef.current;
       const timer = setTimeout(() => {
@@ -167,16 +176,19 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       if (!hasAnsweredIncorrectlyRef.current) setScore(prev => prev + 1);
       hasAnsweredIncorrectlyRef.current = false;
       setFeedback('correct');
+      setEffectKey({ type: 'correct', id: Date.now() });
       if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
-        speak(`ピンポン！正解は${currentQuiz.answer}です。次の問題です。`);
+        const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
+        speak(`ピンポン！正解は${ans}です。次の問題です。`);
         setConciergeMessage(null);
       }
     } else {
       hasAnsweredIncorrectlyRef.current = true;
       playSound('incorrect');
       setFeedback('incorrect');
+      setEffectKey({ type: 'incorrect', id: Date.now() });
       if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
-        speak('ブブー！違います。もう一度考えてみましょう。');
+        speak('ブブー！「' + userAnswer + '」は不正解です。もう一度考えてみましょう。');
         setConciergeMessage(null);
       }
     }
@@ -190,7 +202,8 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     playSound('correct');
     setFeedback('surrender');
     if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
-      speak(`答えは${currentQuiz.answer}です。次の問題です。`);
+      const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
+      speak(`答えは${ans}です。次の問題です。`);
       setConciergeMessage(null);
     }
   }, [currentQuiz, feedback, isHandsFreeMode, isMuted, isSpeakingAllowed, playSound]);
@@ -211,14 +224,17 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     } else return;
     setShowHint(hintNumber);
     if (!isMuted && isSpeakingAllowed) {
-      speak(`ヒント${hintNumber}：${hintText}`);
+      const readableHint = hintNumber === 1
+        ? toReadableText(currentQuiz.hint1Ruby ?? currentQuiz.hint1)
+        : hintText;
+      speak(`ヒント${hintNumber}：${readableHint}`);
       setConciergeMessage(null);
     }
   }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed]);
 
   handleShowHintRef.current = handleShowHint;
 
-  const { isRecognizing, readQuestion, resetSilenceTimer } = useHandsFree({
+  const { isRecognizing, transcript, readQuestion, resetSilenceTimer } = useHandsFree({
     // useHandsFreeの呼び出し後にreadQuestionRefを更新（下のuseEffect内で参照）
     isHandsFreeMode,
     onVoiceCommand: useCallback((command: string, transcript?: string) => {
@@ -250,7 +266,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     if (newState) {
       stopSpeaking();
     } else if (isHandsFreeMode && currentQuiz) {
-      speak(`${currentQuiz.question}`);
+      speak(toReadableText(currentQuiz.questionRuby ?? currentQuiz.question));
     }
   }, [isMuted, setIsMuted, isHandsFreeMode, currentQuiz]);
 
@@ -263,7 +279,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
   const getGenreIcon = (genreName: string) => {
     switch (genreName) {
-      case '動物': return '🐾';
+      case '動物': return '🦁';
       case '昆虫': return '🐛';
       case '植物': return '🌿';
       case '乗り物': return '🚗';
@@ -275,20 +291,26 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     }
   };
 
-  if (!currentQuiz && !isQuizEnded) {
+if (!currentQuiz && !isQuizEnded) {
     return <div style={loadingStyle}>問題を読み込み中...</div>;
   }
+
+  const stickyHeader = (
+    <header style={stickyHeaderStyle}>
+      <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>わたしはダレでしょう？クイズ</h1>
+      <div style={headerIconsStyle}>
+        <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
+        <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
+        <button onClick={() => setIsHandsFreeMode(!isHandsFreeMode)} style={{ ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }}>🤲</button>
+      </div>
+    </header>
+  );
 
   if (isQuizEnded) {
     const accuracy = (score / TOTAL_QUIZZES) * 100;
     return (
       <div style={containerStyle}>
-        <div style={headerIconsStyle}>
-          <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
-          <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-          <button onClick={() => setIsHandsFreeMode(!isHandsFreeMode)} style={{ ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }}>🤲</button>
-          <button onClick={handleGoHomeConfirm} style={iconButtonStyle}>🏠</button>
-        </div>
+        {stickyHeader}
         <h1 style={titleStyle}>🎉 結果発表 🎉</h1>
         <div style={resultBoxStyle}>
           <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {TOTAL_QUIZZES}問</p>
@@ -310,25 +332,34 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
   return (
     <div style={containerStyle}>
-      <div style={headerIconsStyle}>
-        <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
-        <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-        <button onClick={() => setIsHandsFreeMode(!isHandsFreeMode)} style={{ ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }}>🤲</button>
-        <button onClick={handleGoHomeConfirm} style={iconButtonStyle}>🏠</button>
-      </div>
+      <style>{`@keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } rt { font-size: 0.5em; font-weight: normal; }`}</style>
+      {effectKey && (
+        <div key={effectKey.id} style={effectOverlayStyle}>
+          {effectKey.type === 'correct' ? (
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#51CF66" strokeWidth="12" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
+              <line x1="20" y1="20" x2="80" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
+              <line x1="80" y1="20" x2="20" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
+            </svg>
+          )}
+        </div>
+      )}
+      {stickyHeader}
 
       <div style={genreInfoStyle}>
         <span style={genreIconStyle}>{getGenreIcon(selectedGenre)}</span>
         <h2 style={genreNameStyle}>{selectedGenre}</h2>
+        <span style={questionCountStyle}>{currentQuestionIndex + 1}/{TOTAL_QUIZZES}問</span>
+        <span style={scoreStyle}>スコア: {score}</span>
       </div>
 
-      <p style={questionCountStyle}>{currentQuestionIndex + 1}/{TOTAL_QUIZZES}問</p>
-      <p style={scoreStyle}>スコア: {score}</p>
-
       <div style={questionBoxStyle}>
-        <p style={questionTextStyle}>{currentQuiz?.question}</p>
+        <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby ?? currentQuiz?.question ?? '')}</p>
         {showHint === 1 && currentQuiz && (
-          <p style={hintTextStyle}>ヒント1: {currentQuiz.hint1}</p>
+          <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby ?? currentQuiz.hint1)}</p>
         )}
         {showHint === 2 && currentQuiz && (
           <p style={hintTextStyle}>ヒント2: {(currentQuiz as any).hint2}</p>
@@ -339,25 +370,27 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         {(feedback === 'correct' || feedback === 'surrender') && currentQuiz && (
           <p style={answerInBoxStyle}>答え「{currentQuiz.answer}」</p>
         )}
+        {!(feedback === 'correct' || feedback === 'surrender') && showHint === null && (
+          <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4', width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
+            ヒント1
+          </button>
+        )}
       </div>
 
       {isHandsFreeMode ? (
         <div style={handsFreeGuideStyle}>
           {conciergeMessage && <p style={conciergeMessageStyle}>🗣️ {conciergeMessage}</p>}
           <p style={voiceCommandStyle}>「〇〇」と言ってみてね</p>
-          <p style={voiceCommandExampleStyle}>
-            （例：「問題」「ヒント1」「ヒント2」「ヒント3」「降参」）
-            {isRecognizing
-              ? <span style={{ marginLeft: '10px', color: '#4CAF50' }}>音声認識中...</span>
-              : <span style={{ marginLeft: '10px', color: '#f44336' }}>音声認識オフ</span>}
-          </p>
+          <p style={voiceCommandExampleStyle}>（例：「問題」「ヒント1」「ヒント2」「ヒント3」「降参」）</p>
+
         </div>
       ) : (
         <div style={optionsContainerStyle}>
           {options.map((option, index) => {
             const isCorrectOption = option === currentQuiz?.answer;
             const isRevealed = feedback === 'correct' || feedback === 'surrender';
-            const bg = isRevealed && isCorrectOption ? '#4CAF50' : '#87CEEB';
+            const colors = ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1'];
+            const bg = isRevealed ? (isCorrectOption ? '#51CF66' : '#B0B0B0') : colors[index % 4];
             return (
               <button
                 key={index}
@@ -377,11 +410,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       )}
 
       <div style={actionButtonsContainerStyle}>
-        <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
-          ヒント1
-        </button>
+        {!isHandsFreeMode && (feedback === 'correct' || feedback === 'surrender') && (
+          <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: 'linear-gradient(135deg, #51CF66, #20C997)', boxShadow: '0 5px 0 #1aaa7a', flex: '1 1 100%', maxWidth: '100%' }}>
+            次の問題へ →
+          </button>
+        )}
         {isHandsFreeMode && (
           <>
+            <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+              ヒント1
+            </button>
             <button onClick={() => handleShowHint(2)} style={{ ...actionButtonStyle, backgroundColor: showHint === 2 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
               ヒント2
             </button>
@@ -390,53 +428,79 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             </button>
           </>
         )}
-        <button onClick={handleSurrender} style={surrenderButtonStyle}>降参</button>
+        <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }}>降参</button>
       </div>
 
 
       {showSettings && (
         <Settings onClose={() => setShowSettings(false)} onLoginStatusChange={() => {}} currentView="GAME" />
       )}
+
+      {isHandsFreeMode && (
+        <div style={floatingMicBarStyle}>
+          <div style={transcriptBoxStyle}>
+            <div style={micStatusStyle}>
+              <span style={{ ...micDotStyle, background: isRecognizing ? '#4CAF50' : '#f44336', animation: isRecognizing ? 'micPulse 1.2s ease-in-out infinite' : 'none' }} />
+              <span style={{ color: isRecognizing ? '#2e7d32' : '#c62828', fontWeight: 'bold', fontSize: '1em', animation: isRecognizing ? 'micFade 1.2s ease-in-out infinite' : 'none' }}>
+                {isRecognizing ? '🎤 ききとり中...' : '🎤 認識オフ'}
+              </span>
+            </div>
+            {transcript && <span style={transcriptTextStyle}>{transcript}</span>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
+const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(0,0,0,0.08)' };
 const containerStyle: React.CSSProperties = {
-  fontFamily: "'Mochiy Pop One', cursive",
-  backgroundColor: '#FFC0CB',
+  fontFamily: "'Yomogi', cursive",
+  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: '20px',
+  paddingTop: '84px',
+  paddingLeft: '20px',
+  paddingRight: '20px',
+  paddingBottom: '20px',
   boxSizing: 'border-box',
   position: 'relative',
 };
-const headerIconsStyle: React.CSSProperties = { position: 'absolute', top: '20px', right: '20px', display: 'flex', gap: '10px', zIndex: 500 };
-const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.8em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.1)' };
-const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', marginTop: '70px', marginBottom: '20px', backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '15px', padding: '10px 20px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' };
-const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '10px' };
-const genreNameStyle: React.CSSProperties = { fontSize: '1.5em', color: '#4682B4', margin: 0 };
-const questionCountStyle: React.CSSProperties = { fontSize: '1.2em', color: '#333', position: 'absolute', top: '20px', left: '20px', backgroundColor: 'rgba(255,255,255,0.7)', padding: '8px 15px', borderRadius: '10px' };
-const scoreStyle: React.CSSProperties = { fontSize: '1.2em', color: '#333', position: 'absolute', top: '65px', left: '20px', backgroundColor: 'rgba(255,255,255,0.7)', padding: '8px 15px', borderRadius: '10px' };
-const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '25px', padding: '30px', margin: '20px 0', boxShadow: '0 10px 20px rgba(0,0,0,0.15)', width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '16px' };
-const questionTextStyle: React.CSSProperties = { fontSize: '2em', color: '#333', textAlign: 'center', fontWeight: 'bold', lineHeight: '1.4', margin: 0 };
-const optionsContainerStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', width: '90%', maxWidth: '700px', margin: '20px 0' };
-const optionButtonStyle: React.CSSProperties = { padding: '20px 15px', borderRadius: '15px', border: 'none', fontSize: '1.4em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s ease-out, background-color 0.2s' };
-const actionButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '15px', margin: '30px 0', width: '90%', maxWidth: '700px' };
-const actionButtonStyle: React.CSSProperties = { color: 'white', padding: '15px 25px', border: 'none', borderRadius: '15px', cursor: 'pointer', fontSize: '1.2em', fontWeight: 'bold', boxShadow: '0 5px #CD5C91', flex: '1 1 auto', minWidth: '120px', maxWidth: '180px' };
-const surrenderButtonStyle: React.CSSProperties = { backgroundColor: '#FF4500', color: 'white', padding: '15px 25px', border: 'none', borderRadius: '15px', cursor: 'pointer', fontSize: '1.2em', fontWeight: 'bold', boxShadow: '0 5px #CD3700', flex: '1 1 auto', minWidth: '120px', maxWidth: '180px' };
-const hintTextStyle: React.CSSProperties = { fontSize: '1.1em', color: '#555', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF9C4', borderRadius: '10px', width: '100%', boxSizing: 'border-box' as const };
-const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: '#fff', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#4CAF50', borderRadius: '10px', width: '100%', boxSizing: 'border-box' as const };
-const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '25px', margin: '20px 0', width: '90%', maxWidth: '700px', textAlign: 'center' };
-const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.5em', color: '#4682B4', fontWeight: 'bold', marginBottom: '15px' };
-const voiceCommandStyle: React.CSSProperties = { fontSize: '1.8em', color: '#333', fontWeight: 'bold', marginBottom: '10px' };
-const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '1em', color: '#555' };
-const loadingStyle: React.CSSProperties = { fontSize: '2em', color: '#4682B4', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#FFC0CB', fontFamily: "'Mochiy Pop One', cursive" };
-const titleStyle: React.CSSProperties = { color: '#4682B4', fontSize: '2.5em', marginTop: '80px', marginBottom: '40px', textAlign: 'center' };
-const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '25px', padding: '30px', margin: '20px 0', boxShadow: '0 10px 20px rgba(0,0,0,0.15)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
+const stickyHeaderStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 1000, boxShadow: '0 3px 12px rgba(0,0,0,0.18)' };
+const headerTitleStyle: React.CSSProperties = { color: '#fff', fontSize: '1.3em', margin: 0, textShadow: '1px 2px 0 rgba(0,0,0,0.18)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 1, minWidth: 0, cursor: 'pointer' };
+const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '8px', flexShrink: 0 };
+const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
+const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: '50px', padding: '8px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
+const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: '#FF5FA0', margin: 0, fontWeight: 'bold', flexGrow: 1 };
+const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#FF6EC7', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #D94FAA', whiteSpace: 'nowrap' };
+const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#54A0FF', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #2E86DE', whiteSpace: 'nowrap' };
+const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.15)', width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
+const questionTextStyle: React.CSSProperties = { fontSize: '1.8em', color: '#333', textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
+const optionsContainerStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '90%', maxWidth: '700px', margin: '10px 0' };
+const optionButtonStyle: React.CSSProperties = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(0,0,0,0.15)' };
+const actionButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', margin: '16px 0', width: '90%', maxWidth: '700px' };
+const actionButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
+const surrenderButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF4757, #FF6B81)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C0392B', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
+const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: '#555', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF9C4', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px solid #FFE066' };
+const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: '#51CF66', textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(81,207,102,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px dashed #51CF66' };
+const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
+const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: '#FF5FA0', fontWeight: 'bold', margin: 0 };
+const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: '#333', fontWeight: 'bold', margin: 0 };
+const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: '#666', margin: 0 };
+const floatingMicBarStyle: React.CSSProperties = { position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 1500, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '90%', maxWidth: '500px', pointerEvents: 'none' };
+const micStatusStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '2px 0' };
+const micDotStyle: React.CSSProperties = { width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', animation: 'none' };
+const transcriptBoxStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px', backgroundColor: 'rgba(255,255,255,0.75)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '16px', padding: '10px 18px', minHeight: '48px', width: '100%', boxSizing: 'border-box', boxShadow: '0 2px 12px rgba(0,0,0,0.1)', backdropFilter: 'blur(8px)' };
+const transcriptLabelStyle: React.CSSProperties = { fontSize: '0.85em', color: '#FF6EC7', fontWeight: 'bold', whiteSpace: 'nowrap' };
+const transcriptTextStyle: React.CSSProperties = { fontSize: '1.3em', color: '#333', fontWeight: 'bold', wordBreak: 'break-all', flexGrow: 1, textAlign: 'left' };
+const loadingStyle: React.CSSProperties = { fontSize: '2em', color: '#FF5FA0', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)', fontFamily: "'Yomogi', cursive" };
+const titleStyle: React.CSSProperties = { color: '#fff', fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 3px 0px #FF6BAE' };
+const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', margin: '20px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.2)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
 const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: '#333', margin: '10px 0' };
-const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '30px' };
-const buttonStyle: React.CSSProperties = { backgroundColor: '#FF69B4', color: 'white', padding: '15px 25px', border: 'none', borderRadius: '15px', cursor: 'pointer', fontSize: '1.2em', fontWeight: 'bold', boxShadow: '0 5px #CD5C91' };
+const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '24px' };
+const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
 
 export default GamePage;

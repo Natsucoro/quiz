@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TopPage from './components/TopPage/TopPage';
 import GamePage from './components/GamePage/GamePage';
 
@@ -7,16 +7,6 @@ const App: React.FC = () => {
   const [selectedGenre, setSelectedGenre] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(1);
   const [topInitialView, setTopInitialView] = useState<'genre' | 'difficulty'>('genre');
-
-  useEffect(() => {
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
-    return () => {
-      document.head.removeChild(fontLink);
-    };
-  }, []);
 
   const handleStart = (genre: string, difficulty: number) => {
     setSelectedGenre(genre);
@@ -35,7 +25,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ fontFamily: '"Mochiy Pop One", sans-serif', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Yomogi', cursive", minHeight: '100vh' }}>
       {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} />
       ) : (

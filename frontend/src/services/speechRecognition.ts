@@ -5,7 +5,7 @@ interface SpeechRecognitionService {
   start: () => void;
   stop: () => void;
   isRecognizing: () => boolean;
-  onResult: (callback: (transcript: string) => void) => void;
+  onResult: (callback: (transcript: string, isFinal: boolean) => void) => void;
   onError: (callback: (error: SpeechRecognitionErrorEvent) => void) => void;
 }
 
@@ -14,14 +14,14 @@ const SpeechRecognition =
 
 let recognition: SpeechRecognition | null = null;
 let recognizing = false;
-let resultCallback: ((transcript: string) => void) | null = null;
+let resultCallback: ((transcript: string, isFinal: boolean) => void) | null = null;
 let errorCallback: ((error: SpeechRecognitionErrorEvent) => void) | null = null;
 
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
-  recognition.continuous = true; // 継続的に認識
-  recognition.interimResults = false; // 暫定結果は不要
-  recognition.lang = 'ja-JP'; // 日本語
+  recognition.continuous = true;
+  recognition.interimResults = true; // 途中結果もリアルタイムで取得
+  recognition.lang = 'ja-JP';
 
   recognition.onstart = () => {
     recognizing = true;
@@ -29,20 +29,22 @@ if (SpeechRecognition) {
   };
 
   recognition.onend = () => {
-    recognizing = false;
     console.log('音声認識停止。再起動します...');
-    // 自動再起動 (ハンズフリーモードでの常時ONを想定)
-    if (recognizing) { // 手動で停止されていない限り
+    // 自動再起動 (手動でstop()を呼んだ場合はrecognizing=falseになっている)
+    if (recognizing) {
         recognition?.start();
     }
+    recognizing = false;
   };
 
   recognition.onresult = (event: SpeechRecognitionEvent) => {
     const last = event.results.length - 1;
-    const transcript = event.results[last][0].transcript.trim();
-    console.log('認識結果:', transcript);
+    const result = event.results[last];
+    const transcript = result[0].transcript.trim();
+    const isFinal = result.isFinal;
+    console.log('認識結果:', transcript, isFinal ? '(確定)' : '(途中)');
     if (resultCallback) {
-      resultCallback(transcript);
+      resultCallback(transcript, isFinal);
     }
   };
 

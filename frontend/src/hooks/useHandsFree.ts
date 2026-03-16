@@ -23,6 +23,10 @@ export const useHandsFree = ({
   const silenceTimerRef = useRef<number | null>(null);
   const lastSpeechTimeRef = useRef<number>(Date.now());
   const [isRecognizing, setIsRecognizing] = useState(false);
+  const [transcript, setTranscript] = useState('');
+
+  const onVoiceCommandRef = useRef(onVoiceCommand);
+  useEffect(() => { onVoiceCommandRef.current = onVoiceCommand; }, [onVoiceCommand]);
 
   const resetSilenceTimer = useCallback(() => {
     if (silenceTimerRef.current) {
@@ -88,15 +92,12 @@ export const useHandsFree = ({
   useEffect(() => {
     if (!isHandsFreeMode) return;
 
-    const handleResult = (transcript: string) => {
-      resetSilenceTimer(); // 発話があったらタイマーリセット
+    const handleResult = (transcript: string, isFinal: boolean) => {
+      resetSilenceTimer();
+      setTranscript(transcript);
+      if (!isFinal) return;
       const command = detectVoiceCommand(transcript);
-      if (command) {
-        onVoiceCommand(command, transcript);
-      } else {
-        // コマンド以外の発話は答えとして扱う
-        onVoiceCommand('answerAttempt', transcript);
-      }
+      onVoiceCommandRef.current(command ?? 'answerAttempt', transcript);
     };
 
     const handleError = (event: SpeechRecognitionErrorEvent) => {
@@ -121,7 +122,7 @@ export const useHandsFree = ({
       speechRecognitionService.onResult(() => {}); // ダミーで上書き
       speechRecognitionService.onError(() => {}); // ダミーで上書き
     };
-  }, [isHandsFreeMode, onVoiceCommand, resetSilenceTimer]);
+  }, [isHandsFreeMode, resetSilenceTimer]);
 
   const readQuestion = useCallback(() => {
     if (isHandsFreeMode && currentQuestion && isSpeakingAllowed) {
@@ -137,5 +138,5 @@ export const useHandsFree = ({
     }
   }, [isHandsFreeMode, isSpeakingAllowed, resetSilenceTimer]);
 
-  return { isRecognizing, readQuestion, readHint, resetSilenceTimer };
+  return { isRecognizing, transcript, setTranscript, readQuestion, readHint, resetSilenceTimer };
 };

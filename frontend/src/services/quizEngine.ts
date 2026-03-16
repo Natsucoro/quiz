@@ -6,8 +6,11 @@ export interface QuizData {
   genre: string;
   difficulty: number;
   question: string;
+  questionRuby?: string;
   hint1: string;
+  hint1Ruby?: string;
   answer: string;
+  answerReading?: string;
   dummy1: string;
   dummy2: string;
   dummy3: string;
