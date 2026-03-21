@@ -9,7 +9,7 @@ interface UseHandsFreeOptions {
   isHandsFreeMode: boolean;
   onVoiceCommand: (command: string, transcript?: string) => void;
   onSilenceDetected?: (seconds: number) => void;
-  currentQuestion?: string; // 問題文の読み上げ用
+  currentQuestion?: string;
   isSpeakingAllowed: boolean; // ユーザー操作で音声が有効化されたか
 }
 
@@ -22,7 +22,10 @@ export const useHandsFree = ({
 }: UseHandsFreeOptions) => {
   const silenceTimerRef = useRef<number | null>(null);
   const lastSpeechTimeRef = useRef<number>(Date.now());
+  const judgedRef = useRef(false);
   const [isRecognizing, setIsRecognizing] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [transcript, setTranscript] = useState('');
 
   const onVoiceCommandRef = useRef(onVoiceCommand);
@@ -94,10 +97,23 @@ export const useHandsFree = ({
 
     const handleResult = (transcript: string, isFinal: boolean) => {
       resetSilenceTimer();
-      setTranscript(transcript);
-      if (!isFinal) return;
+      setTranscript(transcript.slice(0, 10));
+      if (!isFinal) {
+        setIsListening(true);
+        setIsProcessing(false);
+        return;
+      }
+      if (judgedRef.current) return;
+      judgedRef.current = true;
+      setIsListening(false);
+      setIsProcessing(true);
       const command = detectVoiceCommand(transcript);
       onVoiceCommandRef.current(command ?? 'answerAttempt', transcript);
+      setTimeout(() => {
+        setIsProcessing(false);
+        setTranscript('');
+        judgedRef.current = false;
+      }, 1000);
     };
 
     const handleError = (event: SpeechRecognitionErrorEvent) => {
@@ -138,5 +154,5 @@ export const useHandsFree = ({
     }
   }, [isHandsFreeMode, isSpeakingAllowed, resetSilenceTimer]);
 
-  return { isRecognizing, transcript, setTranscript, readQuestion, readHint, resetSilenceTimer };
+  return { isRecognizing, isListening, isProcessing, transcript, setTranscript, readQuestion, readHint, resetSilenceTimer };
 };

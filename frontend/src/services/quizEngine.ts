@@ -11,6 +11,7 @@ export interface QuizData {
   hint1Ruby?: string;
   answer: string;
   answerReading?: string;
+  answerAliases?: string[];
   dummy1: string;
   dummy2: string;
   dummy3: string;
@@ -22,9 +23,11 @@ interface QuizWithHints extends QuizData {
 }
 
 import animalsQuizzes from '../../../data/quizzes/animals.json';
+import insectsQuizzes from '../../../data/quizzes/insects.json';
 
 const allQuizzes: QuizData[] = [
   ...animalsQuizzes,
+  ...insectsQuizzes,
 ];
 
 /**
@@ -95,8 +98,27 @@ export const getShuffledOptions = (quiz: QuizData): string[] => {
  * @param userAnswer ユーザーの回答
  * @returns boolean 正解であればtrue、そうでなければfalse
  */
+// ひらがな→カタカナ変換
+const toKatakana = (str: string): string =>
+  str.replace(/[\u3041-\u3096]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
+
+// カタカナ→ひらがな変換
+const toHiragana = (str: string): string =>
+  str.replace(/[\u30A1-\u30F6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+
+// 表記ゆれを正規化（カタカナに統一・空白除去・長音符正規化）
+const normalize = (str: string): string =>
+  toKatakana(str.trim().replace(/\s/g, '').replace(/[\u30FC\uFF70]/g, 'ー'));
+
 export const checkAnswer = (quiz: QuizData, userAnswer: string): boolean => {
-  return quiz.answer === userAnswer;
+  const user = normalize(userAnswer);
+  const correct = normalize(quiz.answerReading ?? quiz.answer);
+  if (correct === user || correct.includes(user) || user.includes(correct)) return true;
+  // answerAliasesとも比較
+  return (quiz.answerAliases ?? []).some(alias => {
+    const a = normalize(alias);
+    return a === user || a.includes(user) || user.includes(a);
+  });
 };
 
 export const getAllAvailableQuizzesCount = (genre: string, difficulty: number): number => {

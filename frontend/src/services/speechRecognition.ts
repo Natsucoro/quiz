@@ -7,6 +7,7 @@ interface SpeechRecognitionService {
   isRecognizing: () => boolean;
   onResult: (callback: (transcript: string, isFinal: boolean) => void) => void;
   onError: (callback: (error: SpeechRecognitionErrorEvent) => void) => void;
+  onRecognizingChange: (callback: (recognizing: boolean) => void) => void;
 }
 
 const SpeechRecognition =
@@ -16,15 +17,17 @@ let recognition: SpeechRecognition | null = null;
 let recognizing = false;
 let resultCallback: ((transcript: string, isFinal: boolean) => void) | null = null;
 let errorCallback: ((error: SpeechRecognitionErrorEvent) => void) | null = null;
+let recognizingChangeCallback: ((recognizing: boolean) => void) | null = null;
 
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
   recognition.continuous = true;
-  recognition.interimResults = true; // 途中結果もリアルタイムで取得
+  recognition.interimResults = true;
   recognition.lang = 'ja-JP';
 
   recognition.onstart = () => {
     recognizing = true;
+    recognizingChangeCallback?.(true);
     console.log('音声認識開始...');
   };
 
@@ -35,6 +38,7 @@ if (SpeechRecognition) {
         recognition?.start();
     }
     recognizing = false;
+    recognizingChangeCallback?.(false);
   };
 
   recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -87,6 +91,9 @@ export const speechRecognitionService: SpeechRecognitionService = {
   onError: (callback) => {
     errorCallback = callback;
   },
+  onRecognizingChange: (callback) => {
+    recognizingChangeCallback = callback;
+  },
 };
 
 /**
@@ -94,28 +101,31 @@ export const speechRecognitionService: SpeechRecognitionService = {
  * @param transcript 認識されたテキスト
  * @returns 検出されたコマンド名 ('hint1', 'hint2', 'hint3', 'surrender', 'repeatQuestion', null)
  */
-export const detectVoiceCommand = (transcript: string): string | null => {
-  const lowerTranscript = transcript.toLowerCase();
+// ジャンルのよみがな→ジャンル名マッピング
+export const GENRE_READING_MAP: Record<string, string> = {
+  'どうぶつ': '動物',
+  'こんちゅう': '昆虫',
+  'しょくぶつ': '植物',
+  'さかな': '魚類',
+  'とり': '鳥類',
+  'は虫類': '爬虫類',
+  'はちゅうるい': '爬虫類',
+  'ほにゅうるい': '哺乳類',
+  'かいようせいぶつ': '海洋生物',
+};
 
-  if (lowerTranscript.includes('ヒント1') || lowerTranscript.includes('ヒントいち')) {
-    return 'hint1';
-  }
-  if (lowerTranscript.includes('ヒント2') || lowerTranscript.includes('ヒントに')) {
-    return 'hint2';
-  }
-  if (lowerTranscript.includes('ヒント3') || lowerTranscript.includes('ヒントさん')) {
-    return 'hint3';
-  }
-  if (
-    lowerTranscript.includes('降参') ||
-    lowerTranscript.includes('答え') ||
-    lowerTranscript.includes('わからない') ||
-    lowerTranscript.includes('わからん')
-  ) {
-    return 'surrender';
-  }
-  if (lowerTranscript.includes('問題') || lowerTranscript.includes('もういちど')) {
-    return 'repeatQuestion';
+export const detectVoiceCommand = (transcript: string): string | null => {
+  const t = transcript.toLowerCase();
+
+  if (t.includes('ヒント1') || t.includes('ヒントいち')) return 'hint1';
+  if (t.includes('ヒント2') || t.includes('ヒントに')) return 'hint2';
+  if (t.includes('ヒント3') || t.includes('ヒントさん')) return 'hint3';
+  if (t.includes('降参') || t.includes('答え') || t.includes('わからない') || t.includes('わからん')) return 'surrender';
+  if (t.includes('問題') || t.includes('もういちど')) return 'repeatQuestion';
+
+  // ジャンル選択
+  for (const [reading, genre] of Object.entries(GENRE_READING_MAP)) {
+    if (t.includes(reading)) return `genre:${genre}`;
   }
 
   return null;

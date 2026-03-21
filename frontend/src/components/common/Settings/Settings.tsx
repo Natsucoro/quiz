@@ -85,7 +85,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
             <p style={versionStyle}>バージョン 1.0.0</p>
           </div>
 
-          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#ccc', marginTop: '20px' }}>
+          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#ccc', color: '#555', boxShadow: '0 4px #999', marginTop: '20px' }}>
             閉じる
           </button>
         </div>
