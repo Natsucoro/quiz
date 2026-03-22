@@ -10,6 +10,7 @@ import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
+import FloatingShapes from '../common/FloatingShapes';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number) => void;
@@ -159,17 +160,20 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
 
   return (
     <div style={containerStyle}>
+      <div style={backgroundStyle}>
+        <FloatingShapes />
+      </div>
       <style>{`rt { font-size: 0.5em; font-weight: normal; } .btn-ruby rt { font-size: 0.35em !important; } .btn-ruby { font-size: 0.6em; } .btn-ruby > :not(rt) { font-size: calc(1/0.6 * 1em); } @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} } .lock-balloon { animation: float 2s ease-in-out infinite; }`}</style>
       <header style={stickyHeaderStyle}>
         <h1 style={titleStyle} onClick={() => setShowDifficultySelection(false)}>わたしはダレでしょう？クイズ</h1>
         <div style={headerIconsStyle}>
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
           <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-          <button onClick={() => setIsHandsFreeMode(!isHandsFreeMode)} style={{ ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }}>🎤</button>
+          <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
         </div>
       </header>
 
-      {!showDifficultySelection && <p style={cautionStyle}>⚠️ 声で操作できますが、運転中に画面の操作はNGです！</p>}
+      {!showDifficultySelection && <p style={cautionStyle}>⚠️ 運転中に画面の操作はNGです！ 🚗</p>}
 
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
         {['#子どもから大人まで', '#レベル選べる', '#ハンズフリー', '#勉強・豆知識になる', '#運転中でもできる', '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
@@ -181,12 +185,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       <div style={playModeContainerStyle}>
         <h2 style={sectionTitleStyle}>あそびかたをえらんでね！</h2>
         <div style={playModeGridStyle}>
-          <button
-            onClick={() => { setIsHandsFreeMode(true); if (isMuted) { setIsMuted(false); unlockAudioContext(); setIsSpeakingAllowed(true); } }}
-            style={{ ...playModeButtonStyle, background: isHandsFreeMode ? 'linear-gradient(135deg, #FF6EC7, #FF9A3C)' : 'rgba(255,255,255,0.9)', color: isHandsFreeMode ? '#fff' : '#d63384', border: isHandsFreeMode ? '3px solid #FF6EC7' : '3px solid #FFB3D9', boxShadow: isHandsFreeMode ? '0 5px 0 #D94F9A' : '0 4px 0 #FFB3D9' } as React.CSSProperties}
+        <button
+            disabled
+            style={{ ...playModeButtonStyle, background: 'rgba(255,255,255,0.9)', color: '#aaa', border: '3px solid #ddd', boxShadow: '0 4px 0 #ccc', cursor: 'not-allowed' } as React.CSSProperties}
           >
-            <span style={playModeIconStyle}>🎤</span>
-            <span><ruby>声<rt>こえ</rt></ruby>であそぶ</span>
+            <span style={playModeIconStyle}>🚧</span>
+            <span style={{textDecoration: 'line-through'}}><ruby>声<rt>こえ</rt></ruby>であそぶ</span>
+            <span style={{ fontSize: '0.8em', fontWeight: 'bold', color: '#888' }}>近日公開！</span>
           </button>
           <button
             onClick={() => setIsHandsFreeMode(false)}
@@ -247,7 +252,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
                     style={{
                       ...difficultyButtonStyle,
                       backgroundColor: isLocked ? '#B0B0B0' : localSelectedDifficulty === difficulty ? '#FF6EC7' : ['#FF6B6B', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#5F27CD', '#FF6B6B', '#FF9F43', '#FECA57', '#1DD1A1'][difficulty - 1],
-                      boxShadow: isLocked ? '0 4px 0 #888' : localSelectedDifficulty === difficulty ? '0 0 0 2px #fff, 0 0 0 4px #FF6EC7' : '0 5px 0 rgba(0,0,0,0.15)',
+                      boxShadow: isLocked ? '0 4px 0 #888' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px #FF6EC7` : '0 5px 0 rgba(0,0,0,0.15)',
                       transform: localSelectedDifficulty === difficulty ? 'scale(1.08)' : 'scale(1)',
                       cursor: isLocked ? 'not-allowed' : 'pointer',
                     } as React.CSSProperties}
@@ -284,7 +289,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
                     minHeight: 'unset',
                     padding: '14px 10px',
                     backgroundColor: localSelectedCount === count ? '#FF6EC7' : '#54A0FF',
-                    boxShadow: localSelectedCount === count ? '0 0 0 2px #fff, 0 0 0 4px #FF6EC7' : '0 5px 0 rgba(0,0,0,0.15)',
+                    boxShadow: localSelectedCount === count ? `0 0 0 2px #fff, 0 0 0 4px #FF6EC7` : '0 5px 0 rgba(0,0,0,0.15)',
                     transform: localSelectedCount === count ? 'scale(1.08)' : 'scale(1)',
                   } as React.CSSProperties}
                 >
@@ -351,7 +356,6 @@ const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '8px', fle
 const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
 const containerStyle: React.CSSProperties = {
   fontFamily: "'Yomogi', cursive",
-  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -361,6 +365,17 @@ const containerStyle: React.CSSProperties = {
   paddingRight: '20px',
   paddingBottom: '100px',
   boxSizing: 'border-box',
+  position: 'relative',
+  zIndex: 1,
+};
+const backgroundStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
+  zIndex: -1,
 };
 const cautionStyle: React.CSSProperties = { fontSize: '0.78em', color: '#a0522d', background: 'rgba(255,255,255,0.6)', borderRadius: '20px', padding: '6px 16px', margin: '0 0 10px 0', textAlign: 'center', maxWidth: '620px', width: '100%', boxSizing: 'border-box' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '620px', width: '100%' };
