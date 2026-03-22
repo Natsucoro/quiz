@@ -116,22 +116,19 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       setFeedback(null);
       hasAnsweredIncorrectlyRef.current = false;
       playedIdsThisSession.current = new Set([...playedIdsThisSession.current, nextQuiz.id]);
-      if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
-        const q = toReadableText(nextQuiz.questionRuby ?? nextQuiz.question);
-        speak(`第${questionIndex + 1}問。${q}`);
-        setConciergeMessage(null);
-      }
     } else if (initializedRef.current) {
       // 問題が尽きたら静かに終了画面へ
       setIsQuizEnded(true);
     }
-  }, [selectedGenre, selectedDifficulty, isSpeakingAllowed]);
+  }, [selectedGenre, selectedDifficulty]);
 
   const initializedRef = useRef(false);
+  const spokenQuestionIndex = useRef(-1);
 
   // 初期化
   useEffect(() => {
     initializedRef.current = false;
+    spokenQuestionIndex.current = -1;
     playedIdsThisSession.current = new Set();
     setCurrentQuestionIndex(0);
     setScore(0);
@@ -140,12 +137,22 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     initializedRef.current = true;
   }, [selectedGenre, selectedDifficulty, loadNextQuiz]);
 
+  // 問題の読み上げ
+  useEffect(() => {
+    if (initializedRef.current && !isMuted && currentQuiz && spokenQuestionIndex.current !== currentQuestionIndex) {
+      const q = toReadableText(currentQuiz.questionRuby ?? currentQuiz.question);
+      speak(`第${currentQuestionIndex + 1}問。${q}`);
+      spokenQuestionIndex.current = currentQuestionIndex;
+    }
+  }, [isMuted, currentQuiz, currentQuestionIndex]);
+
+
   const handleNextQuestion = useCallback(() => {
     setCurrentQuestionIndex(prev => {
       const next = prev + 1;
       if (next >= questionCount) {
         setIsQuizEnded(true);
-        if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
+        if (!isMutedRef.current && isSpeakingAllowed) {
           setScore(s => { speak(`クイズ終了です。あなたのスコアは${s}点でした。`); return s; });
         }
       } else {
@@ -185,22 +192,21 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       hasAnsweredIncorrectlyRef.current = false;
       setFeedback('correct');
       setEffectKey({ type: 'correct', id: Date.now() });
-      if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+      if (!isMuted && isSpeakingAllowed) {
         const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
-        speak(`ピンポン！正解は${ans}です。次の問題です。`);
-        setConciergeMessage(null);
+        speak(`ピンポン！正解は${ans}です。`);
       }
     } else {
       hasAnsweredIncorrectlyRef.current = true;
       playSound('incorrect');
       setFeedback('incorrect');
       setEffectKey({ type: 'incorrect', id: Date.now() });
-      if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+      if (!isMuted && isSpeakingAllowed) {
         speak('ブブー！「' + userAnswer + '」は不正解です。もう一度考えてみましょう。');
         setConciergeMessage(null);
       }
     }
-  }, [currentQuiz, feedback, isHandsFreeMode, isMuted, isSpeakingAllowed, playSound]);
+  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound]);
 
   handleAnswerRef.current = handleAnswer;
 
@@ -209,12 +215,11 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     quizSequenceRef.current++;
     playSound('correct');
     setFeedback('surrender');
-    if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+    if (!isMuted && isSpeakingAllowed) {
       const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
-      speak(`答えは${ans}です。次の問題です。`);
-      setConciergeMessage(null);
+      speak(`答えは${ans}です。`);
     }
-  }, [currentQuiz, feedback, isHandsFreeMode, isMuted, isSpeakingAllowed, playSound]);
+  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound]);
 
   handleSurrenderRef.current = handleSurrender;
 
@@ -277,10 +282,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setIsMuted(newState);
     if (newState) {
       stopSpeaking();
-    } else if (isHandsFreeMode && currentQuiz) {
+    } else if (currentQuiz) {
       speak(toReadableText(currentQuiz.questionRuby ?? currentQuiz.question));
     }
-  }, [isMuted, setIsMuted, isHandsFreeMode, currentQuiz]);
+  }, [isMuted, setIsMuted, currentQuiz]);
 
   const handleGoHomeConfirm = () => {
     if (window.confirm('クイズを中断しますか？スコアはリセットされます。')) {
@@ -313,7 +318,7 @@ if (!currentQuiz && !isQuizEnded) {
       <div style={headerIconsStyle}>
         <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
         <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-        <button onClick={() => setIsHandsFreeMode(!isHandsFreeMode)} style={{ ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }}>🎤</button>
+        <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
       </div>
     </header>
   );
@@ -442,6 +447,12 @@ if (!currentQuiz && !isQuizEnded) {
         )}
         <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }}><ruby>降参<rt>こうさん</rt></ruby></button>
       </div>
+      
+      {!(feedback === 'correct' || feedback === 'surrender') && (
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
+          <button onClick={handleGoHomeConfirm} style={backButtonStyle}>← TOPにもどる</button>
+        </div>
+      )}
 
 
       {showSettings && (
