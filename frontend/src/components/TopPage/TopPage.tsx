@@ -181,13 +181,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       <div style={playModeContainerStyle}>
         <h2 style={sectionTitleStyle}>あそびかたをえらんでね！</h2>
         <div style={playModeGridStyle}>
-          <button
+          {/* <button
             onClick={() => { setIsHandsFreeMode(true); if (isMuted) { setIsMuted(false); unlockAudioContext(); setIsSpeakingAllowed(true); } }}
             style={{ ...playModeButtonStyle, background: isHandsFreeMode ? 'linear-gradient(135deg, #FF6EC7, #FF9A3C)' : 'rgba(255,255,255,0.9)', color: isHandsFreeMode ? '#fff' : '#d63384', border: isHandsFreeMode ? '3px solid #FF6EC7' : '3px solid #FFB3D9', boxShadow: isHandsFreeMode ? '0 5px 0 #D94F9A' : '0 4px 0 #FFB3D9' } as React.CSSProperties}
           >
             <span style={playModeIconStyle}>🎤</span>
             <span><ruby>声<rt>こえ</rt></ruby>であそぶ</span>
-          </button>
+          </button> */}
           <button
             onClick={() => setIsHandsFreeMode(false)}
             style={{ ...playModeButtonStyle, background: !isHandsFreeMode ? 'linear-gradient(135deg, #54A0FF, #1DD1A1)' : 'rgba(255,255,255,0.9)', color: !isHandsFreeMode ? '#fff' : '#1971c2', border: !isHandsFreeMode ? '3px solid #54A0FF' : '3px solid #a5d8ff', boxShadow: !isHandsFreeMode ? '0 5px 0 #1098AD' : '0 4px 0 #a5d8ff' } as React.CSSProperties}
