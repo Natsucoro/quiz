@@ -1,16 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,
-    // $PORT 環境変数があればそれを使い、なければ 5173 を使います
-    port: Number(process.env.PORT) || 5173,
-    strictPort: true,
-    // HMR（画面の自動更新）をクラウド越しに効かせるための設定
+    host: '0.0.0.0', // Allow connections from outside the container
+    // The port is now passed in by the IDE via the `$PORT` variable
+    watch: {
+      usePolling: true, // Needed for file change detection in some environments
+      // Explicitly ignore the folders that are causing the ghost reloads
+      ignored: ['**/dist/**', '**/dist_bak/**'],
+    },
     hmr: {
-      clientPort: 443,
+      clientPort: 443, // Port for HMR updates through the proxy
     },
   }
 })

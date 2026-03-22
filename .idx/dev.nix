@@ -6,8 +6,7 @@
       enable = true;
       previews = {
         web = {
-          # $PORT を使って起動するように指示します
-          command = ["npm" "--prefix" "frontend" "run" "dev" "--" "--port" "$PORT" "--host" "0.0.0.0"];
+          command = [ "npm" "--prefix" "frontend" "run" "dev" "--" "--port" "$PORT" "--host" "0.0.0.0" ];
           manager = "web";
         };
       };
