@@ -10,6 +10,7 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
   const [selectedGenre, setSelectedGenre] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(1);
+  const [selectedCount, setSelectedCount] = useState<number>(10);
   const [topInitialView, setTopInitialView] = useState<'genre' | 'difficulty'>('genre');
   const [micStatus, setMicStatus] = useState({ isRecognizing: false, isListening: false, isProcessing: false, transcript: '' });
 
@@ -41,9 +42,10 @@ const App: React.FC = () => {
     setMicStatus(status);
   }, []);
 
-  const handleStart = (genre: string, difficulty: number) => {
+  const handleStart = (genre: string, difficulty: number, count: number) => {
     setSelectedGenre(genre);
     setSelectedDifficulty(difficulty);
+    setSelectedCount(count);
     setCurrentPage('game');
   };
 
@@ -62,7 +64,7 @@ const App: React.FC = () => {
       {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} />
       ) : (
-        <GamePage genre={selectedGenre} difficulty={selectedDifficulty} onBack={handleBack} onBackToDifficulty={handleBackToDifficulty} onMicStatus={handleMicStatus} />
+        <GamePage genre={selectedGenre} difficulty={selectedDifficulty} questionCount={selectedCount} onBack={handleBack} onBackToDifficulty={handleBackToDifficulty} onMicStatus={handleMicStatus} />
       )}
       {isHandsFreeMode && (
         <FloatingMicBar

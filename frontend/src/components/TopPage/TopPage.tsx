@@ -13,7 +13,7 @@ import { speechRecognitionService, detectVoiceCommand } from '../../services/spe
 import FloatingShapes from '../common/FloatingShapes';
 
 interface TopPageProps {
-  onStart: (genre: string, difficulty: number) => void;
+  onStart: (genre: string, difficulty: number, count: number) => void;
   initialView?: 'genre' | 'difficulty';
 }
 
@@ -68,7 +68,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       await unlockAudioContext();
       setIsSpeakingAllowed(true);
     }
-    onStart(localSelectedGenre, localSelectedDifficulty);
+    onStart(localSelectedGenre, localSelectedDifficulty, localSelectedCount);
   };
 
   const handleToggleMute = useCallback(() => {
@@ -264,7 +264,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
                     </p>
                     {isLocked && (
                       <span className="lock-balloon" style={lockBalloonStyle}>
-                        150円で解放！
+                        120円で解放！
                         <span style={lockBalloonTailStyle} />
                       </span>
                     )}
@@ -301,7 +301,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
 
           <div style={bottomButtonsContainerStyle}>
             <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#ccc', color: '#555', boxShadow: '0 5px 0 #999' } as React.CSSProperties}>
-              ← ジャンルえらびにもどる
+              ← TOPにもどる
             </button>
             <button
               onClick={handleStartQuiz}
@@ -390,10 +390,10 @@ const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColum
 const genreButtonStyle: React.CSSProperties = { padding: '14px 16px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2em', flexShrink: 0 };
 const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '620px', boxSizing: 'border-box' };
-const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '14px', marginBottom: '28px' };
+const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '14px', rowGap: '30px', marginBottom: '28px' };
 const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90px', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' } as React.CSSProperties;
 const lockIconStyle: React.CSSProperties = { fontSize: '1em', marginLeft: '3px' };
-const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-30px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
+const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
 const questionCountGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '24px' };

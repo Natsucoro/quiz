@@ -12,7 +12,6 @@ import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthe
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
-import { TOTAL_QUIZZES } from '../../constants';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
@@ -55,6 +54,7 @@ const playIncorrectSound = () => {
 interface GamePageProps {
   genre: string;
   difficulty: number;
+  questionCount: number;
   onBack: () => void;
   onBackToDifficulty: () => void;
   onMicStatus?: (status: { isRecognizing: boolean; isListening: boolean; isProcessing: boolean; transcript: string }) => void;
@@ -68,7 +68,7 @@ const GENRE_RUBY: Record<string, string> = {
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
 };
 
-const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, onBack, onBackToDifficulty, onMicStatus }) => {
+const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus }) => {
   const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
   const isSpeakingAllowed = true;
 
@@ -143,7 +143,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const handleNextQuestion = useCallback(() => {
     setCurrentQuestionIndex(prev => {
       const next = prev + 1;
-      if (next >= TOTAL_QUIZZES) {
+      if (next >= questionCount) {
         setIsQuizEnded(true);
         if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
           setScore(s => { speak(`クイズ終了です。あなたのスコアは${s}点でした。`); return s; });
@@ -157,7 +157,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       }
       return next;
     });
-  }, [isSpeakingAllowed, loadNextQuiz]);
+  }, [isSpeakingAllowed, loadNextQuiz, questionCount]);
 
   handleNextQuestionRef.current = handleNextQuestion;
 
@@ -319,13 +319,13 @@ if (!currentQuiz && !isQuizEnded) {
   );
 
   if (isQuizEnded) {
-    const accuracy = (score / TOTAL_QUIZZES) * 100;
+    const accuracy = (score / questionCount) * 100;
     return (
       <div style={containerStyle}>
         {stickyHeader}
         <h1 style={titleStyle}>🎉 結果発表 🎉</h1>
         <div style={resultBoxStyle}>
-          <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {TOTAL_QUIZZES}問</p>
+          <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
           <p style={resultTextStyle}>正解率: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
 
           <div style={resultActionButtonsStyle}>
@@ -364,7 +364,7 @@ if (!currentQuiz && !isQuizEnded) {
       <div style={genreInfoStyle}>
         <span style={genreIconStyle}>{getGenreIcon(selectedGenre)}</span>
         <h2 style={genreNameStyle}><ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby></h2>
-        <span style={questionCountStyle}>{currentQuestionIndex + 1}/{TOTAL_QUIZZES}問</span>
+        <span style={questionCountStyle}>{currentQuestionIndex + 1}/{questionCount}問</span>
         <span style={scoreStyle}>スコア: {score}</span>
       </div>
 
