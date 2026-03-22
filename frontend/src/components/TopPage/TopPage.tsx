@@ -176,7 +176,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       {!showDifficultySelection && <p style={cautionStyle}>⚠️ 運転中に画面の操作はNGです！ 🚗</p>}
 
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
-        {['#子どもから大人まで', '#レベル選べる', '#ハンズフリー', '#勉強・豆知識になる', '#運転中でもできる', '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
+        {['#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる',  '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
           <span key={tag} style={hashtagStyle}>{tag}</span>
         ))}
       </div>}
