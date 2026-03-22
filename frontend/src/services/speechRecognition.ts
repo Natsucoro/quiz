@@ -21,48 +21,50 @@ let recognizingChangeCallback: ((recognizing: boolean) => void) | null = null;
 
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'ja-JP';
+  if (recognition) {
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'ja-JP';
 
-  recognition.onstart = () => {
-    recognizing = true;
-    recognizingChangeCallback?.(true);
-    console.log('音声認識開始...');
-  };
+    recognition.onstart = () => {
+      recognizing = true;
+      recognizingChangeCallback?.(true);
+      console.log('音声認識開始...');
+    };
 
-  recognition.onend = () => {
-    console.log('音声認識停止。再起動します...');
-    // 自動再起動 (手動でstop()を呼んだ場合はrecognizing=falseになっている)
-    if (recognizing) {
-        recognition?.start();
-    }
-    recognizing = false;
-    recognizingChangeCallback?.(false);
-  };
+    recognition.onend = () => {
+      console.log('音声認識停止。再起動します...');
+      // 自動再起動 (手動でstop()を呼んだ場合はrecognizing=falseになっている)
+      if (recognizing) {
+          recognition?.start();
+      }
+      recognizing = false;
+      recognizingChangeCallback?.(false);
+    };
 
-  recognition.onresult = (event: SpeechRecognitionEvent) => {
-    const last = event.results.length - 1;
-    const result = event.results[last];
-    const transcript = result[0].transcript.trim();
-    const isFinal = result.isFinal;
-    console.log('認識結果:', transcript, isFinal ? '(確定)' : '(途中)');
-    if (resultCallback) {
-      resultCallback(transcript, isFinal);
-    }
-  };
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const last = event.results.length - 1;
+      const result = event.results[last];
+      const transcript = result[0].transcript.trim();
+      const isFinal = result.isFinal;
+      console.log('認識結果:', transcript, isFinal ? '(確定)' : '(途中)');
+      if (resultCallback) {
+        resultCallback(transcript, isFinal);
+      }
+    };
 
-  recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-    console.error('音声認識エラー:', event.error);
-    recognizing = false;
-    if (errorCallback) {
-      errorCallback(event);
-    }
-    // エラー後も自動再起動を試みる
-    if (recognition && event.error !== 'not-allowed') { // 権限エラー以外
-        recognition.start();
-    }
-  };
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.error('音声認識エラー:', event.error);
+      recognizing = false;
+      if (errorCallback) {
+        errorCallback(event);
+      }
+      // エラー後も自動再起動を試みる
+      if (recognition && event.error !== 'not-allowed') { // 権限エラー以外
+          recognition.start();
+      }
+    };
+  }
 } else {
   console.warn('Web Speech API (SpeechRecognition) はこのブラウザでサポートされていません。');
 }

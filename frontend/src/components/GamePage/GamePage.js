@@ -1,0 +1,363 @@
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+// src/components/GamePage/GamePage.tsx
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Settings from '../common/Settings/Settings';
+import { getNextQuiz, getShuffledOptions, checkAnswer, } from '../../services/quizEngine';
+import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthesis';
+import { useHandsFree } from '../../hooks/useHandsFree';
+import { useSettingsStore } from '../../store/settingsStore';
+import { TOTAL_QUIZZES } from '../../constants';
+const renderRuby = (text) => text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
+    const m = part.match(/\{([^|]+)\|([^}]+)\}/);
+    return m ? _jsxs("ruby", { children: [m[1], _jsx("rt", { children: m[2] })] }, i) : part;
+});
+const playCorrectSound = () => {
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+    [523, 659, 784].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+        osc.connect(gain);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+    });
+};
+const playIncorrectSound = () => {
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    [300, 250].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+        osc.connect(gain);
+        osc.start(ctx.currentTime + i * 0.15);
+        osc.stop(ctx.currentTime + i * 0.15 + 0.2);
+    });
+};
+const GENRE_RUBY = {
+    '動物': 'どうぶつ', '昆虫': 'こんちゅう', '植物': 'しょくぶつ',
+    '魚類': 'さかな', '鳥類': 'とりるい', '爰虫類': 'はちゅうるい',
+    '哺乳類': 'ほにゅうるい', '海洋生物': 'かいようせいぶつ',
+    '乗り物': 'のりもの', '道具': 'どうぐ', '歴史上の人物': 'れきしのじんぶつ',
+    '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
+};
+const GamePage = ({ genre: selectedGenre, difficulty: selectedDifficulty, onBack, onBackToDifficulty, onMicStatus }) => {
+    const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
+    const isSpeakingAllowed = true;
+    const [currentQuiz, setCurrentQuiz] = useState(null);
+    const [options, setOptions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [score, setScore] = useState(0);
+    const [feedback, setFeedback] = useState(null);
+    const [showHint, setShowHint] = useState(null);
+    const [isQuizEnded, setIsQuizEnded] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [conciergeMessage, setConciergeMessage] = useState(null);
+    const [effectKey, setEffectKey] = useState(null);
+    const quizSequenceRef = useRef(0);
+    // 循環依存を避けるためにhandlerをrefで保持
+    const handleShowHintRef = useRef(() => { });
+    const handleSurrenderRef = useRef(() => { });
+    const handleAnswerRef = useRef(() => { });
+    const handleNextQuestionRef = useRef(() => { });
+    const readQuestionRef = useRef(() => { });
+    const playSound = useCallback((type) => {
+        if (isMuted)
+            return;
+        if (type === 'correct')
+            playCorrectSound();
+        else
+            playIncorrectSound();
+    }, [isMuted]);
+    const playedIdsThisSession = useRef(new Set());
+    const hasAnsweredIncorrectlyRef = useRef(false);
+    const isHandsFreeModeRef = useRef(isHandsFreeMode);
+    const isMutedRef = useRef(isMuted);
+    useEffect(() => { isHandsFreeModeRef.current = isHandsFreeMode; }, [isHandsFreeMode]);
+    useEffect(() => { isMutedRef.current = isMuted; }, [isMuted]);
+    const onBackRef = useRef(onBack);
+    useEffect(() => { onBackRef.current = onBack; }, [onBack]);
+    const loadNextQuiz = useCallback((questionIndex) => {
+        const nextQuiz = getNextQuiz(selectedGenre, selectedDifficulty, playedIdsThisSession.current);
+        if (nextQuiz) {
+            setCurrentQuiz(nextQuiz);
+            setOptions(getShuffledOptions(nextQuiz));
+            setShowHint(null);
+            setFeedback(null);
+            hasAnsweredIncorrectlyRef.current = false;
+            playedIdsThisSession.current = new Set([...playedIdsThisSession.current, nextQuiz.id]);
+            if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
+                const q = toReadableText(nextQuiz.questionRuby ?? nextQuiz.question);
+                speak(`第${questionIndex + 1}問。${q}`);
+                setConciergeMessage(null);
+            }
+        }
+        else if (initializedRef.current) {
+            // 問題が尽きたら静かに終了画面へ
+            setIsQuizEnded(true);
+        }
+    }, [selectedGenre, selectedDifficulty, isSpeakingAllowed]);
+    const initializedRef = useRef(false);
+    // 初期化
+    useEffect(() => {
+        initializedRef.current = false;
+        playedIdsThisSession.current = new Set();
+        setCurrentQuestionIndex(0);
+        setScore(0);
+        setIsQuizEnded(false);
+        loadNextQuiz(0);
+        initializedRef.current = true;
+    }, [selectedGenre, selectedDifficulty, loadNextQuiz]);
+    const handleNextQuestion = useCallback(() => {
+        setCurrentQuestionIndex(prev => {
+            const next = prev + 1;
+            if (next >= TOTAL_QUIZZES) {
+                setIsQuizEnded(true);
+                if (isHandsFreeModeRef.current && !isMutedRef.current && isSpeakingAllowed) {
+                    setScore(s => { speak(`クイズ終了です。あなたのスコアは${s}点でした。`); return s; });
+                }
+            }
+            else {
+                quizSequenceRef.current = 0;
+                setFeedback(null);
+                setShowHint(null);
+                setConciergeMessage(null);
+                loadNextQuiz(next);
+            }
+            return next;
+        });
+    }, [isSpeakingAllowed, loadNextQuiz]);
+    handleNextQuestionRef.current = handleNextQuestion;
+    // 正解・降参後に自動で次の問題へ（ハンズフリーモードのみ）
+    useEffect(() => {
+        if (!isHandsFreeMode)
+            return;
+        if (feedback === 'correct' || feedback === 'surrender') {
+            const seq = quizSequenceRef.current;
+            const timer = setTimeout(() => {
+                if (quizSequenceRef.current === seq) {
+                    handleNextQuestionRef.current();
+                }
+            }, isHandsFreeMode ? 1500 : 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [feedback, isHandsFreeMode]);
+    const handleAnswer = useCallback((userAnswer) => {
+        if (!currentQuiz || feedback === 'correct' || feedback === 'surrender')
+            return;
+        quizSequenceRef.current++;
+        const correct = checkAnswer(currentQuiz, userAnswer);
+        if (correct) {
+            playSound('correct');
+            if (!hasAnsweredIncorrectlyRef.current)
+                setScore(prev => prev + 1);
+            hasAnsweredIncorrectlyRef.current = false;
+            setFeedback('correct');
+            setEffectKey({ type: 'correct', id: Date.now() });
+            if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+                const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
+                speak(`ピンポン！正解は${ans}です。次の問題です。`);
+                setConciergeMessage(null);
+            }
+        }
+        else {
+            hasAnsweredIncorrectlyRef.current = true;
+            playSound('incorrect');
+            setFeedback('incorrect');
+            setEffectKey({ type: 'incorrect', id: Date.now() });
+            if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+                speak('ブブー！「' + userAnswer + '」は不正解です。もう一度考えてみましょう。');
+                setConciergeMessage(null);
+            }
+        }
+    }, [currentQuiz, feedback, isHandsFreeMode, isMuted, isSpeakingAllowed, playSound]);
+    handleAnswerRef.current = handleAnswer;
+    const handleSurrender = useCallback(() => {
+        if (!currentQuiz || feedback === 'correct' || feedback === 'surrender')
+            return;
+        quizSequenceRef.current++;
+        playSound('correct');
+        setFeedback('surrender');
+        if (isHandsFreeMode && !isMuted && isSpeakingAllowed) {
+            const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
+            speak(`答えは${ans}です。次の問題です。`);
+            setConciergeMessage(null);
+        }
+    }, [currentQuiz, feedback, isHandsFreeMode, isMuted, isSpeakingAllowed, playSound]);
+    handleSurrenderRef.current = handleSurrender;
+    const handleShowHint = useCallback((hintNumber) => {
+        if (!currentQuiz)
+            return;
+        let hintText = '';
+        if (hintNumber === 1) {
+            hintText = currentQuiz.hint1;
+        }
+        else if (hintNumber === 2) {
+            if (!isHandsFreeMode)
+                return;
+            hintText = currentQuiz.hint2 ?? '';
+        }
+        else if (hintNumber === 3) {
+            if (!isHandsFreeMode)
+                return;
+            hintText = currentQuiz.hint3 ?? '';
+        }
+        else
+            return;
+        setShowHint(hintNumber);
+        if (!isMuted && isSpeakingAllowed) {
+            const readableHint = hintNumber === 1
+                ? toReadableText(currentQuiz.hint1Ruby ?? currentQuiz.hint1)
+                : hintText;
+            speak(`ヒント${hintNumber}：${readableHint}`);
+            setConciergeMessage(null);
+        }
+    }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed]);
+    handleShowHintRef.current = handleShowHint;
+    const { isRecognizing, isListening, isProcessing, transcript, readQuestion, resetSilenceTimer } = useHandsFree({
+        // useHandsFreeの呼び出し後にreadQuestionRefを更新（下のuseEffect内で参照）
+        isHandsFreeMode,
+        onVoiceCommand: useCallback((command, transcript) => {
+            setConciergeMessage(null);
+            if (command === 'hint1')
+                handleShowHintRef.current(1);
+            else if (command === 'hint2')
+                handleShowHintRef.current(2);
+            else if (command === 'hint3')
+                handleShowHintRef.current(3);
+            else if (command === 'surrender')
+                handleSurrenderRef.current();
+            else if (command === 'repeatQuestion')
+                readQuestionRef.current();
+            else if (command === 'answerAttempt' && transcript)
+                handleAnswerRef.current(transcript);
+        }, []), // refを使うので依存なし
+        onSilenceDetected: useCallback((seconds) => {
+            if (isMuted)
+                return;
+            if (seconds === 7) {
+                setConciergeMessage('ヒント1と言ってみてね');
+                speak('ヒント1と言ってみてね');
+            }
+            else if (seconds === 12) {
+                setConciergeMessage('ヒント2と言ってみてね');
+                speak('ヒント2と言ってみてね');
+            }
+            else if (seconds === 17) {
+                setConciergeMessage('ヒント3と言ってみてね');
+                speak('ヒント3と言ってみてね');
+            }
+            else if (seconds === 25) {
+                setConciergeMessage('降参の場合は、降参と言ってね');
+                speak('降参の場合は、降参と言ってね');
+            }
+        }, [isMuted]),
+        currentQuestion: currentQuiz?.question,
+        isSpeakingAllowed,
+    });
+    // useHandsFree呼び出し後にrefを更新
+    readQuestionRef.current = readQuestion;
+    useEffect(() => {
+        onMicStatus?.({ isRecognizing, isListening, isProcessing, transcript });
+    }, [isRecognizing, isListening, isProcessing, transcript, onMicStatus]);
+    const handleToggleMute = useCallback(() => {
+        const newState = !isMuted;
+        setIsMuted(newState);
+        if (newState) {
+            stopSpeaking();
+        }
+        else if (isHandsFreeMode && currentQuiz) {
+            speak(toReadableText(currentQuiz.questionRuby ?? currentQuiz.question));
+        }
+    }, [isMuted, setIsMuted, isHandsFreeMode, currentQuiz]);
+    const handleGoHomeConfirm = () => {
+        if (window.confirm('クイズを中断しますか？スコアはリセットされます。')) {
+            stopSpeaking();
+            onBack();
+        }
+    };
+    const getGenreIcon = (genreName) => {
+        switch (genreName) {
+            case '動物': return '🦁';
+            case '昆虫': return '🐛';
+            case '植物': return '🌿';
+            case '乗り物': return '🚗';
+            case '道具': return '🔨';
+            case '歴史上の人物': return '🗿';
+            case '日本の地理': return '🗾';
+            case '世界の地理': return '🌍';
+            default: return '❓';
+        }
+    };
+    if (!currentQuiz && !isQuizEnded) {
+        return _jsx("div", { style: loadingStyle, children: "\u554F\u984C\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D..." });
+    }
+    const stickyHeader = (_jsxs("header", { style: stickyHeaderStyle, children: [_jsx("h1", { style: headerTitleStyle, onClick: handleGoHomeConfirm, children: "\u308F\u305F\u3057\u306F\u30C0\u30EC\u3067\u3057\u3087\u3046\uFF1F\u30AF\u30A4\u30BA" }), _jsxs("div", { style: headerIconsStyle, children: [_jsx("button", { onClick: () => setShowSettings(true), style: iconButtonStyle, children: "\u2699\uFE0F" }), _jsx("button", { onClick: handleToggleMute, style: iconButtonStyle, children: isMuted ? '🔇' : '🔊' }), _jsx("button", { onClick: () => setIsHandsFreeMode(!isHandsFreeMode), style: { ...iconButtonStyle, opacity: isHandsFreeMode ? 1 : 0.4 }, children: "\uD83C\uDFA4" })] })] }));
+    if (isQuizEnded) {
+        const accuracy = (score / TOTAL_QUIZZES) * 100;
+        return (_jsxs("div", { style: containerStyle, children: [stickyHeader, _jsx("h1", { style: titleStyle, children: "\uD83C\uDF89 \u7D50\u679C\u767A\u8868 \uD83C\uDF89" }), _jsxs("div", { style: resultBoxStyle, children: [_jsxs("p", { style: resultTextStyle, children: ["\u6B63\u89E3\u6570: ", _jsx("span", { style: { color: '#FF69B4', fontSize: '1.2em' }, children: score }), " / ", TOTAL_QUIZZES, "\u554F"] }), _jsxs("p", { style: resultTextStyle, children: ["\u6B63\u89E3\u7387: ", _jsx("span", { style: { color: '#FF69B4', fontSize: '1.2em' }, children: accuracy.toFixed(1) }), "%"] }), _jsxs("div", { style: resultActionButtonsStyle, children: [_jsxs("button", { onClick: () => { playedIdsThisSession.current = new Set(); setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }, style: buttonStyle, children: ["\u3082\u3046", _jsxs("ruby", { children: ["\u4E00\u5EA6", _jsx("rt", { children: "\u3044\u3061\u3069" })] }), " \u2192"] }), _jsxs("button", { onClick: onBackToDifficulty, style: buttonStyle, children: [_jsxs("ruby", { children: ["\u5225", _jsx("rt", { children: "\u3079\u3064" })] }), "\u306E\u30EC\u30D9\u30EB\u3078 \u2192"] }), _jsxs("button", { onClick: onBack, style: backButtonStyle, children: ["\u2190 ", _jsxs("ruby", { children: ["\u5225", _jsx("rt", { children: "\u3079\u3064" })] }), "\u306E\u30B8\u30E3\u30F3\u30EB\u3078"] }), _jsxs("button", { onClick: onBack, style: backButtonStyle, children: ["\u2190 TOP\u306B", _jsxs("ruby", { children: ["\u623B", _jsx("rt", { children: "\u3082\u3069" })] }), "\u308B"] })] })] }), showSettings && (_jsx(Settings, { onClose: () => setShowSettings(false), onLoginStatusChange: () => { }, currentView: "RESULT" }))] }));
+    }
+    return (_jsxs("div", { style: containerStyle, children: [_jsx("style", { children: `@keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } rt { font-size: 0.5em; font-weight: normal; }` }), effectKey && (_jsx("div", { style: effectOverlayStyle, children: effectKey.type === 'correct' ? (_jsx("svg", { width: "180", height: "180", style: { animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }, viewBox: "0 0 100 100", children: _jsx("circle", { cx: "50", cy: "50", r: "38", fill: "none", stroke: "#51CF66", strokeWidth: "12", strokeLinecap: "round" }) })) : (_jsxs("svg", { width: "180", height: "180", style: { animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }, viewBox: "0 0 100 100", children: [_jsx("line", { x1: "20", y1: "20", x2: "80", y2: "80", stroke: "#FF4757", strokeWidth: "12", strokeLinecap: "round" }), _jsx("line", { x1: "80", y1: "20", x2: "20", y2: "80", stroke: "#FF4757", strokeWidth: "12", strokeLinecap: "round" })] })) }, effectKey.id)), stickyHeader, _jsxs("div", { style: genreInfoStyle, children: [_jsx("span", { style: genreIconStyle, children: getGenreIcon(selectedGenre) }), _jsx("h2", { style: genreNameStyle, children: _jsxs("ruby", { children: [selectedGenre, _jsx("rt", { style: { fontSize: '0.6em', fontWeight: 'normal' }, children: GENRE_RUBY[selectedGenre] ?? '' })] }) }), _jsxs("span", { style: questionCountStyle, children: [currentQuestionIndex + 1, "/", TOTAL_QUIZZES, "\u554F"] }), _jsxs("span", { style: scoreStyle, children: ["\u30B9\u30B3\u30A2: ", score] })] }), _jsxs("div", { style: questionBoxStyle, children: [_jsx("p", { style: questionTextStyle, children: renderRuby(currentQuiz?.questionRuby ?? currentQuiz?.question ?? '') }), showHint === 1 && currentQuiz && (_jsxs("p", { style: hintTextStyle, children: ["\u30D2\u30F3\u30C81: ", renderRuby(currentQuiz.hint1Ruby ?? currentQuiz.hint1)] })), showHint === 2 && currentQuiz && (_jsxs("p", { style: hintTextStyle, children: ["\u30D2\u30F3\u30C82: ", currentQuiz.hint2] })), showHint === 3 && currentQuiz && (_jsxs("p", { style: hintTextStyle, children: ["\u30D2\u30F3\u30C83: ", currentQuiz.hint3] })), (feedback === 'correct' || feedback === 'surrender') && currentQuiz && (_jsxs("p", { style: answerInBoxStyle, children: ["\u7B54\u3048\u300C", currentQuiz.answer, "\u300D"] })), !(feedback === 'correct' || feedback === 'surrender') && showHint === null && (_jsx("button", { onClick: () => handleShowHint(1), style: { ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }, children: "\u30D2\u30F3\u30C81" }))] }), isHandsFreeMode ? (_jsxs("div", { style: handsFreeGuideStyle, children: [conciergeMessage && _jsxs("p", { style: conciergeMessageStyle, children: ["\uD83D\uDDE3\uFE0F ", conciergeMessage] }), _jsx("p", { style: voiceCommandStyle, children: "\u300C\u3007\u3007\u300D\u3068\u8A00\u3063\u3066\u307F\u3066\u306D" }), _jsx("p", { style: voiceCommandExampleStyle, children: "\uFF08\u4F8B\uFF1A\u300C\u554F\u984C\u300D\u300C\u30D2\u30F3\u30C81\u300D\u300C\u30D2\u30F3\u30C82\u300D\u300C\u30D2\u30F3\u30C83\u300D\u300C\u964D\u53C2\u300D\uFF09" })] })) : (_jsx("div", { style: optionsContainerStyle, children: options.map((option, index) => {
+                    const isCorrectOption = option === currentQuiz?.answer;
+                    const isRevealed = feedback === 'correct' || feedback === 'surrender';
+                    const colors = ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1'];
+                    const bg = isRevealed ? (isCorrectOption ? '#51CF66' : '#B0B0B0') : colors[index % 4];
+                    return (_jsx("button", { onClick: () => handleAnswer(option), disabled: isRevealed, style: {
+                            ...optionButtonStyle,
+                            backgroundColor: bg,
+                            cursor: isRevealed ? 'not-allowed' : 'pointer',
+                        }, children: option }, index));
+                }) })), _jsxs("div", { style: actionButtonsContainerStyle, children: [!isHandsFreeMode && (feedback === 'correct' || feedback === 'surrender') && (_jsx("button", { onClick: handleNextQuestion, style: { ...actionButtonStyle, background: 'linear-gradient(135deg, #51CF66, #20C997)', boxShadow: '0 5px 0 #1aaa7a', flex: '1 1 100%', maxWidth: '100%' }, children: "\u6B21\u306E\u554F\u984C\u3078 \u2192" })), isHandsFreeMode && (_jsxs(_Fragment, { children: [_jsx("button", { onClick: () => handleShowHint(1), style: { ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4' }, children: "\u30D2\u30F3\u30C81" }), _jsx("button", { onClick: () => handleShowHint(2), style: { ...actionButtonStyle, backgroundColor: showHint === 2 ? '#FFD700' : '#FF69B4' }, children: "\u30D2\u30F3\u30C82" }), _jsx("button", { onClick: () => handleShowHint(3), style: { ...actionButtonStyle, backgroundColor: showHint === 3 ? '#FFD700' : '#FF69B4' }, children: "\u30D2\u30F3\u30C83" })] })), _jsx("button", { onClick: handleSurrender, style: { ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }, children: _jsxs("ruby", { children: ["\u964D\u53C2", _jsx("rt", { children: "\u3053\u3046\u3055\u3093" })] }) })] }), showSettings && (_jsx(Settings, { onClose: () => setShowSettings(false), onLoginStatusChange: () => { }, currentView: "GAME" }))] }));
+};
+const effectOverlayStyle = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(0,0,0,0.08)' };
+const containerStyle = {
+    fontFamily: "'Yomogi', cursive",
+    background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: '84px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    paddingBottom: '100px',
+    boxSizing: 'border-box',
+    position: 'relative',
+};
+const stickyHeaderStyle = { position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 1000, boxShadow: '0 3px 12px rgba(0,0,0,0.18)' };
+const headerTitleStyle = { color: '#fff', fontSize: 'clamp(0.7em, 3vw, 1.3em)', margin: 0, textShadow: '1px 2px 0 rgba(0,0,0,0.18)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 1, minWidth: 0, cursor: 'pointer' };
+const headerIconsStyle = { display: 'flex', gap: '8px', flexShrink: 0 };
+const iconButtonStyle = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
+const genreInfoStyle = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: '50px', padding: '8px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreIconStyle = { fontSize: '1.8em', marginRight: '8px' };
+const genreNameStyle = { fontSize: '1.1em', color: '#FF5FA0', margin: 0, fontWeight: 'bold', flexGrow: 1 };
+const questionCountStyle = { fontSize: '0.9em', color: '#fff', backgroundColor: '#FF6EC7', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #D94FAA', whiteSpace: 'nowrap' };
+const scoreStyle = { fontSize: '0.9em', color: '#fff', backgroundColor: '#54A0FF', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #2E86DE', whiteSpace: 'nowrap' };
+const questionBoxStyle = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.15)', width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
+const questionTextStyle = { fontSize: '1.2em', color: '#333', textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
+const optionsContainerStyle = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '90%', maxWidth: '700px', margin: '10px 0' };
+const optionButtonStyle = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(0,0,0,0.15)' };
+const actionButtonsContainerStyle = { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', margin: '16px 0', width: '90%', maxWidth: '700px' };
+const actionButtonStyle = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
+const surrenderButtonStyle = { background: 'linear-gradient(135deg, #FF4757, #FF6B81)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C0392B', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
+const hintTextStyle = { fontSize: '1.05em', color: '#555', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF9C4', borderRadius: '12px', width: '100%', boxSizing: 'border-box', border: '2px solid #FFE066' };
+const answerInBoxStyle = { fontSize: '1.2em', fontWeight: 'bold', color: '#51CF66', textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(81,207,102,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box', border: '2px dashed #51CF66' };
+const handsFreeGuideStyle = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
+const conciergeMessageStyle = { fontSize: '1.4em', color: '#FF5FA0', fontWeight: 'bold', margin: 0 };
+const voiceCommandStyle = { fontSize: '1.6em', color: '#333', fontWeight: 'bold', margin: 0 };
+const voiceCommandExampleStyle = { fontSize: '0.95em', color: '#666', margin: 0 };
+const loadingStyle = { fontSize: '2em', color: '#FF5FA0', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)', fontFamily: "'Yomogi', cursive" };
+const titleStyle = { color: '#fff', fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 3px 0px #FF6BAE' };
+const resultBoxStyle = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', margin: '20px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.2)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
+const resultTextStyle = { fontSize: '1.5em', color: '#333', margin: '10px 0' };
+const resultActionButtonsStyle = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '24px' };
+const buttonStyle = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
+const backButtonStyle = { background: '#ccc', color: '#555', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #999' };
+export default GamePage;

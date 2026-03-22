@@ -12,6 +12,7 @@ import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthe
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
+import { TOTAL_QUIZZES } from '../../constants';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
