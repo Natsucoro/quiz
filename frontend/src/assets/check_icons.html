@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+        .icon-item { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        img { width: 100px; height: 100px; }
+    </style>
+</head>
+<body>
+    <div class="icon-grid" id="grid"></div>
+    <script>
+        const icons = [
+            'aki.svg', 'aki_tabemono.svg', 'ashika.svg', 'batta.svg', 'bokujyo.svg', 'chikyu.svg', 'chinanago.svg', 'chou.svg', 'chou2.svg', 'cloud.svg', 'gemini-svg.svg', 'hamu.svg', 'hana.svg', 'hato.svg', 'hebi.svg', 'icho.svg', 'icon1.svg', 'icon2.svg', 'icon3.svg', 'icon4.svg', 'icon6.svg', 'icon7.svg', 'icon8.svg', 'icon_batsu.svg', 'icon_cloud.svg', 'icon_denki.svg', 'icon_maru.svg', 'icon_setting.svg', 'icon_system.svg', 'inko.svg', 'inu.svg', 'iruka.svg', 'kabutomushi.svg', 'kagi.svg', 'kamakiri.svg', 'kani.svg', 'kessai.svg', 'koujyo.svg', 'kuwagata.svg', 'manbo.svg', 'momiji.svg', 'mono.svg', 'music.svg', 'music2.svg', 'music3.svg', 'neko.svg', 'niihon.svg', 'norimono.svg', 'norimono2.svg', 'okane.svg', 'okane2.svg', 'panda.svg', 'pengin.svg', 'pengin2.svg', 'rakko.svg', 'risu.svg', 'sakana.svg', 'sakana2.svg', 'seikatsu.svg', 'seikatsu2.svg', 'susuki.svg', 'syakai.svg', 'tanuki.svg', 'ten.svg', 'tenki.svg', 'tentoumushi.svg', 'texirano.svg', 'uma.svg', 'ushi.svg', 'xhikyu2.svg', 'zarigani.svg', 'zou.svg'
+        ];
+        const grid = document.getElementById('grid');
+        icons.forEach(icon => {
+            const div = document.createElement('div');
+            div.className = 'icon-item';
+            div.innerHTML = `<h3>${icon}</h3><img src="icons/${icon}">`;
+            grid.appendChild(div);
+        });
+    </script>
+</body>
+</html>

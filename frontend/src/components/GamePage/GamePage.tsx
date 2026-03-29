@@ -11,7 +11,20 @@ import {
 import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthesis';
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
-import { usePurchaseStore } from '../../store/purchaseStore';
+import { SpriteIcon } from '../common/SpriteIcon';
+
+// SVGアイコンのインポート
+import AshikaIcon from '../../assets/icons/ashika.svg';
+import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
+import SettingIcon from '../../assets/icons/icon_setting.svg';
+import SpeakerOnIcon from '../../assets/icons/music.svg';
+import SpeakerOffIcon from '../../assets/icons/music3.svg';
+import iconSystem from '../../assets/icons/icon_system.svg';
+import HanaIcon from '../../assets/icons/hana.svg';
+import NorimonoIcon from '../../assets/icons/norimono2.svg';
+import MonoIcon from '../../assets/icons/mono.svg';
+import NihonIcon from '../../assets/icons/niihon.svg';
+import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
@@ -295,15 +308,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   };
 
   const getGenreIcon = (genreName: string) => {
+    const iconStyle = { width: '1.2em', height: '1.2em', objectFit: 'contain' as const };
     switch (genreName) {
-      case '動物': return '🦁';
-      case '昆虫': return '🐛';
-      case '植物': return '🌿';
-      case '乗り物': return '🚗';
-      case '道具': return '🔨';
+      case '動物': return <img src={AshikaIcon} alt="動物" style={iconStyle} />;
+      case '昆虫': return <img src={KabutomushiIcon} alt="昆虫" style={iconStyle} />;
+      case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
+      case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
+      case '道具': return <img src={MonoIcon} alt="道具" style={iconStyle} />;
       case '歴史上の人物': return '🗿';
-      case '日本の地理': return '🗾';
-      case '世界の地理': return '🌍';
+      case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
+      case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       default: return '❓';
     }
   };
@@ -316,9 +330,15 @@ if (!currentQuiz && !isQuizEnded) {
     <header style={stickyHeaderStyle}>
       <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>わたしはダレでしょう？クイズ</h1>
       <div style={headerIconsStyle}>
-        <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
-        <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-        <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
+        <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
+          <SpriteIcon src={SettingIcon} position="bl" size={32} />
+        </button>
+        <button onClick={handleToggleMute} style={iconButtonStyle}>
+          <SpriteIcon src={isMuted ? SpeakerOffIcon : SpeakerOnIcon} position={isMuted ? undefined : "tr"} size={32} />
+        </button>
+        <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
+          <SpriteIcon src={iconSystem} position="tr" size={32} />
+        </button>
       </div>
     </header>
   );
@@ -341,7 +361,7 @@ if (!currentQuiz && !isQuizEnded) {
           </div>
         </div>
         {showSettings && (
-          <Settings onClose={() => setShowSettings(false)} onLoginStatusChange={() => {}} currentView="RESULT" />
+          <Settings onClose={() => setShowSettings(false)} currentView="RESULT" />
         )}
       </div>
     );
@@ -456,7 +476,7 @@ if (!currentQuiz && !isQuizEnded) {
 
 
       {showSettings && (
-        <Settings onClose={() => setShowSettings(false)} onLoginStatusChange={() => {}} currentView="GAME" />
+        <Settings onClose={() => setShowSettings(false)} currentView="GAME" />
       )}
 
     </div>

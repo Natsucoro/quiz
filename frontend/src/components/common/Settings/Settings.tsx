@@ -4,6 +4,8 @@
 import React, { useState } from 'react';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
 import { getAvailableGenres, getAvailableDifficultiesForGenre } from '../../../services/quizEngine';
+import iconSetting from '../../../assets/icons/icon_setting.svg';
+import { SpriteIcon } from '../SpriteIcon';
 
 interface SettingsProps {
   onClose: () => void;
@@ -23,7 +25,10 @@ const Settings: React.FC<SettingsProps> = ({ onClose, currentView }) => {
     <>
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle}>
-          <h2 style={modalTitleStyle}>⚙️ 設定</h2>
+          <h2 style={{ ...modalTitleStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+            <SpriteIcon src={iconSetting} position="bl" size={40} />
+            設定
+          </h2>
 
           <div style={settingSectionStyle}>
             <h3 style={settingSectionTitleStyle}>読み上げ速度</h3>

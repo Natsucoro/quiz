@@ -8,9 +8,15 @@ import { usePurchaseStore } from './store/purchaseStore';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { LoginPage } from './components/common/LoginPage';
+import PasswordGate from './components/common/PasswordGate';
 
 const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
+
+  // パスワードロック状態の管理 (sessionStorageでこのセッション中のみ保存)
+  const [isUnlocked, setIsUnlocked] = useState(() =>
+    sessionStorage.getItem('app_unlocked') === 'true' || window.location.hostname === 'localhost'
+  );
   
   const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
   const [selectedGenre, setSelectedGenre] = useState<string>('');
@@ -155,8 +161,14 @@ const App: React.FC = () => {
     setCurrentPage('top');
   };
 
-  return (
+  if (!isUnlocked) {
+    return <PasswordGate onUnlock={() => {
+      setIsUnlocked(true);
+      sessionStorage.setItem('app_unlocked', 'true');
+    }} />;
+  }
 
+  return (
     <div style={{ fontFamily: "'Yomogi', cursive", minHeight: '100vh', position: 'relative' }}>
       
       {currentPage === 'top' ? (

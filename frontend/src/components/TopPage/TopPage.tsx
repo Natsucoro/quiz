@@ -13,6 +13,21 @@ import { speechRecognitionService, detectVoiceCommand } from '../../services/spe
 import FloatingShapes from '../common/FloatingShapes';
 import PaywallModal from '../common/PaywallModal';
 import MyPageModal from '../common/MyPageModal';
+import { SpriteIcon } from '../common/SpriteIcon';
+
+// SVGアイコンのインポート
+import AshikaIcon from '../../assets/icons/ashika.svg';
+import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
+import SettingIcon from '../../assets/icons/icon_setting.svg';
+import icon7 from '../../assets/icons/icon7.svg'; // 👤の代わり
+import SpeakerOnIcon from '../../assets/icons/music.svg';
+import SpeakerOffIcon from '../../assets/icons/music3.svg';
+import iconSystem from '../../assets/icons/icon_system.svg';
+import HanaIcon from '../../assets/icons/hana.svg';
+import NorimonoIcon from '../../assets/icons/norimono2.svg';
+import MonoIcon from '../../assets/icons/mono.svg';
+import NihonIcon from '../../assets/icons/niihon.svg';
+import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number, count: number) => void;
@@ -95,15 +110,16 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const getDifficultyLabel = (difficulty: number) => `Lv.${difficulty}`;
 
   const getGenreIcon = (genreName: string) => {
+    const iconStyle = { width: '1.2em', height: '1.2em', objectFit: 'contain' as const };
     switch (genreName) {
-      case '動物': return '🦁';
-      case '昆虫': return '🐛';
-      case '植物': return '🌿';
-      case '乗り物': return '🚗';
-      case '道具': return '🔨';
+      case '動物': return <img src={AshikaIcon} alt="動物" style={iconStyle} />;
+      case '昆虫': return <img src={KabutomushiIcon} alt="昆虫" style={iconStyle} />;
+      case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
+      case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
+      case '道具': return <img src={MonoIcon} alt="道具" style={iconStyle} />;
       case '歴史上の人物': return '🗿';
-      case '日本の地理': return '🗾';
-      case '世界の地理': return '🌍';
+      case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
+      case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       default: return '❓';
     }
   };
@@ -178,11 +194,19 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
           {isPremiumUser ? (
              <button onClick={() => setShowMyPage(true)} style={{ ...iconButtonStyle, background: '#1DD1A1', color: '#fff' }}>✓</button>
           ) : (
-             <button onClick={() => onLoginRequest?.()} style={iconButtonStyle}>👤</button>
+             <button onClick={() => onLoginRequest?.()} style={iconButtonStyle}>
+               <SpriteIcon src={icon7} position="tl" size={32} />
+             </button>
           )}
-          <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
-          <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-          <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
+          <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
+            <SpriteIcon src={SettingIcon} position="bl" size={32} />
+          </button>
+          <button onClick={handleToggleMute} style={iconButtonStyle}>
+            <SpriteIcon src={isMuted ? SpeakerOffIcon : SpeakerOnIcon} position={isMuted ? undefined : "tr"} size={32} />
+          </button>
+          <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
+            <SpriteIcon src={iconSystem} position="tr" size={32} />
+          </button>
         </div>
       </header>
 
@@ -422,19 +446,19 @@ const playModeGridStyle: React.CSSProperties = { display: 'grid', gridTemplateCo
 const playModeButtonStyle: React.CSSProperties = { padding: '20px 10px', borderRadius: '20px', border: 'none', fontSize: '1.1em', fontWeight: 'bold', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' };
 const playModeIconStyle: React.CSSProperties = { fontSize: '2.4em' };
 const sectionTitleStyle: React.CSSProperties = { color: '#FF5FA0', fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
-const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '620px', boxSizing: 'border-box' };
-const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' };
-const genreButtonStyle: React.CSSProperties = { padding: '14px 16px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center' } as React.CSSProperties;
+const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' };
+const genreButtonStyle: React.CSSProperties = { padding: '14px 20px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2em', flexShrink: 0 };
-const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '620px', boxSizing: 'border-box' };
-const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '14px', rowGap: '30px', marginBottom: '28px' };
+const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
+const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '12px', rowGap: '30px', marginBottom: '28px' };
 const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90px', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' } as React.CSSProperties;
 const lockIconStyle: React.CSSProperties = { fontSize: '1em', marginLeft: '3px' };
 const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
 const questionCountGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '24px' };
-const bottomButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-around', gap: '15px', marginTop: '20px', width: '100%', maxWidth: '620px' };
+const bottomButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-around', gap: '15px', marginTop: '20px', width: '100%', maxWidth: '700px' };
 const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
 
 export default TopPage;
