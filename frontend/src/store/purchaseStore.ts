@@ -15,13 +15,15 @@ const ALL_GENRES = [
 ];
 
 interface PurchaseState {
-  purchasedItems: string[]; // 例: "animals_3", "insects_4"
+  purchasedItems: string[]; // 例: ['動物_3', '昆虫_2'] または ['animal_3', 'insect_2']
   isLoggedIn: boolean;
   userEmail: string | null;
   login: (email: string) => void;
   logout: () => void;
   addPurchase: (itemId: string) => void;
+  syncWithClaims: (claimItems: string[]) => void;
   isPurchased: (itemId: string) => boolean;
+  clearPurchases: () => void;
 }
 
 export const usePurchaseStore = create<PurchaseState>()(
@@ -56,15 +58,19 @@ export const usePurchaseStore = create<PurchaseState>()(
           isLoggedIn: false,
           userEmail: null,
         }),
-      addPurchase: (itemId: string) => {
-        // 既に購入済みの場合は追加しない
-        if (!get().purchasedItems.includes(itemId)) {
-          set((state) => ({
-            purchasedItems: [...state.purchasedItems, itemId],
-          }));
+      addPurchase: (itemId) => set((state) => {
+        if (!state.purchasedItems.includes(itemId)) {
+          return { purchasedItems: [...state.purchasedItems, itemId] };
         }
-      },
-      isPurchased: (itemId: string) => get().purchasedItems.includes(itemId),
+        return state;
+      }),
+      syncWithClaims: (claimItems) => set((state) => {
+        // 現在のリストとClaimsのリストをマージして重複排除
+        const merged = new Set([...state.purchasedItems, ...claimItems]);
+        return { purchasedItems: Array.from(merged) };
+      }),
+      isPurchased: (itemId) => get().purchasedItems.includes(itemId),
+      clearPurchases: () => set({ purchasedItems: [] }),
     }),
     {
       name: 'quiz-app-purchase-storage', // localStorageのキー

@@ -1,48 +1,22 @@
 
 // src/components/common/Settings/Settings.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
-import Login, { getLoginStatus, saveLoginStatus } from '../Login/Login';
 import { getAvailableGenres, getAvailableDifficultiesForGenre } from '../../../services/quizEngine';
 
 interface SettingsProps {
   onClose: () => void;
-  onLoginStatusChange: (isLoggedIn: boolean, isPremium: boolean) => void;
   currentView: 'TOP' | 'GAME' | 'RESULT';
 }
 
-const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, currentView }) => {
+const Settings: React.FC<SettingsProps> = ({ onClose, currentView }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginStatus, setLoginStatus] = useState(getLoginStatus());
-
-  useEffect(() => {
-    setLoginStatus(getLoginStatus());
-  }, [showLoginModal]); // Loginモーダルが閉じられたときに状態を更新
 
   const handleSpeechRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newRate = parseFloat(event.target.value);
     setLocalSpeechRate(newRate);
     setSpeechRate(newRate);
-  };
-
-  const handleLoginLogout = () => {
-    if (loginStatus.isLoggedIn) {
-      // ログアウト処理
-      saveLoginStatus(false, false);
-      setLoginStatus({ isLoggedIn: false, isPremium: false });
-      onLoginStatusChange(false, false);
-    } else {
-      // ログインモーダル表示
-      setShowLoginModal(true);
-    }
-  };
-
-  const handleLoginSuccess = (isPremium: boolean) => {
-    setLoginStatus({ isLoggedIn: true, isPremium });
-    onLoginStatusChange(true, isPremium);
-    setShowLoginModal(false);
   };
 
   return (
@@ -66,19 +40,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
           </div>
 
           <div style={settingSectionStyle}>
-            <h3 style={settingSectionTitleStyle}>アカウント</h3>
-            <p style={loginStatusStyle}>
-              {loginStatus.isLoggedIn ? `ログイン中 (${loginStatus.isPremium ? 'プレミアム' : 'ゲスト'})` : 'ログアウト中'}
-            </p>
-            <button onClick={handleLoginLogout} style={buttonStyle}>
-              {loginStatus.isLoggedIn ? 'ログアウト' : 'ログイン'}
-            </button>
-            {loginStatus.isLoggedIn && (
-              <button style={{ ...buttonStyle, backgroundColor: '#87CEEB' }}>購入履歴の確認</button>
-            )}
-          </div>
-
-          <div style={settingSectionStyle}>
             <h3 style={settingSectionTitleStyle}>その他</h3>
             <p><a href="#" style={linkStyle}>お問い合わせ</a></p>
             <p><a href="#" style={linkStyle}>利用規約 / プライバシーポリシー</a></p>
@@ -90,7 +51,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
           </button>
         </div>
       </div>
-      {showLoginModal && <Login onClose={() => setShowLoginModal(false)} onLoginSuccess={handleLoginSuccess} />}
     </>
   );
 };

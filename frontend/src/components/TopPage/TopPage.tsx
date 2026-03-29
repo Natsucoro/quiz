@@ -11,10 +11,13 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
 import FloatingShapes from '../common/FloatingShapes';
+import PaywallModal from '../common/PaywallModal';
+import MyPageModal from '../common/MyPageModal';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number, count: number) => void;
   initialView?: 'genre' | 'difficulty';
+  onLoginRequest?: () => void;
 }
 
 const GENRE_RUBY: Record<string, string> = {
@@ -36,11 +39,14 @@ const GENRE_RUBY: Record<string, string> = {
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
 const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
 
-const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => {
+const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLoginRequest }) => {
   const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
   const { isLoggedIn, isPurchased, addPurchase } = usePurchaseStore();
   const isPremiumUser = isLoggedIn;
   const [showSettings, setShowSettings] = useState(false);
+  const [showMyPage, setShowMyPage] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallTarget, setPaywallTarget] = useState<{ genre: string; difficulty: number } | null>(null);
   const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
   const isOffline = useOffline();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -144,20 +150,14 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       if (isOffline) {
         showToast('オフラインのため購入できません。接続後にお試しください。');
       } else {
-        // テスト課金モック（個別購入）
-        const itemId = `${localSelectedGenre}_${difficulty}`;
-        const confirmPurchase = window.confirm(
-          `【テスト環境限定】\n120円で「${localSelectedGenre} Lv.${difficulty}」を解放しますか？\n(「OK」を押すと擬似的に決済され、このレベルが遊べるようになります)`
-        );
-        if (confirmPurchase) {
-          addPurchase(itemId); // 個別に購入フラグを立てる
-          showToast(`💰「${localSelectedGenre} Lv.${difficulty}」を購入して解放しました！`);
-        }
+        // PaywallModalを開く
+        setPaywallTarget({ genre: localSelectedGenre, difficulty });
+        setShowPaywall(true);
       }
     } else {
       setLocalSelectedDifficulty(difficulty);
     }
-  }, [isOffline, showToast, localSelectedGenre, addPurchase]);
+  }, [isOffline, showToast, localSelectedGenre]);
 
   const GENRE_COLORS: Record<string, string> = {
     '動物': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
@@ -175,6 +175,11 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       <header style={stickyHeaderStyle}>
         <h1 style={titleStyle} onClick={() => setShowDifficultySelection(false)}>わたしはダレでしょう？クイズ</h1>
         <div style={headerIconsStyle}>
+          {isPremiumUser ? (
+             <button onClick={() => setShowMyPage(true)} style={{ ...iconButtonStyle, background: '#1DD1A1', color: '#fff' }}>✓</button>
+          ) : (
+             <button onClick={() => onLoginRequest?.()} style={iconButtonStyle}>👤</button>
+          )}
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
           <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
           <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
@@ -329,8 +334,28 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       {showSettings && (
         <Settings
           onClose={() => setShowSettings(false)}
-          onLoginStatusChange={() => { }}
           currentView="TOP"
+        />
+      )}
+      {showMyPage && (
+        <MyPageModal onClose={() => setShowMyPage(false)} />
+      )}
+      {showPaywall && paywallTarget && (
+        <PaywallModal
+          genre={paywallTarget.genre}
+          difficulty={paywallTarget.difficulty}
+          onClose={() => setShowPaywall(false)}
+          onLoginRequest={() => {
+            setShowPaywall(false);
+            onLoginRequest?.(); // TopPagePropsで渡されたログイン関数を呼ぶ
+          }}
+          onTestPurchase={() => {
+            // モック決済
+            const itemId = `${paywallTarget.genre}_${paywallTarget.difficulty}`;
+            addPurchase(itemId);
+            setShowPaywall(false);
+            showToast(`💰「${paywallTarget.genre} Lv.${paywallTarget.difficulty}」を購入して解放しました！`);
+          }}
         />
       )}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />

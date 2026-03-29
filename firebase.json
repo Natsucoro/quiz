@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20"
+  },
   "hosting": {
     "public": "frontend/dist",
     "ignore": [
@@ -7,6 +11,10 @@
       "**/node_modules/**"
     ],
     "rewrites": [
+      {
+        "source": "/api/verifyPayment",
+        "function": "verifyPayment"
+      },
       {
         "source": "**",
         "destination": "/index.html"
