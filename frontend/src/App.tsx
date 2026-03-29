@@ -4,9 +4,11 @@ import GamePage from './components/GamePage/GamePage';
 import FloatingMicBar from './components/common/FloatingMicBar/FloatingMicBar';
 import { useSettingsStore } from './store/settingsStore';
 import { speechRecognitionService } from './services/speechRecognition';
+// import { usePurchaseStore } from './store/purchaseStore'; // 後ほど活用
 
 const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
+  
   const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
   const [selectedGenre, setSelectedGenre] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(1);
@@ -60,6 +62,7 @@ const App: React.FC = () => {
   };
 
   return (
+
     <div style={{ fontFamily: "'Yomogi', cursive", minHeight: '100vh' }}>
       {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} />

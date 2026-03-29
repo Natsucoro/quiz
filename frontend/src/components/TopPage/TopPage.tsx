@@ -38,7 +38,7 @@ const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
 
 const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => {
   const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
-  const { isLoggedIn, isPurchased } = usePurchaseStore();
+  const { isLoggedIn, isPurchased, addPurchase } = usePurchaseStore();
   const isPremiumUser = isLoggedIn;
   const [showSettings, setShowSettings] = useState(false);
   const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
@@ -144,12 +144,20 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
       if (isOffline) {
         showToast('オフラインのため購入できません。接続後にお試しください。');
       } else {
-        showToast('購入画面へ遷移します。（ダミー）');
+        // テスト課金モック（個別購入）
+        const itemId = `${localSelectedGenre}_${difficulty}`;
+        const confirmPurchase = window.confirm(
+          `【テスト環境限定】\n120円で「${localSelectedGenre} Lv.${difficulty}」を解放しますか？\n(「OK」を押すと擬似的に決済され、このレベルが遊べるようになります)`
+        );
+        if (confirmPurchase) {
+          addPurchase(itemId); // 個別に購入フラグを立てる
+          showToast(`💰「${localSelectedGenre} Lv.${difficulty}」を購入して解放しました！`);
+        }
       }
     } else {
       setLocalSelectedDifficulty(difficulty);
     }
-  }, [isOffline, showToast]);
+  }, [isOffline, showToast, localSelectedGenre, addPurchase]);
 
   const GENRE_COLORS: Record<string, string> = {
     '動物': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
@@ -243,7 +251,10 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
             </h2>
             <div style={difficultyGridStyle}>
               {difficultiesForSelectedGenre.map((difficulty) => {
-                const isLocked = !isPremiumUser && [3, 4, 5, 8, 9, 10].includes(difficulty);
+                const isFreeRank = [1, 2, 6, 7].includes(difficulty);
+                const itemId = `${localSelectedGenre}_${difficulty}`;
+                // 無料枠でなく、かつまだ購入していない場合のみロックする
+                const isLocked = !isFreeRank && !isPurchased(itemId);
                 const totalCount = getAllAvailableQuizzesCount(localSelectedGenre, difficulty);
                 return (
                   <button
@@ -306,7 +317,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre' }) => 
             <button
               onClick={handleStartQuiz}
               style={buttonStyle}
-              disabled={!isPremiumUser && [3, 4, 5, 8, 9, 10].includes(localSelectedDifficulty)}
+              // 無料レベル(1,2,6,7) または 購入済みの場合はスタート可能
+              disabled={![1, 2, 6, 7].includes(localSelectedDifficulty) && !isPurchased(`${localSelectedGenre}_${localSelectedDifficulty}`)}
             >
               クイズスタート！ →
             </button>
