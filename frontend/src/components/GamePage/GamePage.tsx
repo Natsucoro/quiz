@@ -337,7 +337,7 @@ if (!currentQuiz && !isQuizEnded) {
             <button onClick={() => { playedIdsThisSession.current = new Set(); setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={buttonStyle}>もう<ruby>一度<rt>いちど</rt></ruby> →</button>
             <button onClick={onBackToDifficulty} style={buttonStyle}><ruby>別<rt>べつ</rt></ruby>のレベルへ →</button>
             <button onClick={onBack} style={backButtonStyle}>← <ruby>別<rt>べつ</rt></ruby>のジャンルへ</button>
-            <button onClick={onBack} style={backButtonStyle}>← TOPに<ruby>戻<rt>もど</rt></ruby>る</button>
+            <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
           </div>
         </div>
         {showSettings && (
@@ -450,7 +450,7 @@ if (!currentQuiz && !isQuizEnded) {
       
       {!(feedback === 'correct' || feedback === 'surrender') && (
         <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
-          <button onClick={handleGoHomeConfirm} style={backButtonStyle}>← TOPにもどる</button>
+          <button onClick={() => handleGoHomeConfirm()} style={backButtonStyle}>← TOPにもどる</button>
         </div>
       )}
 
