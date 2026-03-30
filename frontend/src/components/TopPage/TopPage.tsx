@@ -18,11 +18,11 @@ import { SpriteIcon } from '../common/SpriteIcon';
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
 import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
-import SettingIcon from '../../assets/icons/icon_setting.svg';
-import icon7 from '../../assets/icons/icon7.svg'; // 👤の代わり
-import SpeakerOnIcon from '../../assets/icons/music.svg';
-import SpeakerOffIcon from '../../assets/icons/music3.svg';
-import iconSystem from '../../assets/icons/icon_system.svg';
+import toolIcon from '../../assets/icons/icon_setting.png';
+import loginIcon from '../../assets/icons/login.svg';
+import logoutIcon from '../../assets/icons/logout.svg';
+import audioIcon from '../../assets/icons/music2.png';
+import micIcon from '../../assets/icons/music.png';
 import HanaIcon from '../../assets/icons/hana.svg';
 import NorimonoIcon from '../../assets/icons/norimono2.svg';
 import MonoIcon from '../../assets/icons/mono.svg';
@@ -56,7 +56,7 @@ const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
 
 const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLoginRequest }) => {
   const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
-  const { isLoggedIn, isPurchased, addPurchase } = usePurchaseStore();
+  const { isLoggedIn, isPurchased, addPurchase, logout } = usePurchaseStore();
   const isPremiumUser = isLoggedIn;
   const [showSettings, setShowSettings] = useState(false);
   const [showMyPage, setShowMyPage] = useState(false);
@@ -192,20 +192,30 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
         <h1 style={titleStyle} onClick={() => setShowDifficultySelection(false)}>わたしはダレでしょう？クイズ</h1>
         <div style={headerIconsStyle}>
           {isPremiumUser ? (
-             <button onClick={() => setShowMyPage(true)} style={{ ...iconButtonStyle, background: '#1DD1A1', color: '#fff' }}>✓</button>
+             <>
+               <button onClick={() => setShowMyPage(true)} style={{ ...iconButtonStyle, background: '#1DD1A1', color: '#fff' }}>✓</button>
+               <button onClick={() => {
+                 if (window.confirm('ログアウトしますか？')) {
+                   logout();
+                   showToast('ログアウトしました');
+                 }
+               }} style={iconButtonStyle}>
+                 <img src={logoutIcon} alt="ログアウト" style={{ width: 32, height: 32, transform: 'scale(1.7)' }} />
+               </button>
+             </>
           ) : (
              <button onClick={() => onLoginRequest?.()} style={iconButtonStyle}>
-               <SpriteIcon src={icon7} position="tl" size={32} />
+               <img src={loginIcon} alt="ログイン" style={{ width: 32, height: 32, transform: 'scale(1.7)' }} />
              </button>
           )}
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-            <SpriteIcon src={SettingIcon} position="bl" size={32} />
+            <SpriteIcon src={toolIcon} position="bl" size={32} srcWidth={685} srcHeight={575} />
           </button>
-          <button onClick={handleToggleMute} style={iconButtonStyle}>
-            <SpriteIcon src={isMuted ? SpeakerOffIcon : SpeakerOnIcon} position={isMuted ? undefined : "tr"} size={32} />
+          <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
+            <SpriteIcon src={audioIcon} position="tl" size={32} srcWidth={645} srcHeight={546} />
           </button>
           <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
-            <SpriteIcon src={iconSystem} position="tr" size={32} />
+            <SpriteIcon src={micIcon} position="tr" size={32} srcWidth={682} srcHeight={603} />
           </button>
         </div>
       </header>

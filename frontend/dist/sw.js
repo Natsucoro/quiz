@@ -1,1 +1,75 @@
-if(!self.define){let s,e={};const i=(i,n)=>(i=new URL(i+".js",n).href,e[i]||new Promise(e=>{if("document"in self){const s=document.createElement("script");s.src=i,s.onload=e,document.head.appendChild(s)}else s=i,importScripts(i),e()}).then(()=>{let s=e[i];if(!s)throw new Error(`Module ${i} didn’t register its module`);return s}));self.define=(n,l)=>{const r=s||("document"in self?document.currentScript.src:"")||location.href;if(e[r])return;let o={};const u=s=>i(s,r),t={module:{uri:r},exports:o,require:u};e[r]=Promise.all(n.map(s=>t[s]||u(s))).then(s=>(l(...s),o))}}define(["./workbox-8c29f6e4"],function(s){"use strict";self.skipWaiting(),s.clientsClaim(),s.precacheAndRoute([{url:"manifest.json",revision:"89a5716eb9848bf915f0c51bd12c573f"},{url:"index.html",revision:"58985cb0008b10d5436bd3fe3c2c7a62"},{url:"assets/xhikyu2-DL-fH1ct.svg",revision:null},{url:"assets/workbox-window.prod.es5-vqzQaGvo.js",revision:null},{url:"assets/seikatsu-DI1W43rl.svg",revision:null},{url:"assets/norimono2-DFT_B3ur.svg",revision:null},{url:"assets/niihon-DWhGTSh0.svg",revision:null},{url:"assets/music3-D6PfVgzS.svg",revision:null},{url:"assets/music-BRsdXRiq.svg",revision:null},{url:"assets/mono-DlM2iuM_.svg",revision:null},{url:"assets/kabutomushi-DsUUXDFE.svg",revision:null},{url:"assets/index-B6WxJIQv.js",revision:null},{url:"assets/icon_system-B9pLysM1.svg",revision:null},{url:"assets/icon_setting-De46p0-l.svg",revision:null},{url:"assets/hana-F6Q-HTGg.svg",revision:null},{url:"assets/ashika-BuWJXU08.svg",revision:null},{url:"manifest.webmanifest",revision:"cfb414cac291b47190504103e4b43ca4"}],{}),s.cleanupOutdatedCaches(),s.registerRoute(new s.NavigationRoute(s.createHandlerBoundToURL("index.html")))});
+
+const CACHE_NAME = 'quiz-app-v1';
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/static/js/bundle.js', // Reactアプリのビルド後のJSファイルパスを想定
+  '/static/css/main.css', // Reactアプリのビルド後のCSSファイルパスを想定
+  '/icons/icon-72x72.png',
+  '/icons/icon-96x96.png',
+  '/icons/icon-128x128.png',
+  '/icons/icon-144x144.png',
+  '/icons/icon-152x152.png',
+  '/icons/icon-192x192.png',
+  '/icons/icon-384x384.png',
+  '/icons/icon-512x512.png',
+  // 必要に応じて、音声ファイルやJSONデータなどもキャッシュ対象に追加
+  // '/data/quizzes/animals.json', // サーバーからフェッチされる場合、動的キャッシュで対応
+  '/se/correct.mp3', // 例: 効果音ファイル
+  '/se/incorrect.mp3' // 例: 効果音ファイル
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        // キャッシュにあればそれを使う
+        if (response) {
+          return response;
+        }
+        // キャッシュになければネットワークから取得
+        return fetch(event.request).then(
+          (response) => {
+            // レスポンスが不正な場合（例: ステータスが200以外）はキャッシュしない
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // 新しいリソースをキャッシュに追加
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            return response;
+          }
+        );
+      })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            // 現在のキャッシュ以外の古いキャッシュを削除
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});

@@ -16,10 +16,9 @@ import { SpriteIcon } from '../common/SpriteIcon';
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
 import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
-import SettingIcon from '../../assets/icons/icon_setting.svg';
-import SpeakerOnIcon from '../../assets/icons/music.svg';
-import SpeakerOffIcon from '../../assets/icons/music3.svg';
-import iconSystem from '../../assets/icons/icon_system.svg';
+import toolIcon from '../../assets/icons/icon_setting.png';
+import audioIcon from '../../assets/icons/music2.png';
+import micIcon from '../../assets/icons/music.png';
 import HanaIcon from '../../assets/icons/hana.svg';
 import NorimonoIcon from '../../assets/icons/norimono2.svg';
 import MonoIcon from '../../assets/icons/mono.svg';
@@ -331,13 +330,13 @@ if (!currentQuiz && !isQuizEnded) {
       <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>わたしはダレでしょう？クイズ</h1>
       <div style={headerIconsStyle}>
         <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-          <SpriteIcon src={SettingIcon} position="bl" size={32} />
+          <SpriteIcon src={toolIcon} position="bl" size={32} srcWidth={685} srcHeight={575} />
         </button>
-        <button onClick={handleToggleMute} style={iconButtonStyle}>
-          <SpriteIcon src={isMuted ? SpeakerOffIcon : SpeakerOnIcon} position={isMuted ? undefined : "tr"} size={32} />
+        <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
+          <SpriteIcon src={audioIcon} position="tl" size={32} srcWidth={645} srcHeight={546} />
         </button>
         <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
-          <SpriteIcon src={iconSystem} position="tr" size={32} />
+          <SpriteIcon src={micIcon} position="tr" size={32} srcWidth={682} srcHeight={603} />
         </button>
       </div>
     </header>
