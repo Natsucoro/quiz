@@ -28,6 +28,10 @@ import NorimonoIcon from '../../assets/icons/norimono2.svg';
 import MonoIcon from '../../assets/icons/mono.svg';
 import NihonIcon from '../../assets/icons/niihon.svg';
 import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
+import SakanaIcon from '../../assets/icons/sakana.svg';
+import HatoIcon from '../../assets/icons/hato.svg';
+import HebiIcon from '../../assets/icons/hebi.svg';
+import IrukaIcon from '../../assets/icons/iruka.svg';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number, count: number) => void;
@@ -116,6 +120,10 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
       case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
       case '道具': return <img src={MonoIcon} alt="道具" style={iconStyle} />;
+      case '魚類': return <img src={SakanaIcon} alt="魚類" style={iconStyle} />;
+      case '鳥類': return <img src={HatoIcon} alt="鳥類" style={iconStyle} />;
+      case '爬虫類': return <img src={HebiIcon} alt="爬虫類" style={iconStyle} />;
+      case '海洋生物': return <img src={IrukaIcon} alt="海洋生物" style={iconStyle} />;
       case '歴史上の人物': return '🗿';
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
@@ -176,6 +184,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
 
   const GENRE_COLORS: Record<string, string> = {
     '哺乳類': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
+    '魚類': '#15AABF', '鳥類': '#FAB005', '爬虫類': '#82C91E', '海洋生物': '#4C6EF5',
     '乗り物': '#339AF0', '道具': '#F59F00', '歴史上の人物': '#AE3EC9',
     '日本の地理': '#F76707', '世界の地理': '#1098AD',
   };

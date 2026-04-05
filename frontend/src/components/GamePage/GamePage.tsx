@@ -24,6 +24,10 @@ import NorimonoIcon from '../../assets/icons/norimono2.svg';
 import MonoIcon from '../../assets/icons/mono.svg';
 import NihonIcon from '../../assets/icons/niihon.svg';
 import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
+import SakanaIcon from '../../assets/icons/sakana.svg';
+import HatoIcon from '../../assets/icons/hato.svg';
+import HebiIcon from '../../assets/icons/hebi.svg';
+import IrukaIcon from '../../assets/icons/iruka.svg';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
@@ -73,8 +77,8 @@ interface GamePageProps {
 }
 
 const GENRE_RUBY: Record<string, string> = {
-  '動物': 'どうぶつ', '昆虫': 'こんちゅう', '植物': 'しょくぶつ',
-  '魚類': 'さかな', '鳥類': 'とりるい', '爰虫類': 'はちゅうるい',
+  '昆虫': 'こんちゅう', '植物': 'しょくぶつ',
+  '魚類': 'さかな', '鳥類': 'とりるい', '爬虫類': 'はちゅうるい',
   '哺乳類': 'ほにゅうるい', '海洋生物': 'かいようせいぶつ',
   '乗り物': 'のりもの', '道具': 'どうぐ', '歴史上の人物': 'れきしのじんぶつ',
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
@@ -309,11 +313,15 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const getGenreIcon = (genreName: string) => {
     const iconStyle = { width: '1.2em', height: '1.2em', objectFit: 'contain' as const };
     switch (genreName) {
-      case '動物': return <img src={AshikaIcon} alt="動物" style={iconStyle} />;
+      case '哺乳類': return <img src={AshikaIcon} alt="哺乳類" style={iconStyle} />;
       case '昆虫': return <img src={KabutomushiIcon} alt="昆虫" style={iconStyle} />;
       case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
       case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
       case '道具': return <img src={MonoIcon} alt="道具" style={iconStyle} />;
+      case '魚類': return <img src={SakanaIcon} alt="魚類" style={iconStyle} />;
+      case '鳥類': return <img src={HatoIcon} alt="鳥類" style={iconStyle} />;
+      case '爬虫類': return <img src={HebiIcon} alt="爬虫類" style={iconStyle} />;
+      case '海洋生物': return <img src={IrukaIcon} alt="海洋生物" style={iconStyle} />;
       case '歴史上の人物': return '🗿';
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
