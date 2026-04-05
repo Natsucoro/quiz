@@ -66,14 +66,13 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           </button>
         ) : (
           <button onClick={handlePurchase} style={purchaseButtonStyle}>
-             💴 120円 で購入する
+             💴 120円 で解放する
           </button>
         )}
-        
-        <div style={{ marginTop: '15px', fontSize: '0.8em', color: '#666', textAlign: 'center' }}>
-          ※これはテスト用の案内画面です。<br />
-          ※実際のStripe画面への遷移準備中です。
-        </div>
+
+        <p style={{ marginTop: '14px', fontSize: '0.75em', color: '#aaa', textAlign: 'center' }}>
+          ※買い切り。一度購入するとずっと遊べます。
+        </p>
       </div>
     </div>
   );

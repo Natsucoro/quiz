@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Settings from '../common/Settings/Settings';
-import { unlockAudioContext, speak, stopSpeaking } from '../../services/speechSynthesis';
+import { unlockAudioContext, stopSpeaking } from '../../services/speechSynthesis';
 import { useOffline } from '../../hooks/useOffline';
 import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount } from '../../services/quizEngine';
 import Toast from '../common/Toast/Toast';
@@ -305,8 +305,14 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                     {getDifficultyLabel(difficulty)}
                     <p style={playedCountStyle}>
                       <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>{totalCount}<ruby className="btn-ruby">問<rt>もん</rt></ruby>
-                      {isLocked && <span style={{ fontSize: '1.4em', marginLeft: '3px' }}>🔒</span>}
+                      {isLocked && <span style={{ fontSize: '1.2em', marginLeft: '3px' }}>🔒</span>}
                     </p>
+                    {isFreeRank && !isLocked && (
+                      <span style={freeBadgeStyle}>無料</span>
+                    )}
+                    {isPurchased(itemId) && !isFreeRank && (
+                      <span style={purchasedBadgeStyle}>解放済</span>
+                    )}
                     {isLocked && (
                       <span className="lock-balloon" style={lockBalloonStyle}>
                         120円で解放！
@@ -436,6 +442,8 @@ const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borde
 const lockIconStyle: React.CSSProperties = { fontSize: '1em', marginLeft: '3px' };
 const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
+const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: '#51CF66', color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
+const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: '#54A0FF', color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
 const bottomButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-around', gap: '15px', marginTop: '20px', width: '100%', maxWidth: '700px' };
 const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
