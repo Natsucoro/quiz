@@ -12,15 +12,12 @@ import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
 import FloatingShapes from '../common/FloatingShapes';
 import PaywallModal from '../common/PaywallModal';
-import MyPageModal from '../common/MyPageModal';
 import { SpriteIcon } from '../common/SpriteIcon';
 
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
 import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
 import toolIcon from '../../assets/icons/icon_setting.png';
-import loginIcon from '../../assets/icons/login.svg';
-import logoutIcon from '../../assets/icons/logout.svg';
 import audioIcon from '../../assets/icons/music2.png';
 import micIcon from '../../assets/icons/music.png';
 import HanaIcon from '../../assets/icons/hana.svg';
@@ -59,10 +56,9 @@ const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
 
 const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLoginRequest }) => {
   const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
-  const { isLoggedIn, isPurchased, addPurchase, logout } = usePurchaseStore();
+  const { isLoggedIn, isPurchased, addPurchase } = usePurchaseStore();
   const isPremiumUser = isLoggedIn;
   const [showSettings, setShowSettings] = useState(false);
-  const [showMyPage, setShowMyPage] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallTarget, setPaywallTarget] = useState<{ genre: string; difficulty: number } | null>(null);
   const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
@@ -199,23 +195,14 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       <header style={stickyHeaderStyle}>
         <h1 style={titleStyle} onClick={() => setShowDifficultySelection(false)}>わたしはダレでしょう？クイズ</h1>
         <div style={headerIconsStyle}>
-          {isPremiumUser ? (
-             <>
-               <button onClick={() => setShowMyPage(true)} style={{ ...iconButtonStyle, background: '#1DD1A1', color: '#fff' }}>✓</button>
-               <button onClick={() => {
-                 if (window.confirm('ログアウトしますか？')) {
-                   logout();
-                   showToast('ログアウトしました');
-                 }
-               }} style={iconButtonStyle}>
-                 <img src={logoutIcon} alt="ログアウト" style={{ width: 32, height: 32, transform: 'scale(1.7)' }} />
-               </button>
-             </>
-          ) : (
-             <button onClick={() => onLoginRequest?.()} style={iconButtonStyle}>
-               <img src={loginIcon} alt="ログイン" style={{ width: 32, height: 32, transform: 'scale(1.7)' }} />
-             </button>
-          )}
+          {/* ログイン状態バッジ */}
+          <button
+            onClick={() => setShowSettings(true)}
+            style={isPremiumUser ? loginBadgeActiveStyle : loginBadgeGuestStyle}
+            title={isPremiumUser ? `ログイン中: ${isLoggedIn ? '設定からログアウト可' : ''}` : 'ゲスト（設定からログイン）'}
+          >
+            {isPremiumUser ? '✓' : 'ゲスト'}
+          </button>
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
             <SpriteIcon src={toolIcon} position="bl" size={32} srcWidth={685} srcHeight={575} />
           </button>
@@ -352,10 +339,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
         <Settings
           onClose={() => setShowSettings(false)}
           currentView="TOP"
+          onLoginRequest={() => { setShowSettings(false); onLoginRequest?.(); }}
         />
-      )}
-      {showMyPage && (
-        <MyPageModal onClose={() => setShowMyPage(false)} />
       )}
       {showPaywall && paywallTarget && (
         <PaywallModal
@@ -408,6 +393,8 @@ const titleStyle: React.CSSProperties = {
 };
 const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '8px', flexShrink: 0 };
 const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
+const loginBadgeGuestStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '50px', padding: '4px 12px', fontSize: '0.8em', fontWeight: 'bold', color: '#888', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', whiteSpace: 'nowrap' };
+const loginBadgeActiveStyle: React.CSSProperties = { backgroundColor: '#1DD1A1', border: '2px solid #fff', borderRadius: '50px', padding: '4px 12px', fontSize: '0.85em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.15)', whiteSpace: 'nowrap' };
 const containerStyle: React.CSSProperties = {
   fontFamily: "'Yomogi', cursive",
   minHeight: '100vh',

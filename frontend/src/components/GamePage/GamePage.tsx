@@ -114,6 +114,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   }, [isMuted]);
 
   const playedIdsThisSession = useRef<Set<string>>(new Set());
+  const wrongQuizzesRef = useRef<QuizData[]>([]);
   const hasAnsweredIncorrectlyRef = useRef(false);
   const isHandsFreeModeRef = useRef(isHandsFreeMode);
   const isMutedRef = useRef(isMuted);
@@ -146,6 +147,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     initializedRef.current = false;
     spokenQuestionIndex.current = -1;
     playedIdsThisSession.current = new Set();
+    wrongQuizzesRef.current = [];
     setCurrentQuestionIndex(0);
     setScore(0);
     setIsQuizEnded(false);
@@ -217,6 +219,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       playSound('incorrect');
       setFeedback('incorrect');
       setEffectKey({ type: 'incorrect', id: Date.now() });
+      // 初めて間違えた時だけ wrongQuizzes に追加
+      if (currentQuiz && !wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
+        wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
+      }
       if (!isMuted && isSpeakingAllowed) {
         speak('ブブー！「' + userAnswer + '」は不正解です。もう一度考えてみましょう。');
         setConciergeMessage(null);
@@ -231,6 +237,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     quizSequenceRef.current++;
     playSound('correct');
     setFeedback('surrender');
+    if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
+      wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
+    }
     if (!isMuted && isSpeakingAllowed) {
       const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
       speak(`答えは${ans}です。`);
@@ -352,6 +361,7 @@ if (!currentQuiz && !isQuizEnded) {
 
   if (isQuizEnded) {
     const accuracy = (score / questionCount) * 100;
+    const wrongQuizzes = wrongQuizzesRef.current;
     return (
       <div style={containerStyle}>
         {stickyHeader}
@@ -360,15 +370,27 @@ if (!currentQuiz && !isQuizEnded) {
           <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
           <p style={resultTextStyle}>正解率: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
 
+          {wrongQuizzes.length > 0 && (
+            <div style={wrongListContainerStyle}>
+              <h3 style={wrongListTitleStyle}>📝 まちがえた・降参した問題</h3>
+              {wrongQuizzes.map((q) => (
+                <div key={q.id} style={wrongItemStyle}>
+                  <p style={wrongQuestionStyle}>{q.question}</p>
+                  <p style={wrongAnswerStyle}>答え：<strong>{q.answer}</strong></p>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div style={resultActionButtonsStyle}>
-            <button onClick={() => { playedIdsThisSession.current = new Set(); setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={buttonStyle}>もう<ruby>一度<rt>いちど</rt></ruby> →</button>
+            <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={buttonStyle}>もう<ruby>一度<rt>いちど</rt></ruby> →</button>
             <button onClick={onBackToDifficulty} style={buttonStyle}><ruby>別<rt>べつ</rt></ruby>のレベルへ →</button>
             <button onClick={onBack} style={backButtonStyle}>← <ruby>別<rt>べつ</rt></ruby>のジャンルへ</button>
             <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
           </div>
         </div>
         {showSettings && (
-          <Settings onClose={() => setShowSettings(false)} currentView="RESULT" />
+          <Settings onClose={() => setShowSettings(false)} currentView="RESULT" onLoginRequest={() => setShowSettings(false)} />
         )}
       </div>
     );
@@ -483,7 +505,7 @@ if (!currentQuiz && !isQuizEnded) {
 
 
       {showSettings && (
-        <Settings onClose={() => setShowSettings(false)} currentView="GAME" />
+        <Settings onClose={() => setShowSettings(false)} currentView="GAME" onLoginRequest={() => setShowSettings(false)} />
       )}
 
     </div>
@@ -534,5 +556,10 @@ const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: '#333',
 const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '24px' };
 const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
 const backButtonStyle: React.CSSProperties = { background: '#ccc', color: '#555', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #999' };
+const wrongListContainerStyle: React.CSSProperties = { marginTop: '20px', marginBottom: '10px', textAlign: 'left', width: '100%' };
+const wrongListTitleStyle: React.CSSProperties = { color: '#FF5FA0', fontSize: '1.1em', fontWeight: 'bold', marginBottom: '12px', textAlign: 'center' };
+const wrongItemStyle: React.CSSProperties = { background: '#FFF3F7', border: '1.5px solid #FFB3D9', borderRadius: '14px', padding: '12px 16px', marginBottom: '10px' };
+const wrongQuestionStyle: React.CSSProperties = { fontSize: '0.95em', color: '#444', margin: '0 0 6px 0', lineHeight: '1.5' };
+const wrongAnswerStyle: React.CSSProperties = { fontSize: '1.05em', color: '#FF5FA0', margin: 0 };
 
 export default GamePage;
