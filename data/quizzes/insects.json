@@ -12,7 +12,11 @@
     "dummy1": "チョウ",
     "dummy2": "アリ",
     "dummy3": "カブトムシ",
-    "answerAliases": ["蜂", "八", "鉢"]
+    "answerAliases": [
+      "蜂",
+      "八",
+      "鉢"
+    ]
   },
   {
     "id": "insect-002",
@@ -27,7 +31,11 @@
     "dummy1": "ハチ",
     "dummy2": "トンボ",
     "dummy3": "ガ",
-    "answerAliases": ["蝶", "ちょうちょ", "チョウチョ"]
+    "answerAliases": [
+      "蝶",
+      "ちょうちょ",
+      "チョウチョ"
+    ]
   },
   {
     "id": "insect-003",
@@ -42,7 +50,9 @@
     "dummy1": "コオロギ",
     "dummy2": "バッタ",
     "dummy3": "カマキリ",
-    "answerAliases": ["蝉"]
+    "answerAliases": [
+      "蝉"
+    ]
   },
   {
     "id": "insect-004",
@@ -57,7 +67,9 @@
     "dummy1": "クワガタ",
     "dummy2": "カミキリムシ",
     "dummy3": "コガネムシ",
-    "answerAliases": ["兜虫"]
+    "answerAliases": [
+      "兜虫"
+    ]
   },
   {
     "id": "insect-005",
@@ -72,7 +84,9 @@
     "dummy1": "カブトムシ",
     "dummy2": "カミキリムシ",
     "dummy3": "ゴキブリ",
-    "answerAliases": ["鍬形"]
+    "answerAliases": [
+      "鍬形"
+    ]
   },
   {
     "id": "insect-006",
@@ -101,7 +115,9 @@
     "dummy1": "ハチ",
     "dummy2": "シロアリ",
     "dummy3": "ダンゴムシ",
-    "answerAliases": ["蟻"]
+    "answerAliases": [
+      "蟻"
+    ]
   },
   {
     "id": "insect-008",
@@ -116,7 +132,9 @@
     "dummy1": "バッタ",
     "dummy2": "キリギリス",
     "dummy3": "ナナフシ",
-    "answerAliases": ["蟷螂"]
+    "answerAliases": [
+      "蟷螂"
+    ]
   },
   {
     "id": "insect-009",
@@ -131,7 +149,9 @@
     "dummy1": "カメムシ",
     "dummy2": "コガネムシ",
     "dummy3": "ハンミョウ",
-    "answerAliases": ["天道虫"]
+    "answerAliases": [
+      "天道虫"
+    ]
   },
   {
     "id": "insect-010",
@@ -146,7 +166,9 @@
     "dummy1": "ヒカリコメツキ",
     "dummy2": "ウミホタル",
     "dummy3": "マイマイカブリ",
-    "answerAliases": ["蛍"]
+    "answerAliases": [
+      "蛍"
+    ]
   },
   {
     "id": "insect-011",
@@ -161,7 +183,9 @@
     "dummy1": "チョウ",
     "dummy2": "ハチ",
     "dummy3": "カゲロウ",
-    "answerAliases": ["蜻蛉"]
+    "answerAliases": [
+      "蜻蛉"
+    ]
   },
   {
     "id": "insect-012",
@@ -176,7 +200,9 @@
     "dummy1": "チョウ",
     "dummy2": "カゲロウ",
     "dummy3": "トビケラ",
-    "answerAliases": ["蛾"]
+    "answerAliases": [
+      "蛾"
+    ]
   },
   {
     "id": "insect-013",
@@ -191,7 +217,9 @@
     "dummy1": "コオロギ",
     "dummy2": "キリギリス",
     "dummy3": "カマキリ",
-    "answerAliases": ["飛蝗"]
+    "answerAliases": [
+      "飛蝗"
+    ]
   },
   {
     "id": "insect-014",
@@ -206,7 +234,9 @@
     "dummy1": "キリギリス",
     "dummy2": "スズムシ",
     "dummy3": "マツムシ",
-    "answerAliases": ["蟋蟀"]
+    "answerAliases": [
+      "蟋蟀"
+    ]
   },
   {
     "id": "insect-015",
@@ -221,7 +251,9 @@
     "dummy1": "コオロギ",
     "dummy2": "マツムシ",
     "dummy3": "キリギリス",
-    "answerAliases": ["鈴虫"]
+    "answerAliases": [
+      "鈴虫"
+    ]
   },
   {
     "id": "insect-016",
@@ -236,7 +268,10 @@
     "dummy1": "クワガタ",
     "dummy2": "コガネムシ",
     "dummy3": "タマムシ",
-    "answerAliases": ["髪切虫", "天牛"]
+    "answerAliases": [
+      "髪切虫",
+      "天牛"
+    ]
   },
   {
     "id": "insect-017",
@@ -279,7 +314,9 @@
     "dummy1": "カマキリ",
     "dummy2": "バッタ",
     "dummy3": "コノハムシ",
-    "answerAliases": ["竹節虫"]
+    "answerAliases": [
+      "竹節虫"
+    ]
   },
   {
     "id": "insect-020",
@@ -294,6 +331,824 @@
     "dummy1": "ナナフシ",
     "dummy2": "カマキリ",
     "dummy3": "バッタ",
-    "answerAliases": ["木の葉虫"]
+    "answerAliases": [
+      "木の葉虫"
+    ]
+  },
+  {
+    "id": "insect-lv1-008",
+    "genre": "昆虫",
+    "difficulty": 1,
+    "question": "わたしは まっくろな からだを してるよ。いえの なかに すんでいて、にんげんを こわがらせるよ。はやく はしるよ。だーれだ？",
+    "hint1": "よるに でてくることが おおいよ。",
+    "answer": "ゴキブリ",
+    "answerReading": "ごきぶり",
+    "answerAliases": [
+      "蜚蠊"
+    ],
+    "dummy1": "クモ",
+    "dummy2": "ダンゴムシ",
+    "dummy3": "ムカデ"
+  },
+  {
+    "id": "insect-lv1-009",
+    "genre": "昆虫",
+    "difficulty": 1,
+    "question": "わたしは まるくて ころころしているよ。さわると まるまるよ。だーれだ？",
+    "hint1": "じめんや いしの したに いるよ。",
+    "answer": "ダンゴムシ",
+    "answerReading": "だんごむし",
+    "answerAliases": [
+      "団子虫"
+    ],
+    "dummy1": "アリ",
+    "dummy2": "ミミズ",
+    "dummy3": "ナメクジ"
+  },
+  {
+    "id": "insect-lv1-010",
+    "genre": "昆虫",
+    "difficulty": 1,
+    "question": "わたしは よるに「チカチカ」って あかるく ひかるよ。なつの よるに かわべで みられるよ。だーれだ？",
+    "hint1": "おしりが ひかっているよ。",
+    "answer": "ホタル",
+    "answerReading": "ほたる",
+    "answerAliases": [
+      "蛍"
+    ],
+    "dummy1": "チョウ",
+    "dummy2": "セミ",
+    "dummy3": "カブトムシ"
+  },
+  {
+    "id": "insect-lv2-007",
+    "genre": "昆虫",
+    "difficulty": 2,
+    "question": "わたしは あきに「リーンリーン」と きれいなこえで なくよ。すずのような こえだよ。だーれだ？",
+    "hint1": "コオロギの なかまだよ。",
+    "answer": "スズムシ",
+    "answerReading": "すずむし",
+    "answerAliases": [
+      "鈴虫"
+    ],
+    "dummy1": "コオロギ",
+    "dummy2": "マツムシ",
+    "dummy3": "キリギリス"
+  },
+  {
+    "id": "insect-lv2-008",
+    "genre": "昆虫",
+    "difficulty": 2,
+    "question": "わたしは みどりいろで、くさの なかに かくれているよ。「ギーチョン、ギーチョン」と なくよ。だーれだ？",
+    "hint1": "バッタより すこし からだが ほそながいよ。",
+    "answer": "キリギリス",
+    "answerReading": "きりぎりす",
+    "answerAliases": [
+      "螽斯"
+    ],
+    "dummy1": "バッタ",
+    "dummy2": "コオロギ",
+    "dummy3": "スズムシ"
+  },
+  {
+    "id": "insect-lv2-009",
+    "genre": "昆虫",
+    "difficulty": 2,
+    "question": "わたしは ちいさなからだで、はなの みつや かふんを たべるよ。ミツバチとは べつの なかまで、ひとりで すを つくるよ。だーれだ？",
+    "hint1": "まるっこくて けが おおいよ。",
+    "answer": "マルハナバチ",
+    "answerReading": "まるはなばち",
+    "answerAliases": [
+      "丸花蜂"
+    ],
+    "dummy1": "ミツバチ",
+    "dummy2": "アシナガバチ",
+    "dummy3": "スズメバチ"
+  },
+  {
+    "id": "insect-lv2-010",
+    "genre": "昆虫",
+    "difficulty": 2,
+    "question": "わたしは きいろと くろの しましもようで、はなに にた すがたをしているよ。ハチに にているけど、さないよ。だーれだ？",
+    "hint1": "ハナアブとも よばれるよ。",
+    "answer": "ホソヒラタアブ",
+    "answerReading": "ほそひらたあぶ",
+    "answerAliases": [
+      "細扁虻",
+      "ハナアブ"
+    ],
+    "dummy1": "ミツバチ",
+    "dummy2": "アシナガバチ",
+    "dummy3": "ドロバチ"
+  },
+  {
+    "id": "insect-lv4-001",
+    "genre": "昆虫",
+    "difficulty": 4,
+    "question": "わたしは水中で生活する大型の水生昆虫だ。前脚が鎌状になっていて、カエルや小魚も捕まえて食べることができる。水田や池に生息するが、現在は絶滅危惧種になっている。だーれだ？",
+    "hint1": "タガメとよく似ているが、わたしは長い呼吸管を持っていないよ。",
+    "answer": "タガメ",
+    "answerReading": "たがめ",
+    "answerAliases": [
+      "田亀"
+    ],
+    "dummy1": "ゲンゴロウ",
+    "dummy2": "ミズカマキリ",
+    "dummy3": "アメンボ"
+  },
+  {
+    "id": "insect-lv4-002",
+    "genre": "昆虫",
+    "difficulty": 4,
+    "question": "わたしは黄緑色でとても美しいコウチュウムシだ。金属光沢のある翅を持ち、古くから「玉虫色」という言葉のもとになっている。奈良の法隆寺の玉虫厨子に使われたことで有名だ。だーれだ？",
+    "hint1": "ヤマトタマムシとも呼ばれるよ。",
+    "answer": "タマムシ",
+    "answerReading": "たまむし",
+    "answerAliases": [
+      "玉虫",
+      "ヤマトタマムシ"
+    ],
+    "dummy1": "ハンミョウ",
+    "dummy2": "コガネムシ",
+    "dummy3": "カナブン"
+  },
+  {
+    "id": "insect-lv4-003",
+    "genre": "昆虫",
+    "difficulty": 4,
+    "question": "わたしは道を歩くと先回りして人を誘導するような行動をとる甲虫だ。「道教え」とも呼ばれる。翅の色が虹色に輝いていて、飛び立つ直前に立ち止まって様子を伺う習性がある。だーれだ？",
+    "hint1": "ハンミョウ科の昆虫で、幼虫は地中に穴を掘って待ち伏せして獲物を捕まえるよ。",
+    "answer": "ハンミョウ",
+    "answerReading": "はんみょう",
+    "answerAliases": [
+      "斑猫",
+      "ミチシルベ"
+    ],
+    "dummy1": "タマムシ",
+    "dummy2": "コガネムシ",
+    "dummy3": "ゴミムシ"
+  },
+  {
+    "id": "insect-lv4-004",
+    "genre": "昆虫",
+    "difficulty": 4,
+    "question": "わたしはカブトムシのメスに似ているが、背中に鋭いトゲを持つ甲虫だ。朽ち木の中で幼虫として過ごし、成虫は木の樹液を吸う。日本に生息するカミキリムシの仲間だ。だーれだ？",
+    "hint1": "コクワガタとよく混同されるよ。",
+    "answer": "ノコギリクワガタ",
+    "answerReading": "のこぎりくわがた",
+    "answerAliases": [
+      "鋸鍬形"
+    ],
+    "dummy1": "ヒラタクワガタ",
+    "dummy2": "オオクワガタ",
+    "dummy3": "コクワガタ"
+  },
+  {
+    "id": "insect-lv4-005",
+    "genre": "昆虫",
+    "difficulty": 4,
+    "question": "わたしはヤスデやムカデとは別の、6本足の昆虫だ。土の中に巣を作り、集団で生活する。農業害虫として知られるが、土壌を耕す働きもある。黒い色で、アリに似て見えることがある。だーれだ？",
+    "hint1": "わたしはシロアリ科に属し、木材や枯れ葉なども食べるよ。",
+    "answer": "シロアリ",
+    "answerReading": "しろあり",
+    "answerAliases": [
+      "白蟻"
+    ],
+    "dummy1": "アリ",
+    "dummy2": "ハサミムシ",
+    "dummy3": "ワラジムシ"
+  },
+  {
+    "id": "insect-lv5-001",
+    "genre": "昆虫",
+    "difficulty": 5,
+    "question": "わたしは幼虫のときは水中で生活し、成虫になるとわずか1〜数日しか生きられない昆虫だ。成虫になると口が退化して何も食べられない。はかない命のたとえに使われることがある。だーれだ？",
+    "hint1": "英語名はMayflyという。幼虫は水質の指標生物として利用されるよ。",
+    "answer": "カゲロウ",
+    "answerReading": "かげろう",
+    "answerAliases": [
+      "蜉蝣"
+    ],
+    "dummy1": "トビケラ",
+    "dummy2": "ユスリカ",
+    "dummy3": "セミ"
+  },
+  {
+    "id": "insect-lv5-002",
+    "genre": "昆虫",
+    "difficulty": 5,
+    "question": "わたしはオスが死んだふりをすることで有名な甲虫だ。背面から触ると脚を縮めて落下し、死んだように動かなくなる。コメツキムシの仲間で、仰向けになっても「パチン」と音を立てて跳ね起きる。だーれだ？",
+    "hint1": "幼虫は「エビガラムシ」とも呼ばれ、根を食べる農業害虫だよ。",
+    "answer": "コメツキムシ",
+    "answerReading": "こめつきむし",
+    "answerAliases": [
+      "米搗虫"
+    ],
+    "dummy1": "ゾウムシ",
+    "dummy2": "クビキリギス",
+    "dummy3": "ハネカクシ"
+  },
+  {
+    "id": "insect-lv5-003",
+    "genre": "昆虫",
+    "difficulty": 5,
+    "question": "わたしは蛾の仲間だが、成虫は蛾に見えないほど美しい。幼虫は木の葉を食べ、繭を作る。その繭から高品質の絹糸が取れることで知られる。野生種は現在ほぼ存在しない。だーれだ？",
+    "hint1": "人類が5000年以上前から飼育してきた唯一の完全家畜化された昆虫だよ。",
+    "answer": "カイコ",
+    "answerReading": "かいこ",
+    "answerAliases": [
+      "蚕",
+      "カイコガ"
+    ],
+    "dummy1": "ヤママユ",
+    "dummy2": "ウスタビガ",
+    "dummy3": "クスサン"
+  },
+  {
+    "id": "insect-lv5-004",
+    "genre": "昆虫",
+    "difficulty": 5,
+    "question": "わたしはアフリカやアジアに生息するバッタの仲間だ。大群を形成して農作物を食い荒らす「飛蝗」として知られる。密度が高くなると体の色や形が変化する「相変異」という現象を起こす。だーれだ？",
+    "hint1": "2020年に東アフリカで大発生し、食糧危機を引き起こしたことで世界的に注目されたよ。",
+    "answer": "サバクトビバッタ",
+    "answerReading": "さばくとびばった",
+    "answerAliases": [
+      "砂漠飛蝗",
+      "Desert Locust"
+    ],
+    "dummy1": "トノサマバッタ",
+    "dummy2": "ショウリョウバッタ",
+    "dummy3": "クルマバッタ"
+  },
+  {
+    "id": "insect-lv5-005",
+    "genre": "昆虫",
+    "difficulty": 5,
+    "question": "わたしはアリに似た外見を持つが、実はハチの仲間だ。翅がなく、地面を歩き回る。メスには強力な毒針を持ち、「牛を倒すほどの痛み」と表現されるほど強烈な痛みを引き起こす。だーれだ？",
+    "hint1": "英語名はVelvet Antといい、ベルベット状の毛で覆われているよ。",
+    "answer": "ビロードアリ",
+    "answerReading": "びろーどあり",
+    "answerAliases": [
+      "天鵞絨蟻",
+      "ツチバチ"
+    ],
+    "dummy1": "ハリアリ",
+    "dummy2": "ムネアカオオアリ",
+    "dummy3": "クロオオアリ"
+  },
+  {
+    "id": "insect-lv6-001",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは日本最大のスズメバチで、体長は4〜5cmにもなる。一匹のオオスズメバチが30秒でミツバチを数十匹倒すほど強力だ。巣は地中に作ることが多い。だーれだ？",
+    "hint1": "英語名はJapanese Giant Hornetといい、世界最大のスズメバチとして知られているよ。",
+    "answer": "オオスズメバチ",
+    "answerReading": "おおすずめばち",
+    "answerAliases": [
+      "大雀蜂"
+    ],
+    "dummy1": "キイロスズメバチ",
+    "dummy2": "コガタスズメバチ",
+    "dummy3": "チャイロスズメバチ"
+  },
+  {
+    "id": "insect-lv6-002",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは熱帯アフリカに生息するアリで、行軍しながら出会ったものすべてを食べ尽くす。数百万匹の大群で移動し、牛さえも食い尽くすことがあるという。だーれだ？",
+    "hint1": "「軍隊アリ」とも呼ばれ、映画や小説でよく題材にされるよ。",
+    "answer": "ドライバーアリ",
+    "answerReading": "どらいばーあり",
+    "answerAliases": [
+      "軍隊アリ",
+      "サスライアリ"
+    ],
+    "dummy1": "ハキリアリ",
+    "dummy2": "グンタイアリ",
+    "dummy3": "ウェーバーアリ"
+  },
+  {
+    "id": "insect-lv6-003",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは中南米に生息するアリで、葉を切り取って巣に持ち帰り、キノコを育てて食べる農業を行う。一匹の女王アリが何百万匹もの群れを率いることもある。だーれだ？",
+    "hint1": "「葉切りアリ」とも呼ばれ、その農業行動は人間より3000万年以上前から始まっていると言われるよ。",
+    "answer": "ハキリアリ",
+    "answerReading": "はきりあり",
+    "answerAliases": [
+      "葉切り蟻",
+      "Leafcutter Ant"
+    ],
+    "dummy1": "ドライバーアリ",
+    "dummy2": "ニオイオオアリ",
+    "dummy3": "アシナガキアリ"
+  },
+  {
+    "id": "insect-lv6-004",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは北アメリカのチョウで、毎年メキシコと北アメリカを往復する4000km以上の渡りで知られる。オレンジと黒のきれいな翅を持つ。だーれだ？",
+    "hint1": "わたしの渡りには数世代を要し、途中で世代が交代しながら目的地に到達する不思議な現象として知られるよ。",
+    "answer": "オオカバマダラ",
+    "answerReading": "おおかばまだら",
+    "answerAliases": [
+      "モナーク蝶",
+      "Monarch Butterfly"
+    ],
+    "dummy1": "アゲハチョウ",
+    "dummy2": "アサギマダラ",
+    "dummy3": "オオムラサキ"
+  },
+  {
+    "id": "insect-lv6-005",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは日本の国蝶に指定されているチョウだ。オスは紫色の美しい翅を持つが、メスは茶色っぽい。クヌギやコナラなどの木で樹液を吸う。だーれだ？",
+    "hint1": "「むらさき」という美しい色からその名がついた、日本を代表するチョウだよ。",
+    "answer": "オオムラサキ",
+    "answerReading": "おおむらさき",
+    "answerAliases": [
+      "大紫"
+    ],
+    "dummy1": "ゴイシシジミ",
+    "dummy2": "ミヤマカラスアゲハ",
+    "dummy3": "ジャコウアゲハ"
+  },
+  {
+    "id": "insect-lv6-006",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは昆虫ではなく、クモの仲間（節足動物）だが、よく昆虫と間違えられる。8本足を持ち、糸で巣を張って虫を捕まえる。实は農業や生態系に有益な存在だ。だーれだ？",
+    "hint1": "わたしはクモ目に属し、昆虫目ではない。足の数が6本ではなく8本だよ。",
+    "answer": "クモ",
+    "answerReading": "くも",
+    "answerAliases": [
+      "蜘蛛",
+      "スパイダー"
+    ],
+    "dummy1": "ムカデ",
+    "dummy2": "ダニ",
+    "dummy3": "サソリ"
+  },
+  {
+    "id": "insect-lv6-007",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしはアジア原産の甲虫で、北アメリカやヨーロッパで深刻な外来種問題を起こしている。クリやナラなどの広葉樹の木材に穴を開けて産卵し、幼虫が木を枯らしてしまう。だーれだ？",
+    "hint1": "「クビアカツヤカミキリ」とも呼ばれ、日本でも近年問題になっているよ。",
+    "answer": "クビアカツヤカミキリ",
+    "answerReading": "くびあかつやかみきり",
+    "answerAliases": [
+      "首赤艶天牛"
+    ],
+    "dummy1": "マツノマダラカミキリ",
+    "dummy2": "シロスジカミキリ",
+    "dummy3": "ゴマダラカミキリ"
+  },
+  {
+    "id": "insect-lv6-008",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしはオーストラリアなど南半球に生息するカマキリの仲間で、花に擬態して待ち伏せ狩りをする。白やピンクの美しい外見を持ち、花びらに見えるような平たい脚を持つ。だーれだ？",
+    "hint1": "英語名はOrchid Mantisといい、ランの花に完全に擬態するよ。",
+    "answer": "ハナカマキリ",
+    "answerReading": "はなかまきり",
+    "answerAliases": [
+      "花蟷螂",
+      "Orchid Mantis"
+    ],
+    "dummy1": "コノハカマキリ",
+    "dummy2": "オオカマキリ",
+    "dummy3": "チョウセンカマキリ"
+  },
+  {
+    "id": "insect-lv6-009",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしは南米のアマゾンに生息するアリで、噛まれると「弾丸に撃たれたような激痛」と表現されるほど強力な毒を持つ。体長は約2.5cmと大型のアリだ。だーれだ？",
+    "hint1": "英語名はBullet Antといい、「痛みの王」とも呼ばれるよ。",
+    "answer": "サシハリアリ",
+    "answerReading": "さしはりあり",
+    "answerAliases": [
+      "刺針蟻",
+      "Bullet Ant",
+      "ポネリーナ"
+    ],
+    "dummy1": "ファイアーアント",
+    "dummy2": "グンタイアリ",
+    "dummy3": "ジャックジャンパーアリ"
+  },
+  {
+    "id": "insect-lv6-010",
+    "genre": "昆虫",
+    "difficulty": 6,
+    "question": "わたしはユーラシア大陸に広く分布するトンボで、日本でも多く見られる赤いトンボの代表格だ。「秋の使者」として親しまれ、俳句にもよく詠まれる。だーれだ？",
+    "hint1": "正式名称はアキアカネといい、夏に高地へ移動し、秋に里へ戻ってくるよ。",
+    "answer": "アキアカネ",
+    "answerReading": "あきあかね",
+    "answerAliases": [
+      "秋茜",
+      "赤とんぼ"
+    ],
+    "dummy1": "ナツアカネ",
+    "dummy2": "ミヤマアカネ",
+    "dummy3": "リスアカネ"
+  },
+  {
+    "id": "insect-lv7-001",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはケニアなどアフリカに生息する世界最大のゴキブリの仲間で、体長10cm以上になる。呼吸孔（気門）から空気を出して「シュー」という音を立てて威嚇する。だーれだ？",
+    "hint1": "英語名はMadagascar Hissing Cockroachといい、ペットとして飼育される人もいるよ。",
+    "answer": "マダガスカルゴキブリ",
+    "answerReading": "まだがすかるごきぶり",
+    "answerAliases": [
+      "Madagascar Hissing Cockroach"
+    ],
+    "dummy1": "ヤエヤマオオゴキブリ",
+    "dummy2": "ワモンゴキブリ",
+    "dummy3": "チャバネゴキブリ"
+  },
+  {
+    "id": "insect-lv7-002",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはホタルの仲間だが、発光するのは成虫ではなく幼虫と卵だ。ニュージーランドのワイトモ洞窟に大群で生息し、洞窟の天井を星空のように輝かせる。だーれだ？",
+    "hint1": "英語名はGlowwormまたはArachnocampa luminosaといい、観光スポットとして有名だよ。",
+    "answer": "ツチボタル",
+    "answerReading": "つちぼたる",
+    "answerAliases": [
+      "土蛍",
+      "Glowworm",
+      "Arachnocampa luminosa"
+    ],
+    "dummy1": "ヒカリコメツキ",
+    "dummy2": "ウミホタル",
+    "dummy3": "ゲンジボタル"
+  },
+  {
+    "id": "insect-lv7-003",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはハチ目の昆虫で、「スズメバチ」の名前がつくが実際には最も原始的なグループに属する。植物の葉や茎に産卵し、幼虫は植物を食べる。成虫は細い腰を持たない「ずんぐり」した体型だ。だーれだ？",
+    "hint1": "英語名はSawflyといい、幼虫が「芋虫」に似た外見をしているよ。",
+    "answer": "ハバチ",
+    "answerReading": "はばち",
+    "answerAliases": [
+      "葉蜂",
+      "Sawfly"
+    ],
+    "dummy1": "アブ",
+    "dummy2": "アシナガバチ",
+    "dummy3": "ツチバチ"
+  },
+  {
+    "id": "insect-lv7-004",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしは昆虫ではなく節足動物だが、よく昆虫として扱われる。全身が硬い外骨格に覆われ、14本の脚を持つ。海岸の岩礁や藻場に生息し、魚の寄生虫としても知られる顎脚類だ。だーれだ？",
+    "hint1": "わたしはフジツボやエビ・カニの仲間（甲殻類）だよ。",
+    "answer": "フジツボ",
+    "answerReading": "ふじつぼ",
+    "answerAliases": [
+      "藤壺",
+      "Barnacle"
+    ],
+    "dummy1": "ヤドカリ",
+    "dummy2": "エビ",
+    "dummy3": "カニ"
+  },
+  {
+    "id": "insect-lv7-005",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはシロアリの巣に侵入して生活するハネカクシの仲間だ。シロアリに似た体の形と化学物質を持ち、シロアリに食べ物を与えてもらう「好蟻性」という生活をしている。だーれだ？",
+    "hint1": "わたしはLimulodidae科などに属し、「ヤドリシロアリ」とも呼ばれるよ。",
+    "answer": "ヤドリシロアリ",
+    "answerReading": "やどりしろあり",
+    "answerAliases": [
+      "宿り白蟻"
+    ],
+    "dummy1": "ホソハネカクシ",
+    "dummy2": "クチキムシ",
+    "dummy3": "アカアリ"
+  },
+  {
+    "id": "insect-lv7-006",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはオスが世界最長の触角を持つことで知られる甲虫だ。触角の長さは体長の数倍にもなり、タイや中国の熱帯林に生息する。だーれだ？",
+    "hint1": "Batocera roselliまたはUranothauma属の種などが記録保持者で、触角長が20cm超えることもあるよ。",
+    "answer": "ナガヒゲカミキリ",
+    "answerReading": "ながひげかみきり",
+    "answerAliases": [
+      "長髭天牛"
+    ],
+    "dummy1": "タイタンオオウスバカミキリ",
+    "dummy2": "ゴマダラカミキリ",
+    "dummy3": "シロスジカミキリ"
+  },
+  {
+    "id": "insect-lv7-007",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしは熱帯アフリカ原産の「キラービー」とも呼ばれるミツバチだ。通常のミツバチより攻撃性が高く、刺激を与えると何百もの個体が一斉に攻撃してくる。南アメリカで人間への被害も出ている。だーれだ？",
+    "hint1": "アフリカミツバチと西洋ミツバチの交雑種で、1956年にブラジルで実験中に誤って逃げ出したものが広まったよ。",
+    "answer": "アフリカナイズドミツバチ",
+    "answerReading": "あふりかないずどみつばち",
+    "answerAliases": [
+      "Africanized Honey Bee",
+      "キラービー"
+    ],
+    "dummy1": "セイヨウミツバチ",
+    "dummy2": "ニホンミツバチ",
+    "dummy3": "ハリナシバチ"
+  },
+  {
+    "id": "insect-lv7-008",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしはカメムシ目に属する半翅類の昆虫で、木の幹の樹皮にそっくりな擬態を持つ。平たく押しつぶされたような体型をしており、「樹皮カメムシ」とも呼ばれる。だーれだ？",
+    "hint1": "わたしの学名はAradidaeといい、主に菌類や樹皮を食べるよ。",
+    "answer": "ヒラタカメムシ",
+    "answerReading": "ひらたかめむし",
+    "answerAliases": [
+      "扁椿象",
+      "Flat Bug"
+    ],
+    "dummy1": "ナガカメムシ",
+    "dummy2": "マルカメムシ",
+    "dummy3": "クサギカメムシ"
+  },
+  {
+    "id": "insect-lv7-009",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしは南米熱帯に生息するトンボの仲間で、翅の先端部分だけが黒く染まっていて、まるで蛾のように見える。飛び方も羽ばたきが独特で、チョウのように翅を広げて止まる。だーれだ？",
+    "hint1": "ハグロトンボの仲間で、英語名はBlack-winged Damselfly（カワトンボ科）が近い仲間だよ。",
+    "answer": "ハグロトンボ",
+    "answerReading": "はぐろとんぼ",
+    "answerAliases": [
+      "羽黒蜻蜓"
+    ],
+    "dummy1": "アオイトトンボ",
+    "dummy2": "カワトンボ",
+    "dummy3": "モノサシトンボ"
+  },
+  {
+    "id": "insect-lv7-010",
+    "genre": "昆虫",
+    "difficulty": 7,
+    "question": "わたしは世界最重量の昆虫とも言われるニュージーランド固有の甲虫だ。体重が最大70gにもなり、翅はあるが飛べない。現在は絶滅危惧種で、人工繁殖が行われている。だーれだ？",
+    "hint1": "「ウェタ」と呼ばれる昆虫群の一種で、マオリ語の名前を持つよ。",
+    "answer": "ジャイアントウェタ",
+    "answerReading": "じゃいあんとうえた",
+    "answerAliases": [
+      "Giant Weta"
+    ],
+    "dummy1": "ゴライアスオオツノハナムグリ",
+    "dummy2": "アトラスオオカブト",
+    "dummy3": "タイタンオオウスバカミキリ"
+  },
+  {
+    "id": "insect-lv8-001",
+    "genre": "昆虫",
+    "difficulty": 8,
+    "question": "わたしはColeoptera目の甲虫で、世界最大の甲虫とされる。南米アマゾンに生息し、体長は最大18cmにもなる。幼虫期間は2年以上に及び、腐った大木の中で成長する。だーれだ？",
+    "hint1": "学名はTitanus giganteusといい、成虫は2〜3週間しか生きられないよ。",
+    "answer": "タイタンオオウスバカミキリ",
+    "answerReading": "たいたんおおうすばかみきり",
+    "answerAliases": [
+      "Titanus giganteus",
+      "タイタンビートル"
+    ],
+    "dummy1": "ゴライアスオオツノハナムグリ",
+    "dummy2": "ヘラクレスオオカブト",
+    "dummy3": "コーカサスオオカブト"
+  },
+  {
+    "id": "insect-lv8-002",
+    "genre": "昆虫",
+    "difficulty": 8,
+    "question": "わたしはハチ目に属する昆虫で、他のハチの巣に卵を産む「托卵」行動で知られる。宿主となるハチの幼虫に産卵し、幼虫はその卵や幼虫を食べて成長する。非常に細い体と長い産卵管を持つ。だーれだ？",
+    "hint1": "英語名はParasitoid Waspの一種で、寄生蜂（きせいばち）と総称されるよ。",
+    "answer": "キバチヤドリコバチ",
+    "answerReading": "きばちやどりこばち",
+    "answerAliases": [
+      "寄生蜂",
+      "Parasitoid Wasp"
+    ],
+    "dummy1": "ハバチ",
+    "dummy2": "アナバチ",
+    "dummy3": "コガネコバチ"
+  },
+  {
+    "id": "insect-lv8-003",
+    "genre": "昆虫",
+    "difficulty": 8,
+    "question": "わたしはカメムシ目の昆虫で、水面に漂う虫の死骸などを感知して素早く泳ぎ、捕食する。複眼が背面と腹面に分かれており、水面より上と水中を同時に見ることができる。だーれだ？",
+    "hint1": "英語名はWhirligig Beetleといい、集団で水面をくるくると回転して泳ぐことでも知られるよ。",
+    "answer": "ミズスマシ",
+    "answerReading": "みずすまし",
+    "answerAliases": [
+      "水馬",
+      "Whirligig Beetle"
+    ],
+    "dummy1": "ゲンゴロウ",
+    "dummy2": "タガメ",
+    "dummy3": "アメンボ"
+  },
+  {
+    "id": "insect-lv8-004",
+    "genre": "昆虫",
+    "difficulty": 8,
+    "question": "わたしはアリの巣の中で生活するシジミチョウの幼虫だ。アリに化学的・音響的シグナルを送ることで、アリの幼虫と同様に扱われ、食べ物を与えてもらう。だーれだ？",
+    "hint1": "ゴイシシジミやクロシジミなどいくつかの種が知られ、好蟻性チョウと呼ばれるよ。",
+    "answer": "クロシジミ",
+    "answerReading": "くろしじみ",
+    "answerAliases": [
+      "黒蜆"
+    ],
+    "dummy1": "ゴイシシジミ",
+    "dummy2": "ルリシジミ",
+    "dummy3": "ヤマトシジミ"
+  },
+  {
+    "id": "insect-lv8-005",
+    "genre": "昆虫",
+    "difficulty": 8,
+    "question": "わたしはオスとメスで全く異なる体型をしていることで知られるカイガラムシの仲間だ。メスは翅も脚もなく、ほぼ動かないが、オスは小型の翅を持って飛ぶことができる。だーれだ？",
+    "hint1": "わたしはコナカイガラムシやワタフキカイガラムシなどの種を含む群で、農業害虫として知られるよ。",
+    "answer": "カイガラムシ",
+    "answerReading": "かいがらむし",
+    "answerAliases": [
+      "介殻虫",
+      "Scale Insect"
+    ],
+    "dummy1": "アブラムシ",
+    "dummy2": "コナジラミ",
+    "dummy3": "ハダニ"
+  },
+  {
+    "id": "insect-lv9-001",
+    "genre": "昆虫",
+    "difficulty": 9,
+    "question": "わたしはBerothidaeというまれなネアミ目の昆虫で、アリやシロアリの巣に侵入するため特殊な体毛と化学物質を進化させた。幼虫はアリの巣内でアリの分泌物を食べて育つ。だーれだ？",
+    "hint1": "英語名はBeaded Lacewingといい、幼虫はシロアリに麻痺ガスを吹きかけて捕食することも報告されているよ。",
+    "answer": "タマクサカゲロウ",
+    "answerReading": "たまくさかげろう",
+    "answerAliases": [
+      "Beaded Lacewing",
+      "Berothidae"
+    ],
+    "dummy1": "クサカゲロウ",
+    "dummy2": "ウスバカゲロウ",
+    "dummy3": "ヘビトンボ"
+  },
+  {
+    "id": "insect-lv9-002",
+    "genre": "昆虫",
+    "difficulty": 9,
+    "question": "わたしはマダガスカルに生息するガの一種で、30cmを超える口吻（こうふん）を持つことで有名だ。ダーウィンが1862年にその存在を予言し、1903年に実際に発見された花の蜜を吸う。だーれだ？",
+    "hint1": "「ダーウィンのスズメガ」とも呼ばれ、学名にはpraedicta（予言された）という語が含まれるよ。",
+    "answer": "キサントパンスズメガ",
+    "answerReading": "きさんとぱんすずめが",
+    "answerAliases": [
+      "Xanthopan morganii praedicta",
+      "ダーウィンのスズメガ"
+    ],
+    "dummy1": "オオスカシバ",
+    "dummy2": "セスジスズメ",
+    "dummy3": "エビガラスズメ"
+  },
+  {
+    "id": "insect-lv9-003",
+    "genre": "昆虫",
+    "difficulty": 9,
+    "question": "わたしはParasitiformes目に属する節足動物（厳密には昆虫ではない）で、哺乳類の毛嚢（もうのう）に寄生して生活する。体長は0.1〜0.4mmほどで、ほぼすべての人間の顔に生息していると言われる。だーれだ？",
+    "hint1": "英語名はDemodex folliculorumといい、「ニキビダニ」とも呼ばれるよ。",
+    "answer": "ニキビダニ",
+    "answerReading": "にきびだに",
+    "answerAliases": [
+      "毛包虫",
+      "Demodex",
+      "毛嚢虫"
+    ],
+    "dummy1": "ヒゼンダニ",
+    "dummy2": "イエダニ",
+    "dummy3": "ツツガムシ"
+  },
+  {
+    "id": "insect-lv9-004",
+    "genre": "昆虫",
+    "difficulty": 9,
+    "question": "わたしはバキュロウイルスによって操られるモンシロチョウの幼虫が登る行動を引き起こす、寄生虫ウイルスの宿主として研究されている昆虫だ。ウイルスが宿主の行動を変えて感染を広げる「行動操作」の研究対象として有名だ。だーれだ？",
+    "hint1": "わたし自身はモンシロチョウ（Pieris rapae）の幼虫だが、ウイルスと行動の関係がテーマだよ。",
+    "answer": "モンシロチョウ",
+    "answerReading": "もんしろちょう",
+    "answerAliases": [
+      "紋白蝶",
+      "Pieris rapae"
+    ],
+    "dummy1": "キアゲハ",
+    "dummy2": "クモマツマキチョウ",
+    "dummy3": "ウスバシロチョウ"
+  },
+  {
+    "id": "insect-lv9-005",
+    "genre": "昆虫",
+    "difficulty": 9,
+    "question": "わたしはColeoptera目ルリカミキリ亜科に属する甲虫で、松の木に深刻な被害を与えるマツノザイセンチュウ（線虫）を運ぶ「ベクター」として知られる。わたし自身は直接木を傷めないが、媒介することで松枯れを引き起こす。だーれだ？",
+    "hint1": "「マツノマダラカミキリ」とも呼ばれ、日本の松林を壊滅させた主因の一つだよ。",
+    "answer": "マツノマダラカミキリ",
+    "answerReading": "まつのまだらかみきり",
+    "answerAliases": [
+      "松斑天牛",
+      "Monochamus alternatus"
+    ],
+    "dummy1": "シロスジカミキリ",
+    "dummy2": "ゴマダラカミキリ",
+    "dummy3": "ウスバカミキリ"
+  },
+  {
+    "id": "insect-lv10-001",
+    "genre": "昆虫",
+    "difficulty": 10,
+    "question": "わたしはDictyoptera目に属し、翅を持つが飛ばず、カカポという飛べない鳥に寄生する吸血性の昆虫だ。ニュージーランド固有種で、宿主であるカカポが絶滅危惧種のため、わたし自身も非常に希少な存在だ。だーれだ？",
+    "hint1": "学名はHeterodoxus spiniger（カカポジラミ）に関連するもので、カカポの羽毛を食べて生きているよ。",
+    "answer": "カカポジラミ",
+    "answerReading": "かかぽじらみ",
+    "answerAliases": [
+      "Strigiphilus kakapo"
+    ],
+    "dummy1": "ハジラミ",
+    "dummy2": "コロモジラミ",
+    "dummy3": "ケジラミ"
+  },
+  {
+    "id": "insect-lv10-002",
+    "genre": "昆虫",
+    "difficulty": 10,
+    "question": "わたしはNeuroptera目の昆虫で、成虫の翅は光の干渉によって非常に美しい虹色の光沢を示す。幼虫は土中に落とし穴を作ってアリなどを捕らえることで有名なウスバカゲロウに近縁だ。だーれだ？",
+    "hint1": "わたしはGloriosa属またはPaIpares属などに属し、「グロリオサ」とも呼ばれる南アフリカ産の希少なカゲロウに近縁な昆虫だよ。",
+    "answer": "オオウスバカゲロウ",
+    "answerReading": "おおうすばかげろう",
+    "answerAliases": [
+      "大薄羽蜉蝣",
+      "Palpares"
+    ],
+    "dummy1": "アリジゴク",
+    "dummy2": "クサカゲロウ",
+    "dummy3": "ヘビトンボ"
+  },
+  {
+    "id": "insect-lv10-003",
+    "genre": "昆虫",
+    "difficulty": 10,
+    "question": "わたしはTrichoptera目（トビケラ目）の昆虫で、幼虫が砂粒や小石、植物の破片を絹糸で綴り合わせて巣筒を作ることで知られる。フランスのアーティスト、ユベール・デュピラが幼虫に金や宝石を与えて芸術的な巣を作らせる作品で有名になった種だ。だーれだ？",
+    "hint1": "英語名はCaddisfly（カディスフライ）といい、渓流の指標生物でもあるよ。",
+    "answer": "トビケラ",
+    "answerReading": "とびけら",
+    "answerAliases": [
+      "飛螻",
+      "Caddisfly"
+    ],
+    "dummy1": "カゲロウ",
+    "dummy2": "ガガンボ",
+    "dummy3": "クロバエ"
+  },
+  {
+    "id": "insect-lv10-004",
+    "genre": "昆虫",
+    "difficulty": 10,
+    "question": "わたしはMantophasmatodea（カマバッタ目）に属する昆虫で、2002年に新目として記載された最も新しく発見された昆虫の目の一つだ。南アフリカの岩場に生息し、カマキリとナナフシを合わせたような外見をしている。だーれだ？",
+    "hint1": "英語名はHeelwalkerまたはGladiatorといい、足の踵（かかと）で歩く独特の歩き方をするよ。",
+    "answer": "カマバッタ",
+    "answerReading": "かまばった",
+    "answerAliases": [
+      "Mantophasmatodea",
+      "Heelwalker",
+      "Gladiator"
+    ],
+    "dummy1": "ナナフシ",
+    "dummy2": "コノハムシ",
+    "dummy3": "ハナカマキリ"
+  },
+  {
+    "id": "insect-lv10-005",
+    "genre": "昆虫",
+    "difficulty": 10,
+    "question": "わたしはStrepsiptera（ネジレバネ目）に属する非常に奇妙な昆虫だ。わたしのメスは一生涯、他の昆虫（ハチやバッタなど）の体内に寄生したまま出ることなく生きる。オスだけが成虫として外に出るが、わずか数時間しか生きられない。だーれだ？",
+    "hint1": "「ネジレバネ」とも呼ばれ、宿主の腹部から雌の体の一部だけが突き出て見えるよ。",
+    "answer": "ネジレバネ",
+    "answerReading": "ねじればね",
+    "answerAliases": [
+      "捻れ羽",
+      "Strepsiptera",
+      "Twisted-wing parasite"
+    ],
+    "dummy1": "ハネカクシ",
+    "dummy2": "ハバチ",
+    "dummy3": "キバチ"
   }
 ]

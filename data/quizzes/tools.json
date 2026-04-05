@@ -253,5 +253,853 @@
     "dummy1": "マルチメーター",
     "dummy2": "スペクトラムアナライザー",
     "dummy3": "ロジックアナライザー"
+  },
+  {
+    "id": "tool-lv2-004",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはほんをよむときに、どこまでよんだかをしめすためにつかうよ。ほんのあいだにはさんでおくよ。だーれだ？",
+    "hint1": "いろいろなかたちやもようがあるよ。",
+    "answer": "しおり",
+    "answerReading": "しおり",
+    "answerAliases": [
+      "栞",
+      "ブックマーク"
+    ],
+    "dummy1": "ふせん",
+    "dummy2": "クリップ",
+    "dummy3": "のり"
+  },
+  {
+    "id": "tool-lv2-005",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはまるいかたちで、おしたりひいたりして、ドアをあけるよ。だーれだ？",
+    "hint1": "たてもののいりぐちについているよ。",
+    "answer": "ドアノブ",
+    "answerReading": "どあのぶ",
+    "answerAliases": [
+      "取っ手"
+    ],
+    "dummy1": "かぎ",
+    "dummy2": "ちょうつがい",
+    "dummy3": "ベル"
+  },
+  {
+    "id": "tool-lv2-006",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはかみにすみをつけてかくどうぐだよ。ふでとよばれることもあるよ。だーれだ？",
+    "hint1": "にほんごやかんじをかくときによくつかうよ。",
+    "answer": "毛筆",
+    "answerReading": "もうひつ",
+    "answerAliases": [
+      "ふで",
+      "筆"
+    ],
+    "dummy1": "えんぴつ",
+    "dummy2": "ボールペン",
+    "dummy3": "マーカー"
+  },
+  {
+    "id": "tool-lv2-007",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはかみをまとめるときにつかうよ。ちいさなかなものをかみにとおして、まとめるよ。だーれだ？",
+    "hint1": "ホッチキスの針でかみをとじるよ。",
+    "answer": "ホッチキス",
+    "answerReading": "ほっちきす",
+    "answerAliases": [
+      "ステープラー",
+      "stapler"
+    ],
+    "dummy1": "クリップ",
+    "dummy2": "セロテープ",
+    "dummy3": "のり"
+  },
+  {
+    "id": "tool-lv2-008",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはえをかくときにつかうよ。いろんないろがはいっているよ。クレヨンとにているけどもうすこしやわらかいよ。だーれだ？",
+    "hint1": "みずをつけるとすいさいがにになるよ。",
+    "answer": "色鉛筆",
+    "answerReading": "いろえんぴつ",
+    "answerAliases": [
+      "いろえんぴつ"
+    ],
+    "dummy1": "クレヨン",
+    "dummy2": "マーカー",
+    "dummy3": "絵の具"
+  },
+  {
+    "id": "tool-lv2-009",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはものをはかるどうぐだよ。おもさをはかるよ。いたにのせてめもりをよむよ。だーれだ？",
+    "hint1": "キッチンやりかのじかんによくつかうよ。",
+    "answer": "はかり",
+    "answerReading": "はかり",
+    "answerAliases": [
+      "秤",
+      "スケール",
+      "はかり"
+    ],
+    "dummy1": "ものさし",
+    "dummy2": "温度計",
+    "dummy3": "時計"
+  },
+  {
+    "id": "tool-lv2-010",
+    "genre": "道具",
+    "difficulty": 2,
+    "question": "わたしはてにもってつかうどうぐで、くぎをうちこんだりできるよ。ずっしりとおもいよ。だーれだ？",
+    "hint1": "かなづちとよばれることもあるよ。",
+    "answer": "ハンマー",
+    "answerReading": "はんまー",
+    "answerAliases": [
+      "かなづち",
+      "金槌"
+    ],
+    "dummy1": "スパナ",
+    "dummy2": "ドライバー",
+    "dummy3": "ペンチ"
+  },
+  {
+    "id": "tool-lv3-001",
+    "genre": "道具",
+    "difficulty": 3,
+    "question": "わたしはふたつのレンズを使って、遠くのものをちかくに見えるようにする道具だよ。山登りや野球観戦でつかわれるよ。だーれだ？",
+    "hint1": "「双眼鏡」と書くよ。",
+    "answer": "双眼鏡",
+    "answerReading": "そうがんきょう",
+    "answerAliases": [
+      "Binoculars"
+    ],
+    "dummy1": "望遠鏡",
+    "dummy2": "虫眼鏡",
+    "dummy3": "顕微鏡"
+  },
+  {
+    "id": "tool-lv3-002",
+    "genre": "道具",
+    "difficulty": 3,
+    "question": "わたしはものが小さく見える道具だよ。光を集めて虫や葉っぱなどを大きく見せるよ。一枚の凸レンズを使っているよ。だーれだ？",
+    "hint1": "「虫めがね」とも呼ばれるよ。",
+    "answer": "虫眼鏡",
+    "answerReading": "むしめがね",
+    "answerAliases": [
+      "ルーペ",
+      "拡大鏡"
+    ],
+    "dummy1": "双眼鏡",
+    "dummy2": "望遠鏡",
+    "dummy3": "顕微鏡"
+  },
+  {
+    "id": "tool-lv3-003",
+    "genre": "道具",
+    "difficulty": 3,
+    "question": "わたしは電気信号を音に変えるどうぐだよ。耳に当てて使い、音楽をきいたり、でんわの声をきくよ。だーれだ？",
+    "hint1": "ヘッドホンよりも小さいものもあるよ。",
+    "answer": "イヤホン",
+    "answerReading": "いやほん",
+    "answerAliases": [
+      "Earphone"
+    ],
+    "dummy1": "スピーカー",
+    "dummy2": "マイク",
+    "dummy3": "ヘッドホン"
+  },
+  {
+    "id": "tool-lv3-004",
+    "genre": "道具",
+    "difficulty": 3,
+    "question": "わたしはきを切るためのどうぐだよ。刃が細かくぎざぎざしていて、きりとるよ。だーれだ？",
+    "hint1": "「のこぎり」とも呼ばれるよ。",
+    "answer": "のこぎり",
+    "answerReading": "のこぎり",
+    "answerAliases": [
+      "鋸",
+      "Saw"
+    ],
+    "dummy1": "かんな",
+    "dummy2": "のみ",
+    "dummy3": "きり"
+  },
+  {
+    "id": "tool-lv3-005",
+    "genre": "道具",
+    "difficulty": 3,
+    "question": "わたしはおんどをしらべるためのどうぐだよ。ガラスのかんのなかに液体が入っていて、おんどがあがるとふくらんでみえるよ。だーれだ？",
+    "hint1": "ねつがあるときにつかうよ。",
+    "answer": "体温計",
+    "answerReading": "たいおんけい",
+    "answerAliases": [
+      "温度計",
+      "Thermometer"
+    ],
+    "dummy1": "血圧計",
+    "dummy2": "時計",
+    "dummy3": "はかり"
+  },
+  {
+    "id": "tool-lv4-001",
+    "genre": "道具",
+    "difficulty": 4,
+    "question": "わたしは気圧を測る道具で、天気予報に使われる。気圧が上がると天気が良くなり、下がると悪くなることが多い。だーれだ？",
+    "hint1": "「気圧計」とも呼ばれ、ヘクトパスカルという単位で測るよ。",
+    "answer": "気圧計",
+    "answerReading": "きあつけい",
+    "answerAliases": [
+      "バロメーター",
+      "Barometer"
+    ],
+    "dummy1": "湿度計",
+    "dummy2": "温度計",
+    "dummy3": "風速計"
+  },
+  {
+    "id": "tool-lv4-002",
+    "genre": "道具",
+    "difficulty": 4,
+    "question": "わたしは光の強さ（明るさ）を測る道具だ。写真を撮る前に正しい露出を設定するために使われる。カメラに内蔵されていることが多い。だーれだ？",
+    "hint1": "英語名はLight Meterといい、写真家がよく使うよ。",
+    "answer": "露出計",
+    "answerReading": "ろしゅつけい",
+    "answerAliases": [
+      "Light Meter",
+      "照度計"
+    ],
+    "dummy1": "測光計",
+    "dummy2": "分光計",
+    "dummy3": "光度計"
+  },
+  {
+    "id": "tool-lv4-003",
+    "genre": "道具",
+    "difficulty": 4,
+    "question": "わたしは磁北を指す道具で、登山や航海でよく使われる方向を知るための道具だ。赤い針が常に北を向くよ。だーれだ？",
+    "hint1": "地磁気を利用しており、電池が不要な便利な道具だよ。",
+    "answer": "コンパス",
+    "answerReading": "こんぱす",
+    "answerAliases": [
+      "方位磁針",
+      "磁気コンパス"
+    ],
+    "dummy1": "六分儀",
+    "dummy2": "GPS",
+    "dummy3": "地図"
+  },
+  {
+    "id": "tool-lv4-004",
+    "genre": "道具",
+    "difficulty": 4,
+    "question": "わたしは液体や気体の流れを計測する道具だ。流量計や流速計として工場や研究所で使われる。だーれだ？",
+    "hint1": "英語名はFlowmeterといい、水道や化学プラントで利用されるよ。",
+    "answer": "流量計",
+    "answerReading": "りゅうりょうけい",
+    "answerAliases": [
+      "Flowmeter",
+      "流速計"
+    ],
+    "dummy1": "圧力計",
+    "dummy2": "温度計",
+    "dummy3": "密度計"
+  },
+  {
+    "id": "tool-lv4-005",
+    "genre": "道具",
+    "difficulty": 4,
+    "question": "わたしはガラス管を使って液体を正確に量るための器具だ。滴下する液体の量を精密に制御できる。化学実験の滴定で使われる。だーれだ？",
+    "hint1": "「ビュレット」という名前で、容積の単位mLが目盛られているよ。",
+    "answer": "ビュレット",
+    "answerReading": "びゅれっと",
+    "answerAliases": [
+      "Burette"
+    ],
+    "dummy1": "メスシリンダー",
+    "dummy2": "ピペット",
+    "dummy3": "フラスコ"
+  },
+  {
+    "id": "tool-lv5-001",
+    "genre": "道具",
+    "difficulty": 5,
+    "question": "わたしは電気信号の波形を画面に表示する道具だ。電流の変化をリアルタイムで見られるため、電子機器の修理や開発に使われる。だーれだ？",
+    "hint1": "英語名はOscilloscopeといい、電子工学では必須の測定器だよ。",
+    "answer": "オシロスコープ",
+    "answerReading": "おしろすこーぷ",
+    "answerAliases": [
+      "Oscilloscope"
+    ],
+    "dummy1": "マルチメーター",
+    "dummy2": "スペクトラムアナライザー",
+    "dummy3": "シグナルジェネレーター"
+  },
+  {
+    "id": "tool-lv5-002",
+    "genre": "道具",
+    "difficulty": 5,
+    "question": "わたしは光を用いて微生物や細胞など非常に小さなものを拡大して観察する道具だ。最大で約1500倍まで拡大できるよ。だーれだ？",
+    "hint1": "「光学顕微鏡」とも呼ばれ、学校の理科室でもよく使われるよ。",
+    "answer": "顕微鏡",
+    "answerReading": "けんびきょう",
+    "answerAliases": [
+      "光学顕微鏡",
+      "Microscope"
+    ],
+    "dummy1": "望遠鏡",
+    "dummy2": "電子顕微鏡",
+    "dummy3": "虫眼鏡"
+  },
+  {
+    "id": "tool-lv5-003",
+    "genre": "道具",
+    "difficulty": 5,
+    "question": "わたしは音波を使って物体の形や位置を検出する装置だ。魚群探知機や医療の超音波検査など様々な分野で使われる。だーれだ？",
+    "hint1": "英語名はSONAR（Sound Navigation And Ranging）といい、潜水艦でも使われるよ。",
+    "answer": "ソナー",
+    "answerReading": "そなー",
+    "answerAliases": [
+      "SONAR",
+      "音響測深機"
+    ],
+    "dummy1": "レーダー",
+    "dummy2": "GPS",
+    "dummy3": "超音波装置"
+  },
+  {
+    "id": "tool-lv5-004",
+    "genre": "道具",
+    "difficulty": 5,
+    "question": "わたしは電圧・電流・抵抗などを1台で測定できる万能電気測定器だ。修理や電子工作では欠かせない道具だ。だーれだ？",
+    "hint1": "「テスター」とも呼ばれ、デジタルと アナログの2種類があるよ。",
+    "answer": "マルチメーター",
+    "answerReading": "まるちめーたー",
+    "answerAliases": [
+      "テスター",
+      "Multimeter"
+    ],
+    "dummy1": "オシロスコープ",
+    "dummy2": "電流計",
+    "dummy3": "電圧計"
+  },
+  {
+    "id": "tool-lv5-005",
+    "genre": "道具",
+    "difficulty": 5,
+    "question": "わたしは二点間の距離を精密に測るノギス型の計測器で、0.01mmの精度まで測れる。工業製品の製造現場で広く使われる。だーれだ？",
+    "hint1": "「マイクロメーター」とも呼ばれることがあるが、ノギスより精密なのがわたしだよ。",
+    "answer": "マイクロメーター",
+    "answerReading": "まいくろめーたー",
+    "answerAliases": [
+      "Micrometer"
+    ],
+    "dummy1": "ノギス",
+    "dummy2": "ダイヤルゲージ",
+    "dummy3": "ハイトゲージ"
+  },
+  {
+    "id": "tool-lv6-003",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは光を特定の波長に分解する装置で、物質の組成を調べるために使われる。プリズムや回折格子を使って光を虹のように分けるよ。だーれだ？",
+    "hint1": "英語名はSpectroscopeまたはSpectrometerといい、天文学や化学分析に使われるよ。",
+    "answer": "分光器",
+    "answerReading": "ぶんこうき",
+    "answerAliases": [
+      "分光計",
+      "Spectroscope",
+      "Spectrometer"
+    ],
+    "dummy1": "偏光板",
+    "dummy2": "回折格子",
+    "dummy3": "フィルター"
+  },
+  {
+    "id": "tool-lv6-004",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは電子を用いて非常に小さなものを観察する顕微鏡だ。光学顕微鏡の限界を超えた100万倍以上の倍率で原子レベルの構造まで見ることができる。だーれだ？",
+    "hint1": "英語名はElectron Microscopeといい、生物学や材料科学の研究に不可欠だよ。",
+    "answer": "電子顕微鏡",
+    "answerReading": "でんしけんびきょう",
+    "answerAliases": [
+      "Electron Microscope",
+      "TEM",
+      "SEM"
+    ],
+    "dummy1": "光学顕微鏡",
+    "dummy2": "X線装置",
+    "dummy3": "原子間力顕微鏡"
+  },
+  {
+    "id": "tool-lv6-005",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは実験室で微量の液体を正確に移動させるために使う器具だ。先端にチップを取り付け、容量を設定してピストン操作で液体を吸い取って別の容器に移す。だーれだ？",
+    "hint1": "英語名はMicropipetteといい、DNA実験などで必須の道具だよ。",
+    "answer": "マイクロピペット",
+    "answerReading": "まいくろぴぺっと",
+    "answerAliases": [
+      "Micropipette"
+    ],
+    "dummy1": "ピペット",
+    "dummy2": "ビュレット",
+    "dummy3": "スポイト"
+  },
+  {
+    "id": "tool-lv6-006",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは地震波を記録する装置で、地震の大きさや震源地を調べるために使われる。地面の揺れをグラフとして記録する。だーれだ？",
+    "hint1": "英語名はSeismographといい、全国の観測点に設置されているよ。",
+    "answer": "地震計",
+    "answerReading": "じしんけい",
+    "answerAliases": [
+      "地震儀",
+      "Seismograph",
+      "Seismometer"
+    ],
+    "dummy1": "気圧計",
+    "dummy2": "風速計",
+    "dummy3": "重力計"
+  },
+  {
+    "id": "tool-lv6-007",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは磁場の強さや方向を測定する装置だ。地磁気の調査や材料の磁気特性を調べるために使われる。だーれだ？",
+    "hint1": "英語名はMagnetometerといい、考古学での埋没物探査にも使われるよ。",
+    "answer": "磁力計",
+    "answerReading": "じりょくけい",
+    "answerAliases": [
+      "Magnetometer"
+    ],
+    "dummy1": "電流計",
+    "dummy2": "磁気コンパス",
+    "dummy3": "ガウスメーター"
+  },
+  {
+    "id": "tool-lv6-008",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは放射線（アルファ線・ベータ線・ガンマ線）の量を測定する装置だ。「カチカチ」という音が放射線の検出をしめす。だーれだ？",
+    "hint1": "「ガイガーカウンター」という名前でよく知られているよ。",
+    "answer": "ガイガーカウンター",
+    "answerReading": "がいがーかうんたー",
+    "answerAliases": [
+      "Geiger counter",
+      "放射線測定器"
+    ],
+    "dummy1": "線量計",
+    "dummy2": "シンチレーター",
+    "dummy3": "電離箱"
+  },
+  {
+    "id": "tool-lv6-009",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは気体中の成分を分析する装置だ。空気汚染の測定や工場の排気ガスの分析に使われる。異なる成分を分離して定量する。だーれだ？",
+    "hint1": "英語名はGas Chromatographといい、食品の香り成分の分析にも使われるよ。",
+    "answer": "ガスクロマトグラフ",
+    "answerReading": "がすくろまとぐらふ",
+    "answerAliases": [
+      "GC",
+      "Gas Chromatograph"
+    ],
+    "dummy1": "質量分析計",
+    "dummy2": "分光計",
+    "dummy3": "液体クロマトグラフ"
+  },
+  {
+    "id": "tool-lv6-010",
+    "genre": "道具",
+    "difficulty": 6,
+    "question": "わたしは潜水艦や宇宙船などの密閉空間で空気圧を調整する弁だ。内外の気圧差を制御することで人が安全に出入りできるようにする。だーれだ？",
+    "hint1": "「エアロック」とも呼ばれ、宇宙空間への船外活動の前後に使われるよ。",
+    "answer": "エアロック",
+    "answerReading": "えあろっく",
+    "answerAliases": [
+      "Air Lock",
+      "気密室"
+    ],
+    "dummy1": "ハッチ",
+    "dummy2": "バルブ",
+    "dummy3": "ゲート"
+  },
+  {
+    "id": "tool-lv7-003",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは核磁気共鳴現象を利用して物質の構造を調べる装置だ。医療分野ではMRIとして人体の断面画像を撮影するのに使われる。だーれだ？",
+    "hint1": "英語名はNMR（Nuclear Magnetic Resonance）といい、化学では分子構造の決定に不可欠だよ。",
+    "answer": "核磁気共鳴装置",
+    "answerReading": "かくじききょうめいそうち",
+    "answerAliases": [
+      "NMR",
+      "MRI",
+      "Nuclear Magnetic Resonance"
+    ],
+    "dummy1": "X線装置",
+    "dummy2": "CT装置",
+    "dummy3": "超音波装置"
+  },
+  {
+    "id": "tool-lv7-004",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしはX線を使って物体の内部構造を調べる装置で、空港の手荷物検査でもよく使われる。骨の骨折なども見ることができる。だーれだ？",
+    "hint1": "レントゲン（Wilhelm Röntgen）が1895年に発見したX線を利用しているよ。",
+    "answer": "X線装置",
+    "answerReading": "えっくすせんそうち",
+    "answerAliases": [
+      "レントゲン装置",
+      "X-ray machine"
+    ],
+    "dummy1": "超音波装置",
+    "dummy2": "MRI",
+    "dummy3": "CTスキャナー"
+  },
+  {
+    "id": "tool-lv7-005",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは粒子を高速に加速する大型実験装置だ。陽子などの素粒子を光速に近い速さで衝突させ、新しい粒子や現象を観測する。スイスのCERNにある最大のものは周囲27kmもある。だーれだ？",
+    "hint1": "「大型ハドロン衝突型加速器（LHC）」が最も有名で、ヒッグス粒子の発見に貢献したよ。",
+    "answer": "粒子加速器",
+    "answerReading": "りゅうしかそくき",
+    "answerAliases": [
+      "加速器",
+      "LHC",
+      "Particle Accelerator"
+    ],
+    "dummy1": "核融合炉",
+    "dummy2": "シンクロトロン",
+    "dummy3": "サイクロトロン"
+  },
+  {
+    "id": "tool-lv7-006",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは超低温（絶対零度付近）で物質を冷却するための装置だ。液体ヘリウムを使って4K（−269℃）以下まで冷却でき、量子コンピュータの研究などに使われる。だーれだ？",
+    "hint1": "英語名はDilution Refrigeratorといい、超伝導体の研究に欠かせないよ。",
+    "answer": "希釈冷凍機",
+    "answerReading": "きしゃくれいとうき",
+    "answerAliases": [
+      "Dilution Refrigerator",
+      "極低温冷凍機"
+    ],
+    "dummy1": "ヘリウム液化機",
+    "dummy2": "クライオスタット",
+    "dummy3": "超伝導マグネット"
+  },
+  {
+    "id": "tool-lv7-007",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは電子ビームを使って材料の表面を原子レベルで観察・加工できる装置だ。半導体チップの製造工程でも使われる。だーれだ？",
+    "hint1": "英語名はFocused Ion Beam（FIB）またはScanning Electron Microscope（SEM）と組み合わせて使われるよ。",
+    "answer": "走査型電子顕微鏡",
+    "answerReading": "そうさがたでんしけんびきょう",
+    "answerAliases": [
+      "SEM",
+      "Scanning Electron Microscope"
+    ],
+    "dummy1": "透過型電子顕微鏡",
+    "dummy2": "原子間力顕微鏡",
+    "dummy3": "トンネル顕微鏡"
+  },
+  {
+    "id": "tool-lv7-008",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは土地の高低差や距離を精密に測量する装置だ。レーザーで距離と角度を同時に測定し、3Dデータを作成できる。建設や測量の現場で使われる。だーれだ？",
+    "hint1": "英語名はTotal Stationまたは3D Laser Scannerといい、従来のトランシットや水準器より高精度だよ。",
+    "answer": "トータルステーション",
+    "answerReading": "とーたるすてーしょん",
+    "answerAliases": [
+      "Total Station"
+    ],
+    "dummy1": "水準器",
+    "dummy2": "トランシット",
+    "dummy3": "レベル"
+  },
+  {
+    "id": "tool-lv7-009",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしは生体認証の一種で、眼球の虹彩（こうさい）のパターンを読み取って個人を識別する装置だ。指紋より精度が高いとされる。だーれだ？",
+    "hint1": "英語名はIris Recognition Systemといい、パスポート管理や入退室管理に使われるよ。",
+    "answer": "虹彩認証装置",
+    "answerReading": "こうさいにんしょうそうち",
+    "answerAliases": [
+      "Iris Recognition",
+      "アイリス認証"
+    ],
+    "dummy1": "指紋認証装置",
+    "dummy2": "静脈認証装置",
+    "dummy3": "顔認証装置"
+  },
+  {
+    "id": "tool-lv7-010",
+    "genre": "道具",
+    "difficulty": 7,
+    "question": "わたしはデオキシリボ核酸（DNA）の塩基配列を高速で読み取る装置だ。次世代シーケンサーと呼ばれる最新型は1台でヒトゲノム全体を数時間で解読できる。だーれだ？",
+    "hint1": "英語名はDNA Sequencerといい、医療・法医学・農業など様々な分野で革命を起こしているよ。",
+    "answer": "DNAシーケンサー",
+    "answerReading": "でぃーえぬえーしーけんさー",
+    "answerAliases": [
+      "DNA Sequencer",
+      "次世代シーケンサー"
+    ],
+    "dummy1": "PCR装置",
+    "dummy2": "電気泳動装置",
+    "dummy3": "遠心分離機"
+  },
+  {
+    "id": "tool-lv8-001",
+    "genre": "道具",
+    "difficulty": 8,
+    "question": "わたしは原子力発電所などで使われる装置で、核分裂連鎖反応を制御しながら熱エネルギーを取り出す。だーれだ？",
+    "hint1": "英語名はNuclear Reactorといい、制御棒を使って核反応の速さを調整するよ。",
+    "answer": "原子炉",
+    "answerReading": "げんしろ",
+    "answerAliases": [
+      "Nuclear Reactor",
+      "原子力炉"
+    ],
+    "dummy1": "核融合炉",
+    "dummy2": "タービン",
+    "dummy3": "蒸気発生器"
+  },
+  {
+    "id": "tool-lv8-002",
+    "genre": "道具",
+    "difficulty": 8,
+    "question": "わたしはレーザー光を使って物質の温度を下げ、絶対零度に近い超低温状態にする技術に使われる装置だ。原子の動きをほぼ止めることができる。だーれだ？",
+    "hint1": "「レーザー冷却装置」とも呼ばれ、原子時計や量子コンピュータの研究に使われるよ。",
+    "answer": "レーザー冷却装置",
+    "answerReading": "れーざーれいきゃくそうち",
+    "answerAliases": [
+      "Laser Cooling Apparatus",
+      "磁気光学トラップ"
+    ],
+    "dummy1": "希釈冷凍機",
+    "dummy2": "超伝導マグネット",
+    "dummy3": "クライオスタット"
+  },
+  {
+    "id": "tool-lv8-003",
+    "genre": "道具",
+    "difficulty": 8,
+    "question": "わたしは宇宙から地球を観測するために使われる大型望遠鏡だ。大気の揺らぎの影響を受けずに、可視光線から赤外線まで鮮明な画像を撮影できる。だーれだ？",
+    "hint1": "「ハッブル宇宙望遠鏡」が最も有名で、宇宙の深遠を撮影した画像で知られているよ。",
+    "answer": "宇宙望遠鏡",
+    "answerReading": "うちゅうぼうえんきょう",
+    "answerAliases": [
+      "ハッブル宇宙望遠鏡",
+      "Space Telescope"
+    ],
+    "dummy1": "電波望遠鏡",
+    "dummy2": "地上望遠鏡",
+    "dummy3": "赤外線望遠鏡"
+  },
+  {
+    "id": "tool-lv8-004",
+    "genre": "道具",
+    "difficulty": 8,
+    "question": "わたしは電子の量子効果（トンネル効果）を利用して、原子レベルの凹凸を画像化できる顕微鏡だ。探針を表面に非常に近づけ、電流の変化で形状を計測する。だーれだ？",
+    "hint1": "英語名はSTM（Scanning Tunneling Microscope）といい、1981年にビーニッヒとローラーが発明し、ノーベル賞を受賞したよ。",
+    "answer": "走査型トンネル顕微鏡",
+    "answerReading": "そうさがたとんねるけんびきょう",
+    "answerAliases": [
+      "STM",
+      "Scanning Tunneling Microscope"
+    ],
+    "dummy1": "原子間力顕微鏡",
+    "dummy2": "走査型電子顕微鏡",
+    "dummy3": "近接場光学顕微鏡"
+  },
+  {
+    "id": "tool-lv8-005",
+    "genre": "道具",
+    "difficulty": 8,
+    "question": "わたしはタンパク質や核酸などの巨大分子の三次元構造を原子分解能で決定できる装置だ。X線を結晶に照射して得られる回折パターンから構造を解析する。だーれだ？",
+    "hint1": "英語名はX-ray Crystallographyといい、DNAの二重らせん構造の発見にも大きく貢献したよ。",
+    "answer": "X線結晶解析装置",
+    "answerReading": "えっくすせんけっしょうかいせきそうち",
+    "answerAliases": [
+      "X線結晶学",
+      "X-ray Crystallography"
+    ],
+    "dummy1": "電子顕微鏡",
+    "dummy2": "NMR装置",
+    "dummy3": "クライオ電子顕微鏡"
+  },
+  {
+    "id": "tool-lv9-001",
+    "genre": "道具",
+    "difficulty": 9,
+    "question": "わたしはナノスケール（10億分の1メートル）の微細加工を行える装置で、集積回路の製造に使われる。紫外線や電子ビームを使ってシリコンウェーハに回路パターンを焼き付ける。だーれだ？",
+    "hint1": "英語名はPhotolithography Machineまたはステッパーといい、現代のスマートフォンチップの製造に不可欠だよ。",
+    "answer": "リソグラフィー装置",
+    "answerReading": "りそぐらふぃーそうち",
+    "answerAliases": [
+      "Lithography Machine",
+      "ステッパー",
+      "EUVリソグラフィー"
+    ],
+    "dummy1": "電子ビーム蒸着装置",
+    "dummy2": "スパッタリング装置",
+    "dummy3": "CVD装置"
+  },
+  {
+    "id": "tool-lv9-002",
+    "genre": "道具",
+    "difficulty": 9,
+    "question": "わたしは光の量子性（光子の偏光）を利用して理論上絶対に解読できない暗号通信を実現する装置だ。だーれだ？",
+    "hint1": "英語名はQuantum Key Distribution（QKD）Deviceといい、量子力学の不確定性原理が盗聴を不可能にするよ。",
+    "answer": "量子暗号装置",
+    "answerReading": "りょうしあんごうそうち",
+    "answerAliases": [
+      "QKD装置",
+      "Quantum Cryptography Device"
+    ],
+    "dummy1": "量子コンピュータ",
+    "dummy2": "量子センサー",
+    "dummy3": "量子メモリ"
+  },
+  {
+    "id": "tool-lv9-003",
+    "genre": "道具",
+    "difficulty": 9,
+    "question": "わたしは反物質（陽電子・反陽子など）を生成・保存する装置だ。1997年にCERNで反水素原子の合成に成功した。反物質と通常物質が接触するとエネルギーに変換される。だーれだ？",
+    "hint1": "英語名はAntiparticle Trapといい、「ペニングトラップ」という磁場と電場の組み合わせで反物質を捕捉するよ。",
+    "answer": "反粒子トラップ",
+    "answerReading": "はんりゅうしとらっぷ",
+    "answerAliases": [
+      "ペニングトラップ",
+      "Penning Trap",
+      "Antiparticle Trap"
+    ],
+    "dummy1": "粒子加速器",
+    "dummy2": "質量分析計",
+    "dummy3": "イオントラップ"
+  },
+  {
+    "id": "tool-lv9-004",
+    "genre": "道具",
+    "difficulty": 9,
+    "question": "わたしは重力波（時空のゆがみの波）を検出するための巨大なレーザー干渉計だ。アメリカのLIGOや日本のKAGRAなどがあり、4kmのアームを持つものもある。だーれだ？",
+    "hint1": "2015年にLIGOが初めて重力波の直接検出に成功し、アインシュタインの一般相対性理論を実証したよ。",
+    "answer": "重力波検出器",
+    "answerReading": "じゅうりょくはけんしゅつき",
+    "answerAliases": [
+      "LIGO",
+      "KAGRA",
+      "Gravitational Wave Detector"
+    ],
+    "dummy1": "干渉計",
+    "dummy2": "電波望遠鏡",
+    "dummy3": "宇宙望遠鏡"
+  },
+  {
+    "id": "tool-lv9-005",
+    "genre": "道具",
+    "difficulty": 9,
+    "question": "わたしは超伝導量子ビット（キュービット）を使ったコンピュータで、特定の計算問題では従来のコンピュータを指数関数的に超える性能を持つとされる。だーれだ？",
+    "hint1": "GoogleやIBM、D-Waveなどが開発を進めており、2019年にGoogleが「量子超越性」を実証したよ。",
+    "answer": "量子コンピュータ",
+    "answerReading": "りょうしこんぴゅーた",
+    "answerAliases": [
+      "Quantum Computer"
+    ],
+    "dummy1": "スーパーコンピュータ",
+    "dummy2": "ニューロモーフィックチップ",
+    "dummy3": "光コンピュータ"
+  },
+  {
+    "id": "tool-lv10-001",
+    "genre": "道具",
+    "difficulty": 10,
+    "question": "わたしはプラズマを磁場で閉じ込め、核融合反応を起こして膨大なエネルギーを取り出すことを目指した実験装置だ。トカマク型が代表的で、フランスに建設中のITERが世界最大だ。だーれだ？",
+    "hint1": "「太陽と同じ反応」を地上で再現しようとしており、実現すれば無尽蔵のクリーンエネルギーが得られるよ。",
+    "answer": "核融合炉",
+    "answerReading": "かくゆうごうろ",
+    "answerAliases": [
+      "トカマク",
+      "ITER",
+      "Fusion Reactor"
+    ],
+    "dummy1": "原子炉",
+    "dummy2": "プラズマ加速器",
+    "dummy3": "シンクロトロン"
+  },
+  {
+    "id": "tool-lv10-002",
+    "genre": "道具",
+    "difficulty": 10,
+    "question": "わたしはブラックホールや中性子星などの極端な重力場の近くでの物理を調べるために必要な、一般相対性理論と量子力学を統合しようとする理論の実験的検証に使われる装置の総称だ。だーれだ？",
+    "hint1": "この研究を行うための実験装置の例としては、パルサータイミングアレイ（PTA）がある。巨大電波望遠鏡網を使って高精度の時計として機能するパルサーを監視するよ。",
+    "answer": "パルサータイミングアレイ",
+    "answerReading": "ぱるさーたいみんぐあれい",
+    "answerAliases": [
+      "PTA",
+      "Pulsar Timing Array"
+    ],
+    "dummy1": "重力波検出器",
+    "dummy2": "X線天文衛星",
+    "dummy3": "電波望遠鏡"
+  },
+  {
+    "id": "tool-lv10-003",
+    "genre": "道具",
+    "difficulty": 10,
+    "question": "わたしはタンパク質を急速凍結してクライオ電子顕微鏡（cryo-EM）で観察できる状態にする際に使う超高速凍結装置だ。液体エタンを使ってタンパク質のサンプルをガラス状（アモルファス）に凍結する。だーれだ？",
+    "hint1": "英語名はPlunge Freezerといい、クライオEM革命の立役者となった前処理装置だよ。",
+    "answer": "プランジフリーザー",
+    "answerReading": "ぷらんじふりーざー",
+    "answerAliases": [
+      "Plunge Freezer",
+      "急速凍結装置"
+    ],
+    "dummy1": "クライオスタット",
+    "dummy2": "希釈冷凍機",
+    "dummy3": "凍結乾燥機"
+  },
+  {
+    "id": "tool-lv10-004",
+    "genre": "道具",
+    "difficulty": 10,
+    "question": "わたしは原子時計の一種で、セシウム原子の電子遷移を基準に1秒の長さを定義する装置だ。3000万年に1秒しかずれない精度を持ち、GPS衛星にも搭載されている。だーれだ？",
+    "hint1": "1967年のSI単位系の改定で、セシウム133の放射周波数9192631770Hzが1秒の定義となったよ。",
+    "answer": "セシウム原子時計",
+    "answerReading": "せしうむげんしどけい",
+    "answerAliases": [
+      "Cesium Atomic Clock",
+      "原子時計"
+    ],
+    "dummy1": "光格子時計",
+    "dummy2": "水素メーザー",
+    "dummy3": "クォーツ時計"
+  },
+  {
+    "id": "tool-lv10-005",
+    "genre": "道具",
+    "difficulty": 10,
+    "question": "わたしはDNAや細胞などの生物学的サンプルを超高解像度で観察できる顕微鏡で、回折限界を超えた10nm以下の解像度を実現する。2014年のノーベル化学賞の対象になった技術に基づく。だーれだ？",
+    "hint1": "英語名はSTED（Stimulated Emission Depletion）MicroscopyまたはSTORM、PALMなどの超解像顕微鏡だよ。",
+    "answer": "超解像顕微鏡",
+    "answerReading": "ちょうかいぞうけんびきょう",
+    "answerAliases": [
+      "STED顕微鏡",
+      "超解像蛍光顕微鏡",
+      "Super-Resolution Microscopy"
+    ],
+    "dummy1": "共焦点顕微鏡",
+    "dummy2": "走査型トンネル顕微鏡",
+    "dummy3": "原子間力顕微鏡"
   }
 ]

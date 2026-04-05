@@ -313,5 +313,788 @@
     "dummy1": "ユーカリ",
     "dummy2": "チーク",
     "dummy3": "マホガニー"
+  },
+  {
+    "id": "plant-lv2-006",
+    "genre": "植物",
+    "difficulty": 2,
+    "question": "わたしは春に白い花を咲かせ、夏には赤い実がなるよ。実は甘くてジュースやジャムにもなるよ。だーれだ？",
+    "hint1": "イチゴよりも小さくて丸い赤い実がなるよ。",
+    "answer": "サクランボ",
+    "answerReading": "さくらんぼ",
+    "answerAliases": [
+      "桜桃",
+      "チェリー"
+    ],
+    "dummy1": "ウメ",
+    "dummy2": "モモ",
+    "dummy3": "スモモ"
+  },
+  {
+    "id": "plant-lv2-007",
+    "genre": "植物",
+    "difficulty": 2,
+    "question": "わたしは川の近くや湿地に生えるよ。葉がとても長くてほそく、ちくわのような茶色い穂をつけるよ。だーれだ？",
+    "hint1": "「ガマの穂」として知られ、フワフワした穂から綿毛が飛んでいくよ。",
+    "answer": "ガマ",
+    "answerReading": "がま",
+    "answerAliases": [
+      "蒲",
+      "ガマノホ"
+    ],
+    "dummy1": "アシ",
+    "dummy2": "スゲ",
+    "dummy3": "ハス"
+  },
+  {
+    "id": "plant-lv2-008",
+    "genre": "植物",
+    "difficulty": 2,
+    "question": "わたしは秋に赤や黄色に色づいて美しい景色をつくるよ。春には小さな花が咲き、プロペラのような種が風に乗って飛ぶよ。だーれだ？",
+    "hint1": "秋の紅葉の代表的な木の一つで、手のひらに似た形の葉を持つよ。",
+    "answer": "カエデ",
+    "answerReading": "かえで",
+    "answerAliases": [
+      "楓",
+      "もみじ"
+    ],
+    "dummy1": "イチョウ",
+    "dummy2": "ケヤキ",
+    "dummy3": "ナナカマド"
+  },
+  {
+    "id": "plant-lv2-009",
+    "genre": "植物",
+    "difficulty": 2,
+    "question": "わたしは秋に甘い香りの小さなオレンジ色の花をたくさん咲かせるよ。においがとても遠くまで届くよ。だーれだ？",
+    "hint1": "「金木犀」と書くよ。中国原産の木で、日本の秋の代名詞のひとつだよ。",
+    "answer": "キンモクセイ",
+    "answerReading": "きんもくせい",
+    "answerAliases": [
+      "金木犀"
+    ],
+    "dummy1": "ジャスミン",
+    "dummy2": "ライラック",
+    "dummy3": "クチナシ"
+  },
+  {
+    "id": "plant-lv2-010",
+    "genre": "植物",
+    "difficulty": 2,
+    "question": "わたしは山や野原に生えるシダの仲間だよ。春に渦巻き状の若芽（ワラビ）を出すよ。山菜として食べられるよ。だーれだ？",
+    "hint1": "若い葉を茹でてアク抜きして食べるよ。",
+    "answer": "ワラビ",
+    "answerReading": "わらび",
+    "answerAliases": [
+      "蕨"
+    ],
+    "dummy1": "ゼンマイ",
+    "dummy2": "タラノメ",
+    "dummy3": "ウド"
+  },
+  {
+    "id": "plant-lv3-001",
+    "genre": "植物",
+    "difficulty": 3,
+    "question": "わたしは春に黄色い花を咲かせるアブラナ科の植物だよ。畑や河原に群生して黄色い絨毯のような景色をつくるよ。だーれだ？",
+    "hint1": "「菜の花」とも呼ばれ、種から菜種油がとれるよ。",
+    "answer": "ナノハナ",
+    "answerReading": "なのはな",
+    "answerAliases": [
+      "菜の花",
+      "アブラナ"
+    ],
+    "dummy1": "タンポポ",
+    "dummy2": "キクイモ",
+    "dummy3": "コスモス"
+  },
+  {
+    "id": "plant-lv3-002",
+    "genre": "植物",
+    "difficulty": 3,
+    "question": "わたしは夏に大きなラッパ型の白い花を咲かせる植物だよ。夕方から夜に花が開いて、朝になると閉じるよ。種はとても毒が強いよ。だーれだ？",
+    "hint1": "「曼荼羅華」とも呼ばれ、麻酔薬の原料として使われたこともあるよ。",
+    "answer": "チョウセンアサガオ",
+    "answerReading": "ちょうせんあさがお",
+    "answerAliases": [
+      "朝鮮朝顔",
+      "ダチュラ"
+    ],
+    "dummy1": "ヒルガオ",
+    "dummy2": "ヨルガオ",
+    "dummy3": "ノアサガオ"
+  },
+  {
+    "id": "plant-lv3-003",
+    "genre": "植物",
+    "difficulty": 3,
+    "question": "わたしはサボテンの仲間だが、葉っぱのような扁平な茎を持つよ。砂漠ではなく熱帯雨林の木の上で育つよ。冬にきれいな花を咲かせることが多いよ。だーれだ？",
+    "hint1": "「シャコバサボテン」とも呼ばれ、クリスマスの時期に花を咲かせるものもあるよ。",
+    "answer": "シャコバサボテン",
+    "answerReading": "しゃこばさぼてん",
+    "answerAliases": [
+      "蝦蛄葉サボテン",
+      "クリスマスカクタス"
+    ],
+    "dummy1": "エケベリア",
+    "dummy2": "アロエ",
+    "dummy3": "センペルビウム"
+  },
+  {
+    "id": "plant-lv3-004",
+    "genre": "植物",
+    "difficulty": 3,
+    "question": "わたしは日本の山地や湿地に自生するユリ科の植物だよ。夏に下向きに咲くオレンジ色の花がきれいだよ。花びらに黒い斑点があるよ。だーれだ？",
+    "hint1": "「鬼百合」と書くよ。",
+    "answer": "オニユリ",
+    "answerReading": "おにゆり",
+    "answerAliases": [
+      "鬼百合"
+    ],
+    "dummy1": "ヤマユリ",
+    "dummy2": "カノコユリ",
+    "dummy3": "テッポウユリ"
+  },
+  {
+    "id": "plant-lv3-005",
+    "genre": "植物",
+    "difficulty": 3,
+    "question": "わたしはアマゾン川に生息する世界最大の浮葉植物だよ。葉の直径は3メートルを超えることもあり、子供が乗っても沈まないほど大きいよ。だーれだ？",
+    "hint1": "英語名はGiant Water Lilyといい、夏に白やピンクの大きな花を咲かせるよ。",
+    "answer": "オオオニバス",
+    "answerReading": "おおおにばす",
+    "answerAliases": [
+      "大鬼蓮",
+      "Victoria amazonica"
+    ],
+    "dummy1": "スイレン",
+    "dummy2": "ハス",
+    "dummy3": "コウホネ"
+  },
+  {
+    "id": "plant-lv4-001",
+    "genre": "植物",
+    "difficulty": 4,
+    "question": "わたしは日本特産のヒノキ科の巨木で、屋久島に生育する個体が有名だ。樹齢が数千年に及ぶものもあり、日本最大級の巨木の一つに数えられる。だーれだ？",
+    "hint1": "「縄文杉」と呼ばれる個体が屋久島にあり、樹齢7200年とも言われるよ。",
+    "answer": "ヤクスギ",
+    "answerReading": "やくすぎ",
+    "answerAliases": [
+      "屋久杉",
+      "スギ"
+    ],
+    "dummy1": "ヒノキ",
+    "dummy2": "ヒバ",
+    "dummy3": "カラマツ"
+  },
+  {
+    "id": "plant-lv4-002",
+    "genre": "植物",
+    "difficulty": 4,
+    "question": "わたしは南米の熱帯に自生するヤシの仲間で、葉の長さが世界最大になるといわれる。一枚の葉が25メートルを超えることもあるよ。だーれだ？",
+    "hint1": "学名はRaphia regalisといい、ラフィアヤシとも呼ばれるよ。",
+    "answer": "ラフィアヤシ",
+    "answerReading": "らふぃあやし",
+    "answerAliases": [
+      "Raphia regalis"
+    ],
+    "dummy1": "ナツメヤシ",
+    "dummy2": "ビンロウジュ",
+    "dummy3": "ワシントンヤシ"
+  },
+  {
+    "id": "plant-lv4-003",
+    "genre": "植物",
+    "difficulty": 4,
+    "question": "わたしは食虫植物で、地面に這うような形で葉を広げて虫を捕まえるよ。葉の表面に細かい毛がたくさん生えていて、虫が触れると毛が折れ曲がって虫を包み込む。だーれだ？",
+    "hint1": "英語名はSundewといい、露のような粘液が光に輝いて見えることが名前の由来だよ。",
+    "answer": "モウセンゴケ",
+    "answerReading": "もうせんごけ",
+    "answerAliases": [
+      "毛氈苔",
+      "Sundew"
+    ],
+    "dummy1": "ハエトリソウ",
+    "dummy2": "タヌキモ",
+    "dummy3": "ムシトリスミレ"
+  },
+  {
+    "id": "plant-lv4-004",
+    "genre": "植物",
+    "difficulty": 4,
+    "question": "わたしは北アメリカ東部原産の食虫植物で、ハサミのような葉が素早く閉じて虫を捕まえる。葉の内側に感覚毛があり、2回触られると閉じる仕組みになっている。だーれだ？",
+    "hint1": "英語名はVenus Flytrapといい、日本でも人気の食虫植物だよ。",
+    "answer": "ハエトリソウ",
+    "answerReading": "はえとりそう",
+    "answerAliases": [
+      "蠅捕草",
+      "Venus Flytrap"
+    ],
+    "dummy1": "モウセンゴケ",
+    "dummy2": "ウツボカズラ",
+    "dummy3": "サラセニア"
+  },
+  {
+    "id": "plant-lv4-005",
+    "genre": "植物",
+    "difficulty": 4,
+    "question": "わたしはトウモロコシの仲間だが、穂が赤黒い色をしていてとても個性的な外見をしている。工芸品や飾り物に使われることが多い。だーれだ？",
+    "hint1": "英語名はIndian Cornまたはornamental cornといい、様々な色の粒が混じっているよ。",
+    "answer": "カラスムギ",
+    "answerReading": "からすむぎ",
+    "answerAliases": [
+      "観賞用トウモロコシ",
+      "インディアンコーン"
+    ],
+    "dummy1": "タカキビ",
+    "dummy2": "アワ",
+    "dummy3": "ヒエ"
+  },
+  {
+    "id": "plant-lv5-001",
+    "genre": "植物",
+    "difficulty": 5,
+    "question": "わたしは世界で最も背が高くなる植物で、100メートルを超えることもある。北米のカリフォルニア州の海岸沿いに生育し、霧の水分を葉で受け止めて根に送り込む仕組みを持つ。だーれだ？",
+    "hint1": "英語名はCoast Redwoodといい、学名はSequoia sempervirensだよ。",
+    "answer": "セコイア",
+    "answerReading": "せこいあ",
+    "answerAliases": [
+      "セコイアスギ",
+      "Coast Redwood",
+      "Sequoia sempervirens"
+    ],
+    "dummy1": "ジャイアントセコイア",
+    "dummy2": "ダグラスファー",
+    "dummy3": "シトカトウヒ"
+  },
+  {
+    "id": "plant-lv5-002",
+    "genre": "植物",
+    "difficulty": 5,
+    "question": "わたしは南アフリカ原産の植物で、「石のような葉」を持つ多肉植物だ。砂漠の小石に完璧に擬態していて、花が咲くまで石と見分けがつかないほどだ。だーれだ？",
+    "hint1": "英語名はLiving Stonesといい、リトープスという名前で知られるよ。",
+    "answer": "リトープス",
+    "answerReading": "りとーぷす",
+    "answerAliases": [
+      "Lithops",
+      "石の花",
+      "生きている石"
+    ],
+    "dummy1": "エケベリア",
+    "dummy2": "ハオルチア",
+    "dummy3": "コノフィツム"
+  },
+  {
+    "id": "plant-lv5-003",
+    "genre": "植物",
+    "difficulty": 5,
+    "question": "わたしはナミビアの砂漠に生息する世界最長寿の植物の一つで、たった2枚の葉が一生涯伸び続ける。樹齢が1500年を超えるものもある。だーれだ？",
+    "hint1": "学名はWelwitschia mirabilisといい、ナミビアの国章にも描かれているよ。",
+    "answer": "ウェルウィッチア",
+    "answerReading": "うぇるうぃっちあ",
+    "answerAliases": [
+      "Welwitschia mirabilis",
+      "奇想天外"
+    ],
+    "dummy1": "バオバブ",
+    "dummy2": "ドラゴンブラッドツリー",
+    "dummy3": "ブリストルコーンパイン"
+  },
+  {
+    "id": "plant-lv5-004",
+    "genre": "植物",
+    "difficulty": 5,
+    "question": "わたしはアジアの熱帯に自生するタケの仲間で、1日に1メートル以上成長することがある世界最速の成長を誇る植物だ。だーれだ？",
+    "hint1": "世界中でもっとも成長が速い植物の一つとしてギネス記録にも認定されているよ。種類によって成長速度は異なるけどね。",
+    "answer": "タケ",
+    "answerReading": "たけ",
+    "answerAliases": [
+      "竹",
+      "モウソウチク",
+      "マダケ"
+    ],
+    "dummy1": "ヨシ",
+    "dummy2": "ススキ",
+    "dummy3": "サトウキビ"
+  },
+  {
+    "id": "plant-lv5-005",
+    "genre": "植物",
+    "difficulty": 5,
+    "question": "わたしは東南アジアに自生するヤシの仲間で、「果物の王様」と呼ばれる大きな実をつける。強烈な臭いがあり、ホテルなどへの持ち込みが禁止されているほどだ。だーれだ？",
+    "hint1": "外側にトゲトゲした殻があり、果肉はクリーム色でとても甘い。",
+    "answer": "ドリアン",
+    "answerReading": "どりあん",
+    "answerAliases": [
+      "Durian"
+    ],
+    "dummy1": "ジャックフルーツ",
+    "dummy2": "ランブータン",
+    "dummy3": "マンゴスチン"
+  },
+  {
+    "id": "plant-lv6-004",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしは西オーストラリアの砂漠に生息する世界最古のクローン植物の一つで、同一の遺伝子を持つ個体が6万年前から繁殖している。海草の一種だ。だーれだ？",
+    "hint1": "学名はPosidonia australisといい、5,000haもの面積に広がる単一クローン群落として有名だよ。",
+    "answer": "ポシドニア",
+    "answerReading": "ぽしどにあ",
+    "answerAliases": [
+      "Posidonia australis",
+      "海草"
+    ],
+    "dummy1": "アマモ",
+    "dummy2": "コアマモ",
+    "dummy3": "ウミヒルモ"
+  },
+  {
+    "id": "plant-lv6-005",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしはカナリア諸島に自生する龍血樹で、樹液が赤く、傷をつけると血のような赤い樹液が出てくることで有名だ。傘状の独特な樹形が特徴だ。だーれだ？",
+    "hint1": "英語名はDragon Blood Treeといい、学名はDracaena dracoだよ。",
+    "answer": "ドラゴンブラッドツリー",
+    "answerReading": "どらごんぶらっどつりー",
+    "answerAliases": [
+      "龍血樹",
+      "Dracaena draco"
+    ],
+    "dummy1": "バオバブ",
+    "dummy2": "ウェルウィッチア",
+    "dummy3": "ジョシュアツリー"
+  },
+  {
+    "id": "plant-lv6-006",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしはアマゾンに自生するシクンシ科の木で、果実から「ブラジルナッツ」が取れる。種子はパラの実とも呼ばれ、非常に硬い殻に包まれている。採取する際はアゴウチというネズミに頼らなければ種子を散布できない。だーれだ？",
+    "hint1": "英語名はBrazil Nut treeで、学名はBertholletia excelsaだよ。",
+    "answer": "ブラジルナッツノキ",
+    "answerReading": "ぶらじるなっつのき",
+    "answerAliases": [
+      "Bertholletia excelsa",
+      "パラの実の木"
+    ],
+    "dummy1": "カカオ",
+    "dummy2": "サポジラ",
+    "dummy3": "マホガニー"
+  },
+  {
+    "id": "plant-lv6-007",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしは日本固有のスギ科の植物で、世界遺産の屋久島に多く生息する。幹が非常に太くなり、屋久杉の中でも特に大きな個体は「縄文杉」として有名だ。だーれだ？",
+    "hint1": "わたし（スギ）の花粉は毎年春に大量に飛散し、花粉症の原因として知られているよ。",
+    "answer": "スギ",
+    "answerReading": "すぎ",
+    "answerAliases": [
+      "杉",
+      "Cryptomeria japonica"
+    ],
+    "dummy1": "ヒノキ",
+    "dummy2": "マツ",
+    "dummy3": "ヒバ"
+  },
+  {
+    "id": "plant-lv6-008",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしはチリのアタカマ砂漠に自生するサボテンの仲間で、世界で最もゆっくりと成長するサボテンの一つだ。樹齢が200年を超えるものもある。だーれだ？",
+    "hint1": "「コキンボ・サボテン」とも呼ばれ、アタカマ砂漠の花が咲く時季に美しい花をつけるよ。",
+    "answer": "エキノカクタス",
+    "answerReading": "えきのかくたす",
+    "answerAliases": [
+      "Echinopsis",
+      "チリサボテン"
+    ],
+    "dummy1": "サワロ",
+    "dummy2": "エキノカクタス・グルソニー",
+    "dummy3": "オプンチア"
+  },
+  {
+    "id": "plant-lv6-009",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしはアフリカのソコトラ島に固有の植物で、クリーム色の幹と赤い樹液（血のような色）が特徴の龍血樹に近縁の植物だ。ソコトラ島の固有種で「砂漠のバラ」とも呼ばれることがある。だーれだ？",
+    "hint1": "ソコトラ島はその生物多様性から「インド洋のガラパゴス」と呼ばれるよ。",
+    "answer": "ソコトラドラゴンブラッドツリー",
+    "answerReading": "そことらどらごんぶらっどつりー",
+    "answerAliases": [
+      "Dracaena cinnabari",
+      "ソコトラ龍血樹"
+    ],
+    "dummy1": "ドラゴンブラッドツリー",
+    "dummy2": "ボトルツリー",
+    "dummy3": "バオバブ"
+  },
+  {
+    "id": "plant-lv6-010",
+    "genre": "植物",
+    "difficulty": 6,
+    "question": "わたしはパプアニューギニアなどに生息する食虫植物で、葉が変化した大きな袋状のわなに虫や小動物を落として消化する。その袋の中には消化液が溜まっている。だーれだ？",
+    "hint1": "英語名はTropical Pitcher Plantといい、ネペンテスとも呼ばれるよ。",
+    "answer": "ウツボカズラ",
+    "answerReading": "うつぼかずら",
+    "answerAliases": [
+      "靭葛",
+      "ネペンテス",
+      "Nepenthes"
+    ],
+    "dummy1": "ハエトリソウ",
+    "dummy2": "サラセニア",
+    "dummy3": "モウセンゴケ"
+  },
+  {
+    "id": "plant-lv7-004",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはアフリカ中部の熱帯に生息する植物で、世界最大の球根（塊茎）を持つことで知られる。球根の重さが最大600kgを超えることもある。だーれだ？",
+    "hint1": "学名はAmorphophallus titanum（コンニャクの仲間）ではなく、Dioscorea elephantipesで、象の足のような外見をしているよ。",
+    "answer": "エレファントフット",
+    "answerReading": "えれふぁんとふっと",
+    "answerAliases": [
+      "Dioscorea elephantipes",
+      "象の足"
+    ],
+    "dummy1": "コンニャク",
+    "dummy2": "ヤムイモ",
+    "dummy3": "カッサバ"
+  },
+  {
+    "id": "plant-lv7-005",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはオーストラリア固有の植物で、山火事の後にしか花が咲かないという変わった性質を持つ。熱や煙に反応して種子が発芽し、次世代を育てる。だーれだ？",
+    "hint1": "バンクシアやプロテア科の植物の多くがこの性質を持ち、「火依存性植物」と呼ばれるよ。",
+    "answer": "バンクシア",
+    "answerReading": "ばんくしあ",
+    "answerAliases": [
+      "Banksia"
+    ],
+    "dummy1": "プロテア",
+    "dummy2": "ワラタ",
+    "dummy3": "グレビレア"
+  },
+  {
+    "id": "plant-lv7-006",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはブナ科の植物で、コルクガシとも呼ばれる。外皮（コルク）が発達していて、コルクとして瓶の栓などに利用される。地中海沿岸が原産だ。だーれだ？",
+    "hint1": "コルクを採取した後も木は生き続け、9〜12年ごとに再生するよ。",
+    "answer": "コルクガシ",
+    "answerReading": "こるくがし",
+    "answerAliases": [
+      "軟木樫",
+      "Quercus suber"
+    ],
+    "dummy1": "ナラ",
+    "dummy2": "カシ",
+    "dummy3": "クヌギ"
+  },
+  {
+    "id": "plant-lv7-007",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはサボテン科ではなくトウダイグサ科の多肉植物で、サボテンに非常によく似た外見をしているが全く別のグループだ。アフリカの乾燥地帯に多く分布する。だーれだ？",
+    "hint1": "わたしはユーフォルビアとも呼ばれ、傷つけると白い乳液が出るのが特徴だよ。",
+    "answer": "ユーフォルビア",
+    "answerReading": "ゆーふぉるびあ",
+    "answerAliases": [
+      "Euphorbia",
+      "トウダイグサ"
+    ],
+    "dummy1": "サボテン",
+    "dummy2": "アロエ",
+    "dummy3": "アガベ"
+  },
+  {
+    "id": "plant-lv7-008",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはパラグアイやアルゼンチンなどの南米に自生するキク科の植物で、葉に強力な甘み成分が含まれており、砂糖の数百倍の甘さを持つ。天然甘味料として世界中で使われる。だーれだ？",
+    "hint1": "日本でも栽培されており、カロリーがほぼゼロの天然甘味料として注目されているよ。",
+    "answer": "ステビア",
+    "answerReading": "すてびあ",
+    "answerAliases": [
+      "Stevia rebaudiana"
+    ],
+    "dummy1": "アマチャ",
+    "dummy2": "カンゾウ",
+    "dummy3": "モンクフルーツ"
+  },
+  {
+    "id": "plant-lv7-009",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはインド亜大陸に自生するクワ科の木で、気根（きこん）が地面に降りて支柱になるため、一本の木が森のように広がる。インドのコルカタに樹齢250年以上の個体があり、3ヘクタールを超える面積を一本で占める。だーれだ？",
+    "hint1": "英語名はBanyan Treeといい、インドの国樹にもなっているよ。",
+    "answer": "ベンガルボダイジュ",
+    "answerReading": "べんがるぼだいじゅ",
+    "answerAliases": [
+      "ベンガルフィカス",
+      "Ficus benghalensis",
+      "Banyan Tree"
+    ],
+    "dummy1": "インドボダイジュ",
+    "dummy2": "ガジュマル",
+    "dummy3": "アコウ"
+  },
+  {
+    "id": "plant-lv7-010",
+    "genre": "植物",
+    "difficulty": 7,
+    "question": "わたしはナミビアの砂漠に生息するキク科の植物で、霧から水を集めることに特化した構造を持つ。葉の表面に微細な凹凸があり、霧を水滴として集めて根元に流す。だーれだ？",
+    "hint1": "「霧集め植物」として知られ、ドームカーテンの先端に水が集まる仕組みが工業デザインにも応用されているよ。",
+    "answer": "ファシア",
+    "answerReading": "ふぁしあ",
+    "answerAliases": [
+      "Physalis",
+      "Stipagrostis sabulicola"
+    ],
+    "dummy1": "ウェルウィッチア",
+    "dummy2": "ナマクァランド・デイジー",
+    "dummy3": "ビンカ"
+  },
+  {
+    "id": "plant-lv8-001",
+    "genre": "植物",
+    "difficulty": 8,
+    "question": "わたしはAmborellaceae科の植物で、現存する顕花植物（被子植物）の中で最も原始的な系統に位置する。ニューカレドニア固有種で、被子植物の進化を研究する上で非常に重要な植物だ。だーれだ？",
+    "hint1": "学名はAmborella trichopodaといい、「生きた化石」的な重要性を持つよ。",
+    "answer": "アンボレラ",
+    "answerReading": "あんぼれら",
+    "answerAliases": [
+      "Amborella trichopoda"
+    ],
+    "dummy1": "ビクトリア",
+    "dummy2": "スイレン",
+    "dummy3": "センリョウ"
+  },
+  {
+    "id": "plant-lv8-002",
+    "genre": "植物",
+    "difficulty": 8,
+    "question": "わたしはアフリカ大陸に生息する水草で、葉が水面を覆う速度が非常に速く、湖や川の生態系に深刻な影響を与える侵略的外来種だ。アフリカのヴィクトリア湖でも大問題になった。だーれだ？",
+    "hint1": "英語名はWater Hyacinthといい、紫色の美しい花を咲かせる。南米原産だよ。",
+    "answer": "ホテイアオイ",
+    "answerReading": "ほていあおい",
+    "answerAliases": [
+      "布袋葵",
+      "Water Hyacinth"
+    ],
+    "dummy1": "アゾラ",
+    "dummy2": "ウキクサ",
+    "dummy3": "ミズヒマワリ"
+  },
+  {
+    "id": "plant-lv8-003",
+    "genre": "植物",
+    "difficulty": 8,
+    "question": "わたしはチリのアンデス山脈に自生する植物で、葉の縁が鋭いノコギリ状になっている。先住民の女性が間違えて触ると怪我をしたことから「女性を傷つける植物」という意味の名がある。だーれだ？",
+    "hint1": "学名はPuya raimondiiで、100年以上生きてから一度だけ花を咲かせて枯れる。「幽霊植物」とも呼ばれるよ。",
+    "answer": "プヤ・ライモンディ",
+    "answerReading": "ぷや・らいもんでぃ",
+    "answerAliases": [
+      "Puya raimondii"
+    ],
+    "dummy1": "フロスキア",
+    "dummy2": "タスマニアン・ウェッジルス",
+    "dummy3": "アガベ"
+  },
+  {
+    "id": "plant-lv8-004",
+    "genre": "植物",
+    "difficulty": 8,
+    "question": "わたしはCycas属（ソテツ科）に属する「生きた化石」で、2億年以上前から形態がほとんど変わっていない裸子植物だ。日本の九州や琉球列島に自生し、幹からデンプンが取れる。だーれだ？",
+    "hint1": "「蘇鉄」と書き、鉄を与えると元気になるという伝説が名前の由来と言われるよ。",
+    "answer": "ソテツ",
+    "answerReading": "そてつ",
+    "answerAliases": [
+      "蘇鉄",
+      "Cycas revoluta"
+    ],
+    "dummy1": "シダ",
+    "dummy2": "ヤシ",
+    "dummy3": "タコノキ"
+  },
+  {
+    "id": "plant-lv8-005",
+    "genre": "植物",
+    "difficulty": 8,
+    "question": "わたしはOrobanchaceae（ハマウツボ科）に属する完全寄生植物で、光合成を全くせず、宿主植物の根から養分を全て奪う。世界各地の農業地帯で深刻な農業害として知られる。だーれだ？",
+    "hint1": "英語名はWitchweedといい、ストリガ属の植物で、アフリカのトウモロコシ農家を悩ませているよ。",
+    "answer": "ストリガ",
+    "answerReading": "すとりが",
+    "answerAliases": [
+      "Striga",
+      "Witchweed"
+    ],
+    "dummy1": "ネナシカズラ",
+    "dummy2": "ナンバンギセル",
+    "dummy3": "ヤセウツボ"
+  },
+  {
+    "id": "plant-lv9-001",
+    "genre": "植物",
+    "difficulty": 9,
+    "question": "わたしはGnetales（グネツム目）に属する裸子植物で、被子植物に見られる二重受精に近い現象を示すため、進化学的に重要視される。熱帯の木本性のつる植物だ。だーれだ？",
+    "hint1": "学名はGnetum gnemon（ブリンジャル）などが知られ、東南アジアで食用にされるよ。",
+    "answer": "グネツム",
+    "answerReading": "ぐねつむ",
+    "answerAliases": [
+      "Gnetum",
+      "メリンジョ"
+    ],
+    "dummy1": "エフェドラ",
+    "dummy2": "ウェルウィッチア",
+    "dummy3": "ソテツ"
+  },
+  {
+    "id": "plant-lv9-002",
+    "genre": "植物",
+    "difficulty": 9,
+    "question": "わたしはMonotropa uniflora（ギンリョウソウ）の近縁種で、葉緑素を持たない腐生植物だ。菌類を介して間接的に他の植物の光合成産物を得る「菌従属栄養植物」の代表例だ。だーれだ？",
+    "hint1": "全体が透き通った白い色をしていて、「ゆうれいたけ」とも呼ばれるよ。",
+    "answer": "ギンリョウソウ",
+    "answerReading": "ぎんりょうそう",
+    "answerAliases": [
+      "銀竜草",
+      "Monotropa uniflora",
+      "幽霊茸"
+    ],
+    "dummy1": "ツチトリモチ",
+    "dummy2": "ナンバンギセル",
+    "dummy3": "ヤセウツボ"
+  },
+  {
+    "id": "plant-lv9-003",
+    "genre": "植物",
+    "difficulty": 9,
+    "question": "わたしはTaxaceae（イチイ科）の植物で、古代から変わらぬ形態を持つため「生きた化石」と呼ばれる。抗がん剤タキソールの原料として医学的に重要な植物だ。だーれだ？",
+    "hint1": "学名はTaxus brevifoliaなどがあり、太平洋側ホロウィンドツリーとも呼ばれるよ。実は赤く、種は有毒だよ。",
+    "answer": "タイヘイヨウイチイ",
+    "answerReading": "たいへいようのいちい",
+    "answerAliases": [
+      "Taxus brevifolia",
+      "Pacific Yew"
+    ],
+    "dummy1": "ヨーロッパイチイ",
+    "dummy2": "イヌガヤ",
+    "dummy3": "コウヤマキ"
+  },
+  {
+    "id": "plant-lv9-004",
+    "genre": "植物",
+    "difficulty": 9,
+    "question": "わたしはRafflesiaceae科に属するボルネオ島固有の奇妙な寄生植物で、宿主のブドウ科植物（Tetrastigma）の根に寄生し、葉も茎も持たず、世界最大の花だけを咲かせる。だーれだ？",
+    "hint1": "直径は最大110cm、重さ10kgを超えることもある花は腐敗臭を放ち、ハエを引きつけて受粉する。",
+    "answer": "ラフレシア",
+    "answerReading": "らふれしあ",
+    "answerAliases": [
+      "Rafflesia",
+      "Rafflesia arnoldii"
+    ],
+    "dummy1": "アモルフォファルス",
+    "dummy2": "タイタンアルム",
+    "dummy3": "ショクダイオオコンニャク"
+  },
+  {
+    "id": "plant-lv9-005",
+    "genre": "植物",
+    "difficulty": 9,
+    "question": "わたしはPteridophyta（シダ植物）の中で最も原始的なグループに属し、石炭紀に大繁栄した植物の生き残りだ。節のある茎が特徴で、昔の植物と非常によく似ている。だーれだ？",
+    "hint1": "「スギナ」の胞子体として春に出てくる「ツクシ」が有名で、「トクサ」とも近縁だよ。",
+    "answer": "トクサ",
+    "answerReading": "とくさ",
+    "answerAliases": [
+      "木賊",
+      "Equisetum hyemale"
+    ],
+    "dummy1": "スギナ",
+    "dummy2": "ゼンマイ",
+    "dummy3": "ウラジロ"
+  },
+  {
+    "id": "plant-lv10-001",
+    "genre": "植物",
+    "difficulty": 10,
+    "question": "わたしはPsilotum nudum（マツバラン）と近縁のOphioglossales目（ハナヤスリ目）の植物で、地上部と地下部が完全に分離したような特殊な構造を持つ。地下茎は菌類との共生なしには発芽できないほど特殊化した植物だ。だーれだ？",
+    "hint1": "「ハナヤスリ」とも呼ばれ、シダ植物の中でも最も原始的なグループの一つに属するよ。",
+    "answer": "ハナヤスリ",
+    "answerReading": "はなやすり",
+    "answerAliases": [
+      "花鑢",
+      "Ophioglossum"
+    ],
+    "dummy1": "マツバラン",
+    "dummy2": "リュウビンタイ",
+    "dummy3": "タカワラビ"
+  },
+  {
+    "id": "plant-lv10-002",
+    "genre": "植物",
+    "difficulty": 10,
+    "question": "わたしはLentibulariaceae（タヌキモ科）に属する水生食虫植物で、水中に漂う小さな捕虫嚢で水蚤などのプランクトンを捉える。この捕虫嚢は0.002秒以下で閉じる世界最速の植物の動きを持つ。だーれだ？",
+    "hint1": "英語名はBladderWortといい、根を持たず水中を漂いながら生活するよ。",
+    "answer": "タヌキモ",
+    "answerReading": "たぬきも",
+    "answerAliases": [
+      "狸藻",
+      "Utricularia",
+      "Bladderwort"
+    ],
+    "dummy1": "ムシトリスミレ",
+    "dummy2": "ゲンリセア",
+    "dummy3": "アルドロバンダ"
+  },
+  {
+    "id": "plant-lv10-003",
+    "genre": "植物",
+    "difficulty": 10,
+    "question": "わたしはCactaceae（サボテン科）の中で唯一の落葉性高木で、南米のボリビアとアルゼンチンに生息する。幹が黄色っぽい独特の外見を持ち、全て単一遺伝子の個体が見つかっており保護活動が行われている。だーれだ？",
+    "hint1": "学名はPereskia grandifoliaに近い原始的なサボテンで、葉を持つサボテンの仲間だよ。",
+    "answer": "ペレスキア",
+    "answerReading": "ぺれすきあ",
+    "answerAliases": [
+      "Pereskia",
+      "葉を持つサボテン"
+    ],
+    "dummy1": "オプンチア",
+    "dummy2": "アポロサボテン",
+    "dummy3": "ランポサボテン"
+  },
+  {
+    "id": "plant-lv10-004",
+    "genre": "植物",
+    "difficulty": 10,
+    "question": "わたしはMarchantia polymorpha（ゼニゴケ）の近縁だが、より原始的な無維管束植物（苔類）の一種で、植物の陸上進化において最も初期の段階を示すとされている。植物の系統樹の根幹付近に位置する。だーれだ？",
+    "hint1": "葉状体の腹面に単細胞の仮根があり、Treubialesに属する最も基部に位置する苔類として分子系統解析で確認されたよ。",
+    "answer": "ツノゴケ",
+    "answerReading": "つのごけ",
+    "answerAliases": [
+      "角苔",
+      "Hornwort",
+      "Anthocerotophyta"
+    ],
+    "dummy1": "ゼニゴケ",
+    "dummy2": "スギゴケ",
+    "dummy3": "コケ植物"
+  },
+  {
+    "id": "plant-lv10-005",
+    "genre": "植物",
+    "difficulty": 10,
+    "question": "わたしはWollemia nobilis（ウォレマイパイン）という植物で、恐竜時代から変わらぬ姿で生き続けた「生きた化石」だ。1994年まで化石でしか知られておらず、オーストラリアの峡谷で100本以下の個体が発見された。だーれだ？",
+    "hint1": "発見された場所は科学者が保秘を守っており、現在は植物園などで栽培保護されているよ。",
+    "answer": "ウォレマイパイン",
+    "answerReading": "うぉれまいぱいん",
+    "answerAliases": [
+      "Wollemia nobilis",
+      "ウォレミア"
+    ],
+    "dummy1": "ビクトリアン・ブルーガム",
+    "dummy2": "マキバアカシア",
+    "dummy3": "ナンキョクブナ"
   }
 ]

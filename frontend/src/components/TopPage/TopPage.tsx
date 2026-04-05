@@ -131,17 +131,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
 
   const handleGenreSelect = useCallback((genre: string) => {
     setLocalSelectedGenre(genre);
-    const availableDifficulties = getAvailableDifficultiesForGenre(genre);
-    let defaultDifficulty = availableDifficulties[0] || 1;
-
-    if (!isPremiumUser) {
-      const guestAllowedDifficulties = [1, 2, 6, 7];
-      const availableGuestDifficulties = availableDifficulties.filter(d => guestAllowedDifficulties.includes(d));
-      if (availableGuestDifficulties.length > 0) {
-        defaultDifficulty = Math.min(...availableGuestDifficulties);
-      } else {
-        defaultDifficulty = 1;
-      }
+    const isHistoryGenre = ['歴史上の人物', '日本の歴史', '世界の歴史'].includes(genre);
+    const guestFreeLevels = [1, 2, 6, 7];
+    let defaultDifficulty: number;
+    if (isHistoryGenre) {
+      defaultDifficulty = isPremiumUser ? 6 : 6; // 歴史は6から
+    } else {
+      defaultDifficulty = isPremiumUser ? 1 : guestFreeLevels[0];
     }
     setLocalSelectedDifficulty(defaultDifficulty);
   }, [isPremiumUser]);
@@ -187,7 +183,10 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
     '日本の地理': '#F76707', '世界の地理': '#1098AD',
     '食べ物': '#E64980',
   };
-  const difficultiesForSelectedGenre = getAvailableDifficultiesForGenre(localSelectedGenre);
+  const HISTORY_GENRES = ['歴史上の人物', '日本の歴史', '世界の歴史'];
+  const getDifficultiesForGenre = (genre: string) =>
+    HISTORY_GENRES.includes(genre) ? [6, 7, 8, 9, 10] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const difficultiesForSelectedGenre = getDifficultiesForGenre(localSelectedGenre);
 
   return (
     <div style={containerStyle}>
