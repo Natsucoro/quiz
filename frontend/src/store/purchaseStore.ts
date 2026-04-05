@@ -20,6 +20,7 @@ interface PurchaseState {
   userEmail: string | null;
   login: (email: string) => void;
   logout: () => void;
+  setLoggedOut: () => void; // 購入データを消さずにログイン状態のみリセット（アプリ起動時の未ログイン検知用）
   addPurchase: (itemId: string) => void;
   syncWithClaims: (claimItems: string[]) => void;
   isPurchased: (itemId: string) => boolean;
@@ -54,7 +55,14 @@ export const usePurchaseStore = create<PurchaseState>()(
       },
       logout: () =>
         set({
-          purchasedItems: [], // ログアウト時に購入情報はリセット
+          purchasedItems: [], // 明示的ログアウト時は購入情報もリセット
+          isLoggedIn: false,
+          userEmail: null,
+        }),
+      setLoggedOut: () =>
+        set({
+          // 購入データは消さずにログイン状態だけリセット
+          // （アプリ起動時 / Firebase未ログイン検知時に使用）
           isLoggedIn: false,
           userEmail: null,
         }),
