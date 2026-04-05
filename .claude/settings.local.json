@@ -7,7 +7,15 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh auth:*)",
-      "Bash(ssh -T git@github.com)"
+      "Bash(ssh -T git@github.com)",
+      "Bash(node:*)",
+      "Bash(GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=no' git push origin claude_code_202604)",
+      "Bash(git config:*)",
+      "Bash(git credential-store:*)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(python3 -c 'import json; d=json.load\\(open\\('\\\\''__TRACKED_VAR__'\\\\''\\)\\); print\\(f'\\\\''{len\\(d\\)} items OK'\\\\''\\)')",
+      "Bash(python3:*)"
     ]
   }
 }
