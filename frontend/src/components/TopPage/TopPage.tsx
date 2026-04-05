@@ -79,7 +79,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
 
   const [localSelectedGenre, setLocalSelectedGenre] = useState<string>(initialGenre);
   const [localSelectedDifficulty, setLocalSelectedDifficulty] = useState<number>(initialDifficulty);
-  const [localSelectedCount, setLocalSelectedCount] = useState<number>(10);
+  const localSelectedCount = 10;
   const [showDifficultySelection, setShowDifficultySelection] = useState<boolean>(initialView === 'difficulty');
 
   useEffect(() => {
@@ -332,31 +332,6 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
             </div>
           </div>
 
-          <div style={{ ...difficultySelectionContainerStyle, marginTop: '20px' }}>
-            <h2 style={{ ...sectionTitleStyle, fontSize: '1.1em' }}>
-              <ruby>問題数<rt>もんだいすう</rt></ruby>をえらんでね！
-            </h2>
-            <div style={questionCountGridStyle}>
-              {[5, 10].map((count) => (
-                <button
-                  key={count}
-                  onClick={() => setLocalSelectedCount(count)}
-                  style={{
-                    ...difficultyButtonStyle,
-                    flexDirection: 'row',
-                    minHeight: 'unset',
-                    padding: '14px 10px',
-                    backgroundColor: localSelectedCount === count ? '#FF6EC7' : '#54A0FF',
-                    boxShadow: localSelectedCount === count ? `0 0 0 2px #fff, 0 0 0 4px #FF6EC7` : '0 5px 0 rgba(0,0,0,0.15)',
-                    transform: localSelectedCount === count ? 'scale(1.08)' : 'scale(1)',
-                  } as React.CSSProperties}
-                >
-                  {count}<ruby>問<rt>もん</rt></ruby>
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div style={bottomButtonsContainerStyle}>
             <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#ccc', color: '#555', boxShadow: '0 5px 0 #999' } as React.CSSProperties}>
               ← TOPにもどる
@@ -475,7 +450,6 @@ const lockIconStyle: React.CSSProperties = { fontSize: '1em', marginLeft: '3px' 
 const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
-const questionCountGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '24px' };
 const bottomButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-around', gap: '15px', marginTop: '20px', width: '100%', maxWidth: '700px' };
 const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
 

@@ -34,7 +34,7 @@ export const usePurchaseStore = create<PurchaseState>()(
       userEmail: null,
       login: (email: string) => {
         let itemsToUnlock: string[] = [];
-        if (email === "test@example.com") {
+        if (email === "nakaharanatsumi+test1@gmail.com") {
           // テストアカウントの場合、全ジャンル、難易度3-5, 8-10を解放
           ALL_GENRES.forEach(genre => {
             [3, 4, 5, 8, 9, 10].forEach(difficulty => {

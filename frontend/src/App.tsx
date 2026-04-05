@@ -25,7 +25,7 @@ const App: React.FC = () => {
   const [topInitialView, setTopInitialView] = useState<'genre' | 'difficulty'>('genre');
   const [micStatus, setMicStatus] = useState({ isRecognizing: false, isListening: false, isProcessing: false, transcript: '' });
   const [user, setUser] = useState<User | null>(null);
-  const { addPurchase, syncWithClaims } = usePurchaseStore();
+  const { addPurchase, syncWithClaims, login: purchaseLogin, logout: purchaseLogout } = usePurchaseStore();
   const [showLogin, setShowLogin] = useState(false);
 
   // Firebase Auth の初期化とメールリンクからのログイン復帰
@@ -55,10 +55,14 @@ const App: React.FC = () => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
         setUser(u);
+        purchaseLogin(u.email ?? '');
         const token = await u.getIdTokenResult(true);
         if (token.claims.purchasedItems && Array.isArray(token.claims.purchasedItems)) {
           syncWithClaims(token.claims.purchasedItems);
         }
+      } else {
+        setUser(null);
+        purchaseLogout();
       }
     });
     return () => unsub();
