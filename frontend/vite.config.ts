@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// ローカル開発かどうかを判定（LOCAL=true を渡すとローカルモード）
+const isLocal = process.env.LOCAL === 'true'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -35,14 +38,14 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // Allow connections from outside the container
-    // The port is now passed in by the IDE via the `$PORT` variable
+    port: 5173,
     watch: {
       usePolling: true, // Needed for file change detection in some environments
       // Explicitly ignore the folders that are causing the ghost reloads
       ignored: ['**/dist/**', '**/dist_bak/**'],
     },
-    hmr: {
-      clientPort: 443, // Port for HMR updates through the proxy
-    },
+    hmr: isLocal
+      ? true                      // ローカル: HMR をデフォルト（localhost）で動かす
+      : { clientPort: 443 },      // クラウドIDE: HTTPS プロキシ経由
   }
 })
