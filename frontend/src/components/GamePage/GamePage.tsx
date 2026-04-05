@@ -85,7 +85,7 @@ const GENRE_RUBY: Record<string, string> = {
 };
 
 const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus }) => {
-  const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
+  const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode } = useSettingsStore();
   const isSpeakingAllowed = true;
 
   const [currentQuiz, setCurrentQuiz] = useState<QuizData | null>(null);
