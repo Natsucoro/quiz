@@ -36,13 +36,12 @@ interface TopPageProps {
 }
 
 const GENRE_RUBY: Record<string, string> = {
-  '動物': 'どうぶつ',
+  '哺乳類': 'ほにゅうるい',
   '昆虫': 'こんちゅう',
   '植物': 'しょくぶつ',
   '魚類': 'さかな',
   '鳥類': 'とりるい',
   '爬虫類': 'はちゅうるい',
-  '哺乳類': 'ほにゅうるい',
   '海洋生物': 'かいようせいぶつ',
   '乗り物': 'のりもの',
   '道具': 'どうぐ',
@@ -112,7 +111,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const getGenreIcon = (genreName: string) => {
     const iconStyle = { width: '1.2em', height: '1.2em', objectFit: 'contain' as const };
     switch (genreName) {
-      case '動物': return <img src={AshikaIcon} alt="動物" style={iconStyle} />;
+      case '哺乳類': return <img src={AshikaIcon} alt="哺乳類" style={iconStyle} />;
       case '昆虫': return <img src={KabutomushiIcon} alt="昆虫" style={iconStyle} />;
       case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
       case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
@@ -176,7 +175,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   }, [isOffline, showToast, localSelectedGenre]);
 
   const GENRE_COLORS: Record<string, string> = {
-    '動物': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
+    '哺乳類': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
     '乗り物': '#339AF0', '道具': '#F59F00', '歴史上の人物': '#AE3EC9',
     '日本の地理': '#F76707', '世界の地理': '#1098AD',
   };

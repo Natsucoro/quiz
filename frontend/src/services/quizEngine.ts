@@ -22,11 +22,11 @@ interface QuizWithHints extends QuizData {
   hint3: string;
 }
 
-import animalsQuizzes from '../../../data/quizzes/animals.json';
+import mammalsQuizzes from '../../../data/quizzes/mammals.json';
 import insectsQuizzes from '../../../data/quizzes/insects.json';
 
 const allQuizzes: QuizData[] = [
-  ...animalsQuizzes,
+  ...mammalsQuizzes,
   ...insectsQuizzes,
 ];
 
