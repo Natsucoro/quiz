@@ -344,7 +344,7 @@ if (!currentQuiz && !isQuizEnded) {
 
   const stickyHeader = (
     <header style={stickyHeaderStyle}>
-      <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>わたしはダレでしょう？クイズ</h1>
+      <h1 style={headerTitleStyle}>わたしはダレでしょう？クイズ</h1>
       <div style={headerIconsStyle}>
         <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
           <SpriteIcon src={toolIcon} position="bl" size={32} srcWidth={685} srcHeight={575} />
@@ -352,8 +352,11 @@ if (!currentQuiz && !isQuizEnded) {
         <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
           <SpriteIcon src={audioIcon} position="tl" size={32} srcWidth={645} srcHeight={546} />
         </button>
-        <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
+        <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
           <SpriteIcon src={micIcon} position="tr" size={32} srcWidth={682} srcHeight={603} />
+        </button>
+        <button onClick={handleGoHomeConfirm} style={iconButtonStyle} title="TOPに戻る">
+          🏠
         </button>
       </div>
     </header>

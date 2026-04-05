@@ -283,6 +283,12 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
               <span style={genreIconStyle}>{getGenreIcon(localSelectedGenre)}</span>
               むずかしさをえらんでね！
             </h2>
+            {/* ゲスト向け説明 */}
+            {!isLoggedIn && (
+              <p style={{ fontSize: '0.8em', color: '#888', textAlign: 'center', marginBottom: '14px', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', padding: '8px' }}>
+                💡 <strong style={{ color: '#FF5FA0' }}>無料</strong>は Lv.1・2（こども）と Lv.6・7（おとな）で体験できます
+              </p>
+            )}
             <div style={difficultyGridStyle}>
               {difficultiesForSelectedGenre.map((difficulty) => {
                 const isFreeRank = [1, 2, 6, 7].includes(difficulty);
