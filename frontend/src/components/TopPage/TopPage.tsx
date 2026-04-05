@@ -49,6 +49,7 @@ const GENRE_RUBY: Record<string, string> = {
   '歴史上の人物': 'れきしのじんぶつ',
   '日本の地理': 'にほんのちり',
   '世界の地理': 'せかいのちり',
+  '食べ物': 'たべもの',
 };
 
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
@@ -123,6 +124,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       case '歴史上の人物': return '🗿';
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
+      case '食べ物': return '🍎';
       default: return '❓';
     }
   };
@@ -183,6 +185,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
     '魚類': '#15AABF', '鳥類': '#FAB005', '爬虫類': '#82C91E', '海洋生物': '#4C6EF5',
     '乗り物': '#339AF0', '道具': '#F59F00', '歴史上の人物': '#AE3EC9',
     '日本の地理': '#F76707', '世界の地理': '#1098AD',
+    '食べ物': '#E64980',
   };
   const difficultiesForSelectedGenre = getAvailableDifficultiesForGenre(localSelectedGenre);
 

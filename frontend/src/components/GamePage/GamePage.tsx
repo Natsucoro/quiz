@@ -334,6 +334,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       case '歴史上の人物': return '🗿';
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
+      case '食べ物': return '🍎';
       default: return '❓';
     }
   };

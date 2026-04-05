@@ -6,6 +6,7 @@ import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis'
 import { usePurchaseStore } from '../../../store/purchaseStore';
 import { auth } from '../../../lib/firebase';
 import { signOut } from 'firebase/auth';
+import LegalModal from '../LegalModal';
 
 interface SettingsProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
+  const [showLegal, setShowLegal] = useState<'tokushoho' | 'privacy' | 'terms' | null>(null);
   const { isLoggedIn, userEmail, logout } = usePurchaseStore();
 
   const handleSpeechRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +91,21 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
                 📧 お問い合わせ
               </a>
             </p>
-            <p><a href="#" style={linkStyle}>📄 利用規約 / プライバシーポリシー</a></p>
+            <p>
+              <button onClick={() => setShowLegal('tokushoho')} style={textButtonStyle}>
+                🏪 特定商取引法に基づく表記
+              </button>
+            </p>
+            <p>
+              <button onClick={() => setShowLegal('privacy')} style={textButtonStyle}>
+                🔐 プライバシーポリシー
+              </button>
+            </p>
+            <p>
+              <button onClick={() => setShowLegal('terms')} style={textButtonStyle}>
+                📄 利用規約
+              </button>
+            </p>
             <p style={versionStyle}>バージョン 1.0.0</p>
           </div>
 
@@ -98,6 +114,12 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
           </button>
         </div>
       </div>
+      {showLegal && (
+        <LegalModal
+          onClose={() => setShowLegal(null)}
+          initialTab={showLegal}
+        />
+      )}
     </>
   );
 };
@@ -194,6 +216,13 @@ const linkStyle: React.CSSProperties = {
   margin: '8px 0',
   display: 'inline-block',
   fontWeight: 'bold',
+};
+const textButtonStyle: React.CSSProperties = {
+  background: 'none', border: 'none',
+  color: '#54A0FF', fontWeight: 'bold',
+  cursor: 'pointer', fontSize: '1em',
+  fontFamily: "'Yomogi', cursive",
+  padding: '4px 0',
 };
 
 const versionStyle: React.CSSProperties = {
