@@ -27,27 +27,49 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const { addPurchase, syncWithClaims, login: purchaseLogin, setLoggedOut: purchaseSetLoggedOut } = usePurchaseStore();
   const [showLogin, setShowLogin] = useState(false);
+  const [isProcessingLogin, setIsProcessingLogin] = useState(false);
 
   // Firebase Auth の初期化とメールリンクからのログイン復帰
   useEffect(() => {
     // メールリンクから戻ってきた場合の処理
     if (isSignInWithEmailLink(auth, window.location.href)) {
+      if (isProcessingLogin) return; // 二重処理防止
+      setIsProcessingLogin(true);
+
       let email = window.localStorage.getItem('emailForSignIn');
       if (!email) {
         email = window.prompt('確認のため、もう一度メールアドレスを入力してください');
       }
+
       if (email) {
         signInWithEmailLink(auth, email, window.location.href)
-          .then((result) => {
+          .then(async (result) => {
             window.localStorage.removeItem('emailForSignIn');
-            // パラメータを消してリロード（再認証防止）
+            // パラメータを消して履歴を置換
             window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // ユーザー情報をストアに反映
+            if (result.user) {
+              const u = result.user;
+              purchaseLogin(u.email ?? '');
+              const token = await u.getIdTokenResult(true);
+              if (token.claims.purchasedItems) syncWithClaims(token.claims.purchasedItems as string[]);
+            }
+            
             alert('ログインに成功しました！');
           })
           .catch((error) => {
             console.error('Login Error:', error);
-            alert('ログイン用リンクの期限が切れているか、無効です。');
+            // 本物のエラーの場合のみアラートを出す
+            if (error.code !== 'auth/invalid-action-code') {
+              alert('ログインに失敗しました。リンクが無効か、期限が切れている可能性があります。');
+            }
+          })
+          .finally(() => {
+            setIsProcessingLogin(false);
           });
+      } else {
+        setIsProcessingLogin(false);
       }
     }
 
@@ -77,7 +99,17 @@ const App: React.FC = () => {
       const level = params.get('level');
       const sessionId = params.get('session_id');
 
-      const genreMap: Record<string, string> = { 'animal': '動物', 'insect': '昆虫', 'plant': '植物' };
+      const genreMap: Record<string, string> = { 
+        'mammals': '哺乳類', 
+        'insects': '昆虫', 
+        'plants': '植物', 
+        'vehicles': '乗り物', 
+        'tools': '道具', 
+        'food': '食べ物',
+        'historical_figures': '歴史上の人物',
+        'japan_geography': '日本地理',
+        'world_geography': '世界地理'
+      };
       
       if (isSuccess === 'true' && rawGenre && level && sessionId && user) {
         const genre = genreMap[rawGenre] || rawGenre;
@@ -178,7 +210,15 @@ const App: React.FC = () => {
       {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} onLoginRequest={() => setShowLogin(true)} />
       ) : (
-        <GamePage genre={selectedGenre} difficulty={selectedDifficulty} questionCount={selectedCount} onBack={handleBack} onBackToDifficulty={handleBackToDifficulty} onMicStatus={handleMicStatus} />
+        <GamePage 
+          genre={selectedGenre} 
+          difficulty={selectedDifficulty} 
+          questionCount={selectedCount} 
+          onBack={handleBack} 
+          onBackToDifficulty={handleBackToDifficulty} 
+          onMicStatus={handleMicStatus}
+          onLoginRequest={() => setShowLogin(true)}
+        />
       )}
       
       {showLogin && (

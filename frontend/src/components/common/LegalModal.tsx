@@ -56,10 +56,10 @@ const Tokushoho: React.FC = () => (
     <h2 style={sectionTitleStyle}>特定商取引法に基づく表記</h2>
     <table style={tableStyle}>
       <tbody>
-        <Row label="販売業者" value="中原 なつみ" />
-        <Row label="所在地" value="〒（請求があった場合は遅滞なく開示します）" />
+        <Row label="販売業者" value="わたしはダレでしょう？クイズ　サポートチーム" />
+        <Row label="所在地" value="請求があった場合は遅滞なく開示します" />
         <Row label="電話番号" value="請求があった場合は遅滞なく開示します" />
-        <Row label="メールアドレス" value="nakaharanatsumi@gmail.com" />
+        <Row label="メールアドレス" value="watashihadare.quiz@gmail.com" />
         <Row label="販売価格" value="各難易度レベル 120円（税込）" />
         <Row label="商品の性質" value="デジタルコンテンツ（追加クイズ問題・難易度解放）" />
         <Row label="代金の支払い方法" value="クレジットカード決済（Stripe）" />
@@ -106,8 +106,8 @@ const Privacy: React.FC = () => (
     <h3 style={subTitleStyle}>お問い合わせ</h3>
     <p style={textStyle}>
       個人情報に関するお問い合わせは{' '}
-      <a href="mailto:nakaharanatsumi@gmail.com" style={linkStyle}>
-        nakaharanatsumi@gmail.com
+      <a href="mailto:watashihadare.quiz@gmail.com" style={linkStyle}>
+        watashihadare.quiz@gmail.com
       </a>{' '}
       までご連絡ください。
     </p>

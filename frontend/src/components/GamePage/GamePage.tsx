@@ -11,23 +11,33 @@ import {
 import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthesis';
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
+import { usePurchaseStore } from '../../store/purchaseStore';
 import { SpriteIcon } from '../common/SpriteIcon';
 
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
 import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
 import toolIcon from '../../assets/icons/icon_setting.png';
-import audioIcon from '../../assets/icons/music2.png';
-import micIcon from '../../assets/icons/music.png';
+import soundIcon from '../../assets/icons/sound.svg';
+import micIcon from '../../assets/icons/mic.svg';
 import HanaIcon from '../../assets/icons/hana.svg';
-import NorimonoIcon from '../../assets/icons/norimono2.svg';
-import MonoIcon from '../../assets/icons/mono.svg';
+import NorimonoIcon from '../../assets/icons/shinkansen.svg';
+import MonoIcon from '../../assets/icons/tool.svg';
 import NihonIcon from '../../assets/icons/niihon.svg';
 import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
 import SakanaIcon from '../../assets/icons/sakana.svg';
 import HatoIcon from '../../assets/icons/hato.svg';
 import HebiIcon from '../../assets/icons/hebi.svg';
-import IrukaIcon from '../../assets/icons/iruka.svg';
+import KaniIcon from '../../assets/icons/kani.svg';
+import HagurumaIcon from '../../assets/icons/haguruma.svg';
+import RekishiIcon from '../../assets/icons/rekishi.svg';
+import FoodIcon from '../../assets/icons/food.svg';
+import FlagIcon from '../../assets/icons/flag.svg';
+import MedalKinIcon from '../../assets/icons/medaru_kin.svg';
+import MedalGinIcon from '../../assets/icons/medaru_gin.svg';
+import MedalDouIcon from '../../assets/icons/medaru_dou.svg';
+import GuestIcon from '../../assets/icons/guest.svg';
+import UserIcon from '../../assets/icons/user.svg';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
@@ -74,6 +84,7 @@ interface GamePageProps {
   onBack: () => void;
   onBackToDifficulty: () => void;
   onMicStatus?: (status: { isRecognizing: boolean; isListening: boolean; isProcessing: boolean; transcript: string }) => void;
+  onLoginRequest?: () => void;
 }
 
 const GENRE_RUBY: Record<string, string> = {
@@ -84,8 +95,10 @@ const GENRE_RUBY: Record<string, string> = {
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
 };
 
-const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus }) => {
-  const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode } = useSettingsStore();
+const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
+  const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
+  const { isLoggedIn } = usePurchaseStore();
+  const isHandsFreeMode = isHandsFree;
   const isSpeakingAllowed = true;
 
   const [currentQuiz, setCurrentQuiz] = useState<QuizData | null>(null);
@@ -106,6 +119,19 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const handleAnswerRef = useRef<(ans: string) => void>(() => {});
   const handleNextQuestionRef = useRef<() => void>(() => {});
   const readQuestionRef = useRef<() => void>(() => {});
+  
+  const [isResultActionsVisible, setIsResultActionsVisible] = useState(false);
+  const resultActionsRef = useRef<HTMLDivElement>(null);
+
+  // 結果画面のボタンエリアを監視
+  useEffect(() => {
+    if (!isQuizEnded || !resultActionsRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsResultActionsVisible(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    observer.observe(resultActionsRef.current);
+    return () => observer.disconnect();
+  }, [isQuizEnded]);
 
   const playSound = useCallback((type: 'correct' | 'incorrect') => {
     if (isMuted) return;
@@ -158,7 +184,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   // 問題の読み上げ
   useEffect(() => {
     if (initializedRef.current && !isMuted && currentQuiz && spokenQuestionIndex.current !== currentQuestionIndex) {
-      const q = toReadableText(currentQuiz.questionRuby ?? currentQuiz.question);
+      const q = toReadableText(currentQuiz.questionRuby || currentQuiz.question);
       speak(`第${currentQuestionIndex + 1}問。${q}`);
       spokenQuestionIndex.current = currentQuestionIndex;
     }
@@ -263,7 +289,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setShowHint(hintNumber);
     if (!isMuted && isSpeakingAllowed) {
       const readableHint = hintNumber === 1
-        ? toReadableText(currentQuiz.hint1Ruby ?? currentQuiz.hint1)
+        ? toReadableText(currentQuiz.hint1Ruby || currentQuiz.hint1)
         : hintText;
       speak(`ヒント${hintNumber}：${readableHint}`);
       setConciergeMessage(null);
@@ -308,7 +334,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     if (newState) {
       stopSpeaking();
     } else if (currentQuiz) {
-      speak(toReadableText(currentQuiz.questionRuby ?? currentQuiz.question));
+      speak(toReadableText(currentQuiz.questionRuby || currentQuiz.question));
     }
   }, [isMuted, setIsMuted, currentQuiz]);
 
@@ -330,11 +356,11 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       case '魚類': return <img src={SakanaIcon} alt="魚類" style={iconStyle} />;
       case '鳥類': return <img src={HatoIcon} alt="鳥類" style={iconStyle} />;
       case '爬虫類': return <img src={HebiIcon} alt="爬虫類" style={iconStyle} />;
-      case '海洋生物': return <img src={IrukaIcon} alt="海洋生物" style={iconStyle} />;
-      case '歴史上の人物': return '🗿';
+      case '海洋生物': return <img src={KaniIcon} alt="海洋生物" style={iconStyle} />;
+      case '歴史上の人物': return <img src={RekishiIcon} alt="歴史上の人物" style={iconStyle} />;
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
-      case '食べ物': return '🍎';
+      case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
       default: return '❓';
     }
   };
@@ -343,22 +369,35 @@ if (!currentQuiz && !isQuizEnded) {
     return <div style={loadingStyle}>問題を読み込み中...</div>;
   }
 
+  const renderLoginBadge = () => {
+    if (isLoggedIn) {
+      return (
+        <div style={loginBadgeActiveStyle} onClick={onLoginRequest}>
+          <img src={UserIcon} alt="user" style={{ width: '22px', height: '22px' }} />
+        </div>
+      );
+    }
+    return (
+      <div style={loginBadgeGuestStyle} onClick={onLoginRequest}>
+        <img src={GuestIcon} alt="guest" style={{ width: '20px', height: '20px' }} />
+        <span style={{ fontSize: '10px', marginTop: '-2px' }}>ゲスト</span>
+      </div>
+    );
+  };
+
   const stickyHeader = (
     <header style={stickyHeaderStyle}>
-      <h1 style={headerTitleStyle}>わたしはダレでしょう？クイズ</h1>
+      <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>
+        🎉 こどもクイズあそび 🎉
+      </h1>
       <div style={headerIconsStyle}>
         <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-          <SpriteIcon src={toolIcon} position="bl" size={32} srcWidth={685} srcHeight={575} />
+          ⚙️
         </button>
         <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
-          <SpriteIcon src={audioIcon} position="tl" size={32} srcWidth={645} srcHeight={546} />
+          <img src={soundIcon} alt="音声" style={{ width: '24px', height: '24px' }} />
         </button>
-        <button disabled title="近日公開！" style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>
-          <SpriteIcon src={micIcon} position="tr" size={32} srcWidth={682} srcHeight={603} />
-        </button>
-        <button onClick={handleGoHomeConfirm} style={iconButtonStyle} title="TOPに戻る">
-          🏠
-        </button>
+        {renderLoginBadge()}
       </div>
     </header>
   );
@@ -368,9 +407,98 @@ if (!currentQuiz && !isQuizEnded) {
     const wrongQuizzes = wrongQuizzesRef.current;
     return (
       <div style={containerStyle}>
+        <style>{`
+          @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+          }
+          @keyframes confetti-sway {
+            0%, 100% { margin-left: 0; }
+            50% { margin-left: 50px; }
+          }
+          .confetti {
+            position: fixed;
+            top: -20px;
+            width: 10px;
+            height: 10px;
+            z-index: 1500;
+            pointer-events: none;
+            animation: confetti-fall linear forwards;
+          }
+          .confetti-inner {
+            width: 100%;
+            height: 100%;
+            animation: confetti-sway ease-in-out infinite;
+          }
+          rt { font-size: 0.5em; font-weight: normal; }
+          
+          @keyframes slideUp {
+            from { transform: translate(-50%, 100px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+          }
+          .floating-bar {
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+          }
+          @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+          }
+          .shine-button {
+            position: relative;
+            overflow: hidden;
+          }
+          .shine-button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(
+              to right,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.6) 50%,
+              rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+          }
+        `}</style>
         {stickyHeader}
-        <h1 style={titleStyle}>🎉 結果発表 🎉</h1>
+        
+        {/* 紙吹雪エフェクト */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div key={i} className="confetti" style={{
+            left: `${Math.random() * 100}vw`,
+            animationDuration: `${2 + Math.random() * 3}s`,
+            animationDelay: `${Math.random() * 5}s`,
+          }}>
+            <div className="confetti-inner" style={{
+              backgroundColor: ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1', '#FF9F43', '#A29BFE'][Math.floor(Math.random() * 6)],
+              animationDuration: `${1 + Math.random()}s`,
+            }} />
+          </div>
+        ))}
+
+        <h1 style={{ ...titleStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+          <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+          結果発表
+          <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain', transform: 'scaleX(-1)' }} />
+        </h1>
+        
         <div style={resultBoxStyle}>
+          {/* メダル表示 */}
+          <div style={{ marginBottom: '20px' }}>
+            {accuracy >= 90 ? (
+              <img src={MedalKinIcon} alt="金メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            ) : accuracy >= 60 ? (
+              <img src={MedalGinIcon} alt="銀メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            ) : (
+              <img src={MedalDouIcon} alt="銅メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            )}
+          </div>
+
           <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
           <p style={resultTextStyle}>正解率: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
 
@@ -386,13 +514,54 @@ if (!currentQuiz && !isQuizEnded) {
             </div>
           )}
 
-          <div style={resultActionButtonsStyle}>
-            <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={buttonStyle}>もう<ruby>一度<rt>いちど</rt></ruby> →</button>
-            <button onClick={onBackToDifficulty} style={buttonStyle}><ruby>別<rt>べつ</rt></ruby>のレベルへ →</button>
-            <button onClick={onBack} style={backButtonStyle}>← <ruby>別<rt>べつ</rt></ruby>のジャンルへ</button>
-            <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
+          <div ref={resultActionsRef} style={resultActionButtonsStyle}>
+            <button className="shine-button" onClick={onBackToDifficulty} style={buttonStyle}>べつのレベルへ</button>
+            <button onClick={onBack} style={buttonStyle}>べつのジャンルへ</button>
+            <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: 'linear-gradient(135deg, #FF9A3C, #FFD6A5)', color: '#a0522d', boxShadow: '0 5px 0 #e67e22' }}>もういちど</button>
+            <button onClick={onBack} style={backButtonStyle}>TOPにもどる</button>
           </div>
         </div>
+
+        {/* 追従アクションバー (最下部ボタンが見えていない時) */}
+        {!isResultActionsVisible && (
+          <div className="floating-bar" style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1600,
+            width: '94%',
+            maxWidth: '500px',
+            display: 'flex',
+            gap: '10px'
+          }}>
+            <button 
+              onClick={onBack} 
+              style={{
+                ...backButtonStyle,
+                flex: 1,
+                fontSize: '0.9em',
+                padding: '12px 8px',
+                boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              べつのジャンルへ
+            </button>
+            <button 
+              className="shine-button"
+              onClick={onBackToDifficulty} 
+              style={{
+                ...buttonStyle,
+                flex: 1,
+                fontSize: '0.9em',
+                padding: '12px 8px',
+                boxShadow: '0 6px 15px rgba(255, 110, 199, 0.3)'
+              }}
+            >
+              べつのレベルへ
+            </button>
+          </div>
+        )}
         {showSettings && (
           <Settings onClose={() => setShowSettings(false)} currentView="RESULT" onLoginRequest={() => setShowSettings(false)} />
         )}
@@ -402,7 +571,36 @@ if (!currentQuiz && !isQuizEnded) {
 
   return (
     <div style={containerStyle}>
-      <style>{`@keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } rt { font-size: 0.5em; font-weight: normal; }`}</style>
+      <style>{`
+        @keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } 
+        @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } 
+        @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } 
+        rt { font-size: 0.5em; font-weight: normal; }
+        
+        /* 紙吹雪アニメーション */
+        @keyframes confetti-fall {
+          0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes confetti-sway {
+          0%, 100% { margin-left: 0; }
+          50% { margin-left: 50px; }
+        }
+        .confetti {
+          position: fixed;
+          top: -20px;
+          width: 10px;
+          height: 10px;
+          z-index: 1500;
+          pointer-events: none;
+          animation: confetti-fall linear forwards;
+        }
+        .confetti-inner {
+          width: 100%;
+          height: 100%;
+          animation: confetti-sway ease-in-out infinite;
+        }
+      `}</style>
       {effectKey && (
         <div key={effectKey.id} style={effectOverlayStyle}>
           {effectKey.type === 'correct' ? (
@@ -427,9 +625,9 @@ if (!currentQuiz && !isQuizEnded) {
       </div>
 
       <div style={questionBoxStyle}>
-        <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby ?? currentQuiz?.question ?? '')}</p>
+        <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
         {showHint === 1 && currentQuiz && (
-          <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby ?? currentQuiz.hint1)}</p>
+          <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby || currentQuiz.hint1)}</p>
         )}
         {showHint === 2 && currentQuiz && (
           <p style={hintTextStyle}>ヒント2: {(currentQuiz as any).hint2}</p>
@@ -470,8 +668,21 @@ if (!currentQuiz && !isQuizEnded) {
                   ...optionButtonStyle,
                   backgroundColor: bg,
                   cursor: isRevealed ? 'not-allowed' : 'pointer',
+                  position: 'relative', // 番号配置用
                 } as React.CSSProperties}
               >
+                <span style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: '4px',
+                  fontSize: '0.9em',
+                  color: 'rgba(0,0,0,0.5)',
+                  fontWeight: 'bold',
+                  textShadow: '0.5px 0.5px 0 rgba(255,255,255,0.4)',
+                  pointerEvents: 'none'
+                }}>
+                  {['①', '②', '③', '④'][index]}
+                </span>
                 {option}
               </button>
             );
@@ -482,7 +693,7 @@ if (!currentQuiz && !isQuizEnded) {
       <div style={actionButtonsContainerStyle}>
         {!isHandsFreeMode && (feedback === 'correct' || feedback === 'surrender') && (
           <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: 'linear-gradient(135deg, #51CF66, #20C997)', boxShadow: '0 5px 0 #1aaa7a', flex: '1 1 100%', maxWidth: '100%' }}>
-            次の問題へ →
+            つぎのもんだいへ →
           </button>
         )}
         {isHandsFreeMode && (
@@ -498,7 +709,7 @@ if (!currentQuiz && !isQuizEnded) {
             </button>
           </>
         )}
-        <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }}><ruby>降参<rt>こうさん</rt></ruby></button>
+        <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }}>こうさん</button>
       </div>
       
       {!(feedback === 'correct' || feedback === 'surrender') && (
@@ -509,7 +720,7 @@ if (!currentQuiz && !isQuizEnded) {
 
 
       {showSettings && (
-        <Settings onClose={() => setShowSettings(false)} currentView="GAME" onLoginRequest={() => setShowSettings(false)} />
+        <Settings onClose={() => setShowSettings(false)} currentView="GAME" onLoginRequest={onLoginRequest} />
       )}
 
     </div>
@@ -531,10 +742,12 @@ const containerStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   position: 'relative',
 };
-const stickyHeaderStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 1000, boxShadow: '0 3px 12px rgba(0,0,0,0.18)' };
-const headerTitleStyle: React.CSSProperties = { color: '#fff', fontSize: 'clamp(0.7em, 3vw, 1.3em)', margin: 0, textShadow: '1px 2px 0 rgba(0,0,0,0.18)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 1, minWidth: 0, cursor: 'pointer' };
-const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '8px', flexShrink: 0 };
-const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
+const stickyHeaderStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', zIndex: 1000, boxShadow: '0 3px 12px rgba(0,0,0,0.18)' };
+const headerTitleStyle: React.CSSProperties = { color: '#fff', fontSize: 'clamp(1.0em, 4.5vw, 1.5em)', margin: 0, textShadow: '1px 2px 0 rgba(0,0,0,0.18)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 1, minWidth: 0, cursor: 'pointer' };
+const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '4px', flexShrink: 0 };
+const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.3em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
+const loginBadgeGuestStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.6em', fontWeight: 'bold', color: '#888', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', whiteSpace: 'nowrap', flexShrink: 0 };
+const loginBadgeActiveStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '3px solid #2E86DE', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold', color: '#2E86DE', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.15)', whiteSpace: 'nowrap', flexShrink: 0 };
 const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: '50px', padding: '8px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
 const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: '#FF5FA0', margin: 0, fontWeight: 'bold', flexGrow: 1 };
@@ -557,7 +770,7 @@ const loadingStyle: React.CSSProperties = { fontSize: '2em', color: '#FF5FA0', d
 const titleStyle: React.CSSProperties = { color: '#fff', fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 3px 0px #FF6BAE' };
 const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', margin: '20px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.2)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
 const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: '#333', margin: '10px 0' };
-const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '24px' };
+const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginTop: '24px', width: '100%' };
 const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
 const backButtonStyle: React.CSSProperties = { background: '#ccc', color: '#555', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #999' };
 const wrongListContainerStyle: React.CSSProperties = { marginTop: '20px', marginBottom: '10px', textAlign: 'left', width: '100%' };

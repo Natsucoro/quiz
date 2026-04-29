@@ -4,11 +4,12 @@ import { persist } from 'zustand/middleware';
 
 // ジャンルIDのリスト
 const ALL_GENRES = [
-  "animals",
+  "mammals",
   "insects",
   "plants",
   "vehicles",
   "tools",
+  "food",
   "historical_figures",
   "japan_geography",
   "world_geography",
@@ -35,15 +36,17 @@ export const usePurchaseStore = create<PurchaseState>()(
       userEmail: null,
       login: (email: string) => {
         let itemsToUnlock: string[] = [];
-        if (email === "nakaharanatsumi+test1@gmail.com") {
+        if (email === "watashihadare.quiz@gmail.com") {
           // テストアカウントの場合、全ジャンル、難易度3-5, 8-10を解放
+          const JP_GENRES: Record<string, string> = {
+            "mammals": "哺乳類", "insects": "昆虫", "plants": "植物",
+            "vehicles": "乗り物", "tools": "道具", "food": "食べ物"
+          };
           ALL_GENRES.forEach(genre => {
+            const jpGenre = JP_GENRES[genre] || genre;
             [3, 4, 5, 8, 9, 10].forEach(difficulty => {
-              itemsToUnlock.push(`${genre}_${difficulty}`);
+              itemsToUnlock.push(`${jpGenre}_${difficulty}`);
             });
-            // 以前のバージョンで含まれていた、step1, step2の購入状態は、
-            // 今回の指示「全48アイテム」には含まれないため削除しました。
-            // 必要に応じて将来的に追加の要件としてご指示ください。
           });
         }
         set((state) => ({

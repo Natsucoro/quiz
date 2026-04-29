@@ -2,6 +2,13 @@
 // src/components/common/Settings/Settings.tsx
 
 import React, { useState } from 'react';
+import HagurumaIcon from '../../../assets/icons/haguruma.svg';
+import GuestIcon from '../../../assets/icons/guest.svg';
+import UserIcon from '../../../assets/icons/user.svg';
+import HatoIcon from '../../../assets/icons/hato.svg';
+import InkoIcon from '../../../assets/icons/inko.svg';
+import KeyLockIcon from '../../../assets/icons/key_lock.svg';
+import ListIcon from '../../../assets/icons/list.svg';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
 import { usePurchaseStore } from '../../../store/purchaseStore';
 import { auth } from '../../../lib/firebase';
@@ -38,7 +45,8 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle}>
           <h2 style={modalTitleStyle}>
-            ⚙️ 設定
+            <img src={HagurumaIcon} alt="" style={{ width: '28px', height: '28px', verticalAlign: 'middle', marginRight: '8px' }} />
+            設定
           </h2>
 
           {/* ログイン状態 */}
@@ -46,7 +54,10 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
             <h3 style={settingSectionTitleStyle}>アカウント</h3>
             {isLoggedIn ? (
               <>
-                <p style={loginStatusStyle}>✅ ログイン済み</p>
+                <p style={{ ...loginStatusStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <img src={UserIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
+                  <span>ログイン済み</span>
+                </p>
                 <p style={{ fontSize: '0.85em', color: '#666', marginBottom: '12px', wordBreak: 'break-all' }}>{userEmail}</p>
                 <button onClick={handleLogout} style={{ ...buttonStyle, backgroundColor: '#ff7675', boxShadow: '0 4px #c0392b' }}>
                   ログアウト
@@ -54,7 +65,10 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
               </>
             ) : (
               <>
-                <p style={loginStatusStyle}>👤 ゲスト（未ログイン）</p>
+                <p style={{ ...loginStatusStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <img src={GuestIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
+                  <span>ゲスト（未ログイン）</span>
+                </p>
                 <p style={{ fontSize: '0.85em', color: '#888', marginBottom: '12px' }}>
                   ログインすると購入履歴が引き継がれます
                 </p>
@@ -87,23 +101,27 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
           <div style={settingSectionStyle}>
             <h3 style={settingSectionTitleStyle}>その他</h3>
             <p>
-              <a href="mailto:nakaharanatsumi@gmail.com?subject=【わたしはダレでしょう？クイズ】お問い合わせ" style={linkStyle}>
-                📧 お問い合わせ
+              <a href="mailto:watashihadare.quiz@gmail.com?subject=【わたしはダレでしょう？クイズ】お問い合わせ" style={linkStyle}>
+                <img src={HatoIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                お問い合わせ
               </a>
             </p>
             <p>
               <button onClick={() => setShowLegal('tokushoho')} style={textButtonStyle}>
-                🏪 特定商取引法に基づく表記
+                <img src={InkoIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                特定商取引法に基づく表記
               </button>
             </p>
             <p>
               <button onClick={() => setShowLegal('privacy')} style={textButtonStyle}>
-                🔐 プライバシーポリシー
+                <img src={KeyLockIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                プライバシーポリシー
               </button>
             </p>
             <p>
               <button onClick={() => setShowLegal('terms')} style={textButtonStyle}>
-                📄 利用規約
+                <img src={ListIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                利用規約
               </button>
             </p>
             <p style={versionStyle}>バージョン 1.0.0</p>
