@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import FloatingShapes from './FloatingShapes';
-
-interface PasswordGateProps {
+import React, { useState } from 'react';interface PasswordGateProps {
   onUnlock: () => void;
 }
 
@@ -21,7 +18,6 @@ const PasswordGate: React.FC<PasswordGateProps> = ({ onUnlock }) => {
 
   return (
     <div style={containerStyle}>
-      <FloatingShapes />
       <div style={cardStyle}>
         <div style={iconStyle}>🔒</div>
         <h1 style={titleStyle}>合言葉を入力してください</h1>
@@ -63,7 +59,6 @@ const containerStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
   fontFamily: "'Yomogi', cursive",
   padding: '20px',
   boxSizing: 'border-box'

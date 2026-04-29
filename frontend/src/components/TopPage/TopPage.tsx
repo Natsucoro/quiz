@@ -10,9 +10,9 @@ import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
-import FloatingShapes from '../common/FloatingShapes';
 import PaywallModal from '../common/PaywallModal';
 import { SpriteIcon } from '../common/SpriteIcon';
+import Header from '../common/Header/Header';
 
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
@@ -222,9 +222,6 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
 
   return (
     <div style={containerStyle}>
-      <div style={backgroundStyle}>
-        <FloatingShapes />
-      </div>
       <style>{`
         rt { font-size: 0.5em; font-weight: normal; } 
         .btn-ruby rt { font-size: 0.35em !important; } 
@@ -275,31 +272,11 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
           animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
       `}</style>
-      <header style={stickyHeaderStyle}>
-        <h1 style={titleStyle} onClick={() => setShowDifficultySelection(false)}>わたしはダレでしょう？クイズ</h1>
-        <div style={headerIconsStyle}>
-          {/* ログイン状態バッジ */}
-          <button
-            onClick={() => setShowSettings(true)}
-            style={isPremiumUser ? loginBadgeActiveStyle : loginBadgeGuestStyle}
-            title={isPremiumUser ? `ログイン中: ${isLoggedIn ? '設定からログアウト可' : ''}` : 'ゲスト（設定からログイン）'}
-          >
-            {isPremiumUser ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.0', color: '#2E86DE', fontWeight: 'bold', fontSize: '0.75em' }}>
-                <span>ログ</span>
-                <span>イン</span>
-                <span>中</span>
-              </div>
-            ) : 'ゲスト'}
-          </button>
-          <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-            <img src={HagurumaIcon} alt="設定" style={{ width: '30px', height: '30px' }} />
-          </button>
-          <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
-            <img src={soundIcon} alt="音声" style={{ width: '30px', height: '30px' }} />
-          </button>
-        </div>
-      </header>
+      <Header 
+        onLoginRequest={onLoginRequest!} 
+        onTitleClick={() => setShowDifficultySelection(false)} 
+        currentView="TOP" 
+      />
 
 
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
@@ -467,19 +444,19 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
             </div>
           </div>
 
-          <div style={bottomButtonsContainerStyle}>
-            <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#ccc', color: '#555', boxShadow: '0 5px 0 #999' } as React.CSSProperties}>
-              ← TOPにもどる
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px', width: '90%', maxWidth: '700px' }}>
             <button
               ref={bottomStartButtonRef as any}
               className="shine-button"
               onClick={handleStartQuiz}
-              style={buttonStyle}
+              style={{ ...buttonStyle, width: '100%', boxSizing: 'border-box' }}
               // 無料レベル(1,2,6,7) または 購入済みの場合はスタート可能
               disabled={![1, 2, 6, 7].includes(localSelectedDifficulty) && !isPurchased(`${localSelectedGenre}_${localSelectedDifficulty}`)}
             >
               クイズスタート！ →
+            </button>
+            <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#ccc', color: '#555', boxShadow: '0 5px 0 #999', width: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
+              ← TOPにもどる
             </button>
           </div>
 
@@ -608,7 +585,7 @@ const playModeIconStyle: React.CSSProperties = { fontSize: '2.4em' };
 const sectionTitleStyle: React.CSSProperties = { color: '#FF5FA0', fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
 const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
-const genreButtonStyle: React.CSSProperties = { padding: '10px 8px', borderRadius: '24px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.05em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center', minHeight: '90px', textAlign: 'center' } as React.CSSProperties;
+const genreButtonStyle: React.CSSProperties = { padding: '10px 8px', borderRadius: '24px', border: '3px solid rgba(255,255,255,0.8)', fontSize: 'clamp(0.8em, 3.5vw, 1.05em)', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center', minHeight: '90px', textAlign: 'center', whiteSpace: 'nowrap' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2.4em', flexShrink: 0, marginBottom: '-4px' };
 const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
 const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '20px', rowGap: '30px', marginBottom: '28px' };

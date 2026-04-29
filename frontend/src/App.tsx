@@ -4,11 +4,14 @@ import GamePage from './components/GamePage/GamePage';
 import FloatingMicBar from './components/common/FloatingMicBar/FloatingMicBar';
 import { useSettingsStore } from './store/settingsStore';
 import { speechRecognitionService } from './services/speechRecognition';
+import { syncWithPurchases } from './services/syncService';
+import FloatingShapes from './components/common/FloatingShapes';
 import { usePurchaseStore } from './store/purchaseStore';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { LoginPage } from './components/common/LoginPage';
 import PasswordGate from './components/common/PasswordGate';
+import Footer from './components/common/Footer/Footer';
 
 const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
@@ -205,9 +208,19 @@ const App: React.FC = () => {
   }
 
   return (
-    <div style={{ fontFamily: "'Yomogi', cursive", minHeight: '100vh', position: 'relative' }}>
+    <div style={{ 
+      fontFamily: "'Yomogi', cursive", 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      position: 'relative',
+      background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
+      overflow: 'hidden'
+    }}>
+      <FloatingShapes />
       
-      {currentPage === 'top' ? (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+        {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} onLoginRequest={() => setShowLogin(true)} />
       ) : (
         <GamePage 
@@ -220,6 +233,9 @@ const App: React.FC = () => {
           onLoginRequest={() => setShowLogin(true)}
         />
       )}
+      </div>
+
+      <Footer />
       
       {showLogin && (
         <LoginPage onBack={() => setShowLogin(false)} />
