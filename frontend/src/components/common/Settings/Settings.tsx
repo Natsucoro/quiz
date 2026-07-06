@@ -102,25 +102,25 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
             <h3 style={settingSectionTitleStyle}>その他</h3>
             <p>
               <a href="mailto:watashihadare.quiz@gmail.com?subject=【わたしはダレでしょう？クイズ】お問い合わせ" style={linkStyle}>
-                <img src={HatoIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                <img src={HatoIcon} alt="" style={settingsIconStyle} />
                 お問い合わせ
               </a>
             </p>
             <p>
               <button onClick={() => setShowLegal('tokushoho')} style={textButtonStyle}>
-                <img src={InkoIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                <img src={InkoIcon} alt="" style={settingsIconStyle} />
                 特定商取引法に基づく表記
               </button>
             </p>
             <p>
               <button onClick={() => setShowLegal('privacy')} style={textButtonStyle}>
-                <img src={KeyLockIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                <img src={KeyLockIcon} alt="" style={settingsIconStyle} />
                 プライバシーポリシー
               </button>
             </p>
             <p>
               <button onClick={() => setShowLegal('terms')} style={textButtonStyle}>
-                <img src={ListIcon} alt="" style={{ width: '2.4em', verticalAlign: 'middle', marginRight: '10px' }} />
+                <img src={ListIcon} alt="" style={settingsIconStyle} />
                 利用規約
               </button>
             </p>
@@ -241,6 +241,14 @@ const textButtonStyle: React.CSSProperties = {
   cursor: 'pointer', fontSize: '1em',
   fontFamily: "'Yomogi', cursive",
   padding: '4px 0',
+};
+
+const settingsIconStyle: React.CSSProperties = {
+  width: '28px',
+  height: '28px',
+  objectFit: 'contain',
+  verticalAlign: 'middle',
+  marginRight: '10px',
 };
 
 const versionStyle: React.CSSProperties = {

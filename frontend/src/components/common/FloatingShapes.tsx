@@ -22,6 +22,13 @@ const FloatingShapes = () => {
     // アイコンの数を少し減らす調整
     const numShapes = iconUrls.length > 0 ? 28 : 20;
 
+    // 均等なグリッドを作り、そのマス目の中でだけ位置をずらす
+    // (完全ランダムだと偏りが出て、密集/空白ができてしまうため)
+    const cols = Math.ceil(Math.sqrt(numShapes * 1.3));
+    const rows = Math.ceil(numShapes / cols);
+    const cellW = 100 / cols;
+    const cellH = 100 / rows;
+
     const containerStyle: React.CSSProperties = {
         position: 'absolute',
         top: 0,
@@ -33,16 +40,18 @@ const FloatingShapes = () => {
         pointerEvents: 'none',
     };
 
+    // 上下にふわっと漂うだけで、天地がひっくり返らない程度の
+    // 小さな回転(±8度)にとどめる
     const keyframes = `
-        @keyframes fly-around {
+        @keyframes float-gently {
             0% {
-                transform: translate(var(--x-start), var(--y-start)) rotate(0deg);
+                transform: translate(0, 0) rotate(var(--r-start));
             }
             50% {
-                transform: translate(var(--x-mid), var(--y-mid)) rotate(var(--r-mid));
+                transform: translate(var(--x-mid), var(--y-mid)) rotate(var(--r-end));
             }
             100% {
-                transform: translate(var(--x-end), var(--y-end)) rotate(0deg);
+                transform: translate(0, 0) rotate(var(--r-start));
             }
         }
     `;
@@ -54,27 +63,30 @@ const FloatingShapes = () => {
                 const duration = Math.random() * 40 + 30; // 30-70秒でゆっくりふわふわ
                 const size = (Math.random() * 60 + 40) * 1.2; // 40pxから100pxの1.2倍 (48px - 120px)
 
+                const col = index % cols;
+                const row = Math.floor(index / cols);
+                // マス目の中心 ± マス目の25%だけランダムにずらす(等間隔感を保ちつつ自然に)
+                const baseX = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.5;
+                const baseY = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.5;
+
                 const style = {
-                    '--x-start': `${Math.random() * 110 - 5}vw`,
-                    '--y-start': `${Math.random() * 110 - 5}vh`,
-                    '--x-mid': `${Math.random() * 110 - 5}vw`,
-                    '--y-mid': `${Math.random() * 110 - 5}vh`,
-                    '--r-mid': `${Math.random() * 120 - 60}deg`, // 揺れ幅を少し大きめに
-                    '--x-end': `${Math.random() * 110 - 5}vw`,
-                    '--y-end': `${Math.random() * 110 - 5}vh`,
+                    '--x-mid': `${(Math.random() - 0.5) * 4}vw`,
+                    '--y-mid': `${(Math.random() - 0.5) * 4}vh`,
+                    '--r-start': `${(Math.random() - 0.5) * 12}deg`,
+                    '--r-end': `${(Math.random() - 0.5) * 12}deg`,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: `${baseY}%`,
+                    left: `${baseX}%`,
                     width: `${size}px`,
                     height: `${size}px`,
-                    animation: `fly-around ${duration}s ease-in-out infinite alternate`,
+                    animation: `float-gently ${duration}s ease-in-out infinite`,
                     willChange: 'transform',
                     animationDelay: `-${Math.random() * duration}s`,
                     opacity: Math.random() * 0.2 + 0.15, // 透明度を下げて少し濃く (0.15 ~ 0.35)
                 } as React.CSSProperties;
 
                 // ランダムにアイコンを選択
-                const iconUrl = iconUrls.length > 0 
+                const iconUrl = iconUrls.length > 0
                   ? iconUrls[Math.floor(Math.random() * iconUrls.length)]
                   : null;
 
