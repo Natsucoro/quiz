@@ -14,6 +14,7 @@ import { usePurchaseStore } from '../../../store/purchaseStore';
 import { auth } from '../../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import LegalModal from '../LegalModal';
+import ConfirmDialog from '../ConfirmDialog';
 import { colors, fonts, shadow } from '../../../styles/theme';
 
 interface SettingsProps {
@@ -25,6 +26,7 @@ interface SettingsProps {
 const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
   const [showLegal, setShowLegal] = useState<'tokushoho' | 'privacy' | 'terms' | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { isLoggedIn, userEmail, logout } = usePurchaseStore();
 
   const handleSpeechRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,12 +35,15 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
     setSpeechRate(newRate);
   };
 
-  const handleLogout = async () => {
-    if (window.confirm('ログアウトしますか？')) {
-      await signOut(auth);
-      logout();
-      onClose();
-    }
+  const handleLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutConfirm(false);
+    await signOut(auth);
+    logout();
+    onClose();
   };
 
   return (
@@ -137,6 +142,15 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
         <LegalModal
           onClose={() => setShowLegal(null)}
           initialTab={showLegal}
+        />
+      )}
+      {showLogoutConfirm && (
+        <ConfirmDialog
+          message="ログアウトしますか？"
+          confirmLabel="ログアウト"
+          cancelLabel="キャンセル"
+          onConfirm={handleConfirmLogout}
+          onCancel={() => setShowLogoutConfirm(false)}
         />
       )}
     </>

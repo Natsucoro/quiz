@@ -12,6 +12,8 @@ import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink } 
 import { LoginPage } from './components/common/LoginPage';
 import PasswordGate from './components/common/PasswordGate';
 import Footer from './components/common/Footer/Footer';
+import Toast from './components/common/Toast/Toast';
+import PromptDialog from './components/common/PromptDialog';
 import { colors, fonts } from './styles/theme';
 
 const App: React.FC = () => {
@@ -32,6 +34,37 @@ const App: React.FC = () => {
   const { addPurchase, syncWithClaims, login: purchaseLogin, setLoggedOut: purchaseSetLoggedOut } = usePurchaseStore();
   const [showLogin, setShowLogin] = useState(false);
   const [isProcessingLogin, setIsProcessingLogin] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [pendingEmailPrompt, setPendingEmailPrompt] = useState(false);
+
+  const completeEmailSignIn = useCallback((email: string) => {
+    signInWithEmailLink(auth, email, window.location.href)
+      .then(async (result) => {
+        window.localStorage.removeItem('emailForSignIn');
+        // パラメータを消して履歴を置換
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        // ユーザー情報をストアに反映
+        if (result.user) {
+          const u = result.user;
+          purchaseLogin(u.email ?? '');
+          const token = await u.getIdTokenResult(true);
+          if (token.claims.purchasedItems) syncWithClaims(token.claims.purchasedItems as string[]);
+        }
+
+        setToastMessage('ログインに成功しました！');
+      })
+      .catch((error) => {
+        console.error('Login Error:', error);
+        // 本物のエラーの場合のみ通知を出す
+        if (error.code !== 'auth/invalid-action-code') {
+          setToastMessage('ログインに失敗しました。リンクが無効か、期限が切れている可能性があります。');
+        }
+      })
+      .finally(() => {
+        setIsProcessingLogin(false);
+      });
+  }, [purchaseLogin, syncWithClaims]);
 
   // Firebase Auth の初期化とメールリンクからのログイン復帰
   useEffect(() => {
@@ -40,40 +73,13 @@ const App: React.FC = () => {
       if (isProcessingLogin) return; // 二重処理防止
       setIsProcessingLogin(true);
 
-      let email = window.localStorage.getItem('emailForSignIn');
-      if (!email) {
-        email = window.prompt('確認のため、もう一度メールアドレスを入力してください');
-      }
-
-      if (email) {
-        signInWithEmailLink(auth, email, window.location.href)
-          .then(async (result) => {
-            window.localStorage.removeItem('emailForSignIn');
-            // パラメータを消して履歴を置換
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // ユーザー情報をストアに反映
-            if (result.user) {
-              const u = result.user;
-              purchaseLogin(u.email ?? '');
-              const token = await u.getIdTokenResult(true);
-              if (token.claims.purchasedItems) syncWithClaims(token.claims.purchasedItems as string[]);
-            }
-            
-            alert('ログインに成功しました！');
-          })
-          .catch((error) => {
-            console.error('Login Error:', error);
-            // 本物のエラーの場合のみアラートを出す
-            if (error.code !== 'auth/invalid-action-code') {
-              alert('ログインに失敗しました。リンクが無効か、期限が切れている可能性があります。');
-            }
-          })
-          .finally(() => {
-            setIsProcessingLogin(false);
-          });
+      const savedEmail = window.localStorage.getItem('emailForSignIn');
+      if (savedEmail) {
+        completeEmailSignIn(savedEmail);
       } else {
-        setIsProcessingLogin(false);
+        // window.prompt()はサンドボックス化された埋め込み環境では
+        // 無反応(即nullを返す)になることがあるため、アプリ内モーダルで代替する
+        setPendingEmailPrompt(true);
       }
     }
 
@@ -143,10 +149,10 @@ const App: React.FC = () => {
                addPurchase(itemId); // fallback
             }
 
-            alert(`🎉 決済完了！\n「${genre} Lv.${level}」が解放されました！`);
+            setToastMessage(`🎉 決済完了！「${genre} Lv.${level}」が解放されました！`);
           } else {
             console.error('Payment verification failed', await res.text());
-            alert('決済の確認に失敗しました。');
+            setToastMessage('決済の確認に失敗しました。');
           }
         } catch (err) {
           console.error(err);
@@ -250,6 +256,28 @@ const App: React.FC = () => {
           transcript={micStatus.transcript}
         />
       )}
+
+      {pendingEmailPrompt && (
+        <PromptDialog
+          message="確認のため、もう一度メールアドレスを入力してください"
+          placeholder="you@example.com"
+          confirmLabel="ログイン"
+          onConfirm={(email) => {
+            setPendingEmailPrompt(false);
+            if (email) {
+              completeEmailSignIn(email);
+            } else {
+              setIsProcessingLogin(false);
+            }
+          }}
+          onCancel={() => {
+            setPendingEmailPrompt(false);
+            setIsProcessingLogin(false);
+          }}
+        />
+      )}
+
+      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
     </div>
   );
 };

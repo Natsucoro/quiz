@@ -13,6 +13,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
+import ConfirmDialog from '../common/ConfirmDialog';
 import { colors, fonts, rotatingColors, shadow } from '../../styles/theme';
 
 // SVGアイコンのインポート
@@ -328,11 +329,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     onMicStatus?.({ isRecognizing, isListening, isProcessing, transcript });
   }, [isRecognizing, isListening, isProcessing, transcript, onMicStatus]);
 
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
   const handleGoHomeConfirm = () => {
-    if (window.confirm('クイズを中断しますか？スコアはリセットされます。')) {
-      stopSpeaking();
-      onBack();
-    }
+    setShowExitConfirm(true);
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitConfirm(false);
+    stopSpeaking();
+    onBack();
   };
 
   const getGenreIcon = (genreName: string) => {
@@ -529,6 +535,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             </button>
           </div>
         )}
+
+        {showExitConfirm && (
+          <ConfirmDialog
+            message={'クイズを中断しますか？\nスコアはリセットされます。'}
+            confirmLabel="中断する"
+            cancelLabel="つづける"
+            onConfirm={handleConfirmExit}
+            onCancel={() => setShowExitConfirm(false)}
+          />
+        )}
       </div>
     );
   }
@@ -681,6 +697,15 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         </div>
       )}
 
+      {showExitConfirm && (
+        <ConfirmDialog
+          message={'クイズを中断しますか？\nスコアはリセットされます。'}
+          confirmLabel="中断する"
+          cancelLabel="つづける"
+          onConfirm={handleConfirmExit}
+          onCancel={() => setShowExitConfirm(false)}
+        />
+      )}
     </div>
   );
 };
