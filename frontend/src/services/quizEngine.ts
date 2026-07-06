@@ -32,6 +32,7 @@ import fishQuizzes from '../../../data/quizzes/fish.json';
 import birdsQuizzes from '../../../data/quizzes/birds.json';
 import reptilesQuizzes from '../../../data/quizzes/reptiles.json';
 import marineQuizzes from '../../../data/quizzes/marine.json';
+import historyQuizzes from '../../../data/quizzes/history.json';
 
 const allQuizzes: QuizData[] = [
   ...mammalsQuizzes,
@@ -42,6 +43,7 @@ const allQuizzes: QuizData[] = [
   ...birdsQuizzes,
   ...reptilesQuizzes,
   ...marineQuizzes,
+  ...historyQuizzes,
   ...toolsQuizzes,
   ...foodQuizzes,
 ];
