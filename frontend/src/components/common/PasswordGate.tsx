@@ -1,4 +1,6 @@
-import React, { useState } from 'react';interface PasswordGateProps {
+import React, { useState } from 'react';
+import { colors, fonts, shadow } from '../../styles/theme';
+interface PasswordGateProps {
   onUnlock: () => void;
 }
 
@@ -59,7 +61,8 @@ const containerStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  fontFamily: "'Yomogi', cursive",
+  fontFamily: fonts.body,
+  background: colors.bgGradient,
   padding: '20px',
   boxSizing: 'border-box'
 };
@@ -68,7 +71,7 @@ const cardStyle: React.CSSProperties = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '40px 30px',
   borderRadius: '30px',
-  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+  boxShadow: shadow.lg,
   width: '100%',
   maxWidth: '400px',
   textAlign: 'center',
@@ -82,13 +85,14 @@ const iconStyle: React.CSSProperties = {
 
 const titleStyle: React.CSSProperties = {
   fontSize: '1.4em',
-  color: '#FF5FA0',
+  fontFamily: fonts.heading,
+  color: colors.primaryDark,
   marginBottom: '10px'
 };
 
 const subtitleStyle: React.CSSProperties = {
   fontSize: '0.9em',
-  color: '#666',
+  color: colors.inkSoft,
   marginBottom: '30px'
 };
 
@@ -112,12 +116,12 @@ const buttonStyle: React.CSSProperties = {
   padding: '15px',
   borderRadius: '50px',
   border: 'none',
-  background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)',
+  background: colors.actionGradient,
   color: '#fff',
   fontSize: '1.1em',
   fontWeight: 'bold',
   cursor: 'pointer',
-  boxShadow: '0 5px 0 #D94F9A',
+  boxShadow: `0 5px 0 ${colors.primaryDark}`,
   transition: 'transform 0.1s'
 };
 

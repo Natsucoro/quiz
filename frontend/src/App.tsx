@@ -12,6 +12,7 @@ import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink } 
 import { LoginPage } from './components/common/LoginPage';
 import PasswordGate from './components/common/PasswordGate';
 import Footer from './components/common/Footer/Footer';
+import { colors, fonts } from './styles/theme';
 
 const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
@@ -208,13 +209,13 @@ const App: React.FC = () => {
   }
 
   return (
-    <div style={{ 
-      fontFamily: "'Yomogi', cursive", 
-      minHeight: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column', 
+    <div style={{
+      fontFamily: fonts.body,
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
       position: 'relative',
-      background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
+      background: colors.bgGradient,
       overflow: 'hidden'
     }}>
       <FloatingShapes />

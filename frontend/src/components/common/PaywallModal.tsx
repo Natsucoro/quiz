@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
+import { colors, fonts, shadow } from '../../styles/theme';
 
 interface PaywallModalProps {
   genre: string;
@@ -70,7 +71,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           </button>
         )}
 
-        <p style={{ marginTop: '14px', fontSize: '0.75em', color: '#aaa', textAlign: 'center' }}>
+        <p style={{ marginTop: '14px', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' }}>
           ※買い切り。一度購入するとずっと遊べます。
         </p>
       </div>
@@ -78,12 +79,12 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   );
 };
 
-const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 };
-const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', backgroundColor: '#fff', borderRadius: '24px', padding: '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', boxSizing: 'border-box' };
-const closeButtonStyle: React.CSSProperties = { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', fontSize: '1.4em', cursor: 'pointer', color: '#bbb' };
-const titleStyle: React.CSSProperties = { color: '#d63384', margin: '0 0 10px 0', textAlign: 'center', fontSize: '1.5em' };
-const featureBoxStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #1DD1A1, #54A0FF)', borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(29, 209, 161, 0.3)' };
-const purchaseButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: '#fff', border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 6px 0 #D94F9A', transition: 'transform 0.1s, box-shadow 0.1s' };
-const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: '#888', border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
+const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 };
+const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', backgroundColor: '#fff', borderRadius: '24px', padding: '30px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body };
+const closeButtonStyle: React.CSSProperties = { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', fontSize: '1.4em', cursor: 'pointer', color: colors.inkSoft };
+const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 10px 0', textAlign: 'center', fontSize: '1.5em' };
+const featureBoxStyle: React.CSSProperties = { background: colors.successGradient, borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(61,201,176,0.3)' };
+const purchaseButtonStyle: React.CSSProperties = { background: colors.actionGradient, color: '#fff', border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'pointer', boxShadow: `0 6px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' };
+const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
 
 export default PaywallModal;

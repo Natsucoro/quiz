@@ -13,6 +13,7 @@ import { speechRecognitionService, detectVoiceCommand } from '../../services/spe
 import PaywallModal from '../common/PaywallModal';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
+import { colors, fonts, genreColors, rotatingColors, shadow } from '../../styles/theme';
 
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
@@ -208,13 +209,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
     }
   }, [isOffline, showToast, localSelectedGenre]);
 
-  const GENRE_COLORS: Record<string, string> = {
-    '哺乳類': '#FF6B6B', '昆虫': '#51CF66', '植物': '#20C997',
-    '魚類': '#15AABF', '鳥類': '#FAB005', '爬虫類': '#82C91E', '海洋生物': '#4C6EF5',
-    '乗り物': '#339AF0', '道具': '#F59F00', '歴史上の人物': '#AE3EC9',
-    '日本の地理': '#F76707', '世界の地理': '#1098AD',
-    '食べ物': '#E64980',
-  };
+  const GENRE_COLORS = genreColors;
   const HISTORY_GENRES = ['歴史上の人物', '日本の歴史', '世界の歴史'];
   const getDifficultiesForGenre = (genre: string) =>
     HISTORY_GENRES.includes(genre) ? [6, 7, 8, 9, 10] : genre === '道具' ? [2, 6, 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -307,8 +302,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                     disabled={!isAvailable}
                     style={{
                       ...genreButtonStyle,
-                      backgroundColor: !isAvailable ? '#ccc' : (GENRE_COLORS[genre] || '#FF6B6B'),
-                      boxShadow: localSelectedGenre === genre ? `0 0 0 2px #fff, 0 0 0 4px ${GENRE_COLORS[genre] || '#FF6B6B'}` : '0 5px 0 rgba(0,0,0,0.15)',
+                      backgroundColor: !isAvailable ? '#D8D2DE' : (GENRE_COLORS[genre] || colors.primary),
+                      boxShadow: localSelectedGenre === genre ? `0 0 0 2px #fff, 0 0 0 4px ${GENRE_COLORS[genre] || colors.primary}` : '0 5px 0 rgba(74,68,88,0.15)',
                       transform: localSelectedGenre === genre ? 'scale(1.05)' : 'scale(1)',
                       cursor: !isAvailable ? 'not-allowed' : 'pointer',
                       position: 'relative',
@@ -374,7 +369,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                 style={{
                   ...buttonStyle,
                   width: '100%',
-                  boxShadow: '0 8px 20px rgba(255, 110, 199, 0.4)',
+                  boxShadow: '0 8px 20px rgba(255, 111, 145, 0.4)',
                   padding: '16px 20px'
                 }}
               >
@@ -393,8 +388,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
             </h2>
             {/* ゲスト向け説明 */}
             {!isLoggedIn && (
-              <p style={{ fontSize: '0.8em', color: '#888', textAlign: 'center', marginBottom: '14px', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', padding: '8px' }}>
-                💡 <strong style={{ color: '#FF5FA0' }}>無料</strong>は Lv.1・2（こども）と Lv.6・7（おとな）で体験できます
+              <p style={{ fontSize: '0.8em', color: colors.inkSoft, textAlign: 'center', marginBottom: '14px', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', padding: '8px' }}>
+                💡 <strong style={{ color: colors.primaryDark }}>無料</strong>は Lv.1・2（こども）と Lv.6・7（おとな）で体験できます
               </p>
             )}
             <div style={difficultyGridStyle}>
@@ -411,8 +406,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                       onClick={() => handleDifficultyButtonClick(difficulty, isLocked)}
                       style={{
                         ...difficultyButtonStyle,
-                        backgroundColor: isLocked ? '#B0B0B0' : localSelectedDifficulty === difficulty ? '#FF6EC7' : ['#FF6B6B', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#5F27CD', '#FF6B6B', '#FF9F43', '#FECA57', '#1DD1A1'][difficulty - 1],
-                        boxShadow: isLocked ? '0 4px 0 #888' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px #FF6EC7` : '0 5px 0 rgba(0,0,0,0.15)',
+                        backgroundColor: isLocked ? colors.lock : localSelectedDifficulty === difficulty ? colors.primary : rotatingColors[(difficulty - 1) % rotatingColors.length],
+                        boxShadow: isLocked ? '0 4px 0 #8A8496' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px ${colors.primary}` : '0 5px 0 rgba(74,68,88,0.15)',
                         transform: localSelectedDifficulty === difficulty ? 'scale(1.05)' : 'scale(1)',
                         cursor: isLocked ? 'not-allowed' : 'pointer',
                         width: '100%',
@@ -455,7 +450,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
             >
               クイズスタート！ →
             </button>
-            <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#ccc', color: '#555', boxShadow: '0 5px 0 #999', width: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
+            <button onClick={() => setShowDifficultySelection(false)} style={{ ...buttonStyle, background: '#E4DEE8', color: colors.ink, boxShadow: '0 5px 0 #C7BFCF', width: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
               ← TOPにもどる
             </button>
           </div>
@@ -480,7 +475,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                 style={{
                   ...buttonStyle,
                   width: '100%',
-                  boxShadow: '0 8px 20px rgba(255, 110, 199, 0.4)',
+                  boxShadow: '0 8px 20px rgba(255, 111, 145, 0.4)',
                   padding: '16px 20px',
                   opacity: (![1, 2, 6, 7].includes(localSelectedDifficulty) && !isPurchased(`${localSelectedGenre}_${localSelectedDifficulty}`)) ? 0.6 : 1
                 }}
@@ -522,38 +517,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   );
 };
 
-const stickyHeaderStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  height: '64px',
-  background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 8px',
-  zIndex: 1000,
-  boxShadow: '0 3px 12px rgba(0,0,0,0.18)',
-};
-const titleStyle: React.CSSProperties = {
-  cursor: 'pointer',
-  color: '#fff',
-  fontSize: 'clamp(1.0em, 4.5vw, 1.5em)',
-  margin: 0,
-  textShadow: '1px 2px 0 rgba(0,0,0,0.18)',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  flexShrink: 1,
-  minWidth: 0,
-};
-const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '4px', flexShrink: 0 };
-const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.3em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
-const loginBadgeGuestStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.6em', fontWeight: 'bold', color: '#888', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', whiteSpace: 'nowrap', flexShrink: 0 };
-const loginBadgeActiveStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '3px solid #2E86DE', borderRadius: '50%', width: '38px', height: '38px', minWidth: '38px', minHeight: '38px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold', color: '#2E86DE', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.15)', whiteSpace: 'nowrap', flexShrink: 0 };
 const containerStyle: React.CSSProperties = {
-  fontFamily: "'Yomogi', cursive",
+  fontFamily: fonts.body,
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -566,37 +531,21 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
-const backgroundStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
-  zIndex: -1,
-};
-const cautionStyle: React.CSSProperties = { fontSize: '0.78em', color: '#a0522d', background: 'rgba(255,255,255,0.6)', borderRadius: '20px', padding: '6px 16px', margin: '0 0 10px 0', textAlign: 'center', maxWidth: '700px', width: '100%', boxSizing: 'border-box' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '700px', width: '100%' };
-const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: '#FF5FA0', borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(255,100,180,0.2)', whiteSpace: 'nowrap' };
-const playModeContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '24px 30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box', marginBottom: '20px' };
-const playModeGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' };
-const playModeButtonStyle: React.CSSProperties = { padding: '20px 10px', borderRadius: '20px', border: 'none', fontSize: '1.1em', fontWeight: 'bold', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' };
-const playModeIconStyle: React.CSSProperties = { fontSize: '2.4em' };
-const sectionTitleStyle: React.CSSProperties = { color: '#FF5FA0', fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
-const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
+const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: colors.primaryDark, borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
+const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
+const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '30px', padding: '30px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
 const genreButtonStyle: React.CSSProperties = { padding: '10px 8px', borderRadius: '24px', border: '3px solid rgba(255,255,255,0.8)', fontSize: 'clamp(0.8em, 3.5vw, 1.05em)', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center', minHeight: '90px', textAlign: 'center', whiteSpace: 'nowrap' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2.4em', flexShrink: 0, marginBottom: '-4px' };
-const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: '30px', padding: '30px', boxShadow: '0 8px 32px rgba(255,100,180,0.2)', width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
+const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '30px', padding: '30px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
 const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '20px', rowGap: '30px', marginBottom: '28px' };
 const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90px', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' } as React.CSSProperties;
-const lockIconStyle: React.CSSProperties = { fontSize: '1em', marginLeft: '3px' };
-const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: '#d63384', fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: '0 3px 8px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: '1.5px solid #FFB3D9' };
+const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: colors.primaryDark, fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: shadow.sm, whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: `1.5px solid ${colors.primary}55` };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
-const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: '#51CF66', color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
-const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: '#54A0FF', color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
+const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.secondary, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
+const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.violet, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
-const bottomButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-around', gap: '15px', marginTop: '20px', width: '100%', maxWidth: '700px' };
-const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
+const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
 
 export default TopPage;

@@ -1,7 +1,6 @@
 // src/components/GamePage/GamePage.tsx
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Settings from '../common/Settings/Settings';
 import {
   QuizData,
   getNextQuiz,
@@ -14,6 +13,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
+import { colors, fonts, rotatingColors, shadow } from '../../styles/theme';
 
 // SVGアイコンのインポート
 import AshikaIcon from '../../assets/icons/ashika.svg';
@@ -440,7 +440,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             animationDelay: `${Math.random() * 5}s`,
           }}>
             <div className="confetti-inner" style={{
-              backgroundColor: ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1', '#FF9F43', '#A29BFE'][Math.floor(Math.random() * 6)],
+              backgroundColor: [colors.primary, colors.secondary, colors.tertiary, colors.violet][Math.floor(Math.random() * 4)],
               animationDuration: `${1 + Math.random()}s`,
             }} />
           </div>
@@ -464,8 +464,8 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             )}
           </div>
 
-          <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
-          <p style={resultTextStyle}>正解率: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
+          <p style={resultTextStyle}>正解数: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
+          <p style={resultTextStyle}>正解率: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
 
           {wrongQuizzes.length > 0 && (
             <div style={wrongListContainerStyle}>
@@ -484,7 +484,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         <div ref={resultActionsRef} style={{ ...resultActionButtonsStyle, width: '90%', maxWidth: '700px' }}>
           <button className="shine-button" onClick={onBackToDifficulty} style={buttonStyle}>べつのレベルへ →</button>
           <button onClick={onBack} style={buttonStyle}>べつのジャンルへ →</button>
-          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: 'linear-gradient(135deg, #FF9A3C, #FFD6A5)', color: '#a0522d', boxShadow: '0 5px 0 #e67e22' }}>もういちど</button>
+          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
           <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
         </div>
 
@@ -568,13 +568,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       {effectKey && (
         <div key={effectKey.id} style={effectOverlayStyle}>
           {effectKey.type === 'correct' ? (
-            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="38" fill="none" stroke="#51CF66" strokeWidth="12" strokeLinecap="round" />
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(74,68,88,0.35))' }} viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="38" fill="none" stroke={colors.success} strokeWidth="12" strokeLinecap="round" />
             </svg>
           ) : (
-            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
-              <line x1="20" y1="20" x2="80" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
-              <line x1="80" y1="20" x2="20" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(74,68,88,0.35))' }} viewBox="0 0 100 100">
+              <line x1="20" y1="20" x2="80" y2="80" stroke={colors.danger} strokeWidth="12" strokeLinecap="round" />
+              <line x1="80" y1="20" x2="20" y2="80" stroke={colors.danger} strokeWidth="12" strokeLinecap="round" />
             </svg>
           )}
         </div>
@@ -603,7 +603,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           <p style={answerInBoxStyle}>答え「{currentQuiz.answer}」</p>
         )}
         {!(feedback === 'correct' || feedback === 'surrender') && showHint === null && (
-          <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4', width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
+          <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? colors.warning : colors.primary, width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
             ヒント1
           </button>
         )}
@@ -621,8 +621,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           {options.map((option, index) => {
             const isCorrectOption = option === currentQuiz?.answer;
             const isRevealed = feedback === 'correct' || feedback === 'surrender';
-            const colors = ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1'];
-            const bg = isRevealed ? (isCorrectOption ? '#51CF66' : '#B0B0B0') : colors[index % 4];
+            const bg = isRevealed ? (isCorrectOption ? colors.success : colors.lock) : rotatingColors[index % rotatingColors.length];
             return (
               <button
                 key={index}
@@ -656,19 +655,19 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
       <div style={actionButtonsContainerStyle}>
         {!isHandsFreeMode && (feedback === 'correct' || feedback === 'surrender') && (
-          <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: 'linear-gradient(135deg, #51CF66, #20C997)', boxShadow: '0 5px 0 #1aaa7a', flex: '1 1 100%', maxWidth: '100%' }}>
+          <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: colors.successGradient, boxShadow: `0 5px 0 ${colors.successDark}`, flex: '1 1 100%', maxWidth: '100%' }}>
             つぎのもんだいへ →
           </button>
         )}
         {isHandsFreeMode && (
           <>
-            <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント1
             </button>
-            <button onClick={() => handleShowHint(2)} style={{ ...actionButtonStyle, backgroundColor: showHint === 2 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(2)} style={{ ...actionButtonStyle, backgroundColor: showHint === 2 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント2
             </button>
-            <button onClick={() => handleShowHint(3)} style={{ ...actionButtonStyle, backgroundColor: showHint === 3 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(3)} style={{ ...actionButtonStyle, backgroundColor: showHint === 3 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント3
             </button>
           </>
@@ -686,9 +685,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   );
 };
 
-const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(0,0,0,0.08)' };
+const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(74,68,88,0.08)' };
 const containerStyle: React.CSSProperties = {
-  fontFamily: "'Yomogi', cursive",
+  fontFamily: fonts.body,
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -700,35 +699,35 @@ const containerStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   position: 'relative',
 };
-const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: '50px', padding: '8px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: colors.surfaceSoft, borderRadius: '50px', padding: '8px 20px', boxShadow: shadow.sm, width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
-const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: '#FF5FA0', margin: 0, fontWeight: 'bold', flexGrow: 1 };
-const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#FF6EC7', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #D94FAA', whiteSpace: 'nowrap' };
-const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#54A0FF', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #2E86DE', whiteSpace: 'nowrap' };
-const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.15)', width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
-const questionTextStyle: React.CSSProperties = { fontSize: '1.2em', color: '#333', textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
+const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, margin: 0, fontWeight: 'bold', flexGrow: 1 };
+const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.primary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.primaryDark}`, whiteSpace: 'nowrap' };
+const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.secondary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.secondaryDark}`, whiteSpace: 'nowrap' };
+const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
+const questionTextStyle: React.CSSProperties = { fontSize: '1.2em', color: colors.ink, textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
 const optionsContainerStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '90%', maxWidth: '700px', margin: '10px 0' };
-const optionButtonStyle: React.CSSProperties = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(0,0,0,0.15)' };
+const optionButtonStyle: React.CSSProperties = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(74,68,88,0.15)' };
 const actionButtonsContainerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '12px', margin: '16px 0', width: '90%', maxWidth: '700px' };
-const actionButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', width: '100%' };
-const surrenderButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF4757, #FF6B81)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C0392B', width: '100%' };
-const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: '#555', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF9C4', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px solid #FFE066' };
-const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: '#51CF66', textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(81,207,102,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px dashed #51CF66' };
+const actionButtonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, width: '100%' };
+const surrenderButtonStyle: React.CSSProperties = { background: colors.dangerGradient, color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.dangerDark}`, width: '100%' };
+const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.ink, textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF3D6', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px solid ${colors.warning}` };
+const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: colors.successDark, textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(61,201,176,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px dashed ${colors.success}` };
 const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
-const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: '#FF5FA0', fontWeight: 'bold', margin: 0 };
-const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: '#333', fontWeight: 'bold', margin: 0 };
-const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: '#666', margin: 0 };
-const loadingStyle: React.CSSProperties = { fontSize: '2em', color: '#FF5FA0', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontFamily: "'Yomogi', cursive" };
-const titleStyle: React.CSSProperties = { color: '#fff', fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 3px 0px #FF6BAE' };
-const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: '0 8px 24px rgba(255,100,180,0.2)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
-const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: '#333', margin: '10px 0' };
+const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: colors.primaryDark, fontWeight: 'bold', margin: 0 };
+const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: colors.ink, fontWeight: 'bold', margin: 0 };
+const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: colors.inkSoft, margin: 0 };
+const loadingStyle: React.CSSProperties = { fontSize: '2em', color: colors.primaryDark, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontFamily: fonts.heading };
+const titleStyle: React.CSSProperties = { color: '#fff', fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: `2px 3px 0px ${colors.primaryDark}` };
+const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: shadow.lg, width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
+const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: colors.ink, margin: '10px 0' };
 const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginTop: '24px', width: '100%' };
-const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
-const backButtonStyle: React.CSSProperties = { background: '#ccc', color: '#555', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #999' };
+const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}` };
+const backButtonStyle: React.CSSProperties = { background: '#E4DEE8', color: colors.ink, padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C7BFCF' };
 const wrongListContainerStyle: React.CSSProperties = { marginTop: '20px', marginBottom: '10px', textAlign: 'left', width: '100%' };
-const wrongListTitleStyle: React.CSSProperties = { color: '#FF5FA0', fontSize: '1.1em', fontWeight: 'bold', marginBottom: '12px', textAlign: 'center' };
-const wrongItemStyle: React.CSSProperties = { background: '#FFF3F7', border: '1.5px solid #FFB3D9', borderRadius: '14px', padding: '12px 16px', marginBottom: '10px' };
-const wrongQuestionStyle: React.CSSProperties = { fontSize: '0.95em', color: '#444', margin: '0 0 6px 0', lineHeight: '1.5' };
-const wrongAnswerStyle: React.CSSProperties = { fontSize: '1.05em', color: '#FF5FA0', margin: 0 };
+const wrongListTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontSize: '1.1em', fontWeight: 'bold', marginBottom: '12px', textAlign: 'center' };
+const wrongItemStyle: React.CSSProperties = { background: '#FFF3F7', border: `1.5px solid ${colors.primary}55`, borderRadius: '14px', padding: '12px 16px', marginBottom: '10px' };
+const wrongQuestionStyle: React.CSSProperties = { fontSize: '0.95em', color: colors.ink, margin: '0 0 6px 0', lineHeight: '1.5' };
+const wrongAnswerStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.primaryDark, margin: 0 };
 
 export default GamePage;

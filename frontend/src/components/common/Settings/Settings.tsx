@@ -14,6 +14,7 @@ import { usePurchaseStore } from '../../../store/purchaseStore';
 import { auth } from '../../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import LegalModal from '../LegalModal';
+import { colors, fonts, shadow } from '../../../styles/theme';
 
 interface SettingsProps {
   onClose: () => void;
@@ -58,8 +59,8 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
                   <img src={UserIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
                   <span>ログイン済み</span>
                 </p>
-                <p style={{ fontSize: '0.85em', color: '#666', marginBottom: '12px', wordBreak: 'break-all' }}>{userEmail}</p>
-                <button onClick={handleLogout} style={{ ...buttonStyle, backgroundColor: '#ff7675', boxShadow: '0 4px #c0392b' }}>
+                <p style={{ fontSize: '0.85em', color: colors.inkSoft, marginBottom: '12px', wordBreak: 'break-all' }}>{userEmail}</p>
+                <button onClick={handleLogout} style={{ ...buttonStyle, backgroundColor: colors.danger, boxShadow: `0 4px ${colors.dangerDark}` }}>
                   ログアウト
                 </button>
               </>
@@ -69,7 +70,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
                   <img src={GuestIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
                   <span>ゲスト（未ログイン）</span>
                 </p>
-                <p style={{ fontSize: '0.85em', color: '#888', marginBottom: '12px' }}>
+                <p style={{ fontSize: '0.85em', color: colors.inkSoft, marginBottom: '12px' }}>
                   ログインすると購入履歴が引き継がれます
                 </p>
                 <button
@@ -127,7 +128,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
             <p style={versionStyle}>バージョン 1.0.0</p>
           </div>
 
-          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#ccc', color: '#555', boxShadow: '0 4px #999', marginTop: '8px' }}>
+          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#E4DEE8', color: colors.ink, boxShadow: '0 4px #C7BFCF', marginTop: '8px' }}>
             閉じる
           </button>
         </div>
@@ -148,7 +149,7 @@ const modalOverlayStyle: React.CSSProperties = {
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  backgroundColor: 'rgba(74, 68, 88, 0.55)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -159,17 +160,18 @@ const modalContentStyle: React.CSSProperties = {
   backgroundColor: '#fff',
   padding: '25px',
   borderRadius: '20px',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
+  boxShadow: shadow.lg,
   maxWidth: '400px',
   width: '90%',
   textAlign: 'center',
-  fontFamily: "'Yomogi', cursive",
+  fontFamily: fonts.body,
   maxHeight: '90vh',
   overflowY: 'auto',
 };
 
 const modalTitleStyle: React.CSSProperties = {
-  color: '#FF5FA0',
+  color: colors.primaryDark,
+  fontFamily: fonts.heading,
   marginBottom: '20px',
   fontSize: '1.6em',
   fontWeight: 'bold',
@@ -182,7 +184,7 @@ const settingSectionStyle: React.CSSProperties = {
 };
 
 const settingSectionTitleStyle: React.CSSProperties = {
-  color: '#555',
+  color: colors.ink,
   fontSize: '1.1em',
   marginBottom: '10px',
   fontWeight: 'bold',
@@ -190,7 +192,7 @@ const settingSectionTitleStyle: React.CSSProperties = {
 
 const loginStatusStyle: React.CSSProperties = {
   fontSize: '1em',
-  color: '#333',
+  color: colors.ink,
   marginBottom: '6px',
   fontWeight: 'bold',
 };
@@ -210,12 +212,12 @@ const sliderStyle: React.CSSProperties = {
 const speechRateValueStyle: React.CSSProperties = {
   fontSize: '1.1em',
   fontWeight: 'bold',
-  color: '#FF5FA0',
+  color: colors.primaryDark,
   marginLeft: '10px',
 };
 
 const buttonStyle: React.CSSProperties = {
-  backgroundColor: '#FF69B4',
+  backgroundColor: colors.primary,
   color: 'white',
   padding: '10px 24px',
   border: 'none',
@@ -224,12 +226,12 @@ const buttonStyle: React.CSSProperties = {
   fontSize: '1em',
   fontWeight: 'bold',
   margin: '4px',
-  boxShadow: '0 4px #CD5C91',
+  boxShadow: `0 4px ${colors.primaryDark}`,
   transition: 'transform 0.1s',
 };
 
 const linkStyle: React.CSSProperties = {
-  color: '#54A0FF',
+  color: colors.violetDark,
   textDecoration: 'none',
   margin: '8px 0',
   display: 'inline-block',
@@ -237,9 +239,9 @@ const linkStyle: React.CSSProperties = {
 };
 const textButtonStyle: React.CSSProperties = {
   background: 'none', border: 'none',
-  color: '#54A0FF', fontWeight: 'bold',
+  color: colors.violetDark, fontWeight: 'bold',
   cursor: 'pointer', fontSize: '1em',
-  fontFamily: "'Yomogi', cursive",
+  fontFamily: fonts.body,
   padding: '4px 0',
 };
 
@@ -253,7 +255,7 @@ const settingsIconStyle: React.CSSProperties = {
 
 const versionStyle: React.CSSProperties = {
   fontSize: '0.8em',
-  color: '#bbb',
+  color: colors.inkSoft,
   marginTop: '12px',
 };
 
