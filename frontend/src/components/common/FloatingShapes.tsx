@@ -19,15 +19,26 @@ const iconUrls = targetFiles.map(file => {
 }).filter(Boolean) as string[];
 
 const FloatingShapes = () => {
-    // アイコンの数を少し減らす調整
-    const numShapes = iconUrls.length > 0 ? 28 : 20;
+    // かさばりすぎないよう、グリッドのマス目自体は少し多めに用意しつつ
+    // 実際に描画するのはその一部だけにする(残りは完全に非表示)
+    const totalCells = iconUrls.length > 0 ? 24 : 18;
+    const numShapes = Math.round(totalCells * 0.6); // 常時表示されるのは6割程度
 
     // 均等なグリッドを作り、そのマス目の中でだけ位置をずらす
     // (完全ランダムだと偏りが出て、密集/空白ができてしまうため)
-    const cols = Math.ceil(Math.sqrt(numShapes * 1.3));
-    const rows = Math.ceil(numShapes / cols);
+    const cols = Math.ceil(Math.sqrt(totalCells * 1.3));
+    const rows = Math.ceil(totalCells / cols);
     const cellW = 100 / cols;
     const cellH = 100 / rows;
+
+    // マス目をシャッフルして、そこからnumShapes個だけ使う
+    // → 等間隔は保ちつつ、どこに出るかはランダムになる
+    const cellIndices = Array.from({ length: totalCells }, (_, i) => i);
+    for (let i = cellIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cellIndices[i], cellIndices[j]] = [cellIndices[j], cellIndices[i]];
+    }
+    const usedCells = cellIndices.slice(0, numShapes);
 
     const containerStyle: React.CSSProperties = {
         position: 'absolute',
@@ -42,6 +53,7 @@ const FloatingShapes = () => {
 
     // 上下にふわっと漂うだけで、天地がひっくり返らない程度の
     // 小さな回転(±8度)にとどめる
+    // fade-in-outで、ずっと出っぱなしにならないよう随時フェードイン・アウトさせる
     const keyframes = `
         @keyframes float-gently {
             0% {
@@ -54,17 +66,24 @@ const FloatingShapes = () => {
                 transform: translate(0, 0) rotate(var(--r-start));
             }
         }
+        @keyframes fade-in-out {
+            0%, 100% { opacity: 0; }
+            20% { opacity: var(--target-opacity); }
+            50% { opacity: var(--target-opacity); }
+            70% { opacity: 0; }
+        }
     `;
 
     return (
         <div style={containerStyle}>
             <style>{keyframes}</style>
-            {Array.from({ length: numShapes }).map((_, index) => {
-                const duration = Math.random() * 40 + 30; // 30-70秒でゆっくりふわふわ
-                const size = (Math.random() * 60 + 40) * 1.2; // 40pxから100pxの1.2倍 (48px - 120px)
+            {usedCells.map((cellIndex) => {
+                const floatDuration = Math.random() * 40 + 30; // 30-70秒でゆっくりふわふわ
+                const fadeDuration = Math.random() * 25 + 25; // 25-50秒で現れて消える
+                const size = (Math.random() * 50 + 36) * 1.1; // 40px前後 (かさばらないよう少し小さめに)
 
-                const col = index % cols;
-                const row = Math.floor(index / cols);
+                const col = cellIndex % cols;
+                const row = Math.floor(cellIndex / cols);
                 // マス目の中心 ± マス目の25%だけランダムにずらす(等間隔感を保ちつつ自然に)
                 const baseX = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.5;
                 const baseY = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.5;
@@ -74,15 +93,16 @@ const FloatingShapes = () => {
                     '--y-mid': `${(Math.random() - 0.5) * 4}vh`,
                     '--r-start': `${(Math.random() - 0.5) * 12}deg`,
                     '--r-end': `${(Math.random() - 0.5) * 12}deg`,
+                    '--target-opacity': Math.random() * 0.15 + 0.12, // 控えめな透明度(0.12〜0.27)
                     position: 'absolute',
                     top: `${baseY}%`,
                     left: `${baseX}%`,
                     width: `${size}px`,
                     height: `${size}px`,
-                    animation: `float-gently ${duration}s ease-in-out infinite`,
-                    willChange: 'transform',
-                    animationDelay: `-${Math.random() * duration}s`,
-                    opacity: Math.random() * 0.2 + 0.15, // 透明度を下げて少し濃く (0.15 ~ 0.35)
+                    animation: `float-gently ${floatDuration}s ease-in-out infinite, fade-in-out ${fadeDuration}s ease-in-out infinite`,
+                    willChange: 'transform, opacity',
+                    animationDelay: `-${Math.random() * floatDuration}s, -${Math.random() * fadeDuration}s`,
+                    opacity: 0,
                 } as React.CSSProperties;
 
                 // ランダムにアイコンを選択
@@ -91,7 +111,7 @@ const FloatingShapes = () => {
                   : null;
 
                 return (
-                    <div key={index} style={style}>
+                    <div key={cellIndex} style={style}>
                         {iconUrl ? (
                             <img src={iconUrl} style={{ width: '100%', height: '100%', objectFit: 'contain' }} alt="background shape" />
                         ) : (
