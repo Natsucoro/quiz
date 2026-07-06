@@ -19,10 +19,10 @@ const iconUrls = targetFiles.map(file => {
 }).filter(Boolean) as string[];
 
 const FloatingShapes = () => {
-    // かさばりすぎないよう、グリッドのマス目自体は少し多めに用意しつつ
-    // 実際に描画するのはその一部だけにする(残りは完全に非表示)
-    const totalCells = iconUrls.length > 0 ? 24 : 18;
-    const numShapes = Math.round(totalCells * 0.6); // 常時表示されるのは6割程度
+    // キャラクターの数はしっかり多めに。ただし全マス目を常に使い切るのではなく
+    // 少しだけ余らせてシャッフルすることで、配置がランダムに見えるようにする
+    const totalCells = iconUrls.length > 0 ? 44 : 34;
+    const numShapes = Math.round(totalCells * 0.8); // 8割程度は常に何か表示されている状態に
 
     // 均等なグリッドを作り、そのマス目の中でだけ位置をずらす
     // (完全ランダムだと偏りが出て、密集/空白ができてしまうため)
@@ -68,9 +68,9 @@ const FloatingShapes = () => {
         }
         @keyframes fade-in-out {
             0%, 100% { opacity: 0; }
-            20% { opacity: var(--target-opacity); }
-            50% { opacity: var(--target-opacity); }
-            70% { opacity: 0; }
+            15% { opacity: var(--target-opacity); }
+            75% { opacity: var(--target-opacity); }
+            90% { opacity: 0; }
         }
     `;
 
