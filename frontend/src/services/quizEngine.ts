@@ -33,6 +33,7 @@ import birdsQuizzes from '../../../data/quizzes/birds.json';
 import reptilesQuizzes from '../../../data/quizzes/reptiles.json';
 import marineQuizzes from '../../../data/quizzes/marine.json';
 import historyQuizzes from '../../../data/quizzes/history.json';
+import geographyJpQuizzes from '../../../data/quizzes/geography_jp.json';
 
 const allQuizzes: QuizData[] = [
   ...mammalsQuizzes,
@@ -44,6 +45,7 @@ const allQuizzes: QuizData[] = [
   ...reptilesQuizzes,
   ...marineQuizzes,
   ...historyQuizzes,
+  ...geographyJpQuizzes,
   ...toolsQuizzes,
   ...foodQuizzes,
 ];
