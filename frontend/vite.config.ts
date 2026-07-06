@@ -32,7 +32,9 @@ export default defineConfig({
       },
       workbox: {
         // PWAとしてキャッシュさせたいファイルの種類（jsonデータなどを含む）
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webp,mp3,wav}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webp,mp3,wav}'],
+        // クイズデータの増加でバンドルが2MBを超えるため上限を引き上げる
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024
       }
     })
   ],
