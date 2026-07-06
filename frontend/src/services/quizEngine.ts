@@ -28,12 +28,14 @@ import plantsQuizzes from '../../../data/quizzes/plants.json';
 import vehiclesQuizzes from '../../../data/quizzes/vehicles.json';
 import toolsQuizzes from '../../../data/quizzes/tools.json';
 import foodQuizzes from '../../../data/quizzes/food.json';
+import fishQuizzes from '../../../data/quizzes/fish.json';
 
 const allQuizzes: QuizData[] = [
   ...mammalsQuizzes,
   ...insectsQuizzes,
   ...plantsQuizzes,
   ...vehiclesQuizzes,
+  ...fishQuizzes,
   ...toolsQuizzes,
   ...foodQuizzes,
 ];
