@@ -51,10 +51,10 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
             ) : 'ゲスト'}
           </button>
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-            <img src={HagurumaIcon} alt="設定" style={{ width: '30px', height: '30px' }} />
+            <img src={HagurumaIcon} alt="設定" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
           </button>
           <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
-            <img src={soundIcon} alt="音声" style={{ width: '30px', height: '30px' }} />
+            <img src={soundIcon} alt="音声" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
           </button>
         </div>
       </header>

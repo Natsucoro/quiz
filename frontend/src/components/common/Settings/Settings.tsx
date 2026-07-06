@@ -51,7 +51,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle}>
           <h2 style={modalTitleStyle}>
-            <img src={HagurumaIcon} alt="" style={{ width: '28px', height: '28px', verticalAlign: 'middle', marginRight: '8px' }} />
+            <img src={HagurumaIcon} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain', verticalAlign: 'middle', marginRight: '8px' }} />
             設定
           </h2>
 

@@ -52,7 +52,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
 
         {isSent ? (
           <div style={{ padding: '20px', background: '#d1fae5', color: '#065f46', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-            <img src={HatoIcon} alt="" style={{ width: '80px', height: '80px' }} />
+            <img src={HatoIcon} alt="" style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
             <h3 style={{ margin: 0 }}>メールを送信しました！</h3>
             <p>受信トレイを確認し、リンクをクリックしてログインを完了してください。</p>
             <p style={{ fontSize: '12px', marginTop: '10px' }}>※この小窓は閉じても大丈夫です</p>
