@@ -509,10 +509,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
                 flex: 1,
                 fontSize: '0.9em',
                 padding: '12px 8px',
-                boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 6px 15px rgba(74,68,88,0.15)'
               }}
             >
-              べつのジャンルへ
+              ← TOPにもどる
             </button>
             <button
               className="shine-button"

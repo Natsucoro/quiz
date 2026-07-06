@@ -466,11 +466,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
               width: '90%',
               maxWidth: '400px',
               display: 'flex',
-              justifyContent: 'center'
+              flexDirection: 'column',
+              gap: '10px',
+              alignItems: 'center'
             }}>
-              <button 
+              <button
                 className="shine-button"
-                onClick={handleStartQuiz} 
+                onClick={handleStartQuiz}
                 disabled={![1, 2, 6, 7].includes(localSelectedDifficulty) && !isPurchased(`${localSelectedGenre}_${localSelectedDifficulty}`)}
                 style={{
                   ...buttonStyle,
@@ -481,6 +483,20 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                 }}
               >
                 クイズスタート！ →
+              </button>
+              <button
+                onClick={() => setShowDifficultySelection(false)}
+                style={{
+                  ...buttonStyle,
+                  background: '#E4DEE8',
+                  color: colors.ink,
+                  boxShadow: '0 4px 12px rgba(74,68,88,0.25)',
+                  width: '100%',
+                  padding: '12px 20px',
+                  fontSize: '0.95em',
+                } as React.CSSProperties}
+              >
+                ← TOPにもどる
               </button>
             </div>
           )}
