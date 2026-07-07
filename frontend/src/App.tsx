@@ -20,8 +20,9 @@ const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
 
   // パスワードロック状態の管理 (sessionStorageでこのセッション中のみ保存)
+  // 合言葉は開発サーバー(npm run dev)でのみ要求し、本番ビルドでは常に解除済みとする
   const [isUnlocked, setIsUnlocked] = useState(() =>
-    sessionStorage.getItem('app_unlocked') === 'true' || window.location.hostname === 'localhost'
+    sessionStorage.getItem('app_unlocked') === 'true' || !import.meta.env.DEV
   );
   
   const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
