@@ -50,6 +50,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
     <>
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle}>
+          <button onClick={onClose} aria-label="閉じる" style={closeButtonStyle}>✖</button>
           <h2 style={modalTitleStyle}>
             <img src={HagurumaIcon} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain', verticalAlign: 'middle', marginRight: '8px' }} />
             設定
@@ -171,6 +172,7 @@ const modalOverlayStyle: React.CSSProperties = {
 };
 
 const modalContentStyle: React.CSSProperties = {
+  position: 'relative',
   backgroundColor: '#fff',
   padding: '25px',
   borderRadius: '20px',
@@ -181,6 +183,19 @@ const modalContentStyle: React.CSSProperties = {
   fontFamily: fonts.body,
   maxHeight: '90vh',
   overflowY: 'auto',
+};
+
+const closeButtonStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '14px',
+  right: '16px',
+  background: 'none',
+  border: 'none',
+  fontSize: '1.3em',
+  color: colors.inkSoft,
+  cursor: 'pointer',
+  lineHeight: 1,
+  padding: '4px',
 };
 
 const modalTitleStyle: React.CSSProperties = {
