@@ -9,10 +9,17 @@ admin.initializeApp();
 const corsHandler = cors({ origin: true });
 const PRICE_JPY = 120;
 
-function getStripe(): Stripe {
-  const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+// 本番ドメインからのリクエストだけLiveキーを使い、それ以外(開発プレビュー等)は
+// 常にテストキーを使う。誤って開発中にテスト以外の決済が発生しないようにするため。
+const PROD_ORIGINS = ["https://watashihadare-quiz.web.app", "https://watashihadare-quiz.firebaseapp.com"];
+
+function getStripe(req: functions.https.Request): Stripe {
+  const origin = req.get("origin") || "";
+  const isProd = PROD_ORIGINS.includes(origin);
+  const secretName = isProd ? "STRIPE_SECRET_KEY_LIVE" : "STRIPE_SECRET_KEY";
+  const stripeSecret = process.env[secretName] || "";
   if (!stripeSecret) {
-    throw new Error("Stripe secret key is not configured.");
+    throw new Error(`Stripe secret key is not configured (${secretName}).`);
   }
   return new Stripe(stripeSecret, { apiVersion: "2024-04-10" as any });
 }
@@ -28,7 +35,7 @@ async function getUidFromAuthHeader(authHeader: string | undefined): Promise<str
 
 // 購入ボタンが押されたときに、その場でStripe Checkout Sessionを作成する。
 // どのジャンル/レベル(itemId)の購入かをmetadataに埋め込み、Stripe側にサーバー起点で記録させる。
-export const createCheckoutSession = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY"] }).https.onRequest((req, res) => {
+export const createCheckoutSession = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE"] }).https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     try {
       if (req.method !== 'POST') {
@@ -44,7 +51,7 @@ export const createCheckoutSession = functions.region('asia-northeast1').runWith
         return;
       }
 
-      const stripe = getStripe();
+      const stripe = getStripe(req);
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         line_items: [
@@ -73,7 +80,7 @@ export const createCheckoutSession = functions.region('asia-northeast1').runWith
   });
 });
 
-export const verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY"] }).https.onRequest((req, res) => {
+export const verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE"] }).https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     try {
       if (req.method !== 'POST') {
@@ -88,7 +95,7 @@ export const verifyPayment = functions.region('asia-northeast1').runWith({ secre
       }
       const uid = await getUidFromAuthHeader(req.headers.authorization);
 
-      const stripe = getStripe();
+      const stripe = getStripe(req);
       const session = await stripe.checkout.sessions.retrieve(sessionId);
 
       if (session.payment_status !== 'paid') {
