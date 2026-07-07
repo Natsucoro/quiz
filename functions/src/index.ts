@@ -7,73 +7,121 @@ import * as cors from "cors";
 admin.initializeApp();
 
 const corsHandler = cors({ origin: true });
+const PRICE_JPY = 120;
 
-export const verifyPayment = functions.region('asia-northeast1').https.onRequest((req, res) => {
+function getStripe(): Stripe {
+  const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+  if (!stripeSecret) {
+    throw new Error("Stripe secret key is not configured.");
+  }
+  return new Stripe(stripeSecret, { apiVersion: "2024-04-10" as any });
+}
+
+async function getUidFromAuthHeader(authHeader: string | undefined): Promise<string> {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new Error('Missing Auth token');
+  }
+  const idToken = authHeader.split('Bearer ')[1];
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  return decodedToken.uid;
+}
+
+// 購入ボタンが押されたときに、その場でStripe Checkout Sessionを作成する。
+// どのジャンル/レベル(itemId)の購入かをmetadataに埋め込み、Stripe側にサーバー起点で記録させる。
+export const createCheckoutSession = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY"] }).https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     try {
-      // リクエスト時にStripeの中身を初期化（デプロイ起動時のエラー回避）
-      const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
-      if (!stripeSecret) {
-        throw new Error("Stripe secret key is not configured.");
-      }
-      const stripe = new Stripe(stripeSecret, {
-        apiVersion: "2024-04-10" as any,
-      });
       if (req.method !== 'POST') {
         res.status(405).send('Method Not Allowed');
         return;
       }
 
-      // クライアントから送信されたセッションIDとトークン（UID）を受け取る
-      const { sessionId } = req.body;
-      const authHeader = req.headers.authorization;
-      
-      if (!sessionId || !authHeader || !authHeader.startsWith('Bearer ')) {
-        res.status(400).json({ error: 'Missing sessionId or Auth token' });
+      const uid = await getUidFromAuthHeader(req.headers.authorization);
+
+      const { itemId, genre, difficulty, origin } = req.body;
+      if (!itemId || !genre || difficulty === undefined || !origin) {
+        res.status(400).json({ error: 'Missing itemId, genre, difficulty or origin' });
         return;
       }
 
-      const idToken = authHeader.split('Bearer ')[1];
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      const uid = decodedToken.uid;
+      const stripe = getStripe();
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        line_items: [
+          {
+            price_data: {
+              currency: 'jpy',
+              unit_amount: PRICE_JPY,
+              product_data: {
+                name: `「${genre} Lv.${difficulty}」レベル解放 + 50問追加`,
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        client_reference_id: `${uid}_${itemId}`,
+        metadata: { uid, itemId },
+        success_url: `${origin}/?success=true&itemId=${encodeURIComponent(itemId)}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/`,
+      });
 
-      // Stripe API でセッションを検証
+      res.status(200).json({ url: session.url });
+    } catch (error: any) {
+      console.error('Error creating checkout session:', error);
+      res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+  });
+});
+
+export const verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY"] }).https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    try {
+      if (req.method !== 'POST') {
+        res.status(405).send('Method Not Allowed');
+        return;
+      }
+
+      const { sessionId } = req.body;
+      if (!sessionId) {
+        res.status(400).json({ error: 'Missing sessionId' });
+        return;
+      }
+      const uid = await getUidFromAuthHeader(req.headers.authorization);
+
+      const stripe = getStripe();
       const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-      if (session.payment_status === 'paid') {
-        // 現在の Custom Claims を取得
-        const userRecord = await admin.auth().getUser(uid);
-        const currentClaims = userRecord.customClaims || {};
-        const purchasedItems = currentClaims.purchasedItems || [];
+      if (session.payment_status !== 'paid') {
+        res.status(400).json({ error: 'Payment not completed or invalid session' });
+        return;
+      }
 
-        // セッションから購入内容を判定（アプリからは genre_level 形式としてメタデータを送るか、ここでは簡便に全てを許可するテストでも可）
-        // 今回アプリ側は `?success=true&genre=animal&level=3` 等で戻ってくるが、StripeのCheckoutSessionから直接何を買ったか判定できない場合は
-        // クライアントから申告されたitemIdを信じるか、Payment Linkのmetadataに仕込む必要がある。
-        // ※ 本来は PaymentLink 側でメタデータを持たせるべきだが、現在は設定されていない。
-        // そこで、今回はフロントエンド側から `itemId` を受け取り、それを単に `paid` であれば承認するロジックとする。（「1つの決済で1つのロック解除許可」）
-        
-        const { itemId } = req.body;
-        if (!itemId) {
-          res.status(400).json({ error: 'Missing itemId' });
-          return;
-        }
+      // クライアントの自己申告ではなく、Stripe側に記録されたmetadataを信頼する。
+      // かつ、このセッションを作ったのがリクエスト元本人であることを確認する。
+      if (session.metadata?.uid !== uid) {
+        res.status(403).json({ error: 'This session does not belong to the requesting user' });
+        return;
+      }
+      const itemId = session.metadata?.itemId;
+      if (!itemId) {
+        res.status(400).json({ error: 'Session has no itemId metadata' });
+        return;
+      }
 
-        // 既に持っていなければ追加
-        let newPurchasedItems = [...purchasedItems];
-        if (!newPurchasedItems.includes(itemId)) {
-          newPurchasedItems.push(itemId);
-        }
+      const userRecord = await admin.auth().getUser(uid);
+      const currentClaims = userRecord.customClaims || {};
+      const purchasedItems: string[] = currentClaims.purchasedItems || [];
 
-        // Custom Claims の更新
+      let newPurchasedItems = purchasedItems;
+      if (!purchasedItems.includes(itemId)) {
+        newPurchasedItems = [...purchasedItems, itemId];
         await admin.auth().setCustomUserClaims(uid, {
           ...currentClaims,
-          purchasedItems: newPurchasedItems
+          purchasedItems: newPurchasedItems,
         });
-
-        res.status(200).json({ success: true, purchasedItems: newPurchasedItems });
-      } else {
-        res.status(400).json({ error: 'Payment not completed or invalid session' });
       }
+
+      res.status(200).json({ success: true, purchasedItems: newPurchasedItems });
     } catch (error: any) {
       console.error('Error verifying payment:', error);
       res.status(500).json({ error: error.message || 'Internal Server Error' });

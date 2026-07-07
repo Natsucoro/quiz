@@ -1,44 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
+import { auth } from '../../lib/firebase';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 interface PaywallModalProps {
   genre: string;
   difficulty: number;
   onClose: () => void;
-  onTestPurchase: () => void; // Stripe連携までのテスト・モック用
+  onTestPurchase: () => void; // Cloud Function呼び出しに失敗した際のフォールバック(開発用モック)
   onLoginRequest: () => void;
 }
 
 const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose, onTestPurchase, onLoginRequest }) => {
   const { isPurchased, isLoggedIn } = usePurchaseStore();
+  const [isProcessing, setIsProcessing] = useState(false);
   const itemId = `${genre}_${difficulty}`;
   const alreadyPurchased = isPurchased(itemId);
 
-  // Stripe Payment Link のテスト用URL（環境変数等から取得する想定）
-  const getStripeLink = () => {
-    // 実際にStripe Dashboardで「動物 Lv.3」等の商品とPayment Linkを作って設定します。
-    // その際リダイレクトURLに "?success=true&genre=xx&level=yy" を仕込みます。
-    // Vite環境変数の型エラー回避のため (import.meta as any).env を使用
-    return (import.meta as any).env.VITE_STRIPE_PAYMENT_LINK || '#'; 
-  };
+  const handlePurchase = async () => {
+    if (alreadyPurchased || isProcessing) return;
 
-  const handlePurchase = () => {
-    if (alreadyPurchased) return;
-    
     // 未ログインの場合は購入前にログイン画面を出す
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !auth.currentUser) {
       onLoginRequest();
       return;
     }
 
-    const link = getStripeLink();
-    if (link && link !== '#') {
-      // payment linkがあればそこに飛ばす
-      window.location.href = link;
-    } else {
-      // なければテストモック処理にfallback
+    setIsProcessing(true);
+    try {
+      const idToken = await auth.currentUser.getIdToken();
+      const res = await fetch('/api/createCheckoutSession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ itemId, genre, difficulty, origin: window.location.origin }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const { url } = await res.json();
+      if (!url) throw new Error('No checkout URL returned');
+      window.location.href = url;
+    } catch (error) {
+      console.error('Failed to start checkout:', error);
+      // Cloud Function呼び出しに失敗した場合のみ、開発用モック購入にフォールバック
       onTestPurchase();
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -66,8 +74,8 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
             ✅ 購入済みです
           </button>
         ) : (
-          <button onClick={handlePurchase} style={purchaseButtonStyle}>
-             💴 120円 で解放する
+          <button onClick={handlePurchase} disabled={isProcessing} style={{ ...purchaseButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+            {isProcessing ? '準備中…' : '💴 120円 で解放する'}
           </button>
         )}
 

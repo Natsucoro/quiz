@@ -112,25 +112,13 @@ const App: React.FC = () => {
     const checkPayment = async () => {
       const params = new URLSearchParams(window.location.search);
       const isSuccess = params.get('success');
-      const rawGenre = params.get('genre');
-      const level = params.get('level');
+      const itemId = params.get('itemId');
       const sessionId = params.get('session_id');
 
-      const genreMap: Record<string, string> = { 
-        'mammals': '哺乳類', 
-        'insects': '昆虫', 
-        'plants': '植物', 
-        'vehicles': '乗り物', 
-        'tools': '道具', 
-        'food': '食べ物',
-        'historical_figures': '歴史上の人物',
-        'japan_geography': '日本地理',
-        'world_geography': '世界地理'
-      };
-      
-      if (isSuccess === 'true' && rawGenre && level && sessionId && user) {
-        const genre = genreMap[rawGenre] || rawGenre;
-        const itemId = `${genre}_${level}`;
+      if (isSuccess === 'true' && itemId && sessionId && user) {
+        const lastUnderscore = itemId.lastIndexOf('_');
+        const genre = itemId.slice(0, lastUnderscore);
+        const level = itemId.slice(lastUnderscore + 1);
 
         try {
           // Functionsへ決済確認と解放リクエスト
@@ -141,7 +129,7 @@ const App: React.FC = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ sessionId, itemId })
+            body: JSON.stringify({ sessionId })
           });
 
           if (res.ok) {

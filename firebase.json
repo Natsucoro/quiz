@@ -12,6 +12,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/createCheckoutSession",
+        "function": "createCheckoutSession"
+      },
+      {
         "source": "/api/verifyPayment",
         "function": "verifyPayment"
       },
