@@ -20,10 +20,16 @@ const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
 
   // パスワードロック状態の管理 (sessionStorageでこのセッション中のみ保存)
-  // 合言葉は開発サーバー(npm run dev)でのみ要求し、本番ビルドでは常に解除済みとする
-  const [isUnlocked, setIsUnlocked] = useState(() =>
-    sessionStorage.getItem('app_unlocked') === 'true' || !import.meta.env.DEV
-  );
+  // 合言葉は「ローカル開発サーバー」と「Firebase Hostingのプレビューチャンネル(ステージング)」で要求し、
+  // 本番ドメインでのみ常に解除済みとする
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    const PRODUCTION_HOSTNAMES = ['watashihadare-quiz.web.app', 'watashihadare-quiz.firebaseapp.com'];
+    return (
+      sessionStorage.getItem('app_unlocked') === 'true' ||
+      import.meta.env.DEV ||
+      PRODUCTION_HOSTNAMES.includes(window.location.hostname)
+    );
+  });
   
   const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
   const [selectedGenre, setSelectedGenre] = useState<string>('');
