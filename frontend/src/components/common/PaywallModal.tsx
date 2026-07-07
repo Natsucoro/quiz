@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
+import { getAllAvailableQuizzesCount } from '../../services/quizEngine';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 interface PaywallModalProps {
@@ -16,6 +17,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   const [isProcessing, setIsProcessing] = useState(false);
   const itemId = `${genre}_${difficulty}`;
   const alreadyPurchased = isPurchased(itemId);
+  const questionCount = getAllAvailableQuizzesCount(genre, difficulty);
 
   const handlePurchase = async () => {
     if (alreadyPurchased || isProcessing) return;
@@ -63,8 +65,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
         <div style={featureBoxStyle}>
           <h3 style={{ margin: '0 0 10px', color: '#fff' }}>✨ 買い切り特典 ✨</h3>
           <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
-            <li>問題がさらに <strong>50問追加！</strong> (計60問)</li>
-            <li><strong>未回答優先</strong> の機能がオンになります</li>
+            <li>全 <strong>{questionCount}問</strong> が遊び放題に！</li>
             <li>一度購入すればずっと遊べます！</li>
           </ul>
         </div>
