@@ -1,0 +1,124 @@
+[
+  {
+    "action": "deleted",
+    "reason": "動物を当てる形式ではなく、答えが年代になっている。クイズの型が壊れているため削除。",
+    "original": {
+      "id": "mammal-lv9-001",
+      "genre": "哺乳類",
+      "difficulty": 9,
+      "difficultyLabel": "博士",
+      "question": "現生人類（Homo sapiens）の系統分類において、ボノボやチンパンジーと共通の祖先から分岐したのは約何万年前と考えられているでしょうか。また、分岐後の人類に初期に見られる、直立二足歩行を可能にした骨格的特徴（大後頭孔の位置など）を考慮に入れて答えてください。",
+      "questionRuby": "",
+      "hint1": "サヘラントロプス・チャデンシスなどがその時代の化石として発見されています。",
+      "hint1Ruby": "",
+      "answer": "約600万〜700万年前",
+      "answerReading": "やくろくぴゃくまんからななひゃくまんねんまえ",
+      "dummy1": "約200万年前",
+      "dummy2": "約1億年前",
+      "dummy3": "約1000万年前"
+    }
+  },
+  {
+    "action": "difficulty_changed",
+    "reason": "「ぽにー」は幼児向け絵本にも登場する超有名な動物で、Lv9(オタクレベル)は不適切。",
+    "original": {
+      "id": "mammal-lv9-002",
+      "genre": "哺乳類",
+      "difficulty": 9,
+      "difficultyLabel": "博士",
+      "question": "わたしは とっても ちいさな おうまさんだよ。おなまえも ちいさい という いみだよ。わたしは だーれだ？",
+      "questionRuby": "",
+      "hint1": "こどもを のせて あるくのが とくいだよ。",
+      "hint1Ruby": "",
+      "answer": "ぽにー",
+      "answerReading": "ぽにー",
+      "dummy1": "うま",
+      "dummy2": "しまうま",
+      "dummy3": "ろば"
+    },
+    "new_id": "mammal-lv1-021",
+    "new_difficulty": 1
+  },
+  {
+    "action": "difficulty_changed",
+    "reason": "答えが「にんげん」で誰でも即答できるため、Lv9(オタクレベル)は不適切。",
+    "original": {
+      "id": "mammal-lv9-005",
+      "genre": "哺乳類",
+      "difficulty": 9,
+      "difficultyLabel": "博士",
+      "question": "わたしは ことばを はなしたり、どうぐを つくったり するよ。この くいず を つくったのも…。わたしは だーれだ？",
+      "questionRuby": "",
+      "hint1": "あなたも わたしの なかまなんだよ。",
+      "hint1Ruby": "",
+      "answer": "にんげん",
+      "answerReading": "にんげん",
+      "dummy1": "さる",
+      "dummy2": "いぬ",
+      "dummy3": "ちんぱんじー"
+    },
+    "new_id": "mammal-lv1-022",
+    "new_difficulty": 1
+  },
+  {
+    "action": "difficulty_changed",
+    "reason": "こうもりは非常に有名な動物で、Lv8(大学院生レベル)は不適切。",
+    "original": {
+      "id": "mammal-lv8-002",
+      "genre": "哺乳類",
+      "difficulty": 8,
+      "difficultyLabel": "大学院生",
+      "question": "わたしは よるの おそらを ぱたぱた とぶよ。はねが あるけど、とりさんじゃないんだ。わたしは だーれだ？",
+      "questionRuby": "",
+      "hint1": "さかさまに ぶらさがって ねるよ。",
+      "hint1Ruby": "",
+      "answer": "こうもり",
+      "answerReading": "こうもり",
+      "dummy1": "りす",
+      "dummy2": "むささび",
+      "dummy3": "ねずみ"
+    },
+    "new_id": "mammal-lv3-016",
+    "new_difficulty": 3
+  },
+  {
+    "action": "difficulty_changed",
+    "reason": "おらんうーたんは同じLv1にいるゴリラ・パンダ・チンパンジーと同等の知名度で、Lv8(大学院生レベル)は不適切。",
+    "original": {
+      "id": "mammal-lv8-004",
+      "genre": "哺乳類",
+      "difficulty": 8,
+      "difficultyLabel": "大学院生",
+      "question": "わたしは ちゃいろい けで、とっても てあしが ながいよ。もりの ひと と よばれるよ。わたしは だーれだ？",
+      "questionRuby": "",
+      "hint1": "きから きへ じゃんぷ するのが とくいだよ。",
+      "hint1Ruby": "",
+      "answer": "おらんうーたん",
+      "answerReading": "おらんうーたん",
+      "dummy1": "ごりら",
+      "dummy2": "さる",
+      "dummy3": "ちんぱんじー"
+    },
+    "new_id": "mammal-lv1-023",
+    "new_difficulty": 1
+  },
+  {
+    "action": "typo_fixed",
+    "reason": "答え表記の誤字(まんといひ→マントヒヒ)とヒント文の誤字(なかまずだよ→なかまだよ)を修正。",
+    "original": {
+      "id": "mammal-lv5-009",
+      "genre": "哺乳類",
+      "difficulty": 5,
+      "difficultyLabel": "中学生",
+      "question": "わたしは おかおの まわりに ながい けが あるよ。まんとを きている みたい。わたしは だーれだ？",
+      "questionRuby": "",
+      "hint1": "おさるさんの なかまずだよ。",
+      "hint1Ruby": "",
+      "answer": "まんといひ",
+      "answerReading": "まんといひ",
+      "dummy1": "らいおん",
+      "dummy2": "さる",
+      "dummy3": "ひつじ"
+    }
+  }
+]

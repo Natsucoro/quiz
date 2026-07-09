@@ -22,12 +22,34 @@ interface QuizWithHints extends QuizData {
   hint3: string;
 }
 
-import animalsQuizzes from '../../../data/quizzes/animals.json';
+import mammalsQuizzes from '../../../data/quizzes/mammals.json';
 import insectsQuizzes from '../../../data/quizzes/insects.json';
+import plantsQuizzes from '../../../data/quizzes/plants.json';
+import vehiclesQuizzes from '../../../data/quizzes/vehicles.json';
+import toolsQuizzes from '../../../data/quizzes/tools.json';
+import foodQuizzes from '../../../data/quizzes/food.json';
+import fishQuizzes from '../../../data/quizzes/fish.json';
+import birdsQuizzes from '../../../data/quizzes/birds.json';
+import reptilesQuizzes from '../../../data/quizzes/reptiles.json';
+import marineQuizzes from '../../../data/quizzes/marine.json';
+import historyQuizzes from '../../../data/quizzes/history.json';
+import geographyJpQuizzes from '../../../data/quizzes/geography_jp.json';
+import geographyWorldQuizzes from '../../../data/quizzes/geography_world.json';
 
 const allQuizzes: QuizData[] = [
-  ...animalsQuizzes,
+  ...mammalsQuizzes,
   ...insectsQuizzes,
+  ...plantsQuizzes,
+  ...vehiclesQuizzes,
+  ...fishQuizzes,
+  ...birdsQuizzes,
+  ...reptilesQuizzes,
+  ...marineQuizzes,
+  ...historyQuizzes,
+  ...geographyJpQuizzes,
+  ...geographyWorldQuizzes,
+  ...toolsQuizzes,
+  ...foodQuizzes,
 ];
 
 /**
@@ -112,12 +134,14 @@ const normalize = (str: string): string =>
 
 export const checkAnswer = (quiz: QuizData, userAnswer: string): boolean => {
   const user = normalize(userAnswer);
-  const correct = normalize(quiz.answerReading ?? quiz.answer);
-  if (correct === user || correct.includes(user) || user.includes(correct)) return true;
-  // answerAliasesとも比較
-  return (quiz.answerAliases ?? []).some(alias => {
-    const a = normalize(alias);
-    return a === user || a.includes(user) || user.includes(a);
+  // タップ時は answer（表示テキスト）そのものが渡されるため、
+  // 読み仮名(answerReading)だけでなく answer 自体・aliasesも候補に含めて判定する
+  const candidates = [quiz.answer, quiz.answerReading, ...(quiz.answerAliases ?? [])].filter(
+    (c): c is string => !!c
+  );
+  return candidates.some(candidate => {
+    const c = normalize(candidate);
+    return c === user || c.includes(user) || user.includes(c);
   });
 };
 

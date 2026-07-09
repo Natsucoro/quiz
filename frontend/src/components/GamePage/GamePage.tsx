@@ -1,7 +1,6 @@
 // src/components/GamePage/GamePage.tsx
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Settings from '../common/Settings/Settings';
 import {
   QuizData,
   getNextQuiz,
@@ -12,6 +11,35 @@ import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthe
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
+import { SpriteIcon } from '../common/SpriteIcon';
+import Header from '../common/Header/Header';
+import ConfirmDialog from '../common/ConfirmDialog';
+import { colors, fonts, rotatingColors, shadow } from '../../styles/theme';
+
+// SVGアイコンのインポート
+import AshikaIcon from '../../assets/icons/ashika.svg';
+import KabutomushiIcon from '../../assets/icons/kabutomushi.svg';
+import toolIcon from '../../assets/icons/icon_setting.png';
+import soundIcon from '../../assets/icons/sound.svg';
+import micIcon from '../../assets/icons/mic.svg';
+import HanaIcon from '../../assets/icons/hana.svg';
+import NorimonoIcon from '../../assets/icons/shinkansen.svg';
+import MonoIcon from '../../assets/icons/tool.svg';
+import NihonIcon from '../../assets/icons/niihon.svg';
+import ChikyuIcon from '../../assets/icons/xhikyu2.svg';
+import SakanaIcon from '../../assets/icons/sakana.svg';
+import HatoIcon from '../../assets/icons/hato.svg';
+import HebiIcon from '../../assets/icons/hebi.svg';
+import KaniIcon from '../../assets/icons/kani.svg';
+import HagurumaIcon from '../../assets/icons/haguruma.svg';
+import RekishiIcon from '../../assets/icons/rekishi.svg';
+import FoodIcon from '../../assets/icons/food.svg';
+import FlagIcon from '../../assets/icons/flag.svg';
+import MedalKinIcon from '../../assets/icons/medaru_kin.svg';
+import MedalGinIcon from '../../assets/icons/medaru_gin.svg';
+import MedalDouIcon from '../../assets/icons/medaru_dou.svg';
+import GuestIcon from '../../assets/icons/guest.svg';
+import UserIcon from '../../assets/icons/user.svg';
 
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
@@ -58,18 +86,21 @@ interface GamePageProps {
   onBack: () => void;
   onBackToDifficulty: () => void;
   onMicStatus?: (status: { isRecognizing: boolean; isListening: boolean; isProcessing: boolean; transcript: string }) => void;
+  onLoginRequest?: () => void;
 }
 
 const GENRE_RUBY: Record<string, string> = {
-  '動物': 'どうぶつ', '昆虫': 'こんちゅう', '植物': 'しょくぶつ',
-  '魚類': 'さかな', '鳥類': 'とりるい', '爰虫類': 'はちゅうるい',
+  '昆虫': 'こんちゅう', '植物': 'しょくぶつ',
+  '魚類': 'さかな', '鳥類': 'とりるい', '爬虫類': 'はちゅうるい',
   '哺乳類': 'ほにゅうるい', '海洋生物': 'かいようせいぶつ',
   '乗り物': 'のりもの', '道具': 'どうぐ', '歴史上の人物': 'れきしのじんぶつ',
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
 };
 
-const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus }) => {
-  const { isMuted, setIsMuted, isHandsFree: isHandsFreeMode, setIsHandsFree: setIsHandsFreeMode } = useSettingsStore();
+const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
+  const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
+  const { isLoggedIn } = usePurchaseStore();
+  const isHandsFreeMode = isHandsFree;
   const isSpeakingAllowed = true;
 
   const [currentQuiz, setCurrentQuiz] = useState<QuizData | null>(null);
@@ -79,17 +110,29 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | 'surrender' | null>(null);
   const [showHint, setShowHint] = useState<number | null>(null);
   const [isQuizEnded, setIsQuizEnded] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [conciergeMessage, setConciergeMessage] = useState<string | null>(null);
   const [effectKey, setEffectKey] = useState<{ type: 'correct' | 'incorrect'; id: number } | null>(null);
 
   const quizSequenceRef = useRef<number>(0);
   // 循環依存を避けるためにhandlerをrefで保持
-  const handleShowHintRef = useRef<(n: number) => void>(() => {});
-  const handleSurrenderRef = useRef<() => void>(() => {});
-  const handleAnswerRef = useRef<(ans: string) => void>(() => {});
-  const handleNextQuestionRef = useRef<() => void>(() => {});
-  const readQuestionRef = useRef<() => void>(() => {});
+  const handleShowHintRef = useRef<(n: number) => void>(() => { });
+  const handleSurrenderRef = useRef<() => void>(() => { });
+  const handleAnswerRef = useRef<(ans: string) => void>(() => { });
+  const handleNextQuestionRef = useRef<() => void>(() => { });
+  const readQuestionRef = useRef<() => void>(() => { });
+
+  const [isResultActionsVisible, setIsResultActionsVisible] = useState(false);
+  const resultActionsRef = useRef<HTMLDivElement>(null);
+
+  // 結果画面のボタンエリアを監視
+  useEffect(() => {
+    if (!isQuizEnded || !resultActionsRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsResultActionsVisible(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    observer.observe(resultActionsRef.current);
+    return () => observer.disconnect();
+  }, [isQuizEnded]);
 
   const playSound = useCallback((type: 'correct' | 'incorrect') => {
     if (isMuted) return;
@@ -98,6 +141,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   }, [isMuted]);
 
   const playedIdsThisSession = useRef<Set<string>>(new Set());
+  const wrongQuizzesRef = useRef<QuizData[]>([]);
   const hasAnsweredIncorrectlyRef = useRef(false);
   const isHandsFreeModeRef = useRef(isHandsFreeMode);
   const isMutedRef = useRef(isMuted);
@@ -130,6 +174,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     initializedRef.current = false;
     spokenQuestionIndex.current = -1;
     playedIdsThisSession.current = new Set();
+    wrongQuizzesRef.current = [];
     setCurrentQuestionIndex(0);
     setScore(0);
     setIsQuizEnded(false);
@@ -140,7 +185,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   // 問題の読み上げ
   useEffect(() => {
     if (initializedRef.current && !isMuted && currentQuiz && spokenQuestionIndex.current !== currentQuestionIndex) {
-      const q = toReadableText(currentQuiz.questionRuby ?? currentQuiz.question);
+      const q = toReadableText(currentQuiz.questionRuby || currentQuiz.question);
       speak(`第${currentQuestionIndex + 1}問。${q}`);
       spokenQuestionIndex.current = currentQuestionIndex;
     }
@@ -201,6 +246,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       playSound('incorrect');
       setFeedback('incorrect');
       setEffectKey({ type: 'incorrect', id: Date.now() });
+      // 初めて間違えた時だけ wrongQuizzes に追加
+      if (currentQuiz && !wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
+        wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
+      }
       if (!isMuted && isSpeakingAllowed) {
         speak('ブブー！「' + userAnswer + '」は不正解です。もう一度考えてみましょう。');
         setConciergeMessage(null);
@@ -215,6 +264,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     quizSequenceRef.current++;
     playSound('correct');
     setFeedback('surrender');
+    if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
+      wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
+    }
     if (!isMuted && isSpeakingAllowed) {
       const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
       speak(`答えは${ans}です。`);
@@ -238,7 +290,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setShowHint(hintNumber);
     if (!isMuted && isSpeakingAllowed) {
       const readableHint = hintNumber === 1
-        ? toReadableText(currentQuiz.hint1Ruby ?? currentQuiz.hint1)
+        ? toReadableText(currentQuiz.hint1Ruby || currentQuiz.hint1)
         : hintText;
       speak(`ヒント${hintNumber}：${readableHint}`);
       setConciergeMessage(null);
@@ -277,71 +329,221 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     onMicStatus?.({ isRecognizing, isListening, isProcessing, transcript });
   }, [isRecognizing, isListening, isProcessing, transcript, onMicStatus]);
 
-  const handleToggleMute = useCallback(() => {
-    const newState = !isMuted;
-    setIsMuted(newState);
-    if (newState) {
-      stopSpeaking();
-    } else if (currentQuiz) {
-      speak(toReadableText(currentQuiz.questionRuby ?? currentQuiz.question));
-    }
-  }, [isMuted, setIsMuted, currentQuiz]);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const handleGoHomeConfirm = () => {
-    if (window.confirm('クイズを中断しますか？スコアはリセットされます。')) {
-      stopSpeaking();
-      onBack();
-    }
+    setShowExitConfirm(true);
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitConfirm(false);
+    stopSpeaking();
+    onBack();
   };
 
   const getGenreIcon = (genreName: string) => {
+    const iconStyle = { width: '1.2em', height: '1.2em', objectFit: 'contain' as const };
     switch (genreName) {
-      case '動物': return '🦁';
-      case '昆虫': return '🐛';
-      case '植物': return '🌿';
-      case '乗り物': return '🚗';
-      case '道具': return '🔨';
-      case '歴史上の人物': return '🗿';
-      case '日本の地理': return '🗾';
-      case '世界の地理': return '🌍';
+      case '哺乳類': return <img src={AshikaIcon} alt="哺乳類" style={iconStyle} />;
+      case '昆虫': return <img src={KabutomushiIcon} alt="昆虫" style={iconStyle} />;
+      case '植物': return <img src={HanaIcon} alt="植物" style={iconStyle} />;
+      case '乗り物': return <img src={NorimonoIcon} alt="乗り物" style={iconStyle} />;
+      case '道具': return <img src={MonoIcon} alt="道具" style={iconStyle} />;
+      case '魚類': return <img src={SakanaIcon} alt="魚類" style={iconStyle} />;
+      case '鳥類': return <img src={HatoIcon} alt="鳥類" style={iconStyle} />;
+      case '爬虫類': return <img src={HebiIcon} alt="爬虫類" style={iconStyle} />;
+      case '海洋生物': return <img src={KaniIcon} alt="海洋生物" style={iconStyle} />;
+      case '歴史上の人物': return <img src={RekishiIcon} alt="歴史上の人物" style={iconStyle} />;
+      case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
+      case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
+      case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
       default: return '❓';
     }
   };
 
-if (!currentQuiz && !isQuizEnded) {
+  if (!currentQuiz && !isQuizEnded) {
     return <div style={loadingStyle}>問題を読み込み中...</div>;
   }
 
   const stickyHeader = (
-    <header style={stickyHeaderStyle}>
-      <h1 style={headerTitleStyle} onClick={handleGoHomeConfirm}>わたしはダレでしょう？クイズ</h1>
-      <div style={headerIconsStyle}>
-        <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>⚙️</button>
-        <button onClick={handleToggleMute} style={iconButtonStyle}>{isMuted ? '🔇' : '🔊'}</button>
-        <button onClick={() => alert('音声入力モードは現在開発中です。近日公開をお楽しみに！')} style={{ ...iconButtonStyle, opacity: 0.4, cursor: 'not-allowed' }}>🎤</button>
-      </div>
-    </header>
+    <Header
+      onLoginRequest={() => onLoginRequest?.()}
+      onTitleClick={handleGoHomeConfirm}
+      currentView="GAME"
+    />
   );
 
   if (isQuizEnded) {
     const accuracy = (score / questionCount) * 100;
+    const wrongQuizzes = wrongQuizzesRef.current;
     return (
       <div style={containerStyle}>
+        <style>{`
+          @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+          }
+          @keyframes confetti-sway {
+            0%, 100% { margin-left: 0; }
+            50% { margin-left: 50px; }
+          }
+          .confetti {
+            position: fixed;
+            top: -20px;
+            width: 10px;
+            height: 10px;
+            z-index: 1500;
+            pointer-events: none;
+            animation: confetti-fall linear forwards;
+          }
+          .confetti-inner {
+            width: 100%;
+            height: 100%;
+            animation: confetti-sway ease-in-out infinite;
+          }
+          rt { font-size: 0.5em; font-weight: normal; }
+          
+          @keyframes slideUp {
+            from { transform: translate(-50%, 100px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+          }
+          .floating-bar {
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+          }
+          @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+          }
+          .shine-button {
+            position: relative;
+            overflow: hidden;
+          }
+          .shine-button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(
+              to right,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.6) 50%,
+              rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+          }
+        `}</style>
         {stickyHeader}
-        <h1 style={titleStyle}>🎉 結果発表 🎉</h1>
-        <div style={resultBoxStyle}>
-          <p style={resultTextStyle}>正解数: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
-          <p style={resultTextStyle}>正解率: <span style={{ color: '#FF69B4', fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
 
-          <div style={resultActionButtonsStyle}>
-            <button onClick={() => { playedIdsThisSession.current = new Set(); setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={buttonStyle}>もう<ruby>一度<rt>いちど</rt></ruby> →</button>
-            <button onClick={onBackToDifficulty} style={buttonStyle}><ruby>別<rt>べつ</rt></ruby>のレベルへ →</button>
-            <button onClick={onBack} style={backButtonStyle}>← <ruby>別<rt>べつ</rt></ruby>のジャンルへ</button>
-            <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
+        {/* 紙吹雪エフェクト */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div key={i} className="confetti" style={{
+            left: `${Math.random() * 100}vw`,
+            animationDuration: `${2 + Math.random() * 3}s`,
+            animationDelay: `${Math.random() * 5}s`,
+          }}>
+            <div className="confetti-inner" style={{
+              backgroundColor: [colors.primary, colors.secondary, colors.tertiary, colors.violet][Math.floor(Math.random() * 4)],
+              animationDuration: `${1 + Math.random()}s`,
+            }} />
           </div>
+        ))}
+
+        <h1 style={{ ...titleStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+          <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+          結果発表
+          <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain', transform: 'scaleX(-1)' }} />
+        </h1>
+
+        <div style={resultBoxStyle}>
+          {/* メダル表示 */}
+          <div style={{ marginBottom: '20px' }}>
+            {accuracy >= 90 ? (
+              <img src={MedalKinIcon} alt="金メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            ) : accuracy >= 60 ? (
+              <img src={MedalGinIcon} alt="銀メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            ) : (
+              <img src={MedalDouIcon} alt="銅メダル" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+            )}
+          </div>
+
+          <p style={resultTextStyle}>正解数: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
+          <p style={resultTextStyle}>正解率: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
+
+          {wrongQuizzes.length > 0 && (
+            <div style={wrongListContainerStyle}>
+              <h3 style={wrongListTitleStyle}>📝 まちがえた・降参した問題</h3>
+              {wrongQuizzes.map((q) => (
+                <div key={q.id} style={wrongItemStyle}>
+                  <p style={wrongQuestionStyle}>{q.question}</p>
+                  <p style={wrongAnswerStyle}>答え：<strong>{q.answer}</strong></p>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
-        {showSettings && (
-          <Settings onClose={() => setShowSettings(false)} onLoginStatusChange={() => {}} currentView="RESULT" />
+
+        <div ref={resultActionsRef} style={{ ...resultActionButtonsStyle, width: '90%', maxWidth: '700px' }}>
+          <button className="shine-button" onClick={onBackToDifficulty} style={buttonStyle}>べつのレベルへ →</button>
+          <button onClick={onBack} style={buttonStyle}>べつのジャンルへ →</button>
+          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
+          <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
+        </div>
+
+        {/* 追従アクションバー (最下部ボタンが見えていない時) */}
+        {!isResultActionsVisible && (
+          <div className="floating-bar" style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1600,
+            width: '94%',
+            maxWidth: '500px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          }}>
+            <button
+              onClick={onBack}
+              style={{
+                ...backButtonStyle,
+                flex: 1,
+                fontSize: '0.9em',
+                padding: '12px 8px',
+                boxShadow: '0 6px 15px rgba(74,68,88,0.15)'
+              }}
+            >
+              ← TOPにもどる
+            </button>
+            <button
+              className="shine-button"
+              onClick={onBackToDifficulty}
+              style={{
+                ...buttonStyle,
+                flex: 1,
+                fontSize: '0.9em',
+                padding: '12px 8px',
+                boxShadow: '0 6px 15px rgba(255, 110, 199, 0.3)'
+              }}
+            >
+              べつのレベルへ
+            </button>
+          </div>
+        )}
+
+        {showExitConfirm && (
+          <ConfirmDialog
+            message={'クイズを中断しますか？\nスコアはリセットされます。'}
+            confirmLabel="中断する"
+            cancelLabel="つづける"
+            onConfirm={handleConfirmExit}
+            onCancel={() => setShowExitConfirm(false)}
+          />
         )}
       </div>
     );
@@ -349,17 +551,46 @@ if (!currentQuiz && !isQuizEnded) {
 
   return (
     <div style={containerStyle}>
-      <style>{`@keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } rt { font-size: 0.5em; font-weight: normal; }`}</style>
+      <style>{`
+        @keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } 
+        @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } 
+        @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } 
+        rt { font-size: 0.5em; font-weight: normal; }
+        
+        /* 紙吹雪アニメーション */
+        @keyframes confetti-fall {
+          0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes confetti-sway {
+          0%, 100% { margin-left: 0; }
+          50% { margin-left: 50px; }
+        }
+        .confetti {
+          position: fixed;
+          top: -20px;
+          width: 10px;
+          height: 10px;
+          z-index: 1500;
+          pointer-events: none;
+          animation: confetti-fall linear forwards;
+        }
+        .confetti-inner {
+          width: 100%;
+          height: 100%;
+          animation: confetti-sway ease-in-out infinite;
+        }
+      `}</style>
       {effectKey && (
         <div key={effectKey.id} style={effectOverlayStyle}>
           {effectKey.type === 'correct' ? (
-            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="38" fill="none" stroke="#51CF66" strokeWidth="12" strokeLinecap="round" />
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(74,68,88,0.35))' }} viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="38" fill="none" stroke={colors.success} strokeWidth="12" strokeLinecap="round" />
             </svg>
           ) : (
-            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.4))' }} viewBox="0 0 100 100">
-              <line x1="20" y1="20" x2="80" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
-              <line x1="80" y1="20" x2="20" y2="80" stroke="#FF4757" strokeWidth="12" strokeLinecap="round" />
+            <svg width="180" height="180" style={{ animation: 'popFade 0.8s ease-out forwards', filter: 'drop-shadow(0 6px 20px rgba(74,68,88,0.35))' }} viewBox="0 0 100 100">
+              <line x1="20" y1="20" x2="80" y2="80" stroke={colors.danger} strokeWidth="12" strokeLinecap="round" />
+              <line x1="80" y1="20" x2="20" y2="80" stroke={colors.danger} strokeWidth="12" strokeLinecap="round" />
             </svg>
           )}
         </div>
@@ -374,9 +605,9 @@ if (!currentQuiz && !isQuizEnded) {
       </div>
 
       <div style={questionBoxStyle}>
-        <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby ?? currentQuiz?.question ?? '')}</p>
+        <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
         {showHint === 1 && currentQuiz && (
-          <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby ?? currentQuiz.hint1)}</p>
+          <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby || currentQuiz.hint1)}</p>
         )}
         {showHint === 2 && currentQuiz && (
           <p style={hintTextStyle}>ヒント2: {(currentQuiz as any).hint2}</p>
@@ -388,7 +619,7 @@ if (!currentQuiz && !isQuizEnded) {
           <p style={answerInBoxStyle}>答え「{currentQuiz.answer}」</p>
         )}
         {!(feedback === 'correct' || feedback === 'surrender') && showHint === null && (
-          <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4', width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
+          <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? colors.warning : colors.primary, width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
             ヒント1
           </button>
         )}
@@ -406,8 +637,7 @@ if (!currentQuiz && !isQuizEnded) {
           {options.map((option, index) => {
             const isCorrectOption = option === currentQuiz?.answer;
             const isRevealed = feedback === 'correct' || feedback === 'surrender';
-            const colors = ['#FF6B6B', '#54A0FF', '#FECA57', '#1DD1A1'];
-            const bg = isRevealed ? (isCorrectOption ? '#51CF66' : '#B0B0B0') : colors[index % 4];
+            const bg = isRevealed ? (isCorrectOption ? colors.success : colors.lock) : rotatingColors[index % rotatingColors.length];
             return (
               <button
                 key={index}
@@ -417,8 +647,21 @@ if (!currentQuiz && !isQuizEnded) {
                   ...optionButtonStyle,
                   backgroundColor: bg,
                   cursor: isRevealed ? 'not-allowed' : 'pointer',
+                  position: 'relative', // 番号配置用
                 } as React.CSSProperties}
               >
+                <span style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: '4px',
+                  fontSize: '0.9em',
+                  color: 'rgba(0,0,0,0.5)',
+                  fontWeight: 'bold',
+                  textShadow: '0.5px 0.5px 0 rgba(255,255,255,0.4)',
+                  pointerEvents: 'none'
+                }}>
+                  {['①', '②', '③', '④'][index]}
+                </span>
                 {option}
               </button>
             );
@@ -428,45 +671,48 @@ if (!currentQuiz && !isQuizEnded) {
 
       <div style={actionButtonsContainerStyle}>
         {!isHandsFreeMode && (feedback === 'correct' || feedback === 'surrender') && (
-          <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: 'linear-gradient(135deg, #51CF66, #20C997)', boxShadow: '0 5px 0 #1aaa7a', flex: '1 1 100%', maxWidth: '100%' }}>
-            次の問題へ →
+          <button onClick={handleNextQuestion} style={{ ...actionButtonStyle, background: colors.successGradient, boxShadow: `0 5px 0 ${colors.successDark}`, flex: '1 1 100%', maxWidth: '100%' }}>
+            つぎのもんだいへ →
           </button>
         )}
         {isHandsFreeMode && (
           <>
-            <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント1
             </button>
-            <button onClick={() => handleShowHint(2)} style={{ ...actionButtonStyle, backgroundColor: showHint === 2 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(2)} style={{ ...actionButtonStyle, backgroundColor: showHint === 2 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント2
             </button>
-            <button onClick={() => handleShowHint(3)} style={{ ...actionButtonStyle, backgroundColor: showHint === 3 ? '#FFD700' : '#FF69B4' } as React.CSSProperties}>
+            <button onClick={() => handleShowHint(3)} style={{ ...actionButtonStyle, backgroundColor: showHint === 3 ? colors.warning : colors.primary } as React.CSSProperties}>
               ヒント3
             </button>
           </>
         )}
-        <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined }}><ruby>降参<rt>こうさん</rt></ruby></button>
+        <button onClick={handleSurrender} style={{ ...surrenderButtonStyle, display: (feedback === 'correct' || feedback === 'surrender') ? 'none' : undefined, flex: '1 1 100%', maxWidth: '100%' }}>こうさん</button>
       </div>
-      
+
       {!(feedback === 'correct' || feedback === 'surrender') && (
-        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
-          <button onClick={() => handleGoHomeConfirm()} style={backButtonStyle}>← TOPにもどる</button>
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center', width: '90%', maxWidth: '700px' }}>
+          <button onClick={() => handleGoHomeConfirm()} style={{ ...backButtonStyle, width: '100%' }}>← TOPにもどる</button>
         </div>
       )}
 
-
-      {showSettings && (
-        <Settings onClose={() => setShowSettings(false)} onLoginStatusChange={() => {}} currentView="GAME" />
+      {showExitConfirm && (
+        <ConfirmDialog
+          message={'クイズを中断しますか？\nスコアはリセットされます。'}
+          confirmLabel="中断する"
+          cancelLabel="つづける"
+          onConfirm={handleConfirmExit}
+          onCancel={() => setShowExitConfirm(false)}
+        />
       )}
-
     </div>
   );
 };
 
-const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(0,0,0,0.08)' };
+const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(74,68,88,0.08)' };
 const containerStyle: React.CSSProperties = {
-  fontFamily: "'Yomogi', cursive",
-  background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)',
+  fontFamily: fonts.body,
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -478,34 +724,35 @@ const containerStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   position: 'relative',
 };
-const stickyHeaderStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'linear-gradient(90deg, #FF6EC7 0%, #FF9A3C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 1000, boxShadow: '0 3px 12px rgba(0,0,0,0.18)' };
-const headerTitleStyle: React.CSSProperties = { color: '#fff', fontSize: 'clamp(0.7em, 3vw, 1.3em)', margin: 0, textShadow: '1px 2px 0 rgba(0,0,0,0.18)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 1, minWidth: 0, cursor: 'pointer' };
-const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '8px', flexShrink: 0 };
-const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '46px', height: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.6em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(0,0,0,0.15)' };
-const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: '50px', padding: '8px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: colors.surfaceSoft, borderRadius: '50px', padding: '8px 20px', boxShadow: shadow.sm, width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
-const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: '#FF5FA0', margin: 0, fontWeight: 'bold', flexGrow: 1 };
-const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#FF6EC7', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #D94FAA', whiteSpace: 'nowrap' };
-const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: '#54A0FF', padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: '0 3px 0 #2E86DE', whiteSpace: 'nowrap' };
-const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.15)', width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
-const questionTextStyle: React.CSSProperties = { fontSize: '1.2em', color: '#333', textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
+const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, margin: 0, fontWeight: 'bold', flexGrow: 1 };
+const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.primary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.primaryDark}`, whiteSpace: 'nowrap' };
+const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.secondary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.secondaryDark}`, whiteSpace: 'nowrap' };
+const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
+const questionTextStyle: React.CSSProperties = { fontSize: '1.2em', color: colors.ink, textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
 const optionsContainerStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '90%', maxWidth: '700px', margin: '10px 0' };
-const optionButtonStyle: React.CSSProperties = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(0,0,0,0.15)' };
-const actionButtonsContainerStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', margin: '16px 0', width: '90%', maxWidth: '700px' };
-const actionButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
-const surrenderButtonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF4757, #FF6B81)', color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C0392B', flex: '1 1 auto', minWidth: '110px', maxWidth: '160px' };
-const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: '#555', textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF9C4', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px solid #FFE066' };
-const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: '#51CF66', textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(81,207,102,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: '2px dashed #51CF66' };
+const optionButtonStyle: React.CSSProperties = { padding: '18px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.3em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(74,68,88,0.15)' };
+const actionButtonsContainerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '12px', margin: '16px 0', width: '90%', maxWidth: '700px' };
+const actionButtonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, width: '100%' };
+const surrenderButtonStyle: React.CSSProperties = { background: colors.dangerGradient, color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.dangerDark}`, width: '100%' };
+const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.ink, textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF3D6', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px solid ${colors.warning}` };
+const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: colors.successDark, textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(61,201,176,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px dashed ${colors.success}` };
 const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
-const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: '#FF5FA0', fontWeight: 'bold', margin: 0 };
-const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: '#333', fontWeight: 'bold', margin: 0 };
-const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: '#666', margin: 0 };
-const loadingStyle: React.CSSProperties = { fontSize: '2em', color: '#FF5FA0', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #FF9DE2 0%, #FFD6A5 50%, #FFFB8F 100%)', fontFamily: "'Yomogi', cursive" };
-const titleStyle: React.CSSProperties = { color: '#fff', fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 3px 0px #FF6BAE' };
-const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', margin: '20px 0', boxShadow: '0 8px 24px rgba(255,100,180,0.2)', width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
-const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: '#333', margin: '10px 0' };
-const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '24px' };
-const buttonStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FF6EC7, #FF9A3C)', color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #D94F9A' };
-const backButtonStyle: React.CSSProperties = { background: '#ccc', color: '#555', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #999' };
+const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: colors.primaryDark, fontWeight: 'bold', margin: 0 };
+const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: colors.ink, fontWeight: 'bold', margin: 0 };
+const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: colors.inkSoft, margin: 0 };
+const loadingStyle: React.CSSProperties = { fontSize: '2em', color: colors.primaryDark, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontFamily: fonts.heading };
+const titleStyle: React.CSSProperties = { color: '#fff', fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: `2px 3px 0px ${colors.primaryDark}` };
+const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: shadow.lg, width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
+const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: colors.ink, margin: '10px 0' };
+const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginTop: '24px', width: '100%' };
+const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}` };
+const backButtonStyle: React.CSSProperties = { background: '#E4DEE8', color: colors.ink, padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C7BFCF' };
+const wrongListContainerStyle: React.CSSProperties = { marginTop: '20px', marginBottom: '10px', textAlign: 'left', width: '100%' };
+const wrongListTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontSize: '1.1em', fontWeight: 'bold', marginBottom: '12px', textAlign: 'center' };
+const wrongItemStyle: React.CSSProperties = { background: '#FFF3F7', border: `1.5px solid ${colors.primary}55`, borderRadius: '14px', padding: '12px 16px', marginBottom: '10px' };
+const wrongQuestionStyle: React.CSSProperties = { fontSize: '0.95em', color: colors.ink, margin: '0 0 6px 0', lineHeight: '1.5' };
+const wrongAnswerStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.primaryDark, margin: 0 };
 
 export default GamePage;

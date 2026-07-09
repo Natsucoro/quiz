@@ -4,24 +4,28 @@ import { persist } from 'zustand/middleware';
 
 // ジャンルIDのリスト
 const ALL_GENRES = [
-  "animals",
+  "mammals",
   "insects",
   "plants",
   "vehicles",
   "tools",
+  "food",
   "historical_figures",
   "japan_geography",
   "world_geography",
 ];
 
 interface PurchaseState {
-  purchasedItems: string[]; // 例: "animals_3", "insects_4"
+  purchasedItems: string[]; // 例: ['動物_3', '昆虫_2'] または ['animal_3', 'insect_2']
   isLoggedIn: boolean;
   userEmail: string | null;
   login: (email: string) => void;
   logout: () => void;
+  setLoggedOut: () => void; // 購入データを消さずにログイン状態のみリセット（アプリ起動時の未ログイン検知用）
   addPurchase: (itemId: string) => void;
+  syncWithClaims: (claimItems: string[]) => void;
   isPurchased: (itemId: string) => boolean;
+  clearPurchases: () => void;
 }
 
 export const usePurchaseStore = create<PurchaseState>()(
@@ -32,15 +36,17 @@ export const usePurchaseStore = create<PurchaseState>()(
       userEmail: null,
       login: (email: string) => {
         let itemsToUnlock: string[] = [];
-        if (email === "test@example.com") {
+        if (email === "watashihadare.quiz@gmail.com") {
           // テストアカウントの場合、全ジャンル、難易度3-5, 8-10を解放
+          const JP_GENRES: Record<string, string> = {
+            "mammals": "哺乳類", "insects": "昆虫", "plants": "植物",
+            "vehicles": "乗り物", "tools": "道具", "food": "食べ物"
+          };
           ALL_GENRES.forEach(genre => {
+            const jpGenre = JP_GENRES[genre] || genre;
             [3, 4, 5, 8, 9, 10].forEach(difficulty => {
-              itemsToUnlock.push(`${genre}_${difficulty}`);
+              itemsToUnlock.push(`${jpGenre}_${difficulty}`);
             });
-            // 以前のバージョンで含まれていた、step1, step2の購入状態は、
-            // 今回の指示「全48アイテム」には含まれないため削除しました。
-            // 必要に応じて将来的に追加の要件としてご指示ください。
           });
         }
         set((state) => ({
@@ -52,19 +58,30 @@ export const usePurchaseStore = create<PurchaseState>()(
       },
       logout: () =>
         set({
-          purchasedItems: [], // ログアウト時に購入情報はリセット
+          purchasedItems: [], // 明示的ログアウト時は購入情報もリセット
           isLoggedIn: false,
           userEmail: null,
         }),
-      addPurchase: (itemId: string) => {
-        // 既に購入済みの場合は追加しない
-        if (!get().purchasedItems.includes(itemId)) {
-          set((state) => ({
-            purchasedItems: [...state.purchasedItems, itemId],
-          }));
+      setLoggedOut: () =>
+        set({
+          // 購入データは消さずにログイン状態だけリセット
+          // （アプリ起動時 / Firebase未ログイン検知時に使用）
+          isLoggedIn: false,
+          userEmail: null,
+        }),
+      addPurchase: (itemId) => set((state) => {
+        if (!state.purchasedItems.includes(itemId)) {
+          return { purchasedItems: [...state.purchasedItems, itemId] };
         }
-      },
-      isPurchased: (itemId: string) => get().purchasedItems.includes(itemId),
+        return state;
+      }),
+      syncWithClaims: (claimItems) => set((state) => {
+        // 現在のリストとClaimsのリストをマージして重複排除
+        const merged = new Set([...state.purchasedItems, ...claimItems]);
+        return { purchasedItems: Array.from(merged) };
+      }),
+      isPurchased: (itemId) => get().purchasedItems.includes(itemId),
+      clearPurchases: () => set({ purchasedItems: [] }),
     }),
     {
       name: 'quiz-app-purchase-storage', // localStorageのキー

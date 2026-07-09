@@ -1,25 +1,33 @@
 
 // src/components/common/Settings/Settings.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import HagurumaIcon from '../../../assets/icons/haguruma.svg';
+import GuestIcon from '../../../assets/icons/guest.svg';
+import UserIcon from '../../../assets/icons/user.svg';
+import HatoIcon from '../../../assets/icons/hato.svg';
+import InkoIcon from '../../../assets/icons/inko.svg';
+import KeyLockIcon from '../../../assets/icons/key_lock.svg';
+import ListIcon from '../../../assets/icons/list.svg';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
-import Login, { getLoginStatus, saveLoginStatus } from '../Login/Login';
-import { getAvailableGenres, getAvailableDifficultiesForGenre } from '../../../services/quizEngine';
+import { usePurchaseStore } from '../../../store/purchaseStore';
+import { auth } from '../../../lib/firebase';
+import { signOut } from 'firebase/auth';
+import LegalModal from '../LegalModal';
+import ConfirmDialog from '../ConfirmDialog';
+import { colors, fonts, shadow } from '../../../styles/theme';
 
 interface SettingsProps {
   onClose: () => void;
-  onLoginStatusChange: (isLoggedIn: boolean, isPremium: boolean) => void;
   currentView: 'TOP' | 'GAME' | 'RESULT';
+  onLoginRequest?: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, currentView }) => {
+const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginStatus, setLoginStatus] = useState(getLoginStatus());
-
-  useEffect(() => {
-    setLoginStatus(getLoginStatus());
-  }, [showLoginModal]); // Loginモーダルが閉じられたときに状態を更新
+  const [showLegal, setShowLegal] = useState<'tokushoho' | 'privacy' | 'terms' | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const { isLoggedIn, userEmail, logout } = usePurchaseStore();
 
   const handleSpeechRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newRate = parseFloat(event.target.value);
@@ -27,30 +35,61 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
     setSpeechRate(newRate);
   };
 
-  const handleLoginLogout = () => {
-    if (loginStatus.isLoggedIn) {
-      // ログアウト処理
-      saveLoginStatus(false, false);
-      setLoginStatus({ isLoggedIn: false, isPremium: false });
-      onLoginStatusChange(false, false);
-    } else {
-      // ログインモーダル表示
-      setShowLoginModal(true);
-    }
+  const handleLogout = () => {
+    setShowLogoutConfirm(true);
   };
 
-  const handleLoginSuccess = (isPremium: boolean) => {
-    setLoginStatus({ isLoggedIn: true, isPremium });
-    onLoginStatusChange(true, isPremium);
-    setShowLoginModal(false);
+  const handleConfirmLogout = async () => {
+    setShowLogoutConfirm(false);
+    await signOut(auth);
+    logout();
+    onClose();
   };
 
   return (
     <>
       <div style={modalOverlayStyle}>
         <div style={modalContentStyle}>
-          <h2 style={modalTitleStyle}>⚙️ 設定</h2>
+          <button onClick={onClose} aria-label="閉じる" style={closeButtonStyle}>✖</button>
+          <h2 style={modalTitleStyle}>
+            <img src={HagurumaIcon} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain', verticalAlign: 'middle', marginRight: '8px' }} />
+            設定
+          </h2>
 
+          {/* ログイン状態 */}
+          <div style={settingSectionStyle}>
+            <h3 style={settingSectionTitleStyle}>アカウント</h3>
+            {isLoggedIn ? (
+              <>
+                <p style={{ ...loginStatusStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <img src={UserIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
+                  <span>ログイン済み</span>
+                </p>
+                <p style={{ fontSize: '0.85em', color: colors.inkSoft, marginBottom: '12px', wordBreak: 'break-all' }}>{userEmail}</p>
+                <button onClick={handleLogout} style={{ ...buttonStyle, backgroundColor: colors.danger, boxShadow: `0 4px ${colors.dangerDark}` }}>
+                  ログアウト
+                </button>
+              </>
+            ) : (
+              <>
+                <p style={{ ...loginStatusStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <img src={GuestIcon} alt="" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
+                  <span>ゲスト（未ログイン）</span>
+                </p>
+                <p style={{ fontSize: '0.85em', color: colors.inkSoft, marginBottom: '12px' }}>
+                  ログインすると購入履歴が引き継がれます
+                </p>
+                <button
+                  onClick={() => { onClose(); onLoginRequest?.(); }}
+                  style={buttonStyle}
+                >
+                  ログイン / 登録
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* 読み上げ速度 */}
           <div style={settingSectionStyle}>
             <h3 style={settingSectionTitleStyle}>読み上げ速度</h3>
             <input
@@ -65,80 +104,126 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginStatusChange, curre
             <span style={speechRateValueStyle}>{speechRate.toFixed(1)}倍</span>
           </div>
 
-          <div style={settingSectionStyle}>
-            <h3 style={settingSectionTitleStyle}>アカウント</h3>
-            <p style={loginStatusStyle}>
-              {loginStatus.isLoggedIn ? `ログイン中 (${loginStatus.isPremium ? 'プレミアム' : 'ゲスト'})` : 'ログアウト中'}
-            </p>
-            <button onClick={handleLoginLogout} style={buttonStyle}>
-              {loginStatus.isLoggedIn ? 'ログアウト' : 'ログイン'}
-            </button>
-            {loginStatus.isLoggedIn && (
-              <button style={{ ...buttonStyle, backgroundColor: '#87CEEB' }}>購入履歴の確認</button>
-            )}
-          </div>
-
+          {/* その他 */}
           <div style={settingSectionStyle}>
             <h3 style={settingSectionTitleStyle}>その他</h3>
-            <p><a href="#" style={linkStyle}>お問い合わせ</a></p>
-            <p><a href="#" style={linkStyle}>利用規約 / プライバシーポリシー</a></p>
+            <p>
+              <a href="mailto:watashihadare.quiz@gmail.com?subject=【わたしはダレでしょう？クイズ】お問い合わせ" style={linkStyle}>
+                <img src={HatoIcon} alt="" style={settingsIconStyle} />
+                お問い合わせ
+              </a>
+            </p>
+            <p>
+              <button onClick={() => setShowLegal('tokushoho')} style={textButtonStyle}>
+                <img src={InkoIcon} alt="" style={settingsIconStyle} />
+                特定商取引法に基づく表記
+              </button>
+            </p>
+            <p>
+              <button onClick={() => setShowLegal('privacy')} style={textButtonStyle}>
+                <img src={KeyLockIcon} alt="" style={settingsIconStyle} />
+                プライバシーポリシー
+              </button>
+            </p>
+            <p>
+              <button onClick={() => setShowLegal('terms')} style={textButtonStyle}>
+                <img src={ListIcon} alt="" style={settingsIconStyle} />
+                利用規約
+              </button>
+            </p>
             <p style={versionStyle}>バージョン 1.0.0</p>
           </div>
 
-          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#ccc', color: '#555', boxShadow: '0 4px #999', marginTop: '20px' }}>
+          <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#E4DEE8', color: colors.ink, boxShadow: '0 4px #C7BFCF', marginTop: '8px' }}>
             閉じる
           </button>
         </div>
       </div>
-      {showLoginModal && <Login onClose={() => setShowLoginModal(false)} onLoginSuccess={handleLoginSuccess} />}
+      {showLegal && (
+        <LegalModal
+          onClose={() => setShowLegal(null)}
+          initialTab={showLegal}
+        />
+      )}
+      {showLogoutConfirm && (
+        <ConfirmDialog
+          message="ログアウトしますか？"
+          confirmLabel="ログアウト"
+          cancelLabel="キャンセル"
+          onConfirm={handleConfirmLogout}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
+      )}
     </>
   );
 };
 
-// Styles (簡易的なフラットデザイン)
 const modalOverlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  backgroundColor: 'rgba(74, 68, 88, 0.55)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  zIndex: 1000,
+  zIndex: 1100,
 };
 
 const modalContentStyle: React.CSSProperties = {
+  position: 'relative',
   backgroundColor: '#fff',
   padding: '25px',
-  borderRadius: '15px',
-  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-  maxWidth: '500px',
+  borderRadius: '20px',
+  boxShadow: shadow.lg,
+  maxWidth: '400px',
   width: '90%',
   textAlign: 'center',
-  fontFamily: "'Zen Maru Gothic', sans-serif",
+  fontFamily: fonts.body,
   maxHeight: '90vh',
   overflowY: 'auto',
 };
 
+const closeButtonStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '14px',
+  right: '16px',
+  background: 'none',
+  border: 'none',
+  fontSize: '1.3em',
+  color: colors.inkSoft,
+  cursor: 'pointer',
+  lineHeight: 1,
+  padding: '4px',
+};
+
 const modalTitleStyle: React.CSSProperties = {
-  color: '#4682B4',
-  marginBottom: '25px',
-  fontSize: '2em',
+  color: colors.primaryDark,
+  fontFamily: fonts.heading,
+  marginBottom: '20px',
+  fontSize: '1.6em',
   fontWeight: 'bold',
 };
 
 const settingSectionStyle: React.CSSProperties = {
-  marginBottom: '25px',
-  paddingBottom: '15px',
-  borderBottom: '1px solid #eee',
+  marginBottom: '20px',
+  paddingBottom: '16px',
+  borderBottom: '1px solid #f0f0f0',
 };
 
 const settingSectionTitleStyle: React.CSSProperties = {
-  color: '#555',
-  fontSize: '1.4em',
+  color: colors.ink,
+  fontSize: '1.1em',
   marginBottom: '10px',
+  fontWeight: 'bold',
+};
+
+const loginStatusStyle: React.CSSProperties = {
+  fontSize: '1em',
+  color: colors.ink,
+  marginBottom: '6px',
+  fontWeight: 'bold',
 };
 
 const sliderStyle: React.CSSProperties = {
@@ -156,41 +241,51 @@ const sliderStyle: React.CSSProperties = {
 const speechRateValueStyle: React.CSSProperties = {
   fontSize: '1.1em',
   fontWeight: 'bold',
-  color: '#4682B4',
+  color: colors.primaryDark,
   marginLeft: '10px',
 };
 
 const buttonStyle: React.CSSProperties = {
-  backgroundColor: '#FF69B4',
+  backgroundColor: colors.primary,
   color: 'white',
-  padding: '10px 20px',
+  padding: '10px 24px',
   border: 'none',
-  borderRadius: '10px',
+  borderRadius: '50px',
   cursor: 'pointer',
   fontSize: '1em',
   fontWeight: 'bold',
-  margin: '8px',
-  boxShadow: '0 4px #CD5C91',
-  transition: 'background-color 0.2s, transform 0.1s ease-out',
-};
-
-const loginStatusStyle: React.CSSProperties = {
-  fontSize: '1em',
-  color: '#333',
-  marginBottom: '10px',
+  margin: '4px',
+  boxShadow: `0 4px ${colors.primaryDark}`,
+  transition: 'transform 0.1s',
 };
 
 const linkStyle: React.CSSProperties = {
-  color: '#4682B4',
+  color: colors.violetDark,
   textDecoration: 'none',
-  margin: '5px 0',
+  margin: '8px 0',
   display: 'inline-block',
+  fontWeight: 'bold',
+};
+const textButtonStyle: React.CSSProperties = {
+  background: 'none', border: 'none',
+  color: colors.violetDark, fontWeight: 'bold',
+  cursor: 'pointer', fontSize: '1em',
+  fontFamily: fonts.body,
+  padding: '4px 0',
+};
+
+const settingsIconStyle: React.CSSProperties = {
+  width: '28px',
+  height: '28px',
+  objectFit: 'contain',
+  verticalAlign: 'middle',
+  marginRight: '10px',
 };
 
 const versionStyle: React.CSSProperties = {
   fontSize: '0.8em',
-  color: '#999',
-  marginTop: '15px',
+  color: colors.inkSoft,
+  marginTop: '12px',
 };
 
 export default Settings;
