@@ -163,6 +163,11 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   };
 
   const handleGenreSelect = useCallback((genre: string) => {
+    if (localSelectedGenre === genre) {
+      // 選択済みのジャンルをもう一度タップしたら、決定として次の画面に進む
+      setShowDifficultySelection(true);
+      return;
+    }
     setLocalSelectedGenre(genre);
     const isHistoryGenre = ['歴史上の人物', '日本の歴史', '世界の歴史'].includes(genre);
     const guestFreeLevels = [1, 2, 6, 7];
@@ -173,7 +178,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       defaultDifficulty = isPremiumUser ? 1 : guestFreeLevels[0];
     }
     setLocalSelectedDifficulty(defaultDifficulty);
-  }, [isPremiumUser]);
+  }, [isPremiumUser, localSelectedGenre]);
 
   const handleGenreSelectRef = useRef(handleGenreSelect);
   useEffect(() => { handleGenreSelectRef.current = handleGenreSelect; }, [handleGenreSelect]);
@@ -204,10 +209,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
         setPaywallTarget({ genre: localSelectedGenre, difficulty });
         setShowPaywall(true);
       }
+    } else if (localSelectedDifficulty === difficulty) {
+      // 選択済みのレベルをもう一度タップしたら、決定としてクイズを開始する
+      handleStartQuiz();
     } else {
       setLocalSelectedDifficulty(difficulty);
     }
-  }, [isOffline, showToast, localSelectedGenre]);
+  }, [isOffline, showToast, localSelectedGenre, localSelectedDifficulty, handleStartQuiz]);
 
   const GENRE_COLORS = genreColors;
   const HISTORY_GENRES = ['歴史上の人物', '日本の歴史', '世界の歴史'];
