@@ -10,12 +10,15 @@ export interface QuizHistoryRecord {
 }
 
 interface HistoryState {
-  playedRecords: QuizHistoryRecord[];
-  
-  // 履歴を追加する
-  addRecord: (record: Omit<QuizHistoryRecord, 'playedAt'>) => void;
-  // 特定のジャンル・難易度の出題済みID一覧を取得する
-  getPlayedQuizIds: (genre: string, difficulty: number) => Set<string>;
+  // quizIdをキーとした最新の回答結果のみを保持する（履歴の蓄積はしない）
+  records: Record<string, QuizHistoryRecord>;
+
+  // 最新の回答結果を記録する（同じ問題に再挑戦した場合は上書き）
+  setResult: (quizId: string, genre: string, difficulty: number, isCorrect: boolean) => void;
+  // 特定の問題の最新結果を取得する
+  getRecord: (quizId: string) => QuizHistoryRecord | undefined;
+  // 特定のジャンル・難易度の全記録を取得する
+  getRecordsForLevel: (genre: string, difficulty: number) => Record<string, QuizHistoryRecord>;
   // 成績をクリアする（手動リセット時）
   clearHistory: (genre?: string, difficulty?: number) => void;
 }
@@ -23,36 +26,43 @@ interface HistoryState {
 export const useHistoryStore = create<HistoryState>()(
   persist(
     (set, get) => ({
-      playedRecords: [],
+      records: {},
 
-      addRecord: (record) => {
+      setResult: (quizId, genre, difficulty, isCorrect) => {
         set((state) => ({
-          playedRecords: [
-            ...state.playedRecords,
-            { ...record, playedAt: Date.now() },
-          ],
+          records: {
+            ...state.records,
+            [quizId]: { quizId, genre, difficulty, isCorrect, playedAt: Date.now() },
+          },
         }));
       },
 
-      getPlayedQuizIds: (genre, difficulty) => {
-        const records = get().playedRecords.filter(
-          (r) => r.genre === genre && r.difficulty === difficulty && r.isCorrect // 正解したものを「既読（出題済み）」として扱う
-        );
-        return new Set(records.map((r) => r.quizId));
+      getRecord: (quizId) => get().records[quizId],
+
+      getRecordsForLevel: (genre, difficulty) => {
+        const result: Record<string, QuizHistoryRecord> = {};
+        Object.values(get().records).forEach((r) => {
+          if (r.genre === genre && r.difficulty === difficulty) {
+            result[r.quizId] = r;
+          }
+        });
+        return result;
       },
 
       clearHistory: (genre, difficulty) => {
         set((state) => {
           if (!genre || difficulty === undefined) {
             // 全てクリア
-            return { playedRecords: [] };
+            return { records: {} };
           }
           // 指定条件以外のものを残す
-          return {
-            playedRecords: state.playedRecords.filter(
-              (r) => !(r.genre === genre && r.difficulty === difficulty)
-            ),
-          };
+          const filtered: Record<string, QuizHistoryRecord> = {};
+          Object.entries(state.records).forEach(([id, r]) => {
+            if (!(r.genre === genre && r.difficulty === difficulty)) {
+              filtered[id] = r;
+            }
+          });
+          return { records: filtered };
         });
       },
     }),

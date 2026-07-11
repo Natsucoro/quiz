@@ -11,6 +11,8 @@ import { speak, stopSpeaking, toReadableText } from '../../services/speechSynthe
 import { useHandsFree } from '../../hooks/useHandsFree';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
+import { useHistoryStore } from '../../store/historyStore';
+import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
 import ConfirmDialog from '../common/ConfirmDialog';
@@ -100,6 +102,8 @@ const GENRE_RUBY: Record<string, string> = {
 const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
   const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
   const { isLoggedIn } = usePurchaseStore();
+  const setHistoryResult = useHistoryStore((s) => s.setResult);
+  const getDisabledSet = useQuestionSettingsStore((s) => s.getDisabledSet);
   const isHandsFreeMode = isHandsFree;
   const isSpeakingAllowed = true;
 
@@ -152,7 +156,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   useEffect(() => { onBackRef.current = onBack; }, [onBack]);
 
   const loadNextQuiz = useCallback((questionIndex: number) => {
-    const nextQuiz = getNextQuiz(selectedGenre, selectedDifficulty, playedIdsThisSession.current);
+    // 出題除外設定（この端末でオフにされた問題）も、既出問題と同様に候補から除外する
+    const excludedIds = new Set([...playedIdsThisSession.current, ...getDisabledSet()]);
+    const nextQuiz = getNextQuiz(selectedGenre, selectedDifficulty, excludedIds);
     if (nextQuiz) {
       setCurrentQuiz(nextQuiz);
       setOptions(getShuffledOptions(nextQuiz));
@@ -164,7 +170,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       // 問題が尽きたら静かに終了画面へ
       setIsQuizEnded(true);
     }
-  }, [selectedGenre, selectedDifficulty]);
+  }, [selectedGenre, selectedDifficulty, getDisabledSet]);
 
   const initializedRef = useRef(false);
   const spokenQuestionIndex = useRef(-1);
@@ -231,6 +237,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     if (!currentQuiz || feedback === 'correct' || feedback === 'surrender') return;
     quizSequenceRef.current++;
     const correct = checkAnswer(currentQuiz, userAnswer);
+    setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, correct);
     if (correct) {
       playSound('correct');
       if (!hasAnsweredIncorrectlyRef.current) setScore(prev => prev + 1);
@@ -255,7 +262,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         setConciergeMessage(null);
       }
     }
-  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound]);
+  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound, setHistoryResult, selectedGenre, selectedDifficulty]);
 
   handleAnswerRef.current = handleAnswer;
 
@@ -263,6 +270,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     if (!currentQuiz || feedback === 'correct' || feedback === 'surrender') return;
     quizSequenceRef.current++;
     playSound('correct');
+    setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, false);
     setFeedback('surrender');
     if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
       wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
@@ -271,7 +279,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
       speak(`答えは${ans}です。`);
     }
-  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound]);
+  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound, setHistoryResult, selectedGenre, selectedDifficulty]);
 
   handleSurrenderRef.current = handleSurrender;
 

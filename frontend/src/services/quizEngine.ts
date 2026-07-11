@@ -151,6 +151,13 @@ export const getAllAvailableQuizzesCount = (genre: string, difficulty: number): 
   ).length;
 };
 
+// 指定したジャンル・難易度の全問題一覧を取得する（問題管理画面用）
+export const getQuizzesForLevel = (genre: string, difficulty: number): QuizData[] => {
+  return allQuizzes.filter(
+    (quiz) => quiz.genre === genre && quiz.difficulty === difficulty
+  );
+};
+
 // 全ジャンル・全レベルの問題数の合計を取得する
 export const getTotalQuizzesCount = (): number => {
   return allQuizzes.length;
