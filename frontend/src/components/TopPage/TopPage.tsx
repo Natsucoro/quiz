@@ -11,6 +11,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
 import PaywallModal from '../common/PaywallModal';
+import QuestionListModal from '../common/QuestionListModal';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
 import { colors, fonts, genreColors, rotatingColors, shadow } from '../../styles/theme';
@@ -36,6 +37,7 @@ import FoodIcon from '../../assets/icons/food.svg';
 import GuestIcon from '../../assets/icons/guest.svg';
 import UserIcon from '../../assets/icons/user.svg';
 import MaruIcon from '../../assets/icons/icon_maru.svg';
+import ListIcon from '../../assets/icons/list.svg';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number, count: number) => void;
@@ -70,6 +72,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const [showSettings, setShowSettings] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallTarget, setPaywallTarget] = useState<{ genre: string; difficulty: number } | null>(null);
+  const [showQuestionList, setShowQuestionList] = useState(false);
+  const [questionListTarget, setQuestionListTarget] = useState<{ genre: string; difficulty: number } | null>(null);
   const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
   const isOffline = useOffline();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -460,6 +464,19 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                     {isPurchased(itemId) && !isFreeRank && (
                       <span style={purchasedBadgeStyle}>解放済</span>
                     )}
+                    {!isLocked && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setQuestionListTarget({ genre: localSelectedGenre, difficulty });
+                          setShowQuestionList(true);
+                        }}
+                        style={detailIconButtonStyle}
+                        title="もんだい管理"
+                      >
+                        <img src={ListIcon} alt="もんだい管理" style={detailIconImageStyle} />
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -555,6 +572,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
           }}
         />
       )}
+      {showQuestionList && questionListTarget && (
+        <QuestionListModal
+          genre={questionListTarget.genre}
+          difficulty={questionListTarget.difficulty}
+          onClose={() => setShowQuestionList(false)}
+        />
+      )}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
     </div>
   );
@@ -592,6 +616,8 @@ const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
 const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.secondary, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
 const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.violet, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
+const detailIconButtonStyle: React.CSSProperties = { position: 'absolute', top: '-10px', left: '-6px', width: '26px', height: '26px', minWidth: '26px', minHeight: '26px', borderRadius: '50%', background: '#fff', border: `2px solid ${colors.violet}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', zIndex: 3, padding: 0 };
+const detailIconImageStyle: React.CSSProperties = { width: '13px', height: '13px', objectFit: 'contain' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
 const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
 // フローティングボタン用: ページに浮いているように見せる、はっきりした落ち影
