@@ -396,7 +396,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                 style={{
                   ...buttonStyle,
                   width: '100%',
-                  boxShadow: '0 8px 20px rgba(255, 111, 145, 0.4)',
+                  boxShadow: floatingActionShadow,
                   padding: '16px 20px'
                 }}
               >
@@ -433,7 +433,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                       onClick={() => handleDifficultyButtonClick(difficulty, isLocked)}
                       style={{
                         ...difficultyButtonStyle,
-                        backgroundColor: isLocked ? colors.lock : localSelectedDifficulty === difficulty ? colors.primary : rotatingColors[(difficulty - 1) % rotatingColors.length],
+                        backgroundColor: isLocked ? colors.lock : rotatingColors[(difficulty - 1) % rotatingColors.length],
                         boxShadow: isLocked ? '0 4px 0 #8A8496' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px ${colors.primary}` : '0 5px 0 rgba(74,68,88,0.15)',
                         transform: localSelectedDifficulty === difficulty ? 'scale(1.05)' : 'scale(1)',
                         cursor: isLocked ? 'not-allowed' : 'pointer',
@@ -517,7 +517,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                   ...buttonStyle,
                   background: '#E4DEE8',
                   color: colors.ink,
-                  boxShadow: '0 4px 12px rgba(74,68,88,0.25)',
+                  boxShadow: floatingSecondaryShadow,
                   width: '100%',
                   padding: '12px 20px',
                   fontSize: '0.95em',
@@ -594,5 +594,8 @@ const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px'
 const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.violet, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
 const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
 const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
+// フローティングボタン用: ページに浮いているように見せる、はっきりした落ち影
+const floatingActionShadow = '0 14px 10px -6px rgba(74,68,88,0.35), 0 6px 16px rgba(255,111,145,0.5)';
+const floatingSecondaryShadow = '0 12px 10px -6px rgba(74,68,88,0.3), 0 4px 10px rgba(74,68,88,0.2)';
 
 export default TopPage;

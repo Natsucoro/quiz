@@ -4,6 +4,8 @@ import { usePurchaseStore } from '../../../store/purchaseStore';
 import Settings from '../Settings/Settings';
 import HagurumaIcon from '../../../assets/icons/haguruma.svg';
 import soundIcon from '../../../assets/icons/sound.svg';
+import GuestIcon from '../../../assets/icons/guest.svg';
+import UserIcon from '../../../assets/icons/user.svg';
 import { unlockAudioContext, stopSpeaking } from '../../../services/speechSynthesis';
 import { colors, fonts } from '../../../styles/theme';
 
@@ -39,22 +41,17 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
         <div style={headerIconsStyle}>
           <button
             onClick={() => setShowSettings(true)}
-            style={isLoggedIn ? loginBadgeActiveStyle : loginBadgeGuestStyle}
-            title={isLoggedIn ? `ログイン中: 設定からログアウト可` : 'ゲスト（設定からログイン）'}
+            style={{ ...iconButtonStyle, ...(isLoggedIn ? loginActiveRingStyle : {}) }}
+            title={isLoggedIn ? 'ログイン中: 設定からログアウト可' : 'ゲスト（設定からログイン）'}
           >
-            {isLoggedIn ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.0', color: colors.violetDark, fontWeight: 'bold', fontSize: '0.75em' }}>
-                <span>ログ</span>
-                <span>イン</span>
-                <span>中</span>
-              </div>
-            ) : 'ゲスト'}
+            <img src={isLoggedIn ? UserIcon : GuestIcon} alt={isLoggedIn ? 'ログイン中' : 'ゲスト'} style={iconImageStyle} />
+            {isLoggedIn && <span style={loginActiveDotStyle}>✓</span>}
           </button>
           <button onClick={() => setShowSettings(true)} style={iconButtonStyle}>
-            <img src={HagurumaIcon} alt="設定" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
+            <img src={HagurumaIcon} alt="設定" style={iconImageStyle} />
           </button>
           <button onClick={handleToggleMute} style={{ ...iconButtonStyle, opacity: isMuted ? 0.4 : 1 }}>
-            <img src={soundIcon} alt="音声" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
+            <img src={soundIcon} alt="音声" style={iconImageStyle} />
           </button>
         </div>
       </header>
@@ -99,8 +96,9 @@ const titleStyle: React.CSSProperties = {
   minWidth: 0,
 };
 const headerIconsStyle: React.CSSProperties = { display: 'flex', gap: '4px', flexShrink: 0, flexWrap: 'nowrap' };
-const iconButtonStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', minWidth: '36px', minHeight: '36px', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.2em', cursor: 'pointer', boxShadow: '0 3px 6px rgba(74,68,88,0.18)' };
-const loginBadgeGuestStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '50%', width: '36px', height: '36px', minWidth: '36px', minHeight: '36px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.55em', fontWeight: 'bold', color: colors.inkSoft, cursor: 'pointer', boxShadow: '0 2px 4px rgba(74,68,88,0.12)', whiteSpace: 'nowrap', flexShrink: 0 };
-const loginBadgeActiveStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.7)', border: `3px solid ${colors.violet}`, borderRadius: '50%', width: '36px', height: '36px', minWidth: '36px', minHeight: '36px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold', color: colors.violetDark, cursor: 'pointer', boxShadow: '0 2px 4px rgba(74,68,88,0.15)', whiteSpace: 'nowrap', flexShrink: 0 };
+const iconButtonStyle: React.CSSProperties = { position: 'relative', backgroundColor: 'rgba(255,255,255,0.85)', border: '2px solid rgba(255,255,255,0.9)', borderRadius: '50%', width: '36px', height: '36px', minWidth: '36px', minHeight: '36px', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 3px 6px rgba(74,68,88,0.18)' };
+const iconImageStyle: React.CSSProperties = { width: '22px', height: '22px', objectFit: 'contain' };
+const loginActiveRingStyle: React.CSSProperties = { border: `2px solid ${colors.primary}`, backgroundColor: '#fff' };
+const loginActiveDotStyle: React.CSSProperties = { position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', backgroundColor: colors.secondary, color: '#fff', fontSize: '9px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #fff', lineHeight: 1 };
 
 export default Header;
