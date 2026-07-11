@@ -21,7 +21,18 @@ const animalUrls = animalFiles.map(file => {
   return svgModules[path]?.default || null;
 }).filter(Boolean) as string[];
 
-const WalkingAnimals: React.FC = () => {
+interface WalkingAnimalsProps {
+  /** 1体あたりのアイコンサイズ(px)。デフォルト60px。 */
+  size?: number;
+  /** コンテナのposition/zIndex等を上書きするためのスタイル。 */
+  style?: React.CSSProperties;
+  /** 横に並べる際の間隔(px)。デフォルト30px。 */
+  gap?: number;
+}
+
+const BOUNCE_HEIGHT = 4; // bounce-walkでキャラクターが上に動く最大距離(px)
+
+const WalkingAnimals: React.FC<WalkingAnimalsProps> = ({ size = 60, style, gap = 30 }) => {
   if (animalUrls.length === 0) return null;
 
   // ループ用にリストを2回繰り返す
@@ -34,18 +45,18 @@ const WalkingAnimals: React.FC = () => {
     }
     @keyframes bounce-walk {
       0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-4px) rotate(-3deg); }
+      25% { transform: translateY(-${BOUNCE_HEIGHT}px) rotate(-3deg); }
       50% { transform: translateY(0) rotate(0deg); }
-      75% { transform: translateY(-2px) rotate(3deg); }
+      75% { transform: translateY(-${BOUNCE_HEIGHT / 2}px) rotate(3deg); }
     }
   `;
 
   return (
-    <div style={containerStyle}>
+    <div style={{ ...containerStyle, ...style }}>
       <style>{keyframes}</style>
       <div style={trackStyle}>
         {displayUrls.map((url, index) => (
-          <div key={index} style={itemStyle}>
+          <div key={index} style={{ ...itemStyle, width: `${size}px`, height: `${size}px`, marginRight: `${gap}px` }}>
             <img src={url} alt="walking animal" style={imageStyle} />
           </div>
         ))}
@@ -62,7 +73,7 @@ const containerStyle: React.CSSProperties = {
   left: 0,
   zIndex: 11, // フッターより上に
   pointerEvents: 'none',
-  paddingTop: '8px', // bounce-walkでキャラクターが上に動く分の余白（見切れ防止）
+  paddingTop: `${BOUNCE_HEIGHT + 4}px`, // bounce-walkでキャラクターが上に動く分の余白（見切れ防止）
   paddingBottom: '5px',
 };
 
@@ -73,12 +84,9 @@ const trackStyle: React.CSSProperties = {
 };
 
 const itemStyle: React.CSSProperties = {
-  width: '60px',
-  height: '60px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'flex-end',
-  marginRight: '30px',
   animation: 'bounce-walk 1.5s ease-in-out infinite',
 };
 

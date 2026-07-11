@@ -8,6 +8,7 @@ import GuestIcon from '../../../assets/icons/guest.svg';
 import UserIcon from '../../../assets/icons/user.svg';
 import { unlockAudioContext, stopSpeaking } from '../../../services/speechSynthesis';
 import { colors, fonts } from '../../../styles/theme';
+import WalkingAnimals from '../WalkingAnimals';
 
 const TITLE_TEXT = 'わたしはダレでしょう？クイズ';
 // 白と淡いイエローを交互にして、キャンディっぽい賑やかさを出す
@@ -81,6 +82,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
             <img src={soundIcon} alt="音声" style={iconImageStyle} />
           </button>
         </div>
+        <WalkingAnimals size={22} gap={14} style={headerAnimalsStyle} />
       </header>
 
       {showSettings && (
@@ -92,6 +94,14 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
       )}
     </>
   );
+};
+
+// ヘッダー下辺（境界線上）にキャラクターを歩かせるための位置指定
+const headerAnimalsStyle: React.CSSProperties = {
+  top: '100%',
+  bottom: 'auto',
+  paddingTop: '6px',
+  paddingBottom: '2px',
 };
 
 const stickyHeaderStyle: React.CSSProperties = {
