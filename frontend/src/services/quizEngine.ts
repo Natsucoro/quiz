@@ -156,6 +156,11 @@ export const getTotalQuizzesCount = (): number => {
   return allQuizzes.length;
 };
 
+// 指定したジャンルの全レベル合計の問題数を取得する
+export const getTotalQuizzesCountForGenre = (genre: string): number => {
+  return allQuizzes.filter((quiz) => quiz.genre === genre).length;
+};
+
 // 全ジャンル、難易度を取得する
 export const getAvailableGenres = (): string[] => {
   const genres = new Set<string>();
