@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Settings from '../common/Settings/Settings';
 import { unlockAudioContext, stopSpeaking } from '../../services/speechSynthesis';
 import { useOffline } from '../../hooks/useOffline';
-import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount } from '../../services/quizEngine';
+import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount, getTotalQuizzesCount, getTotalQuizzesCountForGenre } from '../../services/quizEngine';
 import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
@@ -139,6 +139,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   }, [isMuted, setIsMuted, isSpeakingAllowed, setIsSpeakingAllowed]);
 
   const genres = getAvailableGenres();
+  const totalQuizzesCount = getTotalQuizzesCount();
 
   const getDifficultyLabel = (difficulty: number) => `Lv.${difficulty}`;
 
@@ -282,6 +283,17 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       />
 
 
+      {!showDifficultySelection && (
+        <div style={totalCountLabelStyle}>
+          <ruby>問題数<rt style={{ fontSize: '0.4em' }}>もんだいすう</rt></ruby>
+          {' '}
+          <ruby>全<rt style={{ fontSize: '0.4em' }}>ぜん</rt></ruby>
+          <span style={totalCountNumberStyle}>{totalQuizzesCount.toLocaleString()}</span>
+          <ruby>問<rt style={{ fontSize: '0.4em' }}>もん</rt></ruby>
+          ！
+        </div>
+      )}
+
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
         {['#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる',  '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
           <span key={tag} style={hashtagStyle}>{tag}</span>
@@ -327,6 +339,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                       {getGenreIcon(genre)}
                     </span>
                     <ruby>{genre}<rt style={{ fontSize: '0.55em', fontWeight: 'normal' }}>{GENRE_RUBY[genre] ?? ''}</rt></ruby>
+                    {isAvailable && (
+                      <span style={genreCountStyle}>
+                        <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>
+                        <span style={genreCountNumberStyle}>{getTotalQuizzesCountForGenre(genre)}</span>
+                        <ruby className="btn-ruby">問<rt>もん</rt></ruby>
+                      </span>
+                    )}
                     {!isAvailable && (
                       <span style={{
                         position: 'absolute',
@@ -555,6 +574,8 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
+const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.35em', marginBottom: '16px', textShadow: '1px 1px 0 #fff' };
+const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.7em', color: colors.primary, margin: '0 2px' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '700px', width: '100%' };
 const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: colors.primaryDark, borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
 const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
@@ -562,6 +583,8 @@ const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: col
 const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
 const genreButtonStyle: React.CSSProperties = { padding: '10px 8px', borderRadius: '24px', border: '3px solid rgba(255,255,255,0.8)', fontSize: 'clamp(0.8em, 3.5vw, 1.05em)', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center', minHeight: '90px', textAlign: 'center', whiteSpace: 'nowrap' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2.4em', flexShrink: 0, marginBottom: '-4px' };
+const genreCountStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'baseline', gap: '2px', fontSize: '0.75em', fontWeight: 'bold', color: '#fff', background: 'rgba(0,0,0,0.18)', borderRadius: '10px', padding: '1px 8px', marginTop: '3px' };
+const genreCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.15em' };
 const difficultySelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '30px', padding: '30px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box' };
 const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: '20px', rowGap: '30px', marginBottom: '28px' };
 const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90px', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' } as React.CSSProperties;
