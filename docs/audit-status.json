@@ -76,15 +76,15 @@
       "file": "fish.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10の概念回答18件・捏造種9件を実在種に置換済み。ただしLv4〜9に『実在魚名+モドキ』の捏造種が28件残存=B4クリーンアップ待ち" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6-7の即答性4問トーンダウン" },
+        "B1": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10のみ完了。Lv4-9はB4クリーンアップと合わせて要再確認" },
+        "B2": { "status": "partial", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "partial", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "not-done", "version": null, "notes": "重大: Lv4〜9に捏造種名28件(モドキ付き)。サッパ/ママカリが同一種で別回答。専用の事実検証パスが必要" },
         "B5": { "status": "swept", "version": 1 },
         "C": { "status": "not-done", "version": null }
       }
