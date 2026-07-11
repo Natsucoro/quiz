@@ -26,15 +26,15 @@
       "count": 500,
       "checks": {
         "A1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "自己リーク4件発見・修正" },
-        "A2": { "status": "not-done", "version": null },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正箇所のみ事実確認(ハナカマキリ生息地等)。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "not-done", "version": null },
-        "A5": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "目(もく)のルビ誤り修正+ルビと本文の不整合4件修正" },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上の即答性17問トーンダウン" },
         "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "分類学的具体性の不一致ダミーを30問・35箇所修正" },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
-        "B5": { "status": "not-done", "version": null },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "文脈不一致ダミー12問修正" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "モドキ種は全て実在と確認。修正箇所のみ精査" },
+        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
