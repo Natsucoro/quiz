@@ -2,227 +2,829 @@
   "_readme": "各ジャンル×チェック項目ごとに、品質チェックリスト(docs/クイズ品質チェックリスト.md)のどのバージョンで検証済みかを記録するファイル。監査を始める前に必ずこのファイルを確認し、対象ジャンルの該当チェック項目が現在のchecklistVersionで既にstatus=sweptなら、そのジャンル×項目は再チェック不要(スキップ可)。status=partialは抜き取り検証のみで全件走査は未実施、status=not-doneは未検証(または現行チェックリストが無かった頃の古い基準でのみ検証済み)を意味する。監査を実施したら、このファイルも同じPRで更新すること。このファイルはフロントエンドにバンドルされないメンテナンス専用ファイル(data/quizzes/配下ではなくdocs/配下に置く)。",
   "checklistVersion": 2,
   "checklistFile": "docs/クイズ品質チェックリスト.md",
-  "checkIds": ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "C"],
+  "checkIds": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "C"
+  ],
   "genres": {
     "道具": {
       "file": "tools.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A4": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6-10全件走査、即答性24問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6-10全件走査、即答性24問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "昆虫": {
       "file": "insects.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "自己リーク4件発見・修正" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正箇所のみ事実確認(ハナカマキリ生息地等)。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "目(もく)のルビ誤り修正+ルビと本文の不整合4件修正" },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上の即答性17問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "分類学的具体性の不一致ダミーを30問・35箇所修正" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "文脈不一致ダミー12問修正" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "モドキ種は全て実在と確認。修正箇所のみ精査" },
-        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "自己リーク4件発見・修正"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正箇所のみ事実確認(ハナカマキリ生息地等)。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "目(もく)のルビ誤り修正+ルビと本文の不整合4件修正"
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6以上の即答性17問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "分類学的具体性の不一致ダミーを30問・35箇所修正"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "文脈不一致ダミー12問修正"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "モドキ種は全て実在と確認。修正箇所のみ精査"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "歴史上の人物": {
       "file": "history.json",
       "count": 100,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の人物差し替え時に史実を確認" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "著し(あらわし)の読み誤り8件を修正、ルビ本文整合を確認" },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "引用句・単一代表作を問題文に直書きしていた7問をヒントへ移動(名言即答を防止)。他は業績描写型でジャンル本来の設計として保持" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の出来事混入(大化の改新など10問)を人物に置換" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6〜9の全80問でダミーの国籍/時代整合を修正" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "別名・近似重複ダミーなし" },
-        "B4": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv10の人物差し替え時に史実を確認"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "著し(あらわし)の読み誤り8件を修正、ルビ本文整合を確認"
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "引用句・単一代表作を問題文に直書きしていた7問をヒントへ移動(名言即答を防止)。他は業績描写型でジャンル本来の設計として保持"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv10の出来事混入(大化の改新など10問)を人物に置換"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6〜9の全80問でダミーの国籍/時代整合を修正"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "別名・近似重複ダミーなし"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "哺乳類": {
       "file": "mammals.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ事実確認。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1, "notes": "ルビ一括付与(Phase A/B)は実施済み" },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上で問題文の即答性を22問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答・総称ダミー3件を具体種に置換" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "一軸で消去できるダミー約22問を文脈一致に修正" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ確認" },
-        "B5": { "status": "swept", "version": 1, "notes": "答え・ダミーの漢字/カタカナ変換は実施済み" },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正した箇所のみ事実確認。全件精査は未実施 / B4検証時に全回答種の実在性を確認"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1,
+          "notes": "ルビ一括付与(Phase A/B)は実施済み"
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6以上で問題文の即答性を22問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称回答・総称ダミー3件を具体種に置換"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "一軸で消去できるダミー約22問を文脈一致に修正"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "全500回答の実在性を検証。捏造種2件(コウモリグマ/チャクウ)+波及ダミー10件を実在種に置換"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1,
+          "notes": "答え・ダミーの漢字/カタカナ変換は実施済み"
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "魚類": {
       "file": "fish.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10概念回答18件+全捏造種(モドキ28件・その他)を実在種に置換済み。回答・ダミーとも捏造ゼロ。ただし全500問の網羅的事実検証は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6-7の即答性4問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "捏造種28件(モドキ付き)を全て実在種に置換、波及ダミー72件も修正、サッパ/ママカリ同一種重複を解消" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv10概念回答18件+全捏造種(モドキ28件・その他)を実在種に置換済み。回答・ダミーとも捏造ゼロ。ただし全500問の網羅的事実検証は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6-7の即答性4問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "捏造種28件(モドキ付き)を全て実在種に置換、波及ダミー72件も修正、サッパ/ママカリ同一種重複を解消"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "鳥類": {
       "file": "birds.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ事実確認。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上で問題文の即答性を6問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答・総称ダミー3件を具体種に置換" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ確認" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正した箇所のみ事実確認。全件精査は未実施 / B4検証時に全回答種の実在性を確認"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6以上で問題文の即答性を6問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称回答・総称ダミー3件を具体種に置換"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "全500回答の実在性を検証。捏造種1件(エゾシギ→ハリオシギ)+波及ダミー3件を実在種に置換"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "爬虫類": {
       "file": "reptiles.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ事実確認" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上で問題文の即答性を11問トーンダウン" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答9件を具体種に置換、総称ダミー10箇所修正。ただし生物用語回答(脱皮/変温動物/甲羅/有鱗目等)は語彙アーキタイプとして保持=なつみ確認事項" },
-        "B2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ。全件のダミー文脈精査は未実施" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "誤字1件(フトアゴヒゲトカゲ)修正、修正箇所のみ確認" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正した箇所のみ事実確認"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "Lv6以上で問題文の即答性を11問トーンダウン"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称回答9件を具体種に置換、総称ダミー10箇所修正。ただし生物用語回答(脱皮/変温動物/甲羅/有鱗目等)は語彙アーキタイプとして保持=なつみ確認事項"
+        },
+        "B2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正した箇所のみ。全件のダミー文脈精査は未実施"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "誤字1件(フトアゴヒゲトカゲ)修正、修正箇所のみ確認"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "海洋生物": {
       "file": "marine.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "概念回答43件を実在種に置換時に事実確認。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "概念回答43件を実在種に全面差し替え(生物発光/プランクトン等)、総称ダミー約120箇所修正" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "新規置換種のみ実在性確認" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "概念回答43件を実在種に置換時に事実確認。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "概念回答43件を実在種に全面差し替え(生物発光/プランクトン等)、総称ダミー約120箇所修正"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "新規置換種のみ実在性確認"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "植物": {
       "file": "plants.json",
       "count": 287,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造種ファシア除去+事実誤り複数修正。判断保留の疑義あり(lv6-008/lv7-004/lv10-004等)。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答3件(タケ→モウソウチク等)を具体種に置換" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造種ファシア除去。全件の実在性検証は未実施" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "捏造種ファシア除去+事実誤り複数修正。判断保留の疑義あり(lv6-008/lv7-004/lv10-004等)。全件精査は未実施 / B4検証時に全回答種の実在性を確認"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称回答3件(タケ→モウソウチク等)を具体種に置換"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "全287回答の実在性を検証。捏造ゼロ。事実誤り3件修正(コピアポア/エレファントフット原産地/ツノゴケ)"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "乗り物": {
       "file": "vehicles.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "事実誤り複数修正(バス誤記/人力車の時代/戦艦陸奥のルビ等)。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称ダミー・時代/領域不一致を14問修正" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正箇所のみ実在性確認" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "事実誤り複数修正(バス誤記/人力車の時代/戦艦陸奥のルビ等)。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称ダミー・時代/領域不一致を14問修正"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正箇所のみ実在性確認"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "食べ物": {
       "file": "food.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造重複ハカール(発酵サメの誤記、ハーカトルと重複)を臭豆腐に置換。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答・総称ダミー4件を具体名に置換" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造/重複1件修正。全件の実在性検証は未実施" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "捏造重複ハカール(発酵サメの誤記、ハーカトルと重複)を臭豆腐に置換。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "総称回答・総称ダミー4件を具体名に置換"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "捏造/重複1件修正。全件の実在性検証は未実施"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "日本の地理": {
       "file": "geography_jp.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "地名の読み誤り22件を修正(最上川/種子島/阿蘇山等)。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "約121問でダミーを同種(山/川/県/都市)に統一" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "地名の読み誤り22件を修正(最上川/種子島/阿蘇山等)。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "約121問でダミーを同種(山/川/県/都市)に統一"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     },
     "世界の地理": {
       "file": "geography_world.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "マニラのヒント自己リーク修正" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正箇所のみ確認。全件精査は未実施" },
-        "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "約92問でダミーを同種・同カテゴリ(首都/山/川/国)に統一" },
-        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "partial", "version": 2, "date": "2026-07-11" },
-        "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+        "A1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "マニラのヒント自己リーク修正"
+        },
+        "A2": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "修正箇所のみ確認。全件精査は未実施"
+        },
+        "A3": {
+          "status": "not-done",
+          "version": null
+        },
+        "A4": {
+          "status": "swept",
+          "version": 1
+        },
+        "A5": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B1": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B2": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11",
+          "notes": "約92問でダミーを同種・同カテゴリ(首都/山/川/国)に統一"
+        },
+        "B3": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B4": {
+          "status": "partial",
+          "version": 2,
+          "date": "2026-07-11"
+        },
+        "B5": {
+          "status": "swept",
+          "version": 1
+        },
+        "C": {
+          "status": "swept",
+          "version": 2,
+          "date": "2026-07-11"
+        }
       }
     }
   }
