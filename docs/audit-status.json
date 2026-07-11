@@ -77,16 +77,16 @@
       "count": 500,
       "checks": {
         "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10の概念回答18件・捏造種9件を実在種に置換済み。ただしLv4〜9に『実在魚名+モドキ』の捏造種が28件残存=B4クリーンアップ待ち" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10概念回答18件+全捏造種(モドキ28件・その他)を実在種に置換済み。回答・ダミーとも捏造ゼロ。ただし全500問の網羅的事実検証は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
         "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6-7の即答性4問トーンダウン" },
-        "B1": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv10のみ完了。Lv4-9はB4クリーンアップと合わせて要再確認" },
-        "B2": { "status": "partial", "version": 2, "date": "2026-07-11" },
-        "B3": { "status": "partial", "version": 2, "date": "2026-07-11" },
-        "B4": { "status": "not-done", "version": null, "notes": "重大: Lv4〜9に捏造種名28件(モドキ付き)。サッパ/ママカリが同一種で別回答。専用の事実検証パスが必要" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "捏造種28件(モドキ付き)を全て実在種に置換、波及ダミー72件も修正、サッパ/ママカリ同一種重複を解消" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "鳥類": {
