@@ -45,13 +45,13 @@
         "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "A2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の人物差し替え時に史実を確認" },
         "A3": { "status": "not-done", "version": null },
-        "A4": { "status": "not-done", "version": null },
-        "A5": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "著し(あらわし)の読み誤り8件を修正、ルビ本文整合を確認" },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "引用句・単一代表作を問題文に直書きしていた7問をヒントへ移動(名言即答を防止)。他は業績描写型でジャンル本来の設計として保持" },
         "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の出来事混入(大化の改新など10問)を人物に置換" },
         "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6〜9の全80問でダミーの国籍/時代整合を修正" },
-        "B3": { "status": "not-done", "version": null },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "別名・近似重複ダミーなし" },
         "B4": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "B5": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
