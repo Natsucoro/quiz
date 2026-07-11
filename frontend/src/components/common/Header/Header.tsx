@@ -82,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
             <img src={soundIcon} alt="音声" style={iconImageStyle} />
           </button>
         </div>
-        <WalkingAnimals size={22} gap={14} style={headerAnimalsStyle} />
+        <WalkingAnimals size={18} gap={12} style={headerAnimalsStyle} />
       </header>
 
       {showSettings && (
@@ -96,10 +96,12 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
   );
 };
 
-// ヘッダー下辺（境界線上）にキャラクターを歩かせるための位置指定
+// ヘッダーの内側・下辺に配置するための位置指定。タイトルやアイコンより
+// 奥（背面）に表示し、テキストやボタンの操作を妨げないようにする。
 const headerAnimalsStyle: React.CSSProperties = {
-  top: '100%',
-  bottom: 'auto',
+  bottom: 0,
+  top: 'auto',
+  zIndex: -1,
   paddingTop: '6px',
   paddingBottom: '2px',
 };

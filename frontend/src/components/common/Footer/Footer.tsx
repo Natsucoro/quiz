@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer style={footerStyle}>
-      <WalkingAnimals size={40} gap={22} />
+      <WalkingAnimals />
       <p style={copyrightStyle}>
         🌱 &copy; {currentYear} わたしはダレでしょう？クイズ 🌳
       </p>
