@@ -195,34 +195,34 @@
       "file": "geography_jp.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "地名の読み誤り22件を修正(最上川/種子島/阿蘇山等)。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "約121問でダミーを同種(山/川/県/都市)に統一" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "世界の地理": {
       "file": "geography_world.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "マニラのヒント自己リーク修正" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正箇所のみ確認。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "約92問でダミーを同種・同カテゴリ(首都/山/川/国)に統一" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     }
   }
