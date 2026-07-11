@@ -127,17 +127,17 @@
       "file": "marine.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "概念回答43件を実在種に置換時に事実確認。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "概念回答43件を実在種に全面差し替え(生物発光/プランクトン等)、総称ダミー約120箇所修正" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "新規置換種のみ実在性確認" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "植物": {
