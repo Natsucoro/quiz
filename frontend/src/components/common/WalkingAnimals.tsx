@@ -62,6 +62,7 @@ const containerStyle: React.CSSProperties = {
   left: 0,
   zIndex: 11, // フッターより上に
   pointerEvents: 'none',
+  paddingTop: '8px', // bounce-walkでキャラクターが上に動く分の余白（見切れ防止）
   paddingBottom: '5px',
 };
 
