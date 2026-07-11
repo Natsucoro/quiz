@@ -225,7 +225,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const GENRE_COLORS = genreColors;
   const HISTORY_GENRES = ['歴史上の人物', '日本の歴史', '世界の歴史'];
   const getDifficultiesForGenre = (genre: string) =>
-    HISTORY_GENRES.includes(genre) ? [6, 7, 8, 9, 10] : genre === '道具' ? [2, 6, 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    HISTORY_GENRES.includes(genre) ? [6, 7, 8, 9, 10] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const difficultiesForSelectedGenre = getDifficultiesForGenre(localSelectedGenre);
 
   return (
