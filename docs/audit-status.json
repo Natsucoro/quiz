@@ -1,0 +1,229 @@
+{
+  "_readme": "各ジャンル×チェック項目ごとに、品質チェックリスト(docs/クイズ品質チェックリスト.md)のどのバージョンで検証済みかを記録するファイル。監査を始める前に必ずこのファイルを確認し、対象ジャンルの該当チェック項目が現在のchecklistVersionで既にstatus=sweptなら、そのジャンル×項目は再チェック不要(スキップ可)。status=partialは抜き取り検証のみで全件走査は未実施、status=not-doneは未検証(または現行チェックリストが無かった頃の古い基準でのみ検証済み)を意味する。監査を実施したら、このファイルも同じPRで更新すること。このファイルはフロントエンドにバンドルされないメンテナンス専用ファイル(data/quizzes/配下ではなくdocs/配下に置く)。",
+  "checklistVersion": 2,
+  "checklistFile": "docs/クイズ品質チェックリスト.md",
+  "checkIds": ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "C"],
+  "genres": {
+    "道具": {
+      "file": "tools.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A4": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A5": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv6以上から8件の抜き取り確認のみ。全件走査は未実施" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+      }
+    },
+    "昆虫": {
+      "file": "insects.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "自己リーク4件発見・修正" },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "not-done", "version": null },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "分類学的具体性の不一致ダミーを30問・35箇所修正" },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "not-done", "version": null },
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+      }
+    },
+    "歴史上の人物": {
+      "file": "history.json",
+      "count": 100,
+      "checks": {
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の人物差し替え時に史実を確認" },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "not-done", "version": null },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv10の出来事混入(大化の改新など10問)を人物に置換" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6〜9の全80問でダミーの国籍/時代整合を修正" },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B5": { "status": "not-done", "version": null },
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
+      }
+    },
+    "哺乳類": {
+      "file": "mammals.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "not-done", "version": null, "notes": "旧基準での部分的なA1監査は過去セッションで実施済みだが、現チェックリストでの全件再走査は未実施" },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1, "notes": "ルビ一括付与(Phase A/B)は実施済み" },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null, "notes": "旧基準での部分的なB1監査は過去セッションで実施済みだが、現チェックリストでの全件再走査は未実施" },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1, "notes": "答え・ダミーの漢字/カタカナ変換は実施済み" },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "魚類": {
+      "file": "fish.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "鳥類": {
+      "file": "birds.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "爬虫類": {
+      "file": "reptiles.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "海洋生物": {
+      "file": "marine.json",
+      "count": 500,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "植物": {
+      "file": "plants.json",
+      "count": 287,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "乗り物": {
+      "file": "vehicles.json",
+      "count": 200,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null, "notes": "過去セッションで総称ダミーの部分修正あり(乗り物・道具・食べ物)。現チェックリストでの全件再走査は未実施" },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "食べ物": {
+      "file": "food.json",
+      "count": 200,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null, "notes": "過去セッションで総称ダミーの部分修正あり(乗り物・道具・食べ物)。現チェックリストでの全件再走査は未実施" },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "日本の地理": {
+      "file": "geography_jp.json",
+      "count": 200,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    },
+    "世界の地理": {
+      "file": "geography_world.json",
+      "count": 200,
+      "checks": {
+        "A1": { "status": "not-done", "version": null },
+        "A2": { "status": "not-done", "version": null },
+        "A3": { "status": "not-done", "version": null },
+        "A4": { "status": "swept", "version": 1 },
+        "A5": { "status": "not-done", "version": null },
+        "B1": { "status": "not-done", "version": null },
+        "B2": { "status": "not-done", "version": null },
+        "B3": { "status": "not-done", "version": null },
+        "B4": { "status": "not-done", "version": null },
+        "B5": { "status": "swept", "version": 1 },
+        "C": { "status": "not-done", "version": null }
+      }
+    }
+  }
+}
