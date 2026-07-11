@@ -10,11 +10,20 @@ export interface QuizData {
   hint1: string;
   hint1Ruby?: string;
   answer: string;
+  answerRuby?: string;
   answerReading?: string;
   answerAliases?: string[];
   dummy1: string;
+  dummy1Ruby?: string;
   dummy2: string;
+  dummy2Ruby?: string;
   dummy3: string;
+  dummy3Ruby?: string;
+}
+
+export interface QuizOption {
+  text: string;
+  ruby?: string;
 }
 
 interface QuizWithHints extends QuizData {
@@ -103,10 +112,15 @@ export const getNextQuiz = (
 /**
  * クイズの選択肢をシャッフルして返します。
  * @param quiz クイズデータ
- * @returns string[] シャッフルされた4択の選択肢
+ * @returns QuizOption[] シャッフルされた4択の選択肢（表示用ルビ付き）
  */
-export const getShuffledOptions = (quiz: QuizData): string[] => {
-  const options = [quiz.answer, quiz.dummy1, quiz.dummy2, quiz.dummy3];
+export const getShuffledOptions = (quiz: QuizData): QuizOption[] => {
+  const options: QuizOption[] = [
+    { text: quiz.answer, ruby: quiz.answerRuby },
+    { text: quiz.dummy1, ruby: quiz.dummy1Ruby },
+    { text: quiz.dummy2, ruby: quiz.dummy2Ruby },
+    { text: quiz.dummy3, ruby: quiz.dummy3Ruby },
+  ];
   for (let i = options.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [options[i], options[j]] = [options[j], options[i]]; // Fisher-Yates shuffle
