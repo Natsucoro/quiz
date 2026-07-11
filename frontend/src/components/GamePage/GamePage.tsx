@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   QuizData,
+  QuizOption,
   getNextQuiz,
   getShuffledOptions,
   checkAnswer,
@@ -108,7 +109,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const isSpeakingAllowed = true;
 
   const [currentQuiz, setCurrentQuiz] = useState<QuizData | null>(null);
-  const [options, setOptions] = useState<string[]>([]);
+  const [options, setOptions] = useState<QuizOption[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | 'surrender' | null>(null);
@@ -643,13 +644,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       ) : (
         <div style={optionsContainerStyle}>
           {options.map((option, index) => {
-            const isCorrectOption = option === currentQuiz?.answer;
+            const isCorrectOption = option.text === currentQuiz?.answer;
             const isRevealed = feedback === 'correct' || feedback === 'surrender';
             const bg = isRevealed ? (isCorrectOption ? colors.success : colors.lock) : rotatingColors[index % rotatingColors.length];
             return (
               <button
                 key={index}
-                onClick={() => handleAnswer(option)}
+                onClick={() => handleAnswer(option.text)}
                 disabled={isRevealed}
                 style={{
                   ...optionButtonStyle,
@@ -670,7 +671,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
                 }}>
                   {['①', '②', '③', '④'][index]}
                 </span>
-                {option}
+                {renderRuby(option.ruby || option.text)}
               </button>
             );
           })}
