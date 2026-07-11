@@ -144,17 +144,17 @@
       "file": "plants.json",
       "count": 287,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造種ファシア除去+事実誤り複数修正。判断保留の疑義あり(lv6-008/lv7-004/lv10-004等)。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答3件(タケ→モウソウチク等)を具体種に置換" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造種ファシア除去。全件の実在性検証は未実施" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "乗り物": {
