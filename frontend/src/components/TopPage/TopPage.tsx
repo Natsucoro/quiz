@@ -430,6 +430,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                 // 無料枠でなく、かつまだ購入していない場合のみロックする
                 const isLocked = !isFreeRank && !isPurchased(itemId);
                 const totalCount = getAllAvailableQuizzesCount(localSelectedGenre, difficulty);
+                const tileColor = rotatingColors[(difficulty - 1) % rotatingColors.length];
                 return (
                   <div key={difficulty} style={{ position: 'relative' }}>
                     <button
@@ -437,8 +438,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                       onClick={() => handleDifficultyButtonClick(difficulty, isLocked)}
                       style={{
                         ...difficultyButtonStyle,
-                        backgroundColor: isLocked ? colors.lock : rotatingColors[(difficulty - 1) % rotatingColors.length],
-                        boxShadow: isLocked ? '0 4px 0 #8A8496' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px ${colors.primary}` : '0 5px 0 rgba(74,68,88,0.15)',
+                        backgroundColor: isLocked ? colors.lock : tileColor,
+                        boxShadow: isLocked ? '0 4px 0 #8A8496' : localSelectedDifficulty === difficulty ? `0 0 0 2px #fff, 0 0 0 4px ${tileColor}` : '0 5px 0 rgba(74,68,88,0.15)',
                         transform: localSelectedDifficulty === difficulty ? 'scale(1.05)' : 'scale(1)',
                         cursor: isLocked ? 'not-allowed' : 'pointer',
                         width: '100%',
@@ -472,9 +473,9 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                           setShowQuestionList(true);
                         }}
                         style={detailIconButtonStyle}
-                        title="もんだい管理"
+                        title="もんだい設定"
                       >
-                        <img src={ListIcon} alt="もんだい管理" style={detailIconImageStyle} />
+                        <img src={ListIcon} alt="もんだい設定" style={detailIconImageStyle} />
                       </button>
                     )}
                   </div>
