@@ -59,17 +59,17 @@
       "file": "mammals.json",
       "count": 500,
       "checks": {
-        "A1": { "status": "not-done", "version": null, "notes": "旧基準での部分的なA1監査は過去セッションで実施済みだが、現チェックリストでの全件再走査は未実施" },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ事実確認。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1, "notes": "ルビ一括付与(Phase A/B)は実施済み" },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null, "notes": "旧基準での部分的なB1監査は過去セッションで実施済みだが、現チェックリストでの全件再走査は未実施" },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6以上で問題文の即答性を22問トーンダウン" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答・総称ダミー3件を具体種に置換" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "一軸で消去できるダミー約22問を文脈一致に修正" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "修正した箇所のみ確認" },
         "B5": { "status": "swept", "version": 1, "notes": "答え・ダミーの漢字/カタカナ変換は実施済み" },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "魚類": {
