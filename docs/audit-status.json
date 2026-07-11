@@ -178,17 +178,17 @@
       "file": "food.json",
       "count": 200,
       "checks": {
-        "A1": { "status": "not-done", "version": null },
-        "A2": { "status": "not-done", "version": null },
+        "A1": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "A2": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造重複ハカール(発酵サメの誤記、ハーカトルと重複)を臭豆腐に置換。全件精査は未実施" },
         "A3": { "status": "not-done", "version": null },
         "A4": { "status": "swept", "version": 1 },
-        "A5": { "status": "not-done", "version": null },
-        "B1": { "status": "not-done", "version": null, "notes": "過去セッションで総称ダミーの部分修正あり(乗り物・道具・食べ物)。現チェックリストでの全件再走査は未実施" },
-        "B2": { "status": "not-done", "version": null },
-        "B3": { "status": "not-done", "version": null },
-        "B4": { "status": "not-done", "version": null },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B1": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "総称回答・総称ダミー4件を具体名に置換" },
+        "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
+        "B4": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "捏造/重複1件修正。全件の実在性検証は未実施" },
         "B5": { "status": "swept", "version": 1 },
-        "C": { "status": "not-done", "version": null }
+        "C": { "status": "swept", "version": 2, "date": "2026-07-11" }
       }
     },
     "日本の地理": {
