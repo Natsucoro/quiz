@@ -12,7 +12,7 @@
         "A2": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "A3": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "A4": { "status": "swept", "version": 2, "date": "2026-07-11" },
-        "A5": { "status": "partial", "version": 2, "date": "2026-07-11", "notes": "Lv6以上から8件の抜き取り確認のみ。全件走査は未実施" },
+        "A5": { "status": "swept", "version": 2, "date": "2026-07-11", "notes": "Lv6-10全件走査、即答性24問トーンダウン" },
         "B1": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "B2": { "status": "swept", "version": 2, "date": "2026-07-11" },
         "B3": { "status": "swept", "version": 2, "date": "2026-07-11" },
