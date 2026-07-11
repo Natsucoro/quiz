@@ -717,7 +717,7 @@ const containerStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  paddingTop: '84px',
+  paddingTop: '108px',
   paddingLeft: '20px',
   paddingRight: '20px',
   paddingBottom: '100px',
