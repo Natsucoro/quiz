@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { getQuizzesForLevel } from '../../services/quizEngine';
 import { useHistoryStore } from '../../store/historyStore';
 import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
@@ -13,6 +13,18 @@ interface QuestionListModalProps {
   onClose: () => void;
 }
 
+type FilterMode = 'all' | 'unplayed' | 'played' | 'correct' | 'incorrect' | 'enabled' | 'disabled';
+
+const FILTER_OPTIONS: { mode: FilterMode; label: string }[] = [
+  { mode: 'all', label: 'すべて' },
+  { mode: 'unplayed', label: '未出題' },
+  { mode: 'played', label: '出題済み' },
+  { mode: 'correct', label: '正解' },
+  { mode: 'incorrect', label: '不正解' },
+  { mode: 'enabled', label: '出題対象' },
+  { mode: 'disabled', label: '出題対象外' },
+];
+
 const renderRuby = (text: string): React.ReactNode[] =>
   text.split(/(\{[^|]+\|[^}]+\})/g).map((part, i) => {
     const m = part.match(/\{([^|]+)\|([^}]+)\}/);
@@ -21,6 +33,11 @@ const renderRuby = (text: string): React.ReactNode[] =>
 
 const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty, onClose }) => {
   const quizzes = useMemo(() => getQuizzesForLevel(genre, difficulty), [genre, difficulty]);
+  const originalIndexById = useMemo(() => {
+    const map: Record<string, number> = {};
+    quizzes.forEach((q, i) => { map[q.id] = i; });
+    return map;
+  }, [quizzes]);
   const allRecords = useHistoryStore((s) => s.records);
   const recordsForLevel = useMemo(() => {
     const result: Record<string, { quizId: string; isCorrect: boolean }> = {};
@@ -54,6 +71,38 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
     setDisabled(quizId, true);
   };
 
+  const [filterMode, setFilterMode] = useState<FilterMode>('all');
+
+  const filteredQuizzes = useMemo(() => {
+    return quizzes.filter((q) => {
+      const record = recordsForLevel[q.id];
+      const isDisabled = disabledSet.has(q.id);
+      switch (filterMode) {
+        case 'unplayed': return !record;
+        case 'played': return !!record;
+        case 'correct': return !!record?.isCorrect;
+        case 'incorrect': return !!record && !record.isCorrect;
+        case 'enabled': return !isDisabled;
+        case 'disabled': return isDisabled;
+        default: return true;
+      }
+    });
+  }, [quizzes, recordsForLevel, disabledSet, filterMode]);
+
+  const handleBulkEnable = () => {
+    filteredQuizzes.forEach((q) => setDisabled(q.id, false));
+  };
+
+  const handleBulkDisable = () => {
+    const filteredIds = new Set(filteredQuizzes.map((q) => q.id));
+    const wouldRemainEnabled = quizzes.some((q) => !filteredIds.has(q.id) && !disabledSet.has(q.id));
+    if (!wouldRemainEnabled) {
+      alert('すべての問題を「出題しない」にはできません。少なくとも1問は出題対象にしてください。');
+      return;
+    }
+    filteredQuizzes.forEach((q) => setDisabled(q.id, true));
+  };
+
   return (
     <div style={overlayStyle}>
       <div style={modalContentStyle}>
@@ -73,13 +122,48 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
           チェックを外すと、その問題はこれから出題されなくなります（この端末だけの設定です）
         </p>
 
+        <div style={filterRowStyle}>
+          {FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt.mode}
+              onClick={() => setFilterMode(opt.mode)}
+              style={{
+                ...filterChipStyle,
+                ...(filterMode === opt.mode ? filterChipActiveStyle : {}),
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={bulkActionRowStyle}>
+          <button
+            onClick={handleBulkEnable}
+            disabled={filteredQuizzes.length === 0}
+            style={{ ...bulkButtonStyle, opacity: filteredQuizzes.length === 0 ? 0.5 : 1 }}
+          >
+            絞り込み結果を全て出題する（{filteredQuizzes.length}問）
+          </button>
+          <button
+            onClick={handleBulkDisable}
+            disabled={filteredQuizzes.length === 0}
+            style={{ ...bulkButtonStyle, ...bulkButtonOffStyle, opacity: filteredQuizzes.length === 0 ? 0.5 : 1 }}
+          >
+            絞り込み結果を全て出題しない
+          </button>
+        </div>
+
         <div style={listContainerStyle}>
-          {quizzes.map((quiz, index) => {
+          {filteredQuizzes.length === 0 && (
+            <p style={emptyStateStyle}>この条件に当てはまる問題はありません。</p>
+          )}
+          {filteredQuizzes.map((quiz) => {
             const record = recordsForLevel[quiz.id];
             const isDisabled = disabledSet.has(quiz.id);
             return (
               <div key={quiz.id} style={{ ...rowStyle, opacity: isDisabled ? 0.55 : 1 }}>
-                <span style={rowIndexStyle}>{index + 1}</span>
+                <span style={rowIndexStyle}>{originalIndexById[quiz.id] + 1}</span>
                 <div style={rowQuestionWrapStyle}>
                   <p style={rowQuestionStyle}>{renderRuby(quiz.questionRuby || quiz.question)}</p>
                   <div style={rowStatusStyle}>
@@ -169,6 +253,38 @@ const summaryItemStyle: React.CSSProperties = {
 
 const helpTextStyle: React.CSSProperties = {
   fontSize: '0.75em', color: colors.inkSoft, marginBottom: '14px',
+};
+
+const filterRowStyle: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px', marginBottom: '10px',
+};
+
+const filterChipStyle: React.CSSProperties = {
+  background: '#F0EDF4', color: colors.inkSoft, border: '1.5px solid #E4DEE8',
+  borderRadius: '50px', padding: '5px 12px', fontSize: '0.78em', fontWeight: 'bold',
+  cursor: 'pointer',
+};
+
+const filterChipActiveStyle: React.CSSProperties = {
+  background: colors.primary, color: '#fff', border: `1.5px solid ${colors.primaryDark}`,
+};
+
+const bulkActionRowStyle: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '14px',
+};
+
+const bulkButtonStyle: React.CSSProperties = {
+  background: colors.violet, color: '#fff', border: 'none', borderRadius: '50px',
+  padding: '8px 14px', fontSize: '0.78em', fontWeight: 'bold', cursor: 'pointer',
+  boxShadow: '0 3px 0 rgba(74,68,88,0.2)',
+};
+
+const bulkButtonOffStyle: React.CSSProperties = {
+  background: '#E4DEE8', color: colors.ink,
+};
+
+const emptyStateStyle: React.CSSProperties = {
+  fontSize: '0.85em', color: colors.inkSoft, textAlign: 'center', padding: '20px 0',
 };
 
 const listContainerStyle: React.CSSProperties = {
