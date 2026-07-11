@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Settings from '../common/Settings/Settings';
 import { unlockAudioContext, stopSpeaking } from '../../services/speechSynthesis';
 import { useOffline } from '../../hooks/useOffline';
-import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount } from '../../services/quizEngine';
+import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount, getTotalQuizzesCount } from '../../services/quizEngine';
 import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
@@ -139,6 +139,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   }, [isMuted, setIsMuted, isSpeakingAllowed, setIsSpeakingAllowed]);
 
   const genres = getAvailableGenres();
+  const totalQuizzesCount = getTotalQuizzesCount();
 
   const getDifficultyLabel = (difficulty: number) => `Lv.${difficulty}`;
 
@@ -281,6 +282,15 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
         currentView="TOP" 
       />
 
+
+      {!showDifficultySelection && (
+        <div style={totalCountBadgeStyle}>
+          📚 <ruby>全<rt style={{ fontSize: '0.5em' }}>ぜん</rt></ruby>
+          <span style={{ fontSize: '1.3em' }}>{totalQuizzesCount.toLocaleString()}</span>
+          <ruby>問<rt style={{ fontSize: '0.5em' }}>もん</rt></ruby>
+          のクイズがあるよ！
+        </div>
+      )}
 
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
         {['#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる',  '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
@@ -555,6 +565,7 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
+const totalCountBadgeStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center', background: colors.actionGradient, color: '#fff', fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1em', borderRadius: '50px', padding: '8px 20px', marginBottom: '16px', boxShadow: `0 5px 0 ${colors.primaryDark}`, textShadow: '1px 1px 2px rgba(0,0,0,0.15)' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '700px', width: '100%' };
 const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: colors.primaryDark, borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
 const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
