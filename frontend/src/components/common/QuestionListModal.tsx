@@ -60,7 +60,7 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
         <button onClick={onClose} aria-label="閉じる" style={closeButtonStyle}>✖</button>
         <h2 style={modalTitleStyle}>
           <img src={ListIcon} alt="" style={{ width: '26px', height: '26px', objectFit: 'contain', verticalAlign: 'middle', marginRight: '8px' }} />
-          もんだい管理
+          もんだい設定
         </h2>
         <p style={subTitleStyle}>{genre} Lv.{difficulty}</p>
 
