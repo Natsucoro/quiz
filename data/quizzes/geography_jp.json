@@ -15,7 +15,11 @@
     "answerRuby": "{富士山|ふじさん}",
     "dummy1Ruby": "{浅草|あさくさ}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{沖縄|おきなわ}"
+    "dummy3Ruby": "{沖縄|おきなわ}",
+    "categories": [
+      "山",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-002",
@@ -33,7 +37,10 @@
     "answerRuby": "{琵琶湖|びわこ}",
     "dummy1Ruby": "{浅草|あさくさ}",
     "dummy2Ruby": "{日本海|にほんかい}",
-    "dummy3Ruby": "{北海道|ほっかいどう}"
+    "dummy3Ruby": "{北海道|ほっかいどう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv1-003",
@@ -51,7 +58,10 @@
     "answerRuby": "{東京タワー|とうきょうタワー}",
     "dummy1Ruby": "{浅草|あさくさ}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{日光|にっこう}"
+    "dummy3Ruby": "{日光|にっこう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-004",
@@ -69,7 +79,10 @@
     "answerRuby": "{大阪城|おおさかじょう}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{東大寺|とうだいじ}"
+    "dummy3Ruby": "{東大寺|とうだいじ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-005",
@@ -87,7 +100,11 @@
     "answerRuby": "{北海道|ほっかいどう}",
     "dummy1Ruby": "{熊本城|くまもとじょう}",
     "dummy2Ruby": "{名古屋城|なごやじょう}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv1-006",
@@ -105,7 +122,10 @@
     "answerRuby": "{沖縄|おきなわ}",
     "dummy1Ruby": "{太平洋|たいへいよう}",
     "dummy2Ruby": "{富士山|ふじさん}",
-    "dummy3Ruby": "{琵琶湖|びわこ}"
+    "dummy3Ruby": "{琵琶湖|びわこ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-007",
@@ -123,7 +143,11 @@
     "answerRuby": "{京都|きょうと}",
     "dummy1Ruby": "{姫路城|ひめじじょう}",
     "dummy2Ruby": "{瀬戸内海|せとないかい}",
-    "dummy3Ruby": "{太平洋|たいへいよう}"
+    "dummy3Ruby": "{太平洋|たいへいよう}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-008",
@@ -141,7 +165,10 @@
     "answerRuby": "{東京スカイツリー|とうきょうスカイツリー}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{太平洋|たいへいよう}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-009",
@@ -159,7 +186,10 @@
     "answerRuby": "{瀬戸内海|せとないかい}",
     "dummy1Ruby": "{琵琶湖|びわこ}",
     "dummy2Ruby": "{大阪城|おおさかじょう}",
-    "dummy3Ruby": "{札幌|さっぽろ}"
+    "dummy3Ruby": "{札幌|さっぽろ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv1-010",
@@ -177,7 +207,10 @@
     "answerRuby": "{日本海|にほんかい}",
     "dummy1Ruby": "{浅草|あさくさ}",
     "dummy2Ruby": "{京都|きょうと}",
-    "dummy3Ruby": "{富士山|ふじさん}"
+    "dummy3Ruby": "{富士山|ふじさん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv1-011",
@@ -195,7 +228,10 @@
     "answerRuby": "{太平洋|たいへいよう}",
     "dummy1Ruby": "{日光|にっこう}",
     "dummy2Ruby": "{京都|きょうと}",
-    "dummy3Ruby": "{東京タワー|とうきょうタワー}"
+    "dummy3Ruby": "{東京タワー|とうきょうタワー}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv1-012",
@@ -213,7 +249,11 @@
     "answerRuby": "{札幌|さっぽろ}",
     "dummy1Ruby": "{鎌倉|かまくら}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv1-013",
@@ -231,7 +271,10 @@
     "answerRuby": "{名古屋城|なごやじょう}",
     "dummy1Ruby": "{日本海|にほんかい}",
     "dummy2Ruby": "{北海道|ほっかいどう}",
-    "dummy3Ruby": "{熊本城|くまもとじょう}"
+    "dummy3Ruby": "{熊本城|くまもとじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-014",
@@ -249,7 +292,10 @@
     "answerRuby": "{熊本城|くまもとじょう}",
     "dummy1Ruby": "{瀬戸内海|せとないかい}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{太平洋|たいへいよう}"
+    "dummy3Ruby": "{太平洋|たいへいよう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-015",
@@ -267,7 +313,10 @@
     "answerRuby": "{姫路城|ひめじじょう}",
     "dummy1Ruby": "{瀬戸内海|せとないかい}",
     "dummy2Ruby": "{琵琶湖|びわこ}",
-    "dummy3Ruby": "{北海道|ほっかいどう}"
+    "dummy3Ruby": "{北海道|ほっかいどう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-016",
@@ -285,7 +334,10 @@
     "answerRuby": "{浅草|あさくさ}",
     "dummy1Ruby": "{熊本城|くまもとじょう}",
     "dummy2Ruby": "{東京タワー|とうきょうタワー}",
-    "dummy3Ruby": "{東京スカイツリー|とうきょうスカイツリー}"
+    "dummy3Ruby": "{東京スカイツリー|とうきょうスカイツリー}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-017",
@@ -303,7 +355,10 @@
     "answerRuby": "{東大寺|とうだいじ}",
     "dummy1Ruby": "{姫路城|ひめじじょう}",
     "dummy2Ruby": "{瀬戸内海|せとないかい}",
-    "dummy3Ruby": "{浅草|あさくさ}"
+    "dummy3Ruby": "{浅草|あさくさ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-018",
@@ -321,7 +376,10 @@
     "answerRuby": "{金閣寺|きんかくじ}",
     "dummy1Ruby": "{東大寺|とうだいじ}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{京都|きょうと}"
+    "dummy3Ruby": "{京都|きょうと}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-019",
@@ -339,7 +397,10 @@
     "answerRuby": "{鎌倉|かまくら}",
     "dummy1Ruby": "{名古屋城|なごやじょう}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{日本海|にほんかい}"
+    "dummy3Ruby": "{日本海|にほんかい}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-020",
@@ -357,7 +418,10 @@
     "answerRuby": "{日光|にっこう}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{名古屋城|なごやじょう}",
-    "dummy3Ruby": "{東京スカイツリー|とうきょうスカイツリー}"
+    "dummy3Ruby": "{東京スカイツリー|とうきょうスカイツリー}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-001",
@@ -375,7 +439,11 @@
     "answerRuby": "{北海道|ほっかいどう}",
     "dummy1Ruby": "{東京都|とうきょうと}",
     "dummy2Ruby": "{大阪府|おおさかふ}",
-    "dummy3Ruby": "{京都府|きょうとふ}"
+    "dummy3Ruby": "{京都府|きょうとふ}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv2-002",
@@ -393,7 +461,10 @@
     "answerRuby": "{東京都|とうきょうと}",
     "dummy1Ruby": "{京都府|きょうとふ}",
     "dummy2Ruby": "{沖縄県|おきなわけん}",
-    "dummy3Ruby": "{北海道|ほっかいどう}"
+    "dummy3Ruby": "{北海道|ほっかいどう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-003",
@@ -411,7 +482,11 @@
     "answerRuby": "{大阪府|おおさかふ}",
     "dummy1Ruby": "{沖縄県|おきなわけん}",
     "dummy2Ruby": "{北海道|ほっかいどう}",
-    "dummy3Ruby": "{京都府|きょうとふ}"
+    "dummy3Ruby": "{京都府|きょうとふ}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv2-004",
@@ -429,7 +504,11 @@
     "answerRuby": "{京都府|きょうとふ}",
     "dummy1Ruby": "{北海道|ほっかいどう}",
     "dummy2Ruby": "{沖縄|おきなわ}",
-    "dummy3Ruby": "{東京都|とうきょうと}"
+    "dummy3Ruby": "{東京都|とうきょうと}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-005",
@@ -447,7 +526,10 @@
     "answerRuby": "{沖縄県|おきなわけん}",
     "dummy1Ruby": "{京都府|きょうとふ}",
     "dummy2Ruby": "{東京都|とうきょうと}",
-    "dummy3Ruby": "{大阪府|おおさかふ}"
+    "dummy3Ruby": "{大阪府|おおさかふ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-006",
@@ -465,7 +547,11 @@
     "answerRuby": "{富士山|ふじさん}",
     "dummy1Ruby": "{知床|しれとこ}",
     "dummy2Ruby": "{東京都|とうきょうと}",
-    "dummy3Ruby": "{琵琶湖|びわこ}"
+    "dummy3Ruby": "{琵琶湖|びわこ}",
+    "categories": [
+      "山",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-007",
@@ -483,7 +569,10 @@
     "answerRuby": "{琵琶湖|びわこ}",
     "dummy1Ruby": "{北海道|ほっかいどう}",
     "dummy2Ruby": "{松島|まつしま}",
-    "dummy3Ruby": "{天橋立|あまのはしだて}"
+    "dummy3Ruby": "{天橋立|あまのはしだて}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv2-008",
@@ -501,7 +590,10 @@
     "answerRuby": "{浅草寺|せんそうじ}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}"
+    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-009",
@@ -519,7 +611,10 @@
     "answerRuby": "{東大寺|とうだいじ}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
-    "dummy3Ruby": "{浅草寺|せんそうじ}"
+    "dummy3Ruby": "{浅草寺|せんそうじ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-010",
@@ -537,7 +632,10 @@
     "answerRuby": "{金閣寺|きんかくじ}",
     "dummy1Ruby": "{東大寺|とうだいじ}",
     "dummy2Ruby": "{名古屋城|なごやじょう}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-011",
@@ -555,7 +653,10 @@
     "answerRuby": "{姫路城|ひめじじょう}",
     "dummy1Ruby": "{大阪城|おおさかじょう}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{名古屋城|なごやじょう}"
+    "dummy3Ruby": "{名古屋城|なごやじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-012",
@@ -573,7 +674,10 @@
     "answerRuby": "{熊本城|くまもとじょう}",
     "dummy1Ruby": "{大阪城|おおさかじょう}",
     "dummy2Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
-    "dummy3Ruby": "{金閣寺|きんかくじ}"
+    "dummy3Ruby": "{金閣寺|きんかくじ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-013",
@@ -591,7 +695,10 @@
     "answerRuby": "{名古屋城|なごやじょう}",
     "dummy1Ruby": "{熊本城|くまもとじょう}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{東大寺|とうだいじ}"
+    "dummy3Ruby": "{東大寺|とうだいじ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-014",
@@ -609,7 +716,10 @@
     "answerRuby": "{日光|にっこう}{東照宮|とうしょうぐう}",
     "dummy1Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
     "dummy2Ruby": "{浅草寺|せんそうじ}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-015",
@@ -627,7 +737,10 @@
     "answerRuby": "{厳島|いつくしま}{神社|じんじゃ}",
     "dummy1Ruby": "{日光|にっこう}{東照宮|とうしょうぐう}",
     "dummy2Ruby": "{浅草寺|せんそうじ}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-016",
@@ -645,7 +758,10 @@
     "answerRuby": "{松島|まつしま}",
     "dummy1Ruby": "{天橋立|あまのはしだて}",
     "dummy2Ruby": "{屋久|やく}{島|しま}",
-    "dummy3Ruby": "{知床|しれとこ}"
+    "dummy3Ruby": "{知床|しれとこ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-017",
@@ -663,7 +779,10 @@
     "answerRuby": "{天橋立|あまのはしだて}",
     "dummy1Ruby": "{松島|まつしま}",
     "dummy2Ruby": "{知床|しれとこ}",
-    "dummy3Ruby": "{屋久|やく}{島|しま}"
+    "dummy3Ruby": "{屋久|やく}{島|しま}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv2-018",
@@ -681,7 +800,10 @@
     "answerRuby": "{阿蘇山|あそさん}",
     "dummy1Ruby": "{屋久|やく}{島|しま}",
     "dummy2Ruby": "{天橋立|あまのはしだて}",
-    "dummy3Ruby": "{東大寺|とうだいじ}"
+    "dummy3Ruby": "{東大寺|とうだいじ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv2-019",
@@ -699,7 +821,10 @@
     "answerRuby": "{屋久|やく}{島|しま}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{松島|まつしま}"
+    "dummy3Ruby": "{松島|まつしま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-020",
@@ -717,7 +842,10 @@
     "answerRuby": "{知床|しれとこ}",
     "dummy1Ruby": "{屋久|やく}{島|しま}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{東京都|とうきょうと}"
+    "dummy3Ruby": "{東京都|とうきょうと}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-001",
@@ -735,7 +863,10 @@
     "answerRuby": "{神奈川県|かながわけん}",
     "dummy1Ruby": "{福岡県|ふくおかけん}",
     "dummy2Ruby": "{山梨県|やまなしけん}",
-    "dummy3Ruby": "{岐阜県|ぎふけん}"
+    "dummy3Ruby": "{岐阜県|ぎふけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-002",
@@ -753,7 +884,10 @@
     "answerRuby": "{千葉県|ちばけん}",
     "dummy1Ruby": "{広島|ひろしま}{県|けん}",
     "dummy2Ruby": "{宮城県|みやぎけん}",
-    "dummy3Ruby": "{愛知県|あいちけん}"
+    "dummy3Ruby": "{愛知県|あいちけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-003",
@@ -771,7 +905,10 @@
     "answerRuby": "{埼玉県|さいたまけん}",
     "dummy1Ruby": "{栃木県|とちぎけん}",
     "dummy2Ruby": "{群馬県|ぐんまけん}",
-    "dummy3Ruby": "{長野県|ながのけん}"
+    "dummy3Ruby": "{長野県|ながのけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-004",
@@ -789,7 +926,10 @@
     "answerRuby": "{愛知県|あいちけん}",
     "dummy1Ruby": "{神奈川県|かながわけん}",
     "dummy2Ruby": "{山梨県|やまなしけん}",
-    "dummy3Ruby": "{栃木県|とちぎけん}"
+    "dummy3Ruby": "{栃木県|とちぎけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-005",
@@ -807,7 +947,10 @@
     "answerRuby": "{兵庫県|ひょうごけん}",
     "dummy1Ruby": "{栃木県|とちぎけん}",
     "dummy2Ruby": "{茨城県|いばらきけん}",
-    "dummy3Ruby": "{福井県|ふくいけん}"
+    "dummy3Ruby": "{福井県|ふくいけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-006",
@@ -825,7 +968,11 @@
     "answerRuby": "{福岡県|ふくおかけん}",
     "dummy1Ruby": "{長野県|ながのけん}",
     "dummy2Ruby": "{岐阜県|ぎふけん}",
-    "dummy3Ruby": "{石川県|いしかわけん}"
+    "dummy3Ruby": "{石川県|いしかわけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-007",
@@ -843,7 +990,11 @@
     "answerRuby": "{広島|ひろしま}{県|けん}",
     "dummy1Ruby": "{栃木県|とちぎけん}",
     "dummy2Ruby": "{神奈川県|かながわけん}",
-    "dummy3Ruby": "{富山県|とやまけん}"
+    "dummy3Ruby": "{富山県|とやまけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-008",
@@ -861,7 +1012,10 @@
     "answerRuby": "{宮城県|みやぎけん}",
     "dummy1Ruby": "{新潟県|にいがたけん}",
     "dummy2Ruby": "{群馬県|ぐんまけん}",
-    "dummy3Ruby": "{静岡県|しずおかけん}"
+    "dummy3Ruby": "{静岡県|しずおかけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-009",
@@ -879,7 +1033,11 @@
     "answerRuby": "{新潟県|にいがたけん}",
     "dummy1Ruby": "{埼玉県|さいたまけん}",
     "dummy2Ruby": "{茨城県|いばらきけん}",
-    "dummy3Ruby": "{長野県|ながのけん}"
+    "dummy3Ruby": "{長野県|ながのけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-010",
@@ -897,7 +1055,11 @@
     "answerRuby": "{長野県|ながのけん}",
     "dummy1Ruby": "{新潟県|にいがたけん}",
     "dummy2Ruby": "{神奈川県|かながわけん}",
-    "dummy3Ruby": "{石川県|いしかわけん}"
+    "dummy3Ruby": "{石川県|いしかわけん}",
+    "categories": [
+      "都道府県",
+      "山"
+    ]
   },
   {
     "id": "geojp-lv3-011",
@@ -915,7 +1077,11 @@
     "answerRuby": "{静岡県|しずおかけん}",
     "dummy1Ruby": "{福岡県|ふくおかけん}",
     "dummy2Ruby": "{広島|ひろしま}{県|けん}",
-    "dummy3Ruby": "{埼玉県|さいたまけん}"
+    "dummy3Ruby": "{埼玉県|さいたまけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-012",
@@ -933,7 +1099,11 @@
     "answerRuby": "{三重県|みえけん}",
     "dummy1Ruby": "{神奈川県|かながわけん}",
     "dummy2Ruby": "{茨城県|いばらきけん}",
-    "dummy3Ruby": "{兵庫県|ひょうごけん}"
+    "dummy3Ruby": "{兵庫県|ひょうごけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-013",
@@ -951,7 +1121,11 @@
     "answerRuby": "{岐阜県|ぎふけん}",
     "dummy1Ruby": "{石川県|いしかわけん}",
     "dummy2Ruby": "{富山県|とやまけん}",
-    "dummy3Ruby": "{静岡県|しずおかけん}"
+    "dummy3Ruby": "{静岡県|しずおかけん}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-014",
@@ -969,7 +1143,11 @@
     "answerRuby": "{石川県|いしかわけん}",
     "dummy1Ruby": "{静岡県|しずおかけん}",
     "dummy2Ruby": "{群馬県|ぐんまけん}",
-    "dummy3Ruby": "{岐阜県|ぎふけん}"
+    "dummy3Ruby": "{岐阜県|ぎふけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-015",
@@ -987,7 +1165,12 @@
     "answerRuby": "{富山県|とやまけん}",
     "dummy1Ruby": "{岐阜県|ぎふけん}",
     "dummy2Ruby": "{神奈川県|かながわけん}",
-    "dummy3Ruby": "{長野県|ながのけん}"
+    "dummy3Ruby": "{長野県|ながのけん}",
+    "categories": [
+      "都道府県",
+      "山",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-016",
@@ -1005,7 +1188,10 @@
     "answerRuby": "{福井県|ふくいけん}",
     "dummy1Ruby": "{長野県|ながのけん}",
     "dummy2Ruby": "{富山県|とやまけん}",
-    "dummy3Ruby": "{宮城県|みやぎけん}"
+    "dummy3Ruby": "{宮城県|みやぎけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-017",
@@ -1023,7 +1209,11 @@
     "answerRuby": "{山梨県|やまなしけん}",
     "dummy1Ruby": "{埼玉県|さいたまけん}",
     "dummy2Ruby": "{群馬県|ぐんまけん}",
-    "dummy3Ruby": "{神奈川県|かながわけん}"
+    "dummy3Ruby": "{神奈川県|かながわけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-018",
@@ -1041,7 +1231,12 @@
     "answerRuby": "{群馬県|ぐんまけん}",
     "dummy1Ruby": "{三重県|みえけん}",
     "dummy2Ruby": "{静岡県|しずおかけん}",
-    "dummy3Ruby": "{山梨県|やまなしけん}"
+    "dummy3Ruby": "{山梨県|やまなしけん}",
+    "categories": [
+      "都道府県",
+      "温泉",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-019",
@@ -1059,7 +1254,11 @@
     "answerRuby": "{栃木県|とちぎけん}",
     "dummy1Ruby": "{三重県|みえけん}",
     "dummy2Ruby": "{茨城県|いばらきけん}",
-    "dummy3Ruby": "{宮城県|みやぎけん}"
+    "dummy3Ruby": "{宮城県|みやぎけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-020",
@@ -1077,7 +1276,11 @@
     "answerRuby": "{茨城県|いばらきけん}",
     "dummy1Ruby": "{愛知県|あいちけん}",
     "dummy2Ruby": "{群馬県|ぐんまけん}",
-    "dummy3Ruby": "{三重県|みえけん}"
+    "dummy3Ruby": "{三重県|みえけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-001",
@@ -1095,7 +1298,12 @@
     "answerRuby": "{青森県|あおもりけん}",
     "dummy1Ruby": "{長崎県|ながさきけん}",
     "dummy2Ruby": "{岩手県|いわてけん}",
-    "dummy3Ruby": "{奈良県|ならけん}"
+    "dummy3Ruby": "{奈良県|ならけん}",
+    "categories": [
+      "都道府県",
+      "特産品",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv4-002",
@@ -1113,7 +1321,11 @@
     "answerRuby": "{岩手県|いわてけん}",
     "dummy1Ruby": "{高知県|こうちけん}",
     "dummy2Ruby": "{愛媛県|えひめけん}",
-    "dummy3Ruby": "{和歌山県|わかやまけん}"
+    "dummy3Ruby": "{和歌山県|わかやまけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-003",
@@ -1131,7 +1343,12 @@
     "answerRuby": "{秋田県|あきたけん}",
     "dummy1Ruby": "{大分県|おおいたけん}",
     "dummy2Ruby": "{高知県|こうちけん}",
-    "dummy3Ruby": "{愛媛県|えひめけん}"
+    "dummy3Ruby": "{愛媛県|えひめけん}",
+    "categories": [
+      "都道府県",
+      "祭り・行事",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-004",
@@ -1149,7 +1366,11 @@
     "answerRuby": "{山形県|やまがたけん}",
     "dummy1Ruby": "{鳥取県|とっとりけん}",
     "dummy2Ruby": "{岡山県|おかやまけん}",
-    "dummy3Ruby": "{秋田県|あきたけん}"
+    "dummy3Ruby": "{秋田県|あきたけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-005",
@@ -1167,7 +1388,11 @@
     "answerRuby": "{福島|ふくしま}{県|けん}",
     "dummy1Ruby": "{鳥取県|とっとりけん}",
     "dummy2Ruby": "{鹿児|かこ}{島|しま}{県|けん}",
-    "dummy3Ruby": "{青森県|あおもりけん}"
+    "dummy3Ruby": "{青森県|あおもりけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-006",
@@ -1185,7 +1410,11 @@
     "answerRuby": "{滋賀県|しがけん}",
     "dummy1Ruby": "{佐賀県|さがけん}",
     "dummy2Ruby": "{福島|ふくしま}{県|けん}",
-    "dummy3Ruby": "{長崎県|ながさきけん}"
+    "dummy3Ruby": "{長崎県|ながさきけん}",
+    "categories": [
+      "都道府県",
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-007",
@@ -1203,7 +1432,11 @@
     "answerRuby": "{奈良県|ならけん}",
     "dummy1Ruby": "{山口県|やまぐちけん}",
     "dummy2Ruby": "{大分県|おおいたけん}",
-    "dummy3Ruby": "{熊本県|くまもとけん}"
+    "dummy3Ruby": "{熊本県|くまもとけん}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv4-008",
@@ -1221,7 +1454,12 @@
     "answerRuby": "{和歌山県|わかやまけん}",
     "dummy1Ruby": "{高知県|こうちけん}",
     "dummy2Ruby": "{鹿児|かこ}{島|しま}{県|けん}",
-    "dummy3Ruby": "{滋賀県|しがけん}"
+    "dummy3Ruby": "{滋賀県|しがけん}",
+    "categories": [
+      "都道府県",
+      "特産品",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv4-009",
@@ -1239,7 +1477,11 @@
     "answerRuby": "{鳥取県|とっとりけん}",
     "dummy1Ruby": "{岡山県|おかやまけん}",
     "dummy2Ruby": "{香川県|かがわけん}",
-    "dummy3Ruby": "{高知県|こうちけん}"
+    "dummy3Ruby": "{高知県|こうちけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-010",
@@ -1257,7 +1499,11 @@
     "answerRuby": "{岡山県|おかやまけん}",
     "dummy1Ruby": "{山口県|やまぐちけん}",
     "dummy2Ruby": "{鹿児|かこ}{島|しま}{県|けん}",
-    "dummy3Ruby": "{滋賀県|しがけん}"
+    "dummy3Ruby": "{滋賀県|しがけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-011",
@@ -1275,7 +1521,11 @@
     "answerRuby": "{山口県|やまぐちけん}",
     "dummy1Ruby": "{和歌山県|わかやまけん}",
     "dummy2Ruby": "{高知県|こうちけん}",
-    "dummy3Ruby": "{鳥取県|とっとりけん}"
+    "dummy3Ruby": "{鳥取県|とっとりけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-012",
@@ -1293,7 +1543,11 @@
     "answerRuby": "{香川県|かがわけん}",
     "dummy1Ruby": "{山口県|やまぐちけん}",
     "dummy2Ruby": "{和歌山県|わかやまけん}",
-    "dummy3Ruby": "{鳥取県|とっとりけん}"
+    "dummy3Ruby": "{鳥取県|とっとりけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-013",
@@ -1311,7 +1565,12 @@
     "answerRuby": "{愛媛県|えひめけん}",
     "dummy1Ruby": "{大分県|おおいたけん}",
     "dummy2Ruby": "{秋田県|あきたけん}",
-    "dummy3Ruby": "{岩手県|いわてけん}"
+    "dummy3Ruby": "{岩手県|いわてけん}",
+    "categories": [
+      "都道府県",
+      "特産品",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv4-014",
@@ -1329,7 +1588,11 @@
     "answerRuby": "{高知県|こうちけん}",
     "dummy1Ruby": "{青森県|あおもりけん}",
     "dummy2Ruby": "{鹿児|かこ}{島|しま}{県|けん}",
-    "dummy3Ruby": "{香川県|かがわけん}"
+    "dummy3Ruby": "{香川県|かがわけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-015",
@@ -1347,7 +1610,11 @@
     "answerRuby": "{佐賀県|さがけん}",
     "dummy1Ruby": "{青森県|あおもりけん}",
     "dummy2Ruby": "{福島|ふくしま}{県|けん}",
-    "dummy3Ruby": "{滋賀県|しがけん}"
+    "dummy3Ruby": "{滋賀県|しがけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-016",
@@ -1365,7 +1632,11 @@
     "answerRuby": "{長崎県|ながさきけん}",
     "dummy1Ruby": "{熊本県|くまもとけん}",
     "dummy2Ruby": "{岡山県|おかやまけん}",
-    "dummy3Ruby": "{愛媛県|えひめけん}"
+    "dummy3Ruby": "{愛媛県|えひめけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-017",
@@ -1383,7 +1654,12 @@
     "answerRuby": "{熊本県|くまもとけん}",
     "dummy1Ruby": "{高知県|こうちけん}",
     "dummy2Ruby": "{山形県|やまがたけん}",
-    "dummy3Ruby": "{岡山県|おかやまけん}"
+    "dummy3Ruby": "{岡山県|おかやまけん}",
+    "categories": [
+      "都道府県",
+      "山",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-018",
@@ -1401,7 +1677,11 @@
     "answerRuby": "{大分県|おおいたけん}",
     "dummy1Ruby": "{愛媛県|えひめけん}",
     "dummy2Ruby": "{山口県|やまぐちけん}",
-    "dummy3Ruby": "{秋田県|あきたけん}"
+    "dummy3Ruby": "{秋田県|あきたけん}",
+    "categories": [
+      "都道府県",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv4-019",
@@ -1419,7 +1699,11 @@
     "answerRuby": "{宮崎県|みやざきけん}",
     "dummy1Ruby": "{熊本県|くまもとけん}",
     "dummy2Ruby": "{山形県|やまがたけん}",
-    "dummy3Ruby": "{長崎県|ながさきけん}"
+    "dummy3Ruby": "{長崎県|ながさきけん}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-020",
@@ -1437,7 +1721,11 @@
     "answerRuby": "{鹿児|かこ}{島|しま}{県|けん}",
     "dummy1Ruby": "{長崎県|ながさきけん}",
     "dummy2Ruby": "{山形県|やまがたけん}",
-    "dummy3Ruby": "{熊本県|くまもとけん}"
+    "dummy3Ruby": "{熊本県|くまもとけん}",
+    "categories": [
+      "都道府県",
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-001",
@@ -1455,7 +1743,10 @@
     "answerRuby": "{島根|しまね}{県|けん}",
     "dummy1Ruby": "{兵庫県|ひょうごけん}",
     "dummy2Ruby": "{茨城県|いばらきけん}",
-    "dummy3Ruby": "{福井県|ふくいけん}"
+    "dummy3Ruby": "{福井県|ふくいけん}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv5-002",
@@ -1473,7 +1764,11 @@
     "answerRuby": "{徳|とく}{島|しま}{県|けん}",
     "dummy1Ruby": "{茨城県|いばらきけん}",
     "dummy2Ruby": "{福井県|ふくいけん}",
-    "dummy3Ruby": "{石川県|いしかわけん}"
+    "dummy3Ruby": "{石川県|いしかわけん}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv5-003",
@@ -1491,7 +1786,10 @@
     "answerRuby": "{北岳|きただけ}",
     "dummy1Ruby": "{阿蘇山|あそさん}",
     "dummy2Ruby": "{富士山|ふじさん}",
-    "dummy3Ruby": "{大雪山|だいせつざん}"
+    "dummy3Ruby": "{大雪山|だいせつざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-004",
@@ -1509,7 +1807,10 @@
     "answerRuby": "{奥穂高岳|おくほたかだけ}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{白山|はくさん}",
-    "dummy3Ruby": "{北岳|きただけ}"
+    "dummy3Ruby": "{北岳|きただけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-005",
@@ -1527,7 +1828,10 @@
     "answerRuby": "{立山|たてやま}",
     "dummy1Ruby": "{十勝|とかち}{岳|だけ}",
     "dummy2Ruby": "{北岳|きただけ}",
-    "dummy3Ruby": "{奥穂高岳|おくほたかだけ}"
+    "dummy3Ruby": "{奥穂高岳|おくほたかだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-006",
@@ -1545,7 +1849,10 @@
     "answerRuby": "{白山|はくさん}",
     "dummy1Ruby": "{十勝|とかち}{岳|だけ}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{富士山|ふじさん}"
+    "dummy3Ruby": "{富士山|ふじさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-007",
@@ -1563,7 +1870,10 @@
     "answerRuby": "{大雪山|だいせつざん}",
     "dummy1Ruby": "{桜|さくら}{島|じま}",
     "dummy2Ruby": "{立山|たてやま}",
-    "dummy3Ruby": "{白山|はくさん}"
+    "dummy3Ruby": "{白山|はくさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-008",
@@ -1581,7 +1891,10 @@
     "answerRuby": "{桜|さくら}{島|じま}",
     "dummy1Ruby": "{大雪山|だいせつざん}",
     "dummy2Ruby": "{白山|はくさん}",
-    "dummy3Ruby": "{十勝|とかち}{岳|だけ}"
+    "dummy3Ruby": "{十勝|とかち}{岳|だけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-009",
@@ -1599,7 +1912,10 @@
     "answerRuby": "{利根川|とねがわ}",
     "dummy1Ruby": "{淀川|よどがわ}",
     "dummy2Ruby": "{猪苗代湖|いなわしろこ}",
-    "dummy3Ruby": "{石狩川|いしかりがわ}"
+    "dummy3Ruby": "{石狩川|いしかりがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-010",
@@ -1617,7 +1933,10 @@
     "answerRuby": "{信濃川|しなのがわ}",
     "dummy1Ruby": "{利根川|とねがわ}",
     "dummy2Ruby": "{田沢湖|たざわこ}",
-    "dummy3Ruby": "{木曽|きそ}{川|かわ}"
+    "dummy3Ruby": "{木曽|きそ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-011",
@@ -1635,7 +1954,10 @@
     "answerRuby": "{石狩川|いしかりがわ}",
     "dummy1Ruby": "{淀川|よどがわ}",
     "dummy2Ruby": "{猪苗代湖|いなわしろこ}",
-    "dummy3Ruby": "{木曽|きそ}{川|かわ}"
+    "dummy3Ruby": "{木曽|きそ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-012",
@@ -1653,7 +1975,10 @@
     "answerRuby": "{木曽|きそ}{川|かわ}",
     "dummy1Ruby": "{石狩川|いしかりがわ}",
     "dummy2Ruby": "{信濃川|しなのがわ}",
-    "dummy3Ruby": "{最上|もがみ}{川|かわ}"
+    "dummy3Ruby": "{最上|もがみ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-013",
@@ -1671,7 +1996,10 @@
     "answerRuby": "{淀川|よどがわ}",
     "dummy1Ruby": "{利根川|とねがわ}",
     "dummy2Ruby": "{中禅寺湖|ちゅうぜんじこ}",
-    "dummy3Ruby": "{宍道湖|しんじこ}"
+    "dummy3Ruby": "{宍道湖|しんじこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-014",
@@ -1689,7 +2017,10 @@
     "answerRuby": "{最上|もがみ}{川|かわ}",
     "dummy1Ruby": "{木曽|きそ}{川|かわ}",
     "dummy2Ruby": "{石狩川|いしかりがわ}",
-    "dummy3Ruby": "{信濃川|しなのがわ}"
+    "dummy3Ruby": "{信濃川|しなのがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-015",
@@ -1707,7 +2038,10 @@
     "answerRuby": "{猪苗代湖|いなわしろこ}",
     "dummy1Ruby": "{田沢湖|たざわこ}",
     "dummy2Ruby": "{中禅寺湖|ちゅうぜんじこ}",
-    "dummy3Ruby": "{石狩川|いしかりがわ}"
+    "dummy3Ruby": "{石狩川|いしかりがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-016",
@@ -1725,7 +2059,10 @@
     "answerRuby": "{田沢湖|たざわこ}",
     "dummy1Ruby": "{信濃川|しなのがわ}",
     "dummy2Ruby": "{宍道湖|しんじこ}",
-    "dummy3Ruby": "{琵琶湖|びわこ}"
+    "dummy3Ruby": "{琵琶湖|びわこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-017",
@@ -1743,7 +2080,10 @@
     "answerRuby": "{中禅寺湖|ちゅうぜんじこ}",
     "dummy1Ruby": "{淀川|よどがわ}",
     "dummy2Ruby": "{諏訪|すわ}{湖|こ}",
-    "dummy3Ruby": "{宍道湖|しんじこ}"
+    "dummy3Ruby": "{宍道湖|しんじこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-018",
@@ -1761,7 +2101,11 @@
     "answerRuby": "{宍道湖|しんじこ}",
     "dummy1Ruby": "{利根川|とねがわ}",
     "dummy2Ruby": "{田沢湖|たざわこ}",
-    "dummy3Ruby": "{猪苗代湖|いなわしろこ}"
+    "dummy3Ruby": "{猪苗代湖|いなわしろこ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv5-019",
@@ -1779,7 +2123,10 @@
     "answerRuby": "{諏訪|すわ}{湖|こ}",
     "dummy1Ruby": "{淀川|よどがわ}",
     "dummy2Ruby": "{木曽|きそ}{川|かわ}",
-    "dummy3Ruby": "{利根川|とねがわ}"
+    "dummy3Ruby": "{利根川|とねがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-020",
@@ -1797,7 +2144,10 @@
     "answerRuby": "{十勝|とかち}{岳|だけ}",
     "dummy1Ruby": "{大雪山|だいせつざん}",
     "dummy2Ruby": "{桜|さくら}{島|じま}",
-    "dummy3Ruby": "{白山|はくさん}"
+    "dummy3Ruby": "{白山|はくさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv6-001",
@@ -1815,7 +2165,10 @@
     "answerRuby": "{択捉|えとろふ}{島|とう}",
     "dummy1Ruby": "{潮岬|しおのみさき}",
     "dummy2Ruby": "{南|みなみ}{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{東尋坊|とうじんぼう}"
+    "dummy3Ruby": "{東尋坊|とうじんぼう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-002",
@@ -1833,7 +2186,11 @@
     "answerRuby": "{佐渡|さど}{島|しま}",
     "dummy1Ruby": "{小笠原|おがさわら}{諸島|しょとう}",
     "dummy2Ruby": "{与那国|よなくに}{島|じま}",
-    "dummy3Ruby": "{東尋坊|とうじんぼう}"
+    "dummy3Ruby": "{東尋坊|とうじんぼう}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv6-003",
@@ -1851,7 +2208,10 @@
     "answerRuby": "{淡路|あわじ}{島|しま}",
     "dummy1Ruby": "{九十九里浜|くじゅうくりはま}",
     "dummy2Ruby": "{択捉|えとろふ}{島|とう}",
-    "dummy3Ruby": "{与那国|よなくに}{島|じま}"
+    "dummy3Ruby": "{与那国|よなくに}{島|じま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-004",
@@ -1869,7 +2229,10 @@
     "answerRuby": "{種子島|たねがしま}",
     "dummy1Ruby": "{対馬|つしま}",
     "dummy2Ruby": "{納沙布|のさっぷ}{岬|みさき}",
-    "dummy3Ruby": "{佐渡|さど}{島|しま}"
+    "dummy3Ruby": "{佐渡|さど}{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-005",
@@ -1887,7 +2250,10 @@
     "answerRuby": "{奄美|あまみ}{大島|おおしま}",
     "dummy1Ruby": "{種子島|たねがしま}",
     "dummy2Ruby": "{屋久|やく}{島|しま}",
-    "dummy3Ruby": "{小笠原|おがさわら}{諸島|しょとう}"
+    "dummy3Ruby": "{小笠原|おがさわら}{諸島|しょとう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv6-006",
@@ -1905,7 +2271,10 @@
     "answerRuby": "{対馬|つしま}",
     "dummy1Ruby": "{種子島|たねがしま}",
     "dummy2Ruby": "{与那国|よなくに}{島|じま}",
-    "dummy3Ruby": "{択捉|えとろふ}{島|とう}"
+    "dummy3Ruby": "{択捉|えとろふ}{島|とう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-007",
@@ -1923,7 +2292,10 @@
     "answerRuby": "{隠岐|おき}{諸島|しょとう}",
     "dummy1Ruby": "{潮岬|しおのみさき}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{小笠原|おがさわら}{諸島|しょとう}"
+    "dummy3Ruby": "{小笠原|おがさわら}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-008",
@@ -1941,7 +2313,10 @@
     "answerRuby": "{小笠原|おがさわら}{諸島|しょとう}",
     "dummy1Ruby": "{与那国|よなくに}{島|じま}",
     "dummy2Ruby": "{択捉|えとろふ}{島|とう}",
-    "dummy3Ruby": "{種子島|たねがしま}"
+    "dummy3Ruby": "{種子島|たねがしま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv6-009",
@@ -1959,7 +2334,10 @@
     "answerRuby": "{与那国|よなくに}{島|じま}",
     "dummy1Ruby": "{淡路|あわじ}{島|しま}",
     "dummy2Ruby": "{宗谷岬|そうやみさき}",
-    "dummy3Ruby": "{奄美|あまみ}{大島|おおしま}"
+    "dummy3Ruby": "{奄美|あまみ}{大島|おおしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-010",
@@ -1977,7 +2355,10 @@
     "answerRuby": "{南|みなみ}{鳥|とり}{島|しま}",
     "dummy1Ruby": "{与那国|よなくに}{島|じま}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{択捉|えとろふ}{島|とう}"
+    "dummy3Ruby": "{択捉|えとろふ}{島|とう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-011",
@@ -1995,7 +2376,10 @@
     "answerRuby": "{潮岬|しおのみさき}",
     "dummy1Ruby": "{種子島|たねがしま}",
     "dummy2Ruby": "{隠岐|おき}{諸島|しょとう}",
-    "dummy3Ruby": "{択捉|えとろふ}{島|とう}"
+    "dummy3Ruby": "{択捉|えとろふ}{島|とう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-012",
@@ -2013,7 +2397,10 @@
     "answerRuby": "{宗谷岬|そうやみさき}",
     "dummy1Ruby": "{潮岬|しおのみさき}",
     "dummy2Ruby": "{択捉|えとろふ}{島|とう}",
-    "dummy3Ruby": "{種子島|たねがしま}"
+    "dummy3Ruby": "{種子島|たねがしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-013",
@@ -2031,7 +2418,10 @@
     "answerRuby": "{佐多|さた}{岬|みさき}",
     "dummy1Ruby": "{三陸海岸|さんりくかいがん}",
     "dummy2Ruby": "{鳥取砂丘|とっとりさきゅう}",
-    "dummy3Ruby": "{東尋坊|とうじんぼう}"
+    "dummy3Ruby": "{東尋坊|とうじんぼう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-014",
@@ -2049,7 +2439,10 @@
     "answerRuby": "{納沙布|のさっぷ}{岬|みさき}",
     "dummy1Ruby": "{三陸海岸|さんりくかいがん}",
     "dummy2Ruby": "{対馬|つしま}",
-    "dummy3Ruby": "{与那国|よなくに}{島|じま}"
+    "dummy3Ruby": "{与那国|よなくに}{島|じま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-015",
@@ -2067,7 +2460,10 @@
     "answerRuby": "{三陸海岸|さんりくかいがん}",
     "dummy1Ruby": "{淡路|あわじ}{島|しま}",
     "dummy2Ruby": "{南|みなみ}{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}"
+    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-016",
@@ -2085,7 +2481,10 @@
     "answerRuby": "{九十九里浜|くじゅうくりはま}",
     "dummy1Ruby": "{隠岐|おき}{諸島|しょとう}",
     "dummy2Ruby": "{択捉|えとろふ}{島|とう}",
-    "dummy3Ruby": "{佐渡|さど}{島|しま}"
+    "dummy3Ruby": "{佐渡|さど}{島|しま}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-017",
@@ -2103,7 +2502,10 @@
     "answerRuby": "{鳥取砂丘|とっとりさきゅう}",
     "dummy1Ruby": "{佐渡|さど}{島|しま}",
     "dummy2Ruby": "{九十九里浜|くじゅうくりはま}",
-    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}"
+    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-018",
@@ -2121,7 +2523,10 @@
     "answerRuby": "{東尋坊|とうじんぼう}",
     "dummy1Ruby": "{小笠原|おがさわら}{諸島|しょとう}",
     "dummy2Ruby": "{潮岬|しおのみさき}",
-    "dummy3Ruby": "{三陸海岸|さんりくかいがん}"
+    "dummy3Ruby": "{三陸海岸|さんりくかいがん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-019",
@@ -2139,7 +2544,10 @@
     "answerRuby": "{摩周湖|ましゅうこ}",
     "dummy1Ruby": "{琵琶湖|びわこ}",
     "dummy2Ruby": "{支笏湖|しこつこ}",
-    "dummy3Ruby": "{宍道湖|しんじこ}"
+    "dummy3Ruby": "{宍道湖|しんじこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-020",
@@ -2157,7 +2565,10 @@
     "answerRuby": "{支笏湖|しこつこ}",
     "dummy1Ruby": "{摩周湖|ましゅうこ}",
     "dummy2Ruby": "{宍道湖|しんじこ}",
-    "dummy3Ruby": "{諏訪|すわ}{湖|こ}"
+    "dummy3Ruby": "{諏訪|すわ}{湖|こ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-001",
@@ -2175,7 +2586,10 @@
     "answerRuby": "{瀬戸大橋|せとおおはし}",
     "dummy1Ruby": "{青函|せいかん}トンネル",
     "dummy2Ruby": "{明石海峡大橋|あかしかいきょうおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-002",
@@ -2193,7 +2607,10 @@
     "answerRuby": "{明石海峡大橋|あかしかいきょうおおはし}",
     "dummy1Ruby": "{瀬戸大橋|せとおおはし}",
     "dummy2Ruby": "{関門橋|かんもんきょう}",
-    "dummy3Ruby": "{青函|せいかん}トンネル"
+    "dummy3Ruby": "{青函|せいかん}トンネル",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-003",
@@ -2211,7 +2628,10 @@
     "answerRuby": "{青函|せいかん}トンネル",
     "dummy1Ruby": "{瀬戸大橋|せとおおはし}",
     "dummy2Ruby": "{明石海峡大橋|あかしかいきょうおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-004",
@@ -2229,7 +2649,10 @@
     "answerRuby": "{関門橋|かんもんきょう}",
     "dummy1Ruby": "{瀬戸大橋|せとおおはし}",
     "dummy2Ruby": "{明石海峡大橋|あかしかいきょうおおはし}",
-    "dummy3Ruby": "{青函|せいかん}トンネル"
+    "dummy3Ruby": "{青函|せいかん}トンネル",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-005",
@@ -2246,7 +2669,10 @@
     "dummy3": "南海トラフ",
     "answerRuby": "{中央|ちゅうおう}{構造線|こうぞうせん}",
     "dummy2Ruby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}",
-    "dummy3Ruby": "{南海|なんかい}トラフ"
+    "dummy3Ruby": "{南海|なんかい}トラフ",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-006",
@@ -2263,7 +2689,10 @@
     "dummy3": "日本海溝",
     "dummy1Ruby": "{中央|ちゅうおう}{構造線|こうぞうせん}",
     "dummy2Ruby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}",
-    "dummy3Ruby": "{日本海溝|にほんかいこう}"
+    "dummy3Ruby": "{日本海溝|にほんかいこう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-007",
@@ -2281,7 +2710,10 @@
     "answerRuby": "{濃尾|のうび}{平野|へいや}",
     "dummy1Ruby": "{関東平野|かんとうへいや}",
     "dummy2Ruby": "{越後|えちご}{平野|へいや}",
-    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}"
+    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-008",
@@ -2299,7 +2731,10 @@
     "answerRuby": "{関東平野|かんとうへいや}",
     "dummy1Ruby": "{濃尾|のうび}{平野|へいや}",
     "dummy2Ruby": "{石狩|いしかり}{平野|へいや}",
-    "dummy3Ruby": "{越後|えちご}{平野|へいや}"
+    "dummy3Ruby": "{越後|えちご}{平野|へいや}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-009",
@@ -2317,7 +2752,10 @@
     "answerRuby": "{石狩|いしかり}{平野|へいや}",
     "dummy1Ruby": "{濃尾|のうび}{平野|へいや}",
     "dummy2Ruby": "{関東平野|かんとうへいや}",
-    "dummy3Ruby": "{越後|えちご}{平野|へいや}"
+    "dummy3Ruby": "{越後|えちご}{平野|へいや}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-010",
@@ -2335,7 +2773,10 @@
     "answerRuby": "{越後|えちご}{平野|へいや}",
     "dummy1Ruby": "{濃尾|のうび}{平野|へいや}",
     "dummy2Ruby": "{石狩|いしかり}{平野|へいや}",
-    "dummy3Ruby": "{関東平野|かんとうへいや}"
+    "dummy3Ruby": "{関東平野|かんとうへいや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-011",
@@ -2353,7 +2794,10 @@
     "answerRuby": "{木曽|きそ}{三川|さんせん}",
     "dummy1Ruby": "{駿河湾|するがわん}",
     "dummy2Ruby": "{伊勢湾|いせわん}",
-    "dummy3Ruby": "{最上|もがみ}{川|かわ}"
+    "dummy3Ruby": "{最上|もがみ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-012",
@@ -2371,7 +2815,10 @@
     "answerRuby": "{有明海|ありあけかい}",
     "dummy1Ruby": "{伊勢湾|いせわん}",
     "dummy2Ruby": "{若狭|わかさ}{湾|わん}",
-    "dummy3Ruby": "{駿河湾|するがわん}"
+    "dummy3Ruby": "{駿河湾|するがわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-013",
@@ -2389,7 +2836,10 @@
     "answerRuby": "{東京湾|とうきょうわん}",
     "dummy1Ruby": "{富山湾|とやまわん}",
     "dummy2Ruby": "{伊勢湾|いせわん}",
-    "dummy3Ruby": "{陸奥|みちのく}{湾|わん}"
+    "dummy3Ruby": "{陸奥|みちのく}{湾|わん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-014",
@@ -2407,7 +2857,10 @@
     "answerRuby": "{伊勢湾|いせわん}",
     "dummy1Ruby": "{駿河湾|するがわん}",
     "dummy2Ruby": "{十和田湖|とわだこ}",
-    "dummy3Ruby": "{富山湾|とやまわん}"
+    "dummy3Ruby": "{富山湾|とやまわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-015",
@@ -2425,7 +2878,10 @@
     "answerRuby": "{若狭|わかさ}{湾|わん}",
     "dummy1Ruby": "{陸奥|みちのく}{湾|わん}",
     "dummy2Ruby": "{東京湾|とうきょうわん}",
-    "dummy3Ruby": "{相模湾|さがみわん}"
+    "dummy3Ruby": "{相模湾|さがみわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-016",
@@ -2443,7 +2899,10 @@
     "answerRuby": "{駿河湾|するがわん}",
     "dummy1Ruby": "{若狭|わかさ}{湾|わん}",
     "dummy2Ruby": "{相模湾|さがみわん}",
-    "dummy3Ruby": "{東京湾|とうきょうわん}"
+    "dummy3Ruby": "{東京湾|とうきょうわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-017",
@@ -2461,7 +2920,11 @@
     "answerRuby": "{富山湾|とやまわん}",
     "dummy1Ruby": "{十和田湖|とわだこ}",
     "dummy2Ruby": "{若狭|わかさ}{湾|わん}",
-    "dummy3Ruby": "{相模湾|さがみわん}"
+    "dummy3Ruby": "{相模湾|さがみわん}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-018",
@@ -2479,7 +2942,10 @@
     "answerRuby": "{相模湾|さがみわん}",
     "dummy1Ruby": "{富山湾|とやまわん}",
     "dummy2Ruby": "{駿河湾|するがわん}",
-    "dummy3Ruby": "{伊勢湾|いせわん}"
+    "dummy3Ruby": "{伊勢湾|いせわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-019",
@@ -2497,7 +2963,11 @@
     "answerRuby": "{陸奥|みちのく}{湾|わん}",
     "dummy1Ruby": "{伊勢湾|いせわん}",
     "dummy2Ruby": "{東京湾|とうきょうわん}",
-    "dummy3Ruby": "{富山湾|とやまわん}"
+    "dummy3Ruby": "{富山湾|とやまわん}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-020",
@@ -2515,7 +2985,10 @@
     "answerRuby": "{十和田湖|とわだこ}",
     "dummy1Ruby": "{諏訪|すわ}{湖|こ}",
     "dummy2Ruby": "{陸奥|みちのく}{湾|わん}",
-    "dummy3Ruby": "{木曽|きそ}{三川|さんせん}"
+    "dummy3Ruby": "{木曽|きそ}{三川|さんせん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-001",
@@ -2533,7 +3006,10 @@
     "answerRuby": "{秋吉台|あきよしだい}",
     "dummy1Ruby": "{三浦|みうら}{半島|はんとう}",
     "dummy2Ruby": "{黒部|くろべ}{峡谷|きょうこく}",
-    "dummy3Ruby": "{上高地|かみこうち}"
+    "dummy3Ruby": "{上高地|かみこうち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-002",
@@ -2551,7 +3027,10 @@
     "answerRuby": "{上高地|かみこうち}",
     "dummy1Ruby": "{男鹿|おが}{半島|はんとう}",
     "dummy2Ruby": "{三浦|みうら}{半島|はんとう}",
-    "dummy3Ruby": "{秋吉台|あきよしだい}"
+    "dummy3Ruby": "{秋吉台|あきよしだい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-003",
@@ -2569,7 +3048,10 @@
     "answerRuby": "{黒部|くろべ}{峡谷|きょうこく}",
     "dummy1Ruby": "{志摩|しま}{半島|はんとう}",
     "dummy2Ruby": "{上高地|かみこうち}",
-    "dummy3Ruby": "{秋吉台|あきよしだい}"
+    "dummy3Ruby": "{秋吉台|あきよしだい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-004",
@@ -2587,7 +3069,10 @@
     "answerRuby": "{黒部|くろべ}ダム",
     "dummy1Ruby": "{青函|せいかん}トンネル",
     "dummy2Ruby": "{瀬戸大橋|せとおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-005",
@@ -2605,7 +3090,10 @@
     "answerRuby": "{昭和新山|しょうわしんざん}",
     "dummy1Ruby": "{白山|はくさん}",
     "dummy2Ruby": "{大雪山|だいせつざん}",
-    "dummy3Ruby": "{桜|さくら}{島|じま}"
+    "dummy3Ruby": "{桜|さくら}{島|じま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-006",
@@ -2623,7 +3111,10 @@
     "answerRuby": "{雲仙普賢岳|うんぜんふげんだけ}",
     "dummy1Ruby": "{大雪山|だいせつざん}",
     "dummy2Ruby": "{桜|さくら}{島|じま}",
-    "dummy3Ruby": "{十勝|とかち}{岳|だけ}"
+    "dummy3Ruby": "{十勝|とかち}{岳|だけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-007",
@@ -2641,7 +3132,10 @@
     "answerRuby": "{有珠山|うすざん}",
     "dummy1Ruby": "{奥穂高岳|おくほたかだけ}",
     "dummy2Ruby": "{立山|たてやま}",
-    "dummy3Ruby": "{三原|みはら}{山|やま}"
+    "dummy3Ruby": "{三原|みはら}{山|やま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-008",
@@ -2659,7 +3153,10 @@
     "answerRuby": "{三原|みはら}{山|やま}",
     "dummy1Ruby": "{昭和新山|しょうわしんざん}",
     "dummy2Ruby": "{北岳|きただけ}",
-    "dummy3Ruby": "{御嶽山|おんたけさん}"
+    "dummy3Ruby": "{御嶽山|おんたけさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-009",
@@ -2677,7 +3174,10 @@
     "answerRuby": "{御嶽山|おんたけさん}",
     "dummy1Ruby": "{阿蘇山|あそさん}",
     "dummy2Ruby": "{富士山|ふじさん}",
-    "dummy3Ruby": "{有珠山|うすざん}"
+    "dummy3Ruby": "{有珠山|うすざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-010",
@@ -2695,7 +3195,10 @@
     "answerRuby": "{浅間山|あさまやま}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{有珠山|うすざん}",
-    "dummy3Ruby": "{昭和新山|しょうわしんざん}"
+    "dummy3Ruby": "{昭和新山|しょうわしんざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-011",
@@ -2713,7 +3216,10 @@
     "answerRuby": "{磐梯山|ばんだいさん}",
     "dummy1Ruby": "{有珠山|うすざん}",
     "dummy2Ruby": "{昭和新山|しょうわしんざん}",
-    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}"
+    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-012",
@@ -2731,7 +3237,10 @@
     "answerRuby": "{洞爺湖|とうやこ}",
     "dummy1Ruby": "{猪苗代湖|いなわしろこ}",
     "dummy2Ruby": "{琵琶湖|びわこ}",
-    "dummy3Ruby": "{十和田湖|とわだこ}"
+    "dummy3Ruby": "{十和田湖|とわだこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-013",
@@ -2749,7 +3258,10 @@
     "answerRuby": "{志摩|しま}{半島|はんとう}",
     "dummy1Ruby": "{三浦|みうら}{半島|はんとう}",
     "dummy2Ruby": "{男鹿|おが}{半島|はんとう}",
-    "dummy3Ruby": "{大隅|おおすみ}{半島|はんとう}"
+    "dummy3Ruby": "{大隅|おおすみ}{半島|はんとう}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv8-014",
@@ -2767,7 +3279,10 @@
     "answerRuby": "{男鹿|おが}{半島|はんとう}",
     "dummy1Ruby": "{能登|のと}{半島|はんとう}",
     "dummy2Ruby": "{薩摩|さつま}{半島|はんとう}",
-    "dummy3Ruby": "{大隅|おおすみ}{半島|はんとう}"
+    "dummy3Ruby": "{大隅|おおすみ}{半島|はんとう}",
+    "categories": [
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv8-015",
@@ -2785,7 +3300,10 @@
     "answerRuby": "{能登|のと}{半島|はんとう}",
     "dummy1Ruby": "{三浦|みうら}{半島|はんとう}",
     "dummy2Ruby": "{男鹿|おが}{半島|はんとう}",
-    "dummy3Ruby": "{房総|ぼうそう}{半島|はんとう}"
+    "dummy3Ruby": "{房総|ぼうそう}{半島|はんとう}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv8-016",
@@ -2803,7 +3321,10 @@
     "answerRuby": "{房総|ぼうそう}{半島|はんとう}",
     "dummy1Ruby": "{男鹿|おが}{半島|はんとう}",
     "dummy2Ruby": "{下北|しもきた}{半島|はんとう}",
-    "dummy3Ruby": "{志摩|しま}{半島|はんとう}"
+    "dummy3Ruby": "{志摩|しま}{半島|はんとう}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv8-017",
@@ -2821,7 +3342,10 @@
     "answerRuby": "{三浦|みうら}{半島|はんとう}",
     "dummy1Ruby": "{能登|のと}{半島|はんとう}",
     "dummy2Ruby": "{黒部|くろべ}{峡谷|きょうこく}",
-    "dummy3Ruby": "{薩摩|さつま}{半島|はんとう}"
+    "dummy3Ruby": "{薩摩|さつま}{半島|はんとう}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv8-018",
@@ -2839,7 +3363,10 @@
     "answerRuby": "{下北|しもきた}{半島|はんとう}",
     "dummy1Ruby": "{能登|のと}{半島|はんとう}",
     "dummy2Ruby": "{薩摩|さつま}{半島|はんとう}",
-    "dummy3Ruby": "{三浦|みうら}{半島|はんとう}"
+    "dummy3Ruby": "{三浦|みうら}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv8-019",
@@ -2857,7 +3384,10 @@
     "answerRuby": "{大隅|おおすみ}{半島|はんとう}",
     "dummy1Ruby": "{薩摩|さつま}{半島|はんとう}",
     "dummy2Ruby": "{下北|しもきた}{半島|はんとう}",
-    "dummy3Ruby": "{志摩|しま}{半島|はんとう}"
+    "dummy3Ruby": "{志摩|しま}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv8-020",
@@ -2875,7 +3405,10 @@
     "answerRuby": "{薩摩|さつま}{半島|はんとう}",
     "dummy1Ruby": "{能登|のと}{半島|はんとう}",
     "dummy2Ruby": "{大隅|おおすみ}{半島|はんとう}",
-    "dummy3Ruby": "{志摩|しま}{半島|はんとう}"
+    "dummy3Ruby": "{志摩|しま}{半島|はんとう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-001",
@@ -2893,7 +3426,10 @@
     "answerRuby": "{沖|おき}ノ{鳥|とり}{島|しま}",
     "dummy1Ruby": "{竹富|たけとみ}{島|しま}",
     "dummy2Ruby": "{佐渡|さど}{島|しま}",
-    "dummy3Ruby": "{波照間|はてるま}{島|しま}"
+    "dummy3Ruby": "{波照間|はてるま}{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-002",
@@ -2911,7 +3447,10 @@
     "answerRuby": "{波照間|はてるま}{島|しま}",
     "dummy1Ruby": "{淡路|あわじ}{島|しま}",
     "dummy2Ruby": "{種子島|たねがしま}",
-    "dummy3Ruby": "{奄美|あまみ}{大島|おおしま}"
+    "dummy3Ruby": "{奄美|あまみ}{大島|おおしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-003",
@@ -2929,7 +3468,10 @@
     "answerRuby": "{竹富|たけとみ}{島|しま}",
     "dummy1Ruby": "{波照間|はてるま}{島|しま}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}"
+    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-004",
@@ -2947,7 +3489,10 @@
     "answerRuby": "{久米|くめ}{島|しま}",
     "dummy1Ruby": "{種子島|たねがしま}",
     "dummy2Ruby": "{竹富|たけとみ}{島|しま}",
-    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}"
+    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-005",
@@ -2965,7 +3510,10 @@
     "answerRuby": "{天草|あまくさ}{諸島|しょとう}",
     "dummy1Ruby": "{五島|ごとう}{列島|れっとう}",
     "dummy2Ruby": "{久米|くめ}{島|しま}",
-    "dummy3Ruby": "{大東|だいとう}{諸島|しょとう}"
+    "dummy3Ruby": "{大東|だいとう}{諸島|しょとう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-006",
@@ -2983,7 +3531,10 @@
     "answerRuby": "{五島|ごとう}{列島|れっとう}",
     "dummy1Ruby": "{竹富|たけとみ}{島|しま}",
     "dummy2Ruby": "{久米|くめ}{島|しま}",
-    "dummy3Ruby": "{大東|だいとう}{諸島|しょとう}"
+    "dummy3Ruby": "{大東|だいとう}{諸島|しょとう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-007",
@@ -3001,7 +3552,10 @@
     "answerRuby": "{壱岐|いき}",
     "dummy1Ruby": "{与那国|よなくに}{島|じま}",
     "dummy2Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}"
+    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-008",
@@ -3019,7 +3573,11 @@
     "answerRuby": "{伊豆|いず}{大島|おおしま}",
     "dummy1Ruby": "{五島|ごとう}{列島|れっとう}",
     "dummy2Ruby": "{屋久|やく}{島|しま}",
-    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}"
+    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
+    "categories": [
+      "都道府県",
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-009",
@@ -3037,7 +3595,11 @@
     "answerRuby": "{白神|しらかみ}{山地|さんち}",
     "dummy1Ruby": "{白馬岳|しろうまだけ}",
     "dummy2Ruby": "{槍|やり}ヶ{岳|たけ}",
-    "dummy3Ruby": "{男体山|なんたいさん}"
+    "dummy3Ruby": "{男体山|なんたいさん}",
+    "categories": [
+      "山",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-010",
@@ -3055,7 +3617,10 @@
     "answerRuby": "{平泉|ひらいずみ}",
     "dummy1Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
     "dummy2Ruby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
-    "dummy3Ruby": "{大|だい}{鳴門|なると}{橋|はし}"
+    "dummy3Ruby": "{大|だい}{鳴門|なると}{橋|はし}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-011",
@@ -3073,7 +3638,10 @@
     "answerRuby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
     "dummy1Ruby": "{大|だい}{鳴門|なると}{橋|はし}",
     "dummy2Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
-    "dummy3Ruby": "{平泉|ひらいずみ}"
+    "dummy3Ruby": "{平泉|ひらいずみ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-012",
@@ -3091,7 +3659,10 @@
     "answerRuby": "{石見|いわみ}{銀山|ぎんざん}",
     "dummy1Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
     "dummy2Ruby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
-    "dummy3Ruby": "{平泉|ひらいずみ}"
+    "dummy3Ruby": "{平泉|ひらいずみ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-013",
@@ -3109,7 +3680,10 @@
     "answerRuby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
     "dummy1Ruby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
     "dummy2Ruby": "{平泉|ひらいずみ}",
-    "dummy3Ruby": "{大|だい}{鳴門|なると}{橋|はし}"
+    "dummy3Ruby": "{大|だい}{鳴門|なると}{橋|はし}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-014",
@@ -3127,7 +3701,10 @@
     "answerRuby": "{大|だい}{鳴門|なると}{橋|はし}",
     "dummy1Ruby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
     "dummy2Ruby": "{関門橋|かんもんきょう}",
-    "dummy3Ruby": "{瀬戸大橋|せとおおはし}"
+    "dummy3Ruby": "{瀬戸大橋|せとおおはし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-015",
@@ -3145,7 +3722,10 @@
     "answerRuby": "{鳴門|なると}{海峡|かいきょう}",
     "dummy1Ruby": "{有明海|ありあけかい}",
     "dummy2Ruby": "{東京湾|とうきょうわん}",
-    "dummy3Ruby": "{若狭|わかさ}{湾|わん}"
+    "dummy3Ruby": "{若狭|わかさ}{湾|わん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv9-016",
@@ -3163,7 +3743,10 @@
     "answerRuby": "{大東|だいとう}{諸島|しょとう}",
     "dummy1Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
     "dummy2Ruby": "{隠岐|おき}{諸島|しょとう}",
-    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}"
+    "dummy3Ruby": "{天草|あまくさ}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-017",
@@ -3181,7 +3764,10 @@
     "answerRuby": "{男体山|なんたいさん}",
     "dummy1Ruby": "{雲仙普賢岳|うんぜんふげんだけ}",
     "dummy2Ruby": "{三原|みはら}{山|やま}",
-    "dummy3Ruby": "{御嶽山|おんたけさん}"
+    "dummy3Ruby": "{御嶽山|おんたけさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-018",
@@ -3199,7 +3785,10 @@
     "answerRuby": "{剱岳|つるぎだけ}",
     "dummy1Ruby": "{三原|みはら}{山|やま}",
     "dummy2Ruby": "{御嶽山|おんたけさん}",
-    "dummy3Ruby": "{浅間山|あさまやま}"
+    "dummy3Ruby": "{浅間山|あさまやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-019",
@@ -3217,7 +3806,10 @@
     "answerRuby": "{白馬岳|しろうまだけ}",
     "dummy1Ruby": "{御嶽山|おんたけさん}",
     "dummy2Ruby": "{浅間山|あさまやま}",
-    "dummy3Ruby": "{磐梯山|ばんだいさん}"
+    "dummy3Ruby": "{磐梯山|ばんだいさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-020",
@@ -3235,7 +3827,10 @@
     "answerRuby": "{槍|やり}ヶ{岳|たけ}",
     "dummy1Ruby": "{白馬岳|しろうまだけ}",
     "dummy2Ruby": "{富士山|ふじさん}",
-    "dummy3Ruby": "{男体山|なんたいさん}"
+    "dummy3Ruby": "{男体山|なんたいさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-001",
@@ -3253,7 +3848,10 @@
     "answerRuby": "{日本海溝|にほんかいこう}",
     "dummy1Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
     "dummy2Ruby": "{南海|なんかい}トラフ",
-    "dummy3Ruby": "{北上|きたかみ}{川|かわ}"
+    "dummy3Ruby": "{北上|きたかみ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-002",
@@ -3271,7 +3869,10 @@
     "answerRuby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
     "dummy1Ruby": "{南海|なんかい}トラフ",
     "dummy2Ruby": "{四万十川|しまんとがわ}",
-    "dummy3Ruby": "{球磨|くま}{川|かわ}"
+    "dummy3Ruby": "{球磨|くま}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-003",
@@ -3289,7 +3890,10 @@
     "answerRuby": "{南海|なんかい}トラフ",
     "dummy1Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
     "dummy2Ruby": "{日本海溝|にほんかいこう}",
-    "dummy3Ruby": "{富士川|ふじがわ}"
+    "dummy3Ruby": "{富士川|ふじがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-004",
@@ -3306,7 +3910,10 @@
     "dummy3": "球磨川",
     "answerRuby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}",
     "dummy2Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
-    "dummy3Ruby": "{球磨|くま}{川|かわ}"
+    "dummy3Ruby": "{球磨|くま}{川|かわ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-005",
@@ -3324,7 +3931,10 @@
     "answerRuby": "{富士川|ふじがわ}",
     "dummy1Ruby": "{北上|きたかみ}{川|かわ}",
     "dummy2Ruby": "{木曽|きそ}{三川|さんせん}",
-    "dummy3Ruby": "{淀川|よどがわ}"
+    "dummy3Ruby": "{淀川|よどがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-006",
@@ -3342,7 +3952,10 @@
     "answerRuby": "{天竜川|てんりゅうがわ}",
     "dummy1Ruby": "{木曽|きそ}{三川|さんせん}",
     "dummy2Ruby": "{淀川|よどがわ}",
-    "dummy3Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}"
+    "dummy3Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-007",
@@ -3360,7 +3973,10 @@
     "answerRuby": "{四万十川|しまんとがわ}",
     "dummy1Ruby": "{阿賀野|あがの}{川|かわ}",
     "dummy2Ruby": "{石狩川|いしかりがわ}",
-    "dummy3Ruby": "{球磨|くま}{川|かわ}"
+    "dummy3Ruby": "{球磨|くま}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-008",
@@ -3378,7 +3994,10 @@
     "answerRuby": "{球磨|くま}{川|かわ}",
     "dummy1Ruby": "{木曽|きそ}{川|かわ}",
     "dummy2Ruby": "{石狩川|いしかりがわ}",
-    "dummy3Ruby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}"
+    "dummy3Ruby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-009",
@@ -3396,7 +4015,10 @@
     "answerRuby": "{阿賀野|あがの}{川|かわ}",
     "dummy1Ruby": "{糸魚川|いといがわ}{静岡|しずおか}{構造線|こうぞうせん}",
     "dummy2Ruby": "{四万十川|しまんとがわ}",
-    "dummy3Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}"
+    "dummy3Ruby": "{伊豆|いず}・{小笠原|おがさわら}{海溝|かいこう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-010",
@@ -3414,7 +4036,10 @@
     "answerRuby": "{北上|きたかみ}{川|かわ}",
     "dummy1Ruby": "{球磨|くま}{川|かわ}",
     "dummy2Ruby": "{四万十川|しまんとがわ}",
-    "dummy3Ruby": "{阿賀野|あがの}{川|かわ}"
+    "dummy3Ruby": "{阿賀野|あがの}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-011",
@@ -3431,7 +4056,10 @@
     "dummy3": "活断層",
     "answerRuby": "リアス{海岸|かいがん}",
     "dummy2Ruby": "{政令指定都市|せいれいしていとし}",
-    "dummy3Ruby": "{活|かつ}{断層|だんそう}"
+    "dummy3Ruby": "{活|かつ}{断層|だんそう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-012",
@@ -3449,7 +4077,10 @@
     "answerRuby": "{扇状地|せんじょうち}",
     "dummy1Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
     "dummy2Ruby": "{干拓|かんたく}",
-    "dummy3Ruby": "{三角州|さんかくす}"
+    "dummy3Ruby": "{三角州|さんかくす}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-013",
@@ -3466,7 +4097,10 @@
     "dummy3": "カルデラ",
     "answerRuby": "{三角州|さんかくす}",
     "dummy1Ruby": "{扇状地|せんじょうち}",
-    "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}"
+    "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-014",
@@ -3483,7 +4117,10 @@
     "dummy3": "活断層",
     "dummy1Ruby": "{三角州|さんかくす}",
     "dummy2Ruby": "{政令指定都市|せいれいしていとし}",
-    "dummy3Ruby": "{活|かつ}{断層|だんそう}"
+    "dummy3Ruby": "{活|かつ}{断層|だんそう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-015",
@@ -3500,7 +4137,10 @@
     "dummy3": "過疎化",
     "answerRuby": "{活|かつ}{断層|だんそう}",
     "dummy1Ruby": "{政令指定都市|せいれいしていとし}",
-    "dummy3Ruby": "{過疎|かそ}{化|か}"
+    "dummy3Ruby": "{過疎|かそ}{化|か}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-016",
@@ -3517,7 +4157,10 @@
     "dummy3": "液状化現象",
     "dummy1Ruby": "リアス{海岸|かいがん}",
     "dummy2Ruby": "{干拓|かんたく}",
-    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}"
+    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-017",
@@ -3535,7 +4178,10 @@
     "answerRuby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
     "dummy1Ruby": "{政令指定都市|せいれいしていとし}",
     "dummy2Ruby": "リアス{海岸|かいがん}",
-    "dummy3Ruby": "{過疎|かそ}{化|か}"
+    "dummy3Ruby": "{過疎|かそ}{化|か}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-018",
@@ -3551,7 +4197,10 @@
     "dummy2": "プレートテクトニクス",
     "dummy3": "政令指定都市",
     "answerRuby": "{干拓|かんたく}",
-    "dummy3Ruby": "{政令指定都市|せいれいしていとし}"
+    "dummy3Ruby": "{政令指定都市|せいれいしていとし}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-019",
@@ -3568,7 +4217,10 @@
     "dummy3": "液状化現象",
     "answerRuby": "{過疎|かそ}{化|か}",
     "dummy2Ruby": "{干拓|かんたく}",
-    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}"
+    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-020",
@@ -3586,7 +4238,10 @@
     "answerRuby": "{政令指定都市|せいれいしていとし}",
     "dummy1Ruby": "リアス{海岸|かいがん}",
     "dummy2Ruby": "{過疎|かそ}{化|か}",
-    "dummy3Ruby": "{干拓|かんたく}"
+    "dummy3Ruby": "{干拓|かんたく}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-021",
@@ -3604,7 +4259,10 @@
     "answerRuby": "{東京|とうきょう}ドーム",
     "dummy1Ruby": "{大阪城|おおさかじょう}",
     "dummy2Ruby": "{東京|とうきょう}タワー",
-    "dummy3Ruby": "{熊本城|くまもとじょう}"
+    "dummy3Ruby": "{熊本城|くまもとじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-022",
@@ -3622,7 +4280,10 @@
     "answerRuby": "{東京駅|とうきょうえき}",
     "dummy1Ruby": "{大阪城|おおさかじょう}",
     "dummy2Ruby": "{札幌|さっぽろ}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-023",
@@ -3640,7 +4301,10 @@
     "answerRuby": "{渋谷|しぶや}スクランブル{交差点|こうさてん}",
     "dummy1Ruby": "{東京駅|とうきょうえき}",
     "dummy2Ruby": "{浅草|あさくさ}",
-    "dummy3Ruby": "{神戸港|こうべこう}"
+    "dummy3Ruby": "{神戸港|こうべこう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-024",
@@ -3658,7 +4322,10 @@
     "answerRuby": "{皇居|こうきょ}",
     "dummy1Ruby": "{大阪城|おおさかじょう}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{名古屋城|なごやじょう}"
+    "dummy3Ruby": "{名古屋城|なごやじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-025",
@@ -3676,7 +4343,10 @@
     "answerRuby": "{国会議事堂|こっかいぎじどう}",
     "dummy1Ruby": "{皇居|こうきょ}",
     "dummy2Ruby": "{東京都庁|とうきょうとちょう}",
-    "dummy3Ruby": "{大阪城|おおさかじょう}"
+    "dummy3Ruby": "{大阪城|おおさかじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-026",
@@ -3694,7 +4364,10 @@
     "answerRuby": "{明治神宮|めいじじんぐう}",
     "dummy1Ruby": "{伏見稲荷大社|ふしみいなりたいしゃ}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{金閣寺|きんかくじ}"
+    "dummy3Ruby": "{金閣寺|きんかくじ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-027",
@@ -3712,7 +4385,10 @@
     "answerRuby": "{清水寺|きよみずでら}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{伏見稲荷大社|ふしみいなりたいしゃ}"
+    "dummy3Ruby": "{伏見稲荷大社|ふしみいなりたいしゃ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-028",
@@ -3730,7 +4406,10 @@
     "answerRuby": "{伏見稲荷大社|ふしみいなりたいしゃ}",
     "dummy1Ruby": "{明治神宮|めいじじんぐう}",
     "dummy2Ruby": "{清水寺|きよみずでら}",
-    "dummy3Ruby": "{金閣寺|きんかくじ}"
+    "dummy3Ruby": "{金閣寺|きんかくじ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-029",
@@ -3748,7 +4427,10 @@
     "answerRuby": "{宮島|みやじま}",
     "dummy1Ruby": "{淡路島|あわじしま}",
     "dummy2Ruby": "{佐渡島|さどがしま}",
-    "dummy3Ruby": "{屋久島|やくしま}"
+    "dummy3Ruby": "{屋久島|やくしま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-030",
@@ -3766,7 +4448,10 @@
     "answerRuby": "{阿蘇山|あそさん}",
     "dummy1Ruby": "{富士山|ふじさん}",
     "dummy2Ruby": "{桜島|さくらじま}",
-    "dummy3Ruby": "{熊本城|くまもとじょう}"
+    "dummy3Ruby": "{熊本城|くまもとじょう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv1-031",
@@ -3784,7 +4469,10 @@
     "answerRuby": "{桜島|さくらじま}",
     "dummy1Ruby": "{阿蘇山|あそさん}",
     "dummy2Ruby": "{富士山|ふじさん}",
-    "dummy3Ruby": "{種子島|たねがしま}"
+    "dummy3Ruby": "{種子島|たねがしま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv1-032",
@@ -3802,7 +4490,10 @@
     "answerRuby": "{横浜|よこはま}{中華街|ちゅうかがい}",
     "dummy1Ruby": "{浅草|あさくさ}",
     "dummy2Ruby": "{東京駅|とうきょうえき}",
-    "dummy3Ruby": "{鎌倉|かまくら}"
+    "dummy3Ruby": "{鎌倉|かまくら}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-033",
@@ -3820,7 +4511,10 @@
     "answerRuby": "{神戸港|こうべこう}",
     "dummy1Ruby": "{姫路城|ひめじじょう}",
     "dummy2Ruby": "{大阪城|おおさかじょう}",
-    "dummy3Ruby": "{横浜|よこはま}{中華街|ちゅうかがい}"
+    "dummy3Ruby": "{横浜|よこはま}{中華街|ちゅうかがい}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-034",
@@ -3838,7 +4532,10 @@
     "answerRuby": "{奈良公園|ならこうえん}",
     "dummy1Ruby": "{東大寺|とうだいじ}",
     "dummy2Ruby": "{金閣寺|きんかくじ}",
-    "dummy3Ruby": "{明治神宮|めいじじんぐう}"
+    "dummy3Ruby": "{明治神宮|めいじじんぐう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-035",
@@ -3856,7 +4553,11 @@
     "answerRuby": "{富士五湖|ふじごこ}",
     "dummy1Ruby": "{琵琶湖|びわこ}",
     "dummy2Ruby": "{中禅寺湖|ちゅうぜんじこ}",
-    "dummy3Ruby": "{諏訪湖|すわこ}"
+    "dummy3Ruby": "{諏訪湖|すわこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-036",
@@ -3874,7 +4575,10 @@
     "answerRuby": "{別府温泉|べっぷおんせん}",
     "dummy1Ruby": "{草津温泉|くさつおんせん}",
     "dummy2Ruby": "{道後温泉|どうごおんせん}",
-    "dummy3Ruby": "{熊本城|くまもとじょう}"
+    "dummy3Ruby": "{熊本城|くまもとじょう}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv1-037",
@@ -3890,7 +4594,10 @@
     "dummy2": "ユニバーサル・スタジオ・ジャパン",
     "dummy3": "横浜中華街",
     "dummy1Ruby": "{東京|とうきょう}ドーム",
-    "dummy3Ruby": "{横浜|よこはま}{中華街|ちゅうかがい}"
+    "dummy3Ruby": "{横浜|よこはま}{中華街|ちゅうかがい}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-038",
@@ -3906,7 +4613,10 @@
     "dummy2": "大阪城",
     "dummy3": "東京ドーム",
     "dummy2Ruby": "{大阪城|おおさかじょう}",
-    "dummy3Ruby": "{東京|とうきょう}ドーム"
+    "dummy3Ruby": "{東京|とうきょう}ドーム",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-039",
@@ -3924,7 +4634,10 @@
     "answerRuby": "{東京都庁|とうきょうとちょう}",
     "dummy1Ruby": "{東京|とうきょう}タワー",
     "dummy2Ruby": "{東京|とうきょう}スカイツリー",
-    "dummy3Ruby": "{国会議事堂|こっかいぎじどう}"
+    "dummy3Ruby": "{国会議事堂|こっかいぎじどう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-040",
@@ -3942,7 +4655,10 @@
     "answerRuby": "{白川郷|しらかわごう}",
     "dummy1Ruby": "{兼六園|けんろくえん}",
     "dummy2Ruby": "{松本城|まつもとじょう}",
-    "dummy3Ruby": "{姫路城|ひめじじょう}"
+    "dummy3Ruby": "{姫路城|ひめじじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv1-041",
@@ -3960,7 +4676,10 @@
     "answerRuby": "{兼六園|けんろくえん}",
     "dummy1Ruby": "{白川郷|しらかわごう}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{琵琶湖|びわこ}"
+    "dummy3Ruby": "{琵琶湖|びわこ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-042",
@@ -3978,7 +4697,10 @@
     "answerRuby": "{富良野|ふらの}",
     "dummy1Ruby": "{札幌|さっぽろ}",
     "dummy2Ruby": "{小樽運河|おたるうんが}",
-    "dummy3Ruby": "{函館山|はこだてやま}"
+    "dummy3Ruby": "{函館山|はこだてやま}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv1-043",
@@ -3996,7 +4718,10 @@
     "answerRuby": "{小樽運河|おたるうんが}",
     "dummy1Ruby": "{富良野|ふらの}",
     "dummy2Ruby": "{札幌|さっぽろ}",
-    "dummy3Ruby": "{函館山|はこだてやま}"
+    "dummy3Ruby": "{函館山|はこだてやま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-044",
@@ -4014,7 +4739,10 @@
     "answerRuby": "{函館山|はこだてやま}",
     "dummy1Ruby": "{小樽運河|おたるうんが}",
     "dummy2Ruby": "{富良野|ふらの}",
-    "dummy3Ruby": "{阿蘇山|あそさん}"
+    "dummy3Ruby": "{阿蘇山|あそさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv1-045",
@@ -4032,7 +4760,10 @@
     "answerRuby": "{軽井沢|かるいざわ}",
     "dummy1Ruby": "{草津温泉|くさつおんせん}",
     "dummy2Ruby": "{松本城|まつもとじょう}",
-    "dummy3Ruby": "{白川郷|しらかわごう}"
+    "dummy3Ruby": "{白川郷|しらかわごう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-046",
@@ -4050,7 +4781,10 @@
     "answerRuby": "{草津温泉|くさつおんせん}",
     "dummy1Ruby": "{別府温泉|べっぷおんせん}",
     "dummy2Ruby": "{軽井沢|かるいざわ}",
-    "dummy3Ruby": "{道後温泉|どうごおんせん}"
+    "dummy3Ruby": "{道後温泉|どうごおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv1-047",
@@ -4068,7 +4802,10 @@
     "answerRuby": "{松本城|まつもとじょう}",
     "dummy1Ruby": "{姫路城|ひめじじょう}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{彦根城|ひこねじょう}"
+    "dummy3Ruby": "{彦根城|ひこねじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-048",
@@ -4086,7 +4823,10 @@
     "answerRuby": "{彦根城|ひこねじょう}",
     "dummy1Ruby": "{松本城|まつもとじょう}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{大阪城|おおさかじょう}"
+    "dummy3Ruby": "{大阪城|おおさかじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-049",
@@ -4104,7 +4844,10 @@
     "answerRuby": "{犬山城|いぬやまじょう}",
     "dummy1Ruby": "{名古屋城|なごやじょう}",
     "dummy2Ruby": "{松本城|まつもとじょう}",
-    "dummy3Ruby": "{彦根城|ひこねじょう}"
+    "dummy3Ruby": "{彦根城|ひこねじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv1-050",
@@ -4122,7 +4865,10 @@
     "answerRuby": "{五稜郭|ごりょうかく}",
     "dummy1Ruby": "{姫路城|ひめじじょう}",
     "dummy2Ruby": "{松本城|まつもとじょう}",
-    "dummy3Ruby": "{函館山|はこだてやま}"
+    "dummy3Ruby": "{函館山|はこだてやま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-021",
@@ -4140,7 +4886,11 @@
     "answerRuby": "{出雲大社|いずもたいしゃ}",
     "dummy1Ruby": "{伊勢|いせ}{神宮|じんぐう}",
     "dummy2Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
-    "dummy3Ruby": "{明治神宮|めいじじんぐう}"
+    "dummy3Ruby": "{明治神宮|めいじじんぐう}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv2-022",
@@ -4158,7 +4908,11 @@
     "answerRuby": "{伊勢|いせ}{神宮|じんぐう}",
     "dummy1Ruby": "{出雲大社|いずもたいしゃ}",
     "dummy2Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
-    "dummy3Ruby": "{日光|にっこう}{東照宮|とうしょうぐう}"
+    "dummy3Ruby": "{日光|にっこう}{東照宮|とうしょうぐう}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv2-023",
@@ -4176,7 +4930,11 @@
     "answerRuby": "{高野山|こうやさん}",
     "dummy1Ruby": "{阿蘇山|あそさん}",
     "dummy2Ruby": "{屋久|やく}{島|しま}",
-    "dummy3Ruby": "{白山|はくさん}"
+    "dummy3Ruby": "{白山|はくさん}",
+    "categories": [
+      "山",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-024",
@@ -4194,7 +4952,10 @@
     "answerRuby": "{華厳|けごん}の{滝|たき}",
     "dummy1Ruby": "{松島|まつしま}",
     "dummy2Ruby": "{天橋立|あまのはしだて}",
-    "dummy3Ruby": "{阿蘇山|あそさん}"
+    "dummy3Ruby": "{阿蘇山|あそさん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv2-025",
@@ -4212,7 +4973,11 @@
     "answerRuby": "{三十三間堂|さんじゅうさんげんどう}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{東大寺|とうだいじ}",
-    "dummy3Ruby": "{浅草寺|せんそうじ}"
+    "dummy3Ruby": "{浅草寺|せんそうじ}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv2-026",
@@ -4230,7 +4995,10 @@
     "answerRuby": "{平等院|びょうどういん}{鳳凰堂|ほうおうどう}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{三十三間堂|さんじゅうさんげんどう}",
-    "dummy3Ruby": "{東大寺|とうだいじ}"
+    "dummy3Ruby": "{東大寺|とうだいじ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-027",
@@ -4248,7 +5016,10 @@
     "answerRuby": "{出島|でじま}",
     "dummy1Ruby": "{五稜郭|ごりょうかく}",
     "dummy2Ruby": "{宮|みや}{島|じま}",
-    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}"
+    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-028",
@@ -4266,7 +5037,10 @@
     "answerRuby": "{松江城|まつえじょう}",
     "dummy1Ruby": "{熊本城|くまもとじょう}",
     "dummy2Ruby": "{姫路城|ひめじじょう}",
-    "dummy3Ruby": "{名古屋城|なごやじょう}"
+    "dummy3Ruby": "{名古屋城|なごやじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-029",
@@ -4284,7 +5058,10 @@
     "answerRuby": "{弘前城|ひろさきじょう}",
     "dummy1Ruby": "{松江城|まつえじょう}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{名古屋城|なごやじょう}"
+    "dummy3Ruby": "{名古屋城|なごやじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-030",
@@ -4302,7 +5079,10 @@
     "answerRuby": "{上野動物園|うえのどうぶつえん}",
     "dummy1Ruby": "{明治神宮|めいじじんぐう}",
     "dummy2Ruby": "{皇居|こうきょ}",
-    "dummy3Ruby": "{国会議事堂|こっかいぎじどう}"
+    "dummy3Ruby": "{国会議事堂|こっかいぎじどう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-031",
@@ -4320,7 +5100,10 @@
     "answerRuby": "{三保|みほ}の{松原|まつばら}",
     "dummy1Ruby": "{九十九里浜|くじゅうくりはま}",
     "dummy2Ruby": "{天橋立|あまのはしだて}",
-    "dummy3Ruby": "{松島|まつしま}"
+    "dummy3Ruby": "{松島|まつしま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-032",
@@ -4338,7 +5121,10 @@
     "answerRuby": "{中尊寺|ちゅうそんじ}{金色堂|こんじきどう}",
     "dummy1Ruby": "{金閣寺|きんかくじ}",
     "dummy2Ruby": "{日光|にっこう}{東照宮|とうしょうぐう}",
-    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}"
+    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv2-033",
@@ -4356,7 +5142,10 @@
     "answerRuby": "{道後温泉|どうごおんせん}",
     "dummy1Ruby": "{別府温泉|べっぷおんせん}",
     "dummy2Ruby": "{草津温泉|くさつおんせん}",
-    "dummy3Ruby": "{城崎温泉|きのさきおんせん}"
+    "dummy3Ruby": "{城崎温泉|きのさきおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv2-034",
@@ -4374,7 +5163,10 @@
     "answerRuby": "{湯布院温泉|ゆふいんおんせん}",
     "dummy1Ruby": "{別府温泉|べっぷおんせん}",
     "dummy2Ruby": "{道後温泉|どうごおんせん}",
-    "dummy3Ruby": "{白浜温泉|しらはまおんせん}"
+    "dummy3Ruby": "{白浜温泉|しらはまおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv2-035",
@@ -4392,7 +5184,10 @@
     "answerRuby": "{白浜温泉|しらはまおんせん}",
     "dummy1Ruby": "{湯布院温泉|ゆふいんおんせん}",
     "dummy2Ruby": "{城崎温泉|きのさきおんせん}",
-    "dummy3Ruby": "{別府温泉|べっぷおんせん}"
+    "dummy3Ruby": "{別府温泉|べっぷおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv2-036",
@@ -4410,7 +5205,10 @@
     "answerRuby": "{城崎温泉|きのさきおんせん}",
     "dummy1Ruby": "{白浜温泉|しらはまおんせん}",
     "dummy2Ruby": "{湯布院温泉|ゆふいんおんせん}",
-    "dummy3Ruby": "{草津温泉|くさつおんせん}"
+    "dummy3Ruby": "{草津温泉|くさつおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv2-037",
@@ -4428,7 +5226,10 @@
     "answerRuby": "{松山城|まつやまじょう}",
     "dummy1Ruby": "{高知城|こうちじょう}",
     "dummy2Ruby": "{熊本城|くまもとじょう}",
-    "dummy3Ruby": "{弘前城|ひろさきじょう}"
+    "dummy3Ruby": "{弘前城|ひろさきじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-038",
@@ -4446,7 +5247,10 @@
     "answerRuby": "{高知城|こうちじょう}",
     "dummy1Ruby": "{松山城|まつやまじょう}",
     "dummy2Ruby": "{松江城|まつえじょう}",
-    "dummy3Ruby": "{松本城|まつもとじょう}"
+    "dummy3Ruby": "{松本城|まつもとじょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-039",
@@ -4464,7 +5268,10 @@
     "answerRuby": "{尾道|おのみち}",
     "dummy1Ruby": "{倉敷|くらしき}{美観地区|びかんちく}",
     "dummy2Ruby": "{竹田城跡|たけだじょうあと}",
-    "dummy3Ruby": "{宮|みや}{島|じま}"
+    "dummy3Ruby": "{宮|みや}{島|じま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-040",
@@ -4482,7 +5289,10 @@
     "answerRuby": "{倉敷|くらしき}{美観地区|びかんちく}",
     "dummy1Ruby": "{尾道|おのみち}",
     "dummy2Ruby": "{竹田城跡|たけだじょうあと}",
-    "dummy3Ruby": "{小豆島|しょうどしま}"
+    "dummy3Ruby": "{小豆島|しょうどしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-041",
@@ -4500,7 +5310,10 @@
     "answerRuby": "{竹田城跡|たけだじょうあと}",
     "dummy1Ruby": "{松江城|まつえじょう}",
     "dummy2Ruby": "{五稜郭|ごりょうかく}",
-    "dummy3Ruby": "{尾道|おのみち}"
+    "dummy3Ruby": "{尾道|おのみち}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-042",
@@ -4518,7 +5331,10 @@
     "answerRuby": "{錦帯橋|きんたいきょう}",
     "dummy1Ruby": "{瀬戸大橋|せとおおはし}",
     "dummy2Ruby": "{明石海峡大橋|あかしかいきょうおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-043",
@@ -4536,7 +5352,10 @@
     "answerRuby": "{秋芳洞|あきよしどう}",
     "dummy1Ruby": "{黒部|くろべ}{峡谷|きょうこく}",
     "dummy2Ruby": "{上高地|かみこうち}",
-    "dummy3Ruby": "{華厳|けごん}の{滝|たき}"
+    "dummy3Ruby": "{華厳|けごん}の{滝|たき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-044",
@@ -4554,7 +5373,10 @@
     "answerRuby": "{江|え}の{島|しま}",
     "dummy1Ruby": "{宮|みや}{島|じま}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{小豆島|しょうどしま}"
+    "dummy3Ruby": "{小豆島|しょうどしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-045",
@@ -4572,7 +5394,10 @@
     "answerRuby": "{熱海温泉|あたみおんせん}",
     "dummy1Ruby": "{白浜温泉|しらはまおんせん}",
     "dummy2Ruby": "{城崎温泉|きのさきおんせん}",
-    "dummy3Ruby": "{湯布院温泉|ゆふいんおんせん}"
+    "dummy3Ruby": "{湯布院温泉|ゆふいんおんせん}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv2-046",
@@ -4590,7 +5415,10 @@
     "answerRuby": "{高千穂峡|たかちほきょう}",
     "dummy1Ruby": "{黒部|くろべ}{峡谷|きょうこく}",
     "dummy2Ruby": "{上高地|かみこうち}",
-    "dummy3Ruby": "{秋芳洞|あきよしどう}"
+    "dummy3Ruby": "{秋芳洞|あきよしどう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv2-047",
@@ -4608,7 +5436,10 @@
     "answerRuby": "{川越|かわごえ}",
     "dummy1Ruby": "{尾道|おのみち}",
     "dummy2Ruby": "{倉敷|くらしき}{美観地区|びかんちく}",
-    "dummy3Ruby": "{江|え}の{島|しま}"
+    "dummy3Ruby": "{江|え}の{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-048",
@@ -4626,7 +5457,10 @@
     "answerRuby": "{小豆島|しょうどしま}",
     "dummy1Ruby": "{宮|みや}{島|じま}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{屋久|やく}{島|しま}"
+    "dummy3Ruby": "{屋久|やく}{島|しま}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv2-049",
@@ -4644,7 +5478,10 @@
     "answerRuby": "{直島|なおしま}",
     "dummy1Ruby": "{小豆島|しょうどしま}",
     "dummy2Ruby": "{江|え}の{島|しま}",
-    "dummy3Ruby": "{淡路|あわじ}{島|しま}"
+    "dummy3Ruby": "{淡路|あわじ}{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv2-050",
@@ -4662,7 +5499,10 @@
     "answerRuby": "{金刀比羅宮|ことひらぐう}",
     "dummy1Ruby": "{出雲大社|いずもたいしゃ}",
     "dummy2Ruby": "{伊勢|いせ}{神宮|じんぐう}",
-    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}"
+    "dummy3Ruby": "{厳島|いつくしま}{神社|じんじゃ}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-021",
@@ -4680,7 +5520,11 @@
     "answerRuby": "{札幌市|さっぽろし}",
     "dummy1Ruby": "{仙台市|せんだいし}",
     "dummy2Ruby": "{新潟市|にいがたし}",
-    "dummy3Ruby": "{静岡市|しずおかし}"
+    "dummy3Ruby": "{静岡市|しずおかし}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv3-022",
@@ -4698,7 +5542,11 @@
     "answerRuby": "{仙台市|せんだいし}",
     "dummy1Ruby": "{札幌市|さっぽろし}",
     "dummy2Ruby": "さいたま{市|し}",
-    "dummy3Ruby": "{千葉市|ちばし}"
+    "dummy3Ruby": "{千葉市|ちばし}",
+    "categories": [
+      "都道府県",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv3-023",
@@ -4716,7 +5564,10 @@
     "answerRuby": "さいたま{市|し}",
     "dummy1Ruby": "{千葉市|ちばし}",
     "dummy2Ruby": "{川崎市|かわさきし}",
-    "dummy3Ruby": "{相模原市|さがみはらし}"
+    "dummy3Ruby": "{相模原市|さがみはらし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-024",
@@ -4734,7 +5585,10 @@
     "answerRuby": "{千葉市|ちばし}",
     "dummy1Ruby": "さいたま{市|し}",
     "dummy2Ruby": "{横浜市|よこはまし}",
-    "dummy3Ruby": "{川崎市|かわさきし}"
+    "dummy3Ruby": "{川崎市|かわさきし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-025",
@@ -4752,7 +5606,10 @@
     "answerRuby": "{横浜市|よこはまし}",
     "dummy1Ruby": "{川崎市|かわさきし}",
     "dummy2Ruby": "{相模原市|さがみはらし}",
-    "dummy3Ruby": "{神戸市|こうべし}"
+    "dummy3Ruby": "{神戸市|こうべし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-026",
@@ -4770,7 +5627,10 @@
     "answerRuby": "{川崎市|かわさきし}",
     "dummy1Ruby": "{横浜市|よこはまし}",
     "dummy2Ruby": "{相模原市|さがみはらし}",
-    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}"
+    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-027",
@@ -4788,7 +5648,10 @@
     "answerRuby": "{相模原市|さがみはらし}",
     "dummy1Ruby": "{川崎市|かわさきし}",
     "dummy2Ruby": "{横浜市|よこはまし}",
-    "dummy3Ruby": "さいたま{市|し}"
+    "dummy3Ruby": "さいたま{市|し}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-028",
@@ -4806,7 +5669,11 @@
     "answerRuby": "{新潟市|にいがたし}",
     "dummy1Ruby": "{静岡市|しずおかし}",
     "dummy2Ruby": "{浜松市|はままつし}",
-    "dummy3Ruby": "{堺市|さかいし}"
+    "dummy3Ruby": "{堺市|さかいし}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-029",
@@ -4824,7 +5691,11 @@
     "answerRuby": "{静岡市|しずおかし}",
     "dummy1Ruby": "{浜松市|はままつし}",
     "dummy2Ruby": "{新潟市|にいがたし}",
-    "dummy3Ruby": "{岡山市|おかやまし}"
+    "dummy3Ruby": "{岡山市|おかやまし}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-030",
@@ -4842,7 +5713,11 @@
     "answerRuby": "{浜松市|はままつし}",
     "dummy1Ruby": "{静岡市|しずおかし}",
     "dummy2Ruby": "{岡山市|おかやまし}",
-    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}"
+    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-031",
@@ -4860,7 +5735,10 @@
     "answerRuby": "{名古屋市|なごやし}",
     "dummy1Ruby": "{浜松市|はままつし}",
     "dummy2Ruby": "{静岡市|しずおかし}",
-    "dummy3Ruby": "{岡山市|おかやまし}"
+    "dummy3Ruby": "{岡山市|おかやまし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-032",
@@ -4878,7 +5756,11 @@
     "answerRuby": "{京都市|きょうとし}",
     "dummy1Ruby": "{大阪市|おおさかし}",
     "dummy2Ruby": "{神戸市|こうべし}",
-    "dummy3Ruby": "{堺市|さかいし}"
+    "dummy3Ruby": "{堺市|さかいし}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-033",
@@ -4896,7 +5778,10 @@
     "answerRuby": "{大阪市|おおさかし}",
     "dummy1Ruby": "{京都市|きょうとし}",
     "dummy2Ruby": "{神戸市|こうべし}",
-    "dummy3Ruby": "{堺市|さかいし}"
+    "dummy3Ruby": "{堺市|さかいし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-034",
@@ -4914,7 +5799,11 @@
     "answerRuby": "{堺市|さかいし}",
     "dummy1Ruby": "{大阪市|おおさかし}",
     "dummy2Ruby": "{岡山市|おかやまし}",
-    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}"
+    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-035",
@@ -4932,7 +5821,10 @@
     "answerRuby": "{神戸市|こうべし}",
     "dummy1Ruby": "{横浜市|よこはまし}",
     "dummy2Ruby": "{大阪市|おおさかし}",
-    "dummy3Ruby": "{堺市|さかいし}"
+    "dummy3Ruby": "{堺市|さかいし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-036",
@@ -4950,7 +5842,10 @@
     "answerRuby": "{岡山市|おかやまし}",
     "dummy1Ruby": "{広島市|ひろしまし}",
     "dummy2Ruby": "{北九州市|きたきゅうしゅうし}",
-    "dummy3Ruby": "{浜松市|はままつし}"
+    "dummy3Ruby": "{浜松市|はままつし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-037",
@@ -4968,7 +5863,11 @@
     "answerRuby": "{広島市|ひろしまし}",
     "dummy1Ruby": "{岡山市|おかやまし}",
     "dummy2Ruby": "{福岡市|ふくおかし}",
-    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}"
+    "dummy3Ruby": "{北九州市|きたきゅうしゅうし}",
+    "categories": [
+      "都道府県",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-038",
@@ -4986,7 +5885,10 @@
     "answerRuby": "{北九州市|きたきゅうしゅうし}",
     "dummy1Ruby": "{福岡市|ふくおかし}",
     "dummy2Ruby": "{熊本市|くまもとし}",
-    "dummy3Ruby": "{広島市|ひろしまし}"
+    "dummy3Ruby": "{広島市|ひろしまし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-039",
@@ -5004,7 +5906,11 @@
     "answerRuby": "{福岡市|ふくおかし}",
     "dummy1Ruby": "{北九州市|きたきゅうしゅうし}",
     "dummy2Ruby": "{熊本市|くまもとし}",
-    "dummy3Ruby": "{広島市|ひろしまし}"
+    "dummy3Ruby": "{広島市|ひろしまし}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv3-040",
@@ -5022,7 +5928,10 @@
     "answerRuby": "{熊本市|くまもとし}",
     "dummy1Ruby": "{福岡市|ふくおかし}",
     "dummy2Ruby": "{北九州市|きたきゅうしゅうし}",
-    "dummy3Ruby": "{鹿児|かこ}{島市|しまし}"
+    "dummy3Ruby": "{鹿児|かこ}{島市|しまし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv3-041",
@@ -5040,7 +5949,10 @@
     "answerRuby": "{志賀高原|しがこうげん}",
     "dummy1Ruby": "{軽井沢|かるいざわ}",
     "dummy2Ruby": "{那須高原|なすこうげん}",
-    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}"
+    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv3-042",
@@ -5058,7 +5970,10 @@
     "answerRuby": "{蔵王連峰|ざおうれんぽう}",
     "dummy1Ruby": "{志賀高原|しがこうげん}",
     "dummy2Ruby": "{赤城山|あかぎさん}",
-    "dummy3Ruby": "{那須高原|なすこうげん}"
+    "dummy3Ruby": "{那須高原|なすこうげん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv3-043",
@@ -5076,7 +5991,10 @@
     "answerRuby": "{那須高原|なすこうげん}",
     "dummy1Ruby": "{志賀高原|しがこうげん}",
     "dummy2Ruby": "{軽井沢|かるいざわ}",
-    "dummy3Ruby": "{蔵王連峰|ざおうれんぽう}"
+    "dummy3Ruby": "{蔵王連峰|ざおうれんぽう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv3-044",
@@ -5094,7 +6012,10 @@
     "answerRuby": "{尾瀬|おぜ}ヶ{原|はら}",
     "dummy1Ruby": "{志賀高原|しがこうげん}",
     "dummy2Ruby": "{那須高原|なすこうげん}",
-    "dummy3Ruby": "{赤城山|あかぎさん}"
+    "dummy3Ruby": "{赤城山|あかぎさん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv3-045",
@@ -5112,7 +6033,10 @@
     "answerRuby": "{赤城山|あかぎさん}",
     "dummy1Ruby": "{蔵王連峰|ざおうれんぽう}",
     "dummy2Ruby": "{志賀高原|しがこうげん}",
-    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}"
+    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv3-046",
@@ -5130,7 +6054,10 @@
     "answerRuby": "{榛名湖|はるなこ}",
     "dummy1Ruby": "{河口湖|かわぐちこ}",
     "dummy2Ruby": "{野尻湖|のじりこ}",
-    "dummy3Ruby": "{浜名湖|はまなこ}"
+    "dummy3Ruby": "{浜名湖|はまなこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv3-047",
@@ -5148,7 +6075,11 @@
     "answerRuby": "{河口湖|かわぐちこ}",
     "dummy1Ruby": "{山中湖|やまなかこ}",
     "dummy2Ruby": "{榛名湖|はるなこ}",
-    "dummy3Ruby": "{野尻湖|のじりこ}"
+    "dummy3Ruby": "{野尻湖|のじりこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-048",
@@ -5166,7 +6097,11 @@
     "answerRuby": "{山中湖|やまなかこ}",
     "dummy1Ruby": "{河口湖|かわぐちこ}",
     "dummy2Ruby": "{榛名湖|はるなこ}",
-    "dummy3Ruby": "{浜名湖|はまなこ}"
+    "dummy3Ruby": "{浜名湖|はまなこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv3-049",
@@ -5184,7 +6119,10 @@
     "answerRuby": "{野尻湖|のじりこ}",
     "dummy1Ruby": "{河口湖|かわぐちこ}",
     "dummy2Ruby": "{山中湖|やまなかこ}",
-    "dummy3Ruby": "{榛名湖|はるなこ}"
+    "dummy3Ruby": "{榛名湖|はるなこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv3-050",
@@ -5202,7 +6140,11 @@
     "answerRuby": "{浜名湖|はまなこ}",
     "dummy1Ruby": "{野尻湖|のじりこ}",
     "dummy2Ruby": "{河口湖|かわぐちこ}",
-    "dummy3Ruby": "{榛名湖|はるなこ}"
+    "dummy3Ruby": "{榛名湖|はるなこ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-021",
@@ -5220,7 +6162,10 @@
     "answerRuby": "{大山|だいせん}",
     "dummy1Ruby": "{石鎚山|いしづちさん}",
     "dummy2Ruby": "{剣山|つるぎさん}",
-    "dummy3Ruby": "{鳥海山|ちょうかいさん}"
+    "dummy3Ruby": "{鳥海山|ちょうかいさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-022",
@@ -5238,7 +6183,10 @@
     "answerRuby": "{石鎚山|いしづちさん}",
     "dummy1Ruby": "{大山|だいせん}",
     "dummy2Ruby": "{剣山|つるぎさん}",
-    "dummy3Ruby": "{霧島山|きりしまやま}"
+    "dummy3Ruby": "{霧島山|きりしまやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-023",
@@ -5256,7 +6204,10 @@
     "answerRuby": "{剣山|つるぎさん}",
     "dummy1Ruby": "{石鎚山|いしづちさん}",
     "dummy2Ruby": "{大山|だいせん}",
-    "dummy3Ruby": "{那須岳|なすだけ}"
+    "dummy3Ruby": "{那須岳|なすだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-024",
@@ -5274,7 +6225,11 @@
     "answerRuby": "{由布岳|ゆふだけ}",
     "dummy1Ruby": "{霧島山|きりしまやま}",
     "dummy2Ruby": "{岩木山|いわきさん}",
-    "dummy3Ruby": "{八甲田山|はっこうださん}"
+    "dummy3Ruby": "{八甲田山|はっこうださん}",
+    "categories": [
+      "山",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv4-025",
@@ -5292,7 +6247,10 @@
     "answerRuby": "{霧島山|きりしまやま}",
     "dummy1Ruby": "{由布岳|ゆふだけ}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{桜島|さくらじま}"
+    "dummy3Ruby": "{桜島|さくらじま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-026",
@@ -5310,7 +6268,10 @@
     "answerRuby": "{岩木山|いわきさん}",
     "dummy1Ruby": "{八甲田山|はっこうださん}",
     "dummy2Ruby": "{鳥海山|ちょうかいさん}",
-    "dummy3Ruby": "{大山|だいせん}"
+    "dummy3Ruby": "{大山|だいせん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-027",
@@ -5328,7 +6289,10 @@
     "answerRuby": "{八甲田山|はっこうださん}",
     "dummy1Ruby": "{岩木山|いわきさん}",
     "dummy2Ruby": "{蔵王連峰|ざおうれんぽう}",
-    "dummy3Ruby": "{那須岳|なすだけ}"
+    "dummy3Ruby": "{那須岳|なすだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-028",
@@ -5346,7 +6310,10 @@
     "answerRuby": "{鳥海山|ちょうかいさん}",
     "dummy1Ruby": "{岩木山|いわきさん}",
     "dummy2Ruby": "{大山|だいせん}",
-    "dummy3Ruby": "{霧島山|きりしまやま}"
+    "dummy3Ruby": "{霧島山|きりしまやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-029",
@@ -5364,7 +6331,10 @@
     "answerRuby": "{安達太良山|あだたらやま}",
     "dummy1Ruby": "{磐梯山|ばんだいさん}",
     "dummy2Ruby": "{那須岳|なすだけ}",
-    "dummy3Ruby": "{鳥海山|ちょうかいさん}"
+    "dummy3Ruby": "{鳥海山|ちょうかいさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv4-030",
@@ -5382,7 +6352,11 @@
     "answerRuby": "{那須岳|なすだけ}",
     "dummy1Ruby": "{八甲田山|はっこうださん}",
     "dummy2Ruby": "{安達太良山|あだたらやま}",
-    "dummy3Ruby": "{浅間山|あさまやま}"
+    "dummy3Ruby": "{浅間山|あさまやま}",
+    "categories": [
+      "山",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv4-031",
@@ -5400,7 +6374,10 @@
     "answerRuby": "{犬吠埼|いぬぼうさき}",
     "dummy1Ruby": "{大間崎|おおまさき}",
     "dummy2Ruby": "{御前崎|おまえざき}",
-    "dummy3Ruby": "{室戸岬|むろとみさき}"
+    "dummy3Ruby": "{室戸岬|むろとみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-032",
@@ -5418,7 +6395,11 @@
     "answerRuby": "{大間崎|おおまさき}",
     "dummy1Ruby": "{犬吠埼|いぬぼうさき}",
     "dummy2Ruby": "{宗谷岬|そうやみさき}",
-    "dummy3Ruby": "{足摺岬|あしずりみさき}"
+    "dummy3Ruby": "{足摺岬|あしずりみさき}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv4-033",
@@ -5436,7 +6417,10 @@
     "answerRuby": "{足摺岬|あしずりみさき}",
     "dummy1Ruby": "{室戸岬|むろとみさき}",
     "dummy2Ruby": "{犬吠埼|いぬぼうさき}",
-    "dummy3Ruby": "{潮岬|しおのみさき}"
+    "dummy3Ruby": "{潮岬|しおのみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-034",
@@ -5454,7 +6438,10 @@
     "answerRuby": "{室戸岬|むろとみさき}",
     "dummy1Ruby": "{足摺岬|あしずりみさき}",
     "dummy2Ruby": "{御前崎|おまえざき}",
-    "dummy3Ruby": "{犬吠埼|いぬぼうさき}"
+    "dummy3Ruby": "{犬吠埼|いぬぼうさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-035",
@@ -5472,7 +6459,10 @@
     "answerRuby": "{御前崎|おまえざき}",
     "dummy1Ruby": "{犬吠埼|いぬぼうさき}",
     "dummy2Ruby": "{室戸岬|むろとみさき}",
-    "dummy3Ruby": "{経|きょう}ヶ{岬|みさき}"
+    "dummy3Ruby": "{経|きょう}ヶ{岬|みさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-036",
@@ -5490,7 +6480,10 @@
     "answerRuby": "{経|きょう}ヶ{岬|みさき}",
     "dummy1Ruby": "{御前崎|おまえざき}",
     "dummy2Ruby": "{神威岬|かむいみさき}",
-    "dummy3Ruby": "{潮岬|しおのみさき}"
+    "dummy3Ruby": "{潮岬|しおのみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-037",
@@ -5508,7 +6501,10 @@
     "answerRuby": "{神威岬|かむいみさき}",
     "dummy1Ruby": "{宗谷岬|そうやみさき}",
     "dummy2Ruby": "{経|きょう}ヶ{岬|みさき}",
-    "dummy3Ruby": "{納沙布|のさっぷ}{岬|みさき}"
+    "dummy3Ruby": "{納沙布|のさっぷ}{岬|みさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-038",
@@ -5526,7 +6522,10 @@
     "answerRuby": "{観音崎|かんのんざき}",
     "dummy1Ruby": "{城|じょう}ヶ{島|しま}",
     "dummy2Ruby": "{江|え}の{島|しま}",
-    "dummy3Ruby": "{野付半島|のつけはんとう}"
+    "dummy3Ruby": "{野付半島|のつけはんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-039",
@@ -5544,7 +6543,10 @@
     "answerRuby": "{城|じょう}ヶ{島|しま}",
     "dummy1Ruby": "{観音崎|かんのんざき}",
     "dummy2Ruby": "{江|え}の{島|しま}",
-    "dummy3Ruby": "{宮|みや}{島|じま}"
+    "dummy3Ruby": "{宮|みや}{島|じま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv4-040",
@@ -5562,7 +6564,10 @@
     "answerRuby": "{野付半島|のつけはんとう}",
     "dummy1Ruby": "{積丹半島|しゃこたんはんとう}",
     "dummy2Ruby": "{知床|しれとこ}",
-    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}"
+    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-041",
@@ -5580,7 +6585,11 @@
     "answerRuby": "{那智|なち}の{滝|たき}",
     "dummy1Ruby": "{袋田|ふくろだ}の{滝|たき}",
     "dummy2Ruby": "{白糸|しらいと}の{滝|たき}",
-    "dummy3Ruby": "{華厳|けごん}の{滝|たき}"
+    "dummy3Ruby": "{華厳|けごん}の{滝|たき}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv4-042",
@@ -5598,7 +6607,10 @@
     "answerRuby": "{袋田|ふくろだ}の{滝|たき}",
     "dummy1Ruby": "{那智|なち}の{滝|たき}",
     "dummy2Ruby": "{白糸|しらいと}の{滝|たき}",
-    "dummy3Ruby": "{華厳|けごん}の{滝|たき}"
+    "dummy3Ruby": "{華厳|けごん}の{滝|たき}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-043",
@@ -5616,7 +6628,11 @@
     "answerRuby": "{白糸|しらいと}の{滝|たき}",
     "dummy1Ruby": "{那智|なち}の{滝|たき}",
     "dummy2Ruby": "{袋田|ふくろだ}の{滝|たき}",
-    "dummy3Ruby": "{華厳|けごん}の{滝|たき}"
+    "dummy3Ruby": "{華厳|けごん}の{滝|たき}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv4-044",
@@ -5634,7 +6650,10 @@
     "answerRuby": "{昇仙峡|しょうせんきょう}",
     "dummy1Ruby": "{寒霞渓|かんかけい}",
     "dummy2Ruby": "{耶馬渓|やばけい}",
-    "dummy3Ruby": "{猊鼻渓|げいびけい}"
+    "dummy3Ruby": "{猊鼻渓|げいびけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-045",
@@ -5652,7 +6671,10 @@
     "answerRuby": "{寒霞渓|かんかけい}",
     "dummy1Ruby": "{昇仙峡|しょうせんきょう}",
     "dummy2Ruby": "{耶馬渓|やばけい}",
-    "dummy3Ruby": "{猊鼻渓|げいびけい}"
+    "dummy3Ruby": "{猊鼻渓|げいびけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-046",
@@ -5670,7 +6692,10 @@
     "answerRuby": "{耶馬渓|やばけい}",
     "dummy1Ruby": "{寒霞渓|かんかけい}",
     "dummy2Ruby": "{昇仙峡|しょうせんきょう}",
-    "dummy3Ruby": "{猊鼻渓|げいびけい}"
+    "dummy3Ruby": "{猊鼻渓|げいびけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-047",
@@ -5688,7 +6713,10 @@
     "answerRuby": "{猊鼻渓|げいびけい}",
     "dummy1Ruby": "{昇仙峡|しょうせんきょう}",
     "dummy2Ruby": "{寒霞渓|かんかけい}",
-    "dummy3Ruby": "{耶馬渓|やばけい}"
+    "dummy3Ruby": "{耶馬渓|やばけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-048",
@@ -5706,7 +6734,10 @@
     "answerRuby": "{瀞峡|どろきょう}",
     "dummy1Ruby": "{猊鼻渓|げいびけい}",
     "dummy2Ruby": "{昇仙峡|しょうせんきょう}",
-    "dummy3Ruby": "{寒霞渓|かんかけい}"
+    "dummy3Ruby": "{寒霞渓|かんかけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-049",
@@ -5724,7 +6755,10 @@
     "answerRuby": "{寝覚|ねざめ}の{床|とこ}",
     "dummy1Ruby": "{瀞峡|どろきょう}",
     "dummy2Ruby": "{昇仙峡|しょうせんきょう}",
-    "dummy3Ruby": "{猊鼻渓|げいびけい}"
+    "dummy3Ruby": "{猊鼻渓|げいびけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv4-050",
@@ -5742,7 +6776,10 @@
     "answerRuby": "{鳴子峡|なるこきょう}",
     "dummy1Ruby": "{猊鼻渓|げいびけい}",
     "dummy2Ruby": "{寒霞渓|かんかけい}",
-    "dummy3Ruby": "{耶馬渓|やばけい}"
+    "dummy3Ruby": "{耶馬渓|やばけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-021",
@@ -5760,7 +6797,10 @@
     "answerRuby": "{乗鞍岳|のりくらだけ}",
     "dummy1Ruby": "{御在所岳|ございしょだけ}",
     "dummy2Ruby": "{恵那山|えなさん}",
-    "dummy3Ruby": "{妙高山|みょうこうさん}"
+    "dummy3Ruby": "{妙高山|みょうこうさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-022",
@@ -5778,7 +6818,10 @@
     "answerRuby": "{伊吹山|いぶきやま}",
     "dummy1Ruby": "{御在所岳|ございしょだけ}",
     "dummy2Ruby": "{白山|はくさん}",
-    "dummy3Ruby": "{乗鞍岳|のりくらだけ}"
+    "dummy3Ruby": "{乗鞍岳|のりくらだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-023",
@@ -5796,7 +6839,10 @@
     "answerRuby": "{岩手山|いわてさん}",
     "dummy1Ruby": "{鳥海山|ちょうかいさん}",
     "dummy2Ruby": "{安達太良山|あだたらやま}",
-    "dummy3Ruby": "{八甲田山|はっこうださん}"
+    "dummy3Ruby": "{八甲田山|はっこうださん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-024",
@@ -5814,7 +6860,10 @@
     "answerRuby": "{恵那山|えなさん}",
     "dummy1Ruby": "{乗鞍岳|のりくらだけ}",
     "dummy2Ruby": "{美|うつくし}ヶ{原|はら}",
-    "dummy3Ruby": "{蓼科山|たてしなやま}"
+    "dummy3Ruby": "{蓼科山|たてしなやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-025",
@@ -5832,7 +6881,10 @@
     "answerRuby": "{美|うつくし}ヶ{原|はら}",
     "dummy1Ruby": "{志賀高原|しがこうげん}",
     "dummy2Ruby": "{軽井沢|かるいざわ}",
-    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}"
+    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-026",
@@ -5850,7 +6902,10 @@
     "answerRuby": "{蓼科山|たてしなやま}",
     "dummy1Ruby": "{八|や}ヶ{岳|たけ}",
     "dummy2Ruby": "{美|うつくし}ヶ{原|はら}",
-    "dummy3Ruby": "{恵那山|えなさん}"
+    "dummy3Ruby": "{恵那山|えなさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-027",
@@ -5868,7 +6923,10 @@
     "answerRuby": "{八|や}ヶ{岳|たけ}",
     "dummy1Ruby": "{蓼科山|たてしなやま}",
     "dummy2Ruby": "{御在所岳|ございしょだけ}",
-    "dummy3Ruby": "{妙高山|みょうこうさん}"
+    "dummy3Ruby": "{妙高山|みょうこうさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-028",
@@ -5886,7 +6944,10 @@
     "answerRuby": "{妙高山|みょうこうさん}",
     "dummy1Ruby": "{岩手山|いわてさん}",
     "dummy2Ruby": "{鳥海山|ちょうかいさん}",
-    "dummy3Ruby": "{八甲田山|はっこうださん}"
+    "dummy3Ruby": "{八甲田山|はっこうださん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-029",
@@ -5904,7 +6965,10 @@
     "answerRuby": "{燧|ひうち}ヶ{岳|たけ}",
     "dummy1Ruby": "{安達太良山|あだたらやま}",
     "dummy2Ruby": "{磐梯山|ばんだいさん}",
-    "dummy3Ruby": "{那須岳|なすだけ}"
+    "dummy3Ruby": "{那須岳|なすだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-030",
@@ -5922,7 +6986,10 @@
     "answerRuby": "{御在所岳|ございしょだけ}",
     "dummy1Ruby": "{伊吹山|いぶきやま}",
     "dummy2Ruby": "{乗鞍岳|のりくらだけ}",
-    "dummy3Ruby": "{妙高山|みょうこうさん}"
+    "dummy3Ruby": "{妙高山|みょうこうさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv5-031",
@@ -5940,7 +7007,10 @@
     "answerRuby": "{阿武隈川|あぶくまがわ}",
     "dummy1Ruby": "{北上|きたかみ}{川|かわ}",
     "dummy2Ruby": "{最上|もがみ}{川|かわ}",
-    "dummy3Ruby": "{石狩川|いしかりがわ}"
+    "dummy3Ruby": "{石狩川|いしかりがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-032",
@@ -5958,7 +7028,10 @@
     "answerRuby": "{神通川|じんづうがわ}",
     "dummy1Ruby": "{木曽|きそ}{川|かわ}",
     "dummy2Ruby": "{天竜川|てんりゅうがわ}",
-    "dummy3Ruby": "{最上|もがみ}{川|かわ}"
+    "dummy3Ruby": "{最上|もがみ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-033",
@@ -5976,7 +7049,10 @@
     "answerRuby": "{天塩川|てしおがわ}",
     "dummy1Ruby": "{石狩川|いしかりがわ}",
     "dummy2Ruby": "{阿武隈川|あぶくまがわ}",
-    "dummy3Ruby": "{雄物川|おものがわ}"
+    "dummy3Ruby": "{雄物川|おものがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-034",
@@ -5994,7 +7070,10 @@
     "answerRuby": "{江|ごう}の{川|かわ}",
     "dummy1Ruby": "{筑後川|ちくごがわ}",
     "dummy2Ruby": "{神通川|じんづうがわ}",
-    "dummy3Ruby": "{阿武隈川|あぶくまがわ}"
+    "dummy3Ruby": "{阿武隈川|あぶくまがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-035",
@@ -6012,7 +7091,10 @@
     "answerRuby": "{筑後川|ちくごがわ}",
     "dummy1Ruby": "{江|ごう}の{川|かわ}",
     "dummy2Ruby": "{球磨|くま}{川|かわ}",
-    "dummy3Ruby": "{有明海|ありあけかい}"
+    "dummy3Ruby": "{有明海|ありあけかい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-036",
@@ -6030,7 +7112,10 @@
     "answerRuby": "{大井川|おおいがわ}",
     "dummy1Ruby": "{安倍川|あべかわ}",
     "dummy2Ruby": "{天竜川|てんりゅうがわ}",
-    "dummy3Ruby": "{富士川|ふじがわ}"
+    "dummy3Ruby": "{富士川|ふじがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-037",
@@ -6048,7 +7133,11 @@
     "answerRuby": "{安倍川|あべかわ}",
     "dummy1Ruby": "{大井川|おおいがわ}",
     "dummy2Ruby": "{天竜川|てんりゅうがわ}",
-    "dummy3Ruby": "{富士川|ふじがわ}"
+    "dummy3Ruby": "{富士川|ふじがわ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv5-038",
@@ -6066,7 +7155,10 @@
     "answerRuby": "{荒川|あらかわ}",
     "dummy1Ruby": "{多摩川|たまがわ}",
     "dummy2Ruby": "{利根川|とねがわ}",
-    "dummy3Ruby": "{神通川|じんづうがわ}"
+    "dummy3Ruby": "{神通川|じんづうがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-039",
@@ -6084,7 +7176,10 @@
     "answerRuby": "{多摩川|たまがわ}",
     "dummy1Ruby": "{荒川|あらかわ}",
     "dummy2Ruby": "{利根川|とねがわ}",
-    "dummy3Ruby": "{安倍川|あべかわ}"
+    "dummy3Ruby": "{安倍川|あべかわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-040",
@@ -6102,7 +7197,10 @@
     "answerRuby": "{雄物川|おものがわ}",
     "dummy1Ruby": "{最上|もがみ}{川|かわ}",
     "dummy2Ruby": "{石狩川|いしかりがわ}",
-    "dummy3Ruby": "{天塩川|てしおがわ}"
+    "dummy3Ruby": "{天塩川|てしおがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-041",
@@ -6120,7 +7218,11 @@
     "answerRuby": "{精進湖|しょうじこ}",
     "dummy1Ruby": "{西湖|さいこ}",
     "dummy2Ruby": "{本栖湖|もとすこ}",
-    "dummy3Ruby": "{河口湖|かわぐちこ}"
+    "dummy3Ruby": "{河口湖|かわぐちこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv5-042",
@@ -6138,7 +7240,11 @@
     "answerRuby": "{西湖|さいこ}",
     "dummy1Ruby": "{精進湖|しょうじこ}",
     "dummy2Ruby": "{本栖湖|もとすこ}",
-    "dummy3Ruby": "{山中湖|やまなかこ}"
+    "dummy3Ruby": "{山中湖|やまなかこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv5-043",
@@ -6156,7 +7262,11 @@
     "answerRuby": "{本栖湖|もとすこ}",
     "dummy1Ruby": "{精進湖|しょうじこ}",
     "dummy2Ruby": "{西湖|さいこ}",
-    "dummy3Ruby": "{河口湖|かわぐちこ}"
+    "dummy3Ruby": "{河口湖|かわぐちこ}",
+    "categories": [
+      "川・湖",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv5-044",
@@ -6174,7 +7284,11 @@
     "answerRuby": "{屈斜路湖|くっしゃろこ}",
     "dummy1Ruby": "{摩周湖|ましゅうこ}",
     "dummy2Ruby": "{洞爺湖|とうやこ}",
-    "dummy3Ruby": "{支笏湖|しこつこ}"
+    "dummy3Ruby": "{支笏湖|しこつこ}",
+    "categories": [
+      "川・湖",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv5-045",
@@ -6192,7 +7306,10 @@
     "answerRuby": "{尾瀬沼|おぜぬま}",
     "dummy1Ruby": "{田沢湖|たざわこ}",
     "dummy2Ruby": "{猪苗代湖|いなわしろこ}",
-    "dummy3Ruby": "{中禅寺湖|ちゅうぜんじこ}"
+    "dummy3Ruby": "{中禅寺湖|ちゅうぜんじこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-046",
@@ -6210,7 +7327,10 @@
     "answerRuby": "{中海|なかうみ}",
     "dummy1Ruby": "{宍道湖|しんじこ}",
     "dummy2Ruby": "{浜名湖|はまなこ}",
-    "dummy3Ruby": "{十三湖|じゅうさんこ}"
+    "dummy3Ruby": "{十三湖|じゅうさんこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv5-047",
@@ -6228,7 +7348,11 @@
     "answerRuby": "サロマ{湖|こ}",
     "dummy1Ruby": "{屈斜路湖|くっしゃろこ}",
     "dummy2Ruby": "{中海|なかうみ}",
-    "dummy3Ruby": "{十三湖|じゅうさんこ}"
+    "dummy3Ruby": "{十三湖|じゅうさんこ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv5-048",
@@ -6246,7 +7370,11 @@
     "answerRuby": "{十三湖|じゅうさんこ}",
     "dummy1Ruby": "{中海|なかうみ}",
     "dummy2Ruby": "サロマ{湖|こ}",
-    "dummy3Ruby": "{宍道湖|しんじこ}"
+    "dummy3Ruby": "{宍道湖|しんじこ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv5-049",
@@ -6264,7 +7392,11 @@
     "answerRuby": "{倶多楽湖|くったらこ}",
     "dummy1Ruby": "{屈斜路湖|くっしゃろこ}",
     "dummy2Ruby": "{摩周湖|ましゅうこ}",
-    "dummy3Ruby": "{洞爺湖|とうやこ}"
+    "dummy3Ruby": "{洞爺湖|とうやこ}",
+    "categories": [
+      "川・湖",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv5-050",
@@ -6282,7 +7414,11 @@
     "answerRuby": "{小川原湖|おがわらこ}",
     "dummy1Ruby": "{十三湖|じゅうさんこ}",
     "dummy2Ruby": "{中海|なかうみ}",
-    "dummy3Ruby": "サロマ{湖|こ}"
+    "dummy3Ruby": "サロマ{湖|こ}",
+    "categories": [
+      "川・湖",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-021",
@@ -6300,7 +7436,11 @@
     "answerRuby": "{徳之島|とくのしま}",
     "dummy1Ruby": "{奄美|あまみ}{大島|おおしま}",
     "dummy2Ruby": "{沖永良部島|おきのえらぶじま}",
-    "dummy3Ruby": "{種子島|たねがしま}"
+    "dummy3Ruby": "{種子島|たねがしま}",
+    "categories": [
+      "世界遺産",
+      "祭り・行事"
+    ]
   },
   {
     "id": "geojp-lv6-022",
@@ -6318,7 +7458,11 @@
     "answerRuby": "{沖永良部島|おきのえらぶじま}",
     "dummy1Ruby": "{徳之島|とくのしま}",
     "dummy2Ruby": "{奄美|あまみ}{大島|おおしま}",
-    "dummy3Ruby": "{対馬|つしま}"
+    "dummy3Ruby": "{対馬|つしま}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-023",
@@ -6336,7 +7480,11 @@
     "answerRuby": "{石垣島|いしがきじま}",
     "dummy1Ruby": "{宮古島|みやこじま}",
     "dummy2Ruby": "{西表島|いりおもてじま}",
-    "dummy3Ruby": "{与那国|よなくに}{島|じま}"
+    "dummy3Ruby": "{与那国|よなくに}{島|じま}",
+    "categories": [
+      "都道府県",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-024",
@@ -6354,7 +7502,10 @@
     "answerRuby": "{宮古島|みやこじま}",
     "dummy1Ruby": "{石垣島|いしがきじま}",
     "dummy2Ruby": "{西表島|いりおもてじま}",
-    "dummy3Ruby": "{久米|くめ}{島|しま}"
+    "dummy3Ruby": "{久米|くめ}{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-025",
@@ -6372,7 +7523,10 @@
     "answerRuby": "{西表島|いりおもてじま}",
     "dummy1Ruby": "{石垣島|いしがきじま}",
     "dummy2Ruby": "{宮古島|みやこじま}",
-    "dummy3Ruby": "{屋久|やく}{島|しま}"
+    "dummy3Ruby": "{屋久|やく}{島|しま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv6-026",
@@ -6390,7 +7544,11 @@
     "answerRuby": "{利尻島|りしりとう}",
     "dummy1Ruby": "{礼文島|れぶんとう}",
     "dummy2Ruby": "{佐渡|さど}{島|しま}",
-    "dummy3Ruby": "{淡路|あわじ}{島|しま}"
+    "dummy3Ruby": "{淡路|あわじ}{島|しま}",
+    "categories": [
+      "都道府県",
+      "山"
+    ]
   },
   {
     "id": "geojp-lv6-027",
@@ -6408,7 +7566,10 @@
     "answerRuby": "{礼文島|れぶんとう}",
     "dummy1Ruby": "{利尻島|りしりとう}",
     "dummy2Ruby": "{佐渡|さど}{島|しま}",
-    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}"
+    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-028",
@@ -6426,7 +7587,10 @@
     "answerRuby": "{国後島|くなしりとう}",
     "dummy1Ruby": "{択捉|えとろふ}{島|とう}",
     "dummy2Ruby": "{色丹島|しこたんとう}",
-    "dummy3Ruby": "{歯舞|はぼまい}{群島|ぐんとう}"
+    "dummy3Ruby": "{歯舞|はぼまい}{群島|ぐんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-029",
@@ -6444,7 +7608,10 @@
     "answerRuby": "{色丹島|しこたんとう}",
     "dummy1Ruby": "{国後島|くなしりとう}",
     "dummy2Ruby": "{択捉|えとろふ}{島|とう}",
-    "dummy3Ruby": "{歯舞|はぼまい}{群島|ぐんとう}"
+    "dummy3Ruby": "{歯舞|はぼまい}{群島|ぐんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-030",
@@ -6462,7 +7629,10 @@
     "answerRuby": "{歯舞|はぼまい}{群島|ぐんとう}",
     "dummy1Ruby": "{国後島|くなしりとう}",
     "dummy2Ruby": "{色丹島|しこたんとう}",
-    "dummy3Ruby": "{択捉|えとろふ}{島|とう}"
+    "dummy3Ruby": "{択捉|えとろふ}{島|とう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-031",
@@ -6480,7 +7650,10 @@
     "answerRuby": "{津軽海峡|つがるかいきょう}",
     "dummy1Ruby": "{関門海峡|かんもんかいきょう}",
     "dummy2Ruby": "{明石海峡|あかしかいきょう}",
-    "dummy3Ruby": "{豊後水道|ぶんごすいどう}"
+    "dummy3Ruby": "{豊後水道|ぶんごすいどう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-032",
@@ -6498,7 +7671,10 @@
     "answerRuby": "{関門海峡|かんもんかいきょう}",
     "dummy1Ruby": "{津軽海峡|つがるかいきょう}",
     "dummy2Ruby": "{明石海峡|あかしかいきょう}",
-    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}"
+    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-033",
@@ -6516,7 +7692,10 @@
     "answerRuby": "{明石海峡|あかしかいきょう}",
     "dummy1Ruby": "{関門海峡|かんもんかいきょう}",
     "dummy2Ruby": "{津軽海峡|つがるかいきょう}",
-    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}"
+    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-034",
@@ -6534,7 +7713,10 @@
     "answerRuby": "{豊後水道|ぶんごすいどう}",
     "dummy1Ruby": "{津軽海峡|つがるかいきょう}",
     "dummy2Ruby": "{関門海峡|かんもんかいきょう}",
-    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}"
+    "dummy3Ruby": "{鳴門海峡|なるとかいきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-035",
@@ -6552,7 +7734,10 @@
     "answerRuby": "{襟裳岬|えりもみさき}",
     "dummy1Ruby": "{宗谷岬|そうやみさき}",
     "dummy2Ruby": "{納沙布|のさっぷ}{岬|みさき}",
-    "dummy3Ruby": "{地球岬|ちきゅうみさき}"
+    "dummy3Ruby": "{地球岬|ちきゅうみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-036",
@@ -6570,7 +7755,10 @@
     "answerRuby": "{地球岬|ちきゅうみさき}",
     "dummy1Ruby": "{襟裳岬|えりもみさき}",
     "dummy2Ruby": "{宗谷岬|そうやみさき}",
-    "dummy3Ruby": "{野付半島|のつけはんとう}"
+    "dummy3Ruby": "{野付半島|のつけはんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-037",
@@ -6588,7 +7776,10 @@
     "answerRuby": "{石廊崎|いろうざき}",
     "dummy1Ruby": "{御前崎|おまえざき}",
     "dummy2Ruby": "{犬吠埼|いぬぼうさき}",
-    "dummy3Ruby": "{都井岬|といみさき}"
+    "dummy3Ruby": "{都井岬|といみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-038",
@@ -6606,7 +7797,10 @@
     "answerRuby": "{都井岬|といみさき}",
     "dummy1Ruby": "{石廊崎|いろうざき}",
     "dummy2Ruby": "{佐多|さた}{岬|みさき}",
-    "dummy3Ruby": "{潮岬|しおのみさき}"
+    "dummy3Ruby": "{潮岬|しおのみさき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-039",
@@ -6624,7 +7818,10 @@
     "answerRuby": "{象潟|きさかた}",
     "dummy1Ruby": "{松島|まつしま}",
     "dummy2Ruby": "{天橋立|あまのはしだて}",
-    "dummy3Ruby": "{浄土|じょうど}ヶ{浜|はま}"
+    "dummy3Ruby": "{浄土|じょうど}ヶ{浜|はま}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-040",
@@ -6642,7 +7839,10 @@
     "answerRuby": "{鬼|おに}の{洗濯板|せんたくいた}",
     "dummy1Ruby": "{玄武洞|げんぶどう}",
     "dummy2Ruby": "{浄土|じょうど}ヶ{浜|はま}",
-    "dummy3Ruby": "{東尋坊|とうじんぼう}"
+    "dummy3Ruby": "{東尋坊|とうじんぼう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-041",
@@ -6660,7 +7860,10 @@
     "answerRuby": "{玄武洞|げんぶどう}",
     "dummy1Ruby": "{秋芳洞|あきよしどう}",
     "dummy2Ruby": "{東尋坊|とうじんぼう}",
-    "dummy3Ruby": "{鬼|おに}の{洗濯板|せんたくいた}"
+    "dummy3Ruby": "{鬼|おに}の{洗濯板|せんたくいた}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv6-042",
@@ -6678,7 +7881,10 @@
     "answerRuby": "{浄土|じょうど}ヶ{浜|はま}",
     "dummy1Ruby": "{象潟|きさかた}",
     "dummy2Ruby": "{鬼|おに}の{洗濯板|せんたくいた}",
-    "dummy3Ruby": "{玄武洞|げんぶどう}"
+    "dummy3Ruby": "{玄武洞|げんぶどう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-043",
@@ -6696,7 +7902,10 @@
     "answerRuby": "サロベツ{原野|げんや}",
     "dummy1Ruby": "{尾瀬|おぜ}ヶ{原|はら}",
     "dummy2Ruby": "{十勝平野|とかちへいや}",
-    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}"
+    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-044",
@@ -6714,7 +7923,10 @@
     "answerRuby": "{十勝平野|とかちへいや}",
     "dummy1Ruby": "{石狩|いしかり}{平野|へいや}",
     "dummy2Ruby": "{濃尾|のうび}{平野|へいや}",
-    "dummy3Ruby": "サロベツ{原野|げんや}"
+    "dummy3Ruby": "サロベツ{原野|げんや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-045",
@@ -6732,7 +7944,10 @@
     "answerRuby": "{讃岐平野|さぬきへいや}",
     "dummy1Ruby": "{十勝平野|とかちへいや}",
     "dummy2Ruby": "{越後|えちご}{平野|へいや}",
-    "dummy3Ruby": "{庄内平野|しょうないへいや}"
+    "dummy3Ruby": "{庄内平野|しょうないへいや}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv6-046",
@@ -6750,7 +7965,10 @@
     "answerRuby": "{松本|まつもと}{盆地|ぼんち}",
     "dummy1Ruby": "{甲府|こうふ}{盆地|ぼんち}",
     "dummy2Ruby": "{奈良|なら}{盆地|ぼんち}",
-    "dummy3Ruby": "{山形|やまがた}{盆地|ぼんち}"
+    "dummy3Ruby": "{山形|やまがた}{盆地|ぼんち}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-047",
@@ -6768,7 +7986,10 @@
     "answerRuby": "{甲府|こうふ}{盆地|ぼんち}",
     "dummy1Ruby": "{松本|まつもと}{盆地|ぼんち}",
     "dummy2Ruby": "{山形|やまがた}{盆地|ぼんち}",
-    "dummy3Ruby": "{奈良|なら}{盆地|ぼんち}"
+    "dummy3Ruby": "{奈良|なら}{盆地|ぼんち}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-048",
@@ -6786,7 +8007,10 @@
     "answerRuby": "{奈良|なら}{盆地|ぼんち}",
     "dummy1Ruby": "{松本|まつもと}{盆地|ぼんち}",
     "dummy2Ruby": "{甲府|こうふ}{盆地|ぼんち}",
-    "dummy3Ruby": "{山形|やまがた}{盆地|ぼんち}"
+    "dummy3Ruby": "{山形|やまがた}{盆地|ぼんち}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv6-049",
@@ -6804,7 +8028,10 @@
     "answerRuby": "{庄内|しょうない}{平野|へいや}",
     "dummy1Ruby": "{越後|えちご}{平野|へいや}",
     "dummy2Ruby": "{讃岐平野|さぬきへいや}",
-    "dummy3Ruby": "{十勝平野|とかちへいや}"
+    "dummy3Ruby": "{十勝平野|とかちへいや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv6-050",
@@ -6822,7 +8049,10 @@
     "answerRuby": "{山形|やまがた}{盆地|ぼんち}",
     "dummy1Ruby": "{松本|まつもと}{盆地|ぼんち}",
     "dummy2Ruby": "{甲府|こうふ}{盆地|ぼんち}",
-    "dummy3Ruby": "{奈良|なら}{盆地|ぼんち}"
+    "dummy3Ruby": "{奈良|なら}{盆地|ぼんち}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-021",
@@ -6840,7 +8070,10 @@
     "answerRuby": "{筑紫|つくし}{平野|へいや}",
     "dummy1Ruby": "{宮崎|みやざき}{平野|へいや}",
     "dummy2Ruby": "{越後|えちご}{平野|へいや}",
-    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}"
+    "dummy3Ruby": "{石狩|いしかり}{平野|へいや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-022",
@@ -6858,7 +8091,10 @@
     "answerRuby": "{宮崎|みやざき}{平野|へいや}",
     "dummy1Ruby": "{筑紫|つくし}{平野|へいや}",
     "dummy2Ruby": "{濃尾|のうび}{平野|へいや}",
-    "dummy3Ruby": "{関東平野|かんとうへいや}"
+    "dummy3Ruby": "{関東平野|かんとうへいや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-023",
@@ -6876,7 +8112,10 @@
     "answerRuby": "{会津|あいづ}{盆地|ぼんち}",
     "dummy1Ruby": "{山形|やまがた}{盆地|ぼんち}",
     "dummy2Ruby": "{甲府|こうふ}{盆地|ぼんち}",
-    "dummy3Ruby": "{松本|まつもと}{盆地|ぼんち}"
+    "dummy3Ruby": "{松本|まつもと}{盆地|ぼんち}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-024",
@@ -6894,7 +8133,11 @@
     "answerRuby": "{横手|よこて}{盆地|ぼんち}",
     "dummy1Ruby": "{会津|あいづ}{盆地|ぼんち}",
     "dummy2Ruby": "{山形|やまがた}{盆地|ぼんち}",
-    "dummy3Ruby": "{松本|まつもと}{盆地|ぼんち}"
+    "dummy3Ruby": "{松本|まつもと}{盆地|ぼんち}",
+    "categories": [
+      "祭り・行事",
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-025",
@@ -6912,7 +8155,10 @@
     "answerRuby": "{富山|とやま}{平野|へいや}",
     "dummy1Ruby": "{越後|えちご}{平野|へいや}",
     "dummy2Ruby": "{石狩|いしかり}{平野|へいや}",
-    "dummy3Ruby": "{筑紫|つくし}{平野|へいや}"
+    "dummy3Ruby": "{筑紫|つくし}{平野|へいや}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv7-026",
@@ -6930,7 +8176,10 @@
     "answerRuby": "{大阪湾|おおさかわん}",
     "dummy1Ruby": "{伊勢湾|いせわん}",
     "dummy2Ruby": "{東京湾|とうきょうわん}",
-    "dummy3Ruby": "{駿河湾|するがわん}"
+    "dummy3Ruby": "{駿河湾|するがわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-027",
@@ -6948,7 +8197,11 @@
     "answerRuby": "{鹿児|かこ}{島湾|しまわん}",
     "dummy1Ruby": "{別府湾|べっぷわん}",
     "dummy2Ruby": "{土佐湾|とさわん}",
-    "dummy3Ruby": "{有明海|ありあけかい}"
+    "dummy3Ruby": "{有明海|ありあけかい}",
+    "categories": [
+      "川・湖",
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-028",
@@ -6966,7 +8219,11 @@
     "answerRuby": "{別府湾|べっぷわん}",
     "dummy1Ruby": "{鹿児|かこ}{島湾|しまわん}",
     "dummy2Ruby": "{陸奥|みちのく}{湾|わん}",
-    "dummy3Ruby": "{若狭|わかさ}{湾|わん}"
+    "dummy3Ruby": "{若狭|わかさ}{湾|わん}",
+    "categories": [
+      "川・湖",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv7-029",
@@ -6984,7 +8241,10 @@
     "answerRuby": "{土佐湾|とさわん}",
     "dummy1Ruby": "{駿河湾|するがわん}",
     "dummy2Ruby": "{相模湾|さがみわん}",
-    "dummy3Ruby": "{鹿児|かこ}{島湾|しまわん}"
+    "dummy3Ruby": "{鹿児|かこ}{島湾|しまわん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-030",
@@ -7002,7 +8262,10 @@
     "answerRuby": "{宮古湾|みやこわん}",
     "dummy1Ruby": "{若狭|わかさ}{湾|わん}",
     "dummy2Ruby": "{富山湾|とやまわん}",
-    "dummy3Ruby": "{陸奥|みちのく}{湾|わん}"
+    "dummy3Ruby": "{陸奥|みちのく}{湾|わん}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv7-031",
@@ -7020,7 +8283,10 @@
     "answerRuby": "{来島海峡大橋|くるしまかいきょうおおはし}",
     "dummy1Ruby": "{瀬戸大橋|せとおおはし}",
     "dummy2Ruby": "{明石海峡大橋|あかしかいきょうおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-032",
@@ -7038,7 +8304,10 @@
     "answerRuby": "{瀬戸内|せとうち}しまなみ{海道|かいどう}",
     "dummy1Ruby": "{青函|せいかん}トンネル",
     "dummy2Ruby": "{関門橋|かんもんきょう}",
-    "dummy3Ruby": "{瀬戸大橋|せとおおはし}"
+    "dummy3Ruby": "{瀬戸大橋|せとおおはし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-033",
@@ -7056,7 +8325,10 @@
     "answerRuby": "{若戸大橋|わかとおおはし}",
     "dummy1Ruby": "{関門橋|かんもんきょう}",
     "dummy2Ruby": "{瀬戸大橋|せとおおはし}",
-    "dummy3Ruby": "{来島海峡大橋|くるしまかいきょうおおはし}"
+    "dummy3Ruby": "{来島海峡大橋|くるしまかいきょうおおはし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-034",
@@ -7073,7 +8345,10 @@
     "dummy3": "若戸大橋",
     "dummy1Ruby": "{東京|とうきょう}ゲートブリッジ",
     "dummy2Ruby": "{瀬戸大橋|せとおおはし}",
-    "dummy3Ruby": "{若戸大橋|わかとおおはし}"
+    "dummy3Ruby": "{若戸大橋|わかとおおはし}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-035",
@@ -7090,7 +8365,10 @@
     "dummy3": "関門橋",
     "answerRuby": "{東京|とうきょう}ゲートブリッジ",
     "dummy2Ruby": "{瀬戸大橋|せとおおはし}",
-    "dummy3Ruby": "{関門橋|かんもんきょう}"
+    "dummy3Ruby": "{関門橋|かんもんきょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-036",
@@ -7108,7 +8386,10 @@
     "answerRuby": "{日本|にほん}アルプス",
     "dummy1Ruby": "{奥羽|おうう}{山脈|さんみゃく}",
     "dummy2Ruby": "{中国|ちゅうごく}{山地|さんち}",
-    "dummy3Ruby": "{紀伊|きい}{山地|さんち}"
+    "dummy3Ruby": "{紀伊|きい}{山地|さんち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-037",
@@ -7126,7 +8407,10 @@
     "answerRuby": "{飛騨山脈|ひださんみゃく}",
     "dummy1Ruby": "{木曽山脈|きそさんみゃく}",
     "dummy2Ruby": "{赤石山脈|あかいしさんみゃく}",
-    "dummy3Ruby": "{紀伊|きい}{山地|さんち}"
+    "dummy3Ruby": "{紀伊|きい}{山地|さんち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-038",
@@ -7144,7 +8428,10 @@
     "answerRuby": "{木曽山脈|きそさんみゃく}",
     "dummy1Ruby": "{飛騨山脈|ひださんみゃく}",
     "dummy2Ruby": "{赤石山脈|あかいしさんみゃく}",
-    "dummy3Ruby": "{紀伊|きい}{山地|さんち}"
+    "dummy3Ruby": "{紀伊|きい}{山地|さんち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-039",
@@ -7162,7 +8449,10 @@
     "answerRuby": "{赤石山脈|あかいしさんみゃく}",
     "dummy1Ruby": "{飛騨山脈|ひださんみゃく}",
     "dummy2Ruby": "{木曽山脈|きそさんみゃく}",
-    "dummy3Ruby": "{紀伊|きい}{山地|さんち}"
+    "dummy3Ruby": "{紀伊|きい}{山地|さんち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv7-040",
@@ -7180,7 +8470,11 @@
     "answerRuby": "{紀伊|きい}{山地|さんち}",
     "dummy1Ruby": "{日本|にほん}アルプス",
     "dummy2Ruby": "{赤石山脈|あかいしさんみゃく}",
-    "dummy3Ruby": "{木曽山脈|きそさんみゃく}"
+    "dummy3Ruby": "{木曽山脈|きそさんみゃく}",
+    "categories": [
+      "山",
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv7-041",
@@ -7198,7 +8492,10 @@
     "answerRuby": "{知床|しれとこ}{半島|はんとう}",
     "dummy1Ruby": "{渡島半島|おしまはんとう}",
     "dummy2Ruby": "{積丹半島|しゃこたんはんとう}",
-    "dummy3Ruby": "{根室半島|ねむろはんとう}"
+    "dummy3Ruby": "{根室半島|ねむろはんとう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv7-042",
@@ -7216,7 +8513,10 @@
     "answerRuby": "{積丹半島|しゃこたんはんとう}",
     "dummy1Ruby": "{知床|しれとこ}{半島|はんとう}",
     "dummy2Ruby": "{渡島半島|おしまはんとう}",
-    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}"
+    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-043",
@@ -7234,7 +8534,10 @@
     "answerRuby": "{渡島半島|おしまはんとう}",
     "dummy1Ruby": "{知床|しれとこ}{半島|はんとう}",
     "dummy2Ruby": "{積丹半島|しゃこたんはんとう}",
-    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}"
+    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-044",
@@ -7252,7 +8555,10 @@
     "answerRuby": "{津軽|つがる}{半島|はんとう}",
     "dummy1Ruby": "{下北|しもきた}{半島|はんとう}",
     "dummy2Ruby": "{渡島半島|おしまはんとう}",
-    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}"
+    "dummy3Ruby": "{男鹿|おが}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-045",
@@ -7270,7 +8576,10 @@
     "answerRuby": "{牡鹿|おしか}{半島|はんとう}",
     "dummy1Ruby": "{男鹿|おが}{半島|はんとう}",
     "dummy2Ruby": "{房総|ぼうそう}{半島|はんとう}",
-    "dummy3Ruby": "{知床|しれとこ}{半島|はんとう}"
+    "dummy3Ruby": "{知床|しれとこ}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-046",
@@ -7288,7 +8597,10 @@
     "answerRuby": "{伊豆|いず}{半島|はんとう}",
     "dummy1Ruby": "{房総|ぼうそう}{半島|はんとう}",
     "dummy2Ruby": "{三浦|みうら}{半島|はんとう}",
-    "dummy3Ruby": "{知床|しれとこ}{半島|はんとう}"
+    "dummy3Ruby": "{知床|しれとこ}{半島|はんとう}",
+    "categories": [
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv7-047",
@@ -7306,7 +8618,10 @@
     "answerRuby": "{紀伊|きい}{半島|はんとう}",
     "dummy1Ruby": "{房総|ぼうそう}{半島|はんとう}",
     "dummy2Ruby": "{知床|しれとこ}{半島|はんとう}",
-    "dummy3Ruby": "{渡島半島|おしまはんとう}"
+    "dummy3Ruby": "{渡島半島|おしまはんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-048",
@@ -7324,7 +8639,10 @@
     "answerRuby": "{丹後|たんご}{半島|はんとう}",
     "dummy1Ruby": "{能登|のと}{半島|はんとう}",
     "dummy2Ruby": "{牡鹿|おしか}{半島|はんとう}",
-    "dummy3Ruby": "{積丹半島|しゃこたんはんとう}"
+    "dummy3Ruby": "{積丹半島|しゃこたんはんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-049",
@@ -7342,7 +8660,10 @@
     "answerRuby": "{佐田岬|さだみさき}{半島|はんとう}",
     "dummy1Ruby": "{牡鹿|おしか}{半島|はんとう}",
     "dummy2Ruby": "{男鹿|おが}{半島|はんとう}",
-    "dummy3Ruby": "{薩摩|さつま}{半島|はんとう}"
+    "dummy3Ruby": "{薩摩|さつま}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv7-050",
@@ -7360,7 +8681,10 @@
     "answerRuby": "{国東|くにさき}{半島|はんとう}",
     "dummy1Ruby": "{佐田岬|さだみさき}{半島|はんとう}",
     "dummy2Ruby": "{薩摩|さつま}{半島|はんとう}",
-    "dummy3Ruby": "{牡鹿|おしか}{半島|はんとう}"
+    "dummy3Ruby": "{牡鹿|おしか}{半島|はんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv8-021",
@@ -7378,7 +8702,10 @@
     "answerRuby": "{吾妻山|あづまやま}",
     "dummy1Ruby": "{安達太良山|あだたらやま}",
     "dummy2Ruby": "{磐梯山|ばんだいさん}",
-    "dummy3Ruby": "{那須岳|なすだけ}"
+    "dummy3Ruby": "{那須岳|なすだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-022",
@@ -7396,7 +8723,10 @@
     "answerRuby": "{草津白根山|くさつしらねさん}",
     "dummy1Ruby": "{浅間山|あさまやま}",
     "dummy2Ruby": "{那須岳|なすだけ}",
-    "dummy3Ruby": "{御嶽山|おんたけさん}"
+    "dummy3Ruby": "{御嶽山|おんたけさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-023",
@@ -7414,7 +8744,10 @@
     "answerRuby": "{焼岳|やけだけ}",
     "dummy1Ruby": "{御嶽山|おんたけさん}",
     "dummy2Ruby": "{浅間山|あさまやま}",
-    "dummy3Ruby": "{有珠山|うすざん}"
+    "dummy3Ruby": "{有珠山|うすざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-024",
@@ -7432,7 +8765,10 @@
     "answerRuby": "{恵山|えさん}",
     "dummy1Ruby": "{樽前山|たるまえさん}",
     "dummy2Ruby": "{有珠山|うすざん}",
-    "dummy3Ruby": "{昭和新山|しょうわしんざん}"
+    "dummy3Ruby": "{昭和新山|しょうわしんざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-025",
@@ -7450,7 +8786,10 @@
     "answerRuby": "{樽前山|たるまえさん}",
     "dummy1Ruby": "{恵山|えさん}",
     "dummy2Ruby": "{有珠山|うすざん}",
-    "dummy3Ruby": "{昭和新山|しょうわしんざん}"
+    "dummy3Ruby": "{昭和新山|しょうわしんざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-026",
@@ -7468,7 +8807,10 @@
     "answerRuby": "{新燃岳|しんもえだけ}",
     "dummy1Ruby": "{桜|さくら}{島|じま}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}"
+    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-027",
@@ -7486,7 +8828,10 @@
     "answerRuby": "{硫黄島|いおうとう}",
     "dummy1Ruby": "{西之島|にしのしま}",
     "dummy2Ruby": "{南|みなみ}{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}"
+    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-028",
@@ -7504,7 +8849,10 @@
     "answerRuby": "{西之島|にしのしま}",
     "dummy1Ruby": "{硫黄島|いおうとう}",
     "dummy2Ruby": "{南|みなみ}{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}"
+    "dummy3Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-029",
@@ -7522,7 +8870,10 @@
     "answerRuby": "{口永良部島|くちのえらぶじま}",
     "dummy1Ruby": "{種子島|たねがしま}",
     "dummy2Ruby": "{屋久|やく}{島|しま}",
-    "dummy3Ruby": "{徳之島|とくのしま}"
+    "dummy3Ruby": "{徳之島|とくのしま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-030",
@@ -7540,7 +8891,10 @@
     "answerRuby": "{雌阿寒岳|めあかんだけ}",
     "dummy1Ruby": "{大雪山|だいせつざん}",
     "dummy2Ruby": "{十勝|とかち}{岳|だけ}",
-    "dummy3Ruby": "{有珠山|うすざん}"
+    "dummy3Ruby": "{有珠山|うすざん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-031",
@@ -7558,7 +8912,10 @@
     "answerRuby": "{佐久間|さくま}ダム",
     "dummy1Ruby": "{黒部|くろべ}ダム",
     "dummy2Ruby": "{奥只見|おくただみ}ダム",
-    "dummy3Ruby": "{徳山|とくやま}ダム"
+    "dummy3Ruby": "{徳山|とくやま}ダム",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-032",
@@ -7576,7 +8933,10 @@
     "answerRuby": "{奥只見|おくただみ}ダム",
     "dummy1Ruby": "{佐久間|さくま}ダム",
     "dummy2Ruby": "{御母衣|みぼろ}ダム",
-    "dummy3Ruby": "{宮|みや}ヶ{瀬|せ}ダム"
+    "dummy3Ruby": "{宮|みや}ヶ{瀬|せ}ダム",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-033",
@@ -7594,7 +8954,10 @@
     "answerRuby": "{御母衣|みぼろ}ダム",
     "dummy1Ruby": "{奥只見|おくただみ}ダム",
     "dummy2Ruby": "{黒部|くろべ}ダム",
-    "dummy3Ruby": "{佐久間|さくま}ダム"
+    "dummy3Ruby": "{佐久間|さくま}ダム",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-034",
@@ -7612,7 +8975,10 @@
     "answerRuby": "{宮|みや}ヶ{瀬|せ}ダム",
     "dummy1Ruby": "{御母衣|みぼろ}ダム",
     "dummy2Ruby": "{奥只見|おくただみ}ダム",
-    "dummy3Ruby": "{徳山|とくやま}ダム"
+    "dummy3Ruby": "{徳山|とくやま}ダム",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-035",
@@ -7630,7 +8996,10 @@
     "answerRuby": "{徳山|とくやま}ダム",
     "dummy1Ruby": "{黒部|くろべ}ダム",
     "dummy2Ruby": "{佐久間|さくま}ダム",
-    "dummy3Ruby": "{宮|みや}ヶ{瀬|せ}ダム"
+    "dummy3Ruby": "{宮|みや}ヶ{瀬|せ}ダム",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-036",
@@ -7648,7 +9017,10 @@
     "answerRuby": "{寸又峡|すまたきょう}",
     "dummy1Ruby": "{黒部|くろべ}{峡谷|きょうこく}",
     "dummy2Ruby": "{祖谷渓|いやけい}",
-    "dummy3Ruby": "{恵那峡|えなきょう}"
+    "dummy3Ruby": "{恵那峡|えなきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-037",
@@ -7666,7 +9038,10 @@
     "answerRuby": "{祖谷渓|いやけい}",
     "dummy1Ruby": "{寸又峡|すまたきょう}",
     "dummy2Ruby": "{三段峡|さんだんきょう}",
-    "dummy3Ruby": "{菊池渓谷|きくちけいこく}"
+    "dummy3Ruby": "{菊池渓谷|きくちけいこく}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-038",
@@ -7684,7 +9059,10 @@
     "answerRuby": "{三段峡|さんだんきょう}",
     "dummy1Ruby": "{祖谷渓|いやけい}",
     "dummy2Ruby": "{寸又峡|すまたきょう}",
-    "dummy3Ruby": "{恵那峡|えなきょう}"
+    "dummy3Ruby": "{恵那峡|えなきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-039",
@@ -7702,7 +9080,10 @@
     "answerRuby": "{恵那峡|えなきょう}",
     "dummy1Ruby": "{寸又峡|すまたきょう}",
     "dummy2Ruby": "{三段峡|さんだんきょう}",
-    "dummy3Ruby": "{祖谷渓|いやけい}"
+    "dummy3Ruby": "{祖谷渓|いやけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-040",
@@ -7720,7 +9101,10 @@
     "answerRuby": "{菊池渓谷|きくちけいこく}",
     "dummy1Ruby": "{高千穂峡|たかちほきょう}",
     "dummy2Ruby": "{三段峡|さんだんきょう}",
-    "dummy3Ruby": "{恵那峡|えなきょう}"
+    "dummy3Ruby": "{恵那峡|えなきょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-041",
@@ -7738,7 +9122,10 @@
     "answerRuby": "{四国|しこく}カルスト",
     "dummy1Ruby": "{秋吉台|あきよしだい}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{上高地|かみこうち}"
+    "dummy3Ruby": "{上高地|かみこうち}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-042",
@@ -7756,7 +9143,10 @@
     "answerRuby": "{大台|おおだい}ヶ{原|はら}",
     "dummy1Ruby": "{四国|しこく}カルスト",
     "dummy2Ruby": "{志賀高原|しがこうげん}",
-    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}"
+    "dummy3Ruby": "{尾瀬|おぜ}ヶ{原|はら}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-043",
@@ -7774,7 +9164,10 @@
     "answerRuby": "{面河渓|おもごけい}",
     "dummy1Ruby": "{祖谷渓|いやけい}",
     "dummy2Ruby": "{寸又峡|すまたきょう}",
-    "dummy3Ruby": "{菊池渓谷|きくちけいこく}"
+    "dummy3Ruby": "{菊池渓谷|きくちけいこく}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-044",
@@ -7792,7 +9185,10 @@
     "answerRuby": "{大歩危|おおぼけ}{小歩危|こぼけ}",
     "dummy1Ruby": "{耶馬渓|やばけい}",
     "dummy2Ruby": "{寒霞渓|かんかけい}",
-    "dummy3Ruby": "{祖谷渓|いやけい}"
+    "dummy3Ruby": "{祖谷渓|いやけい}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-045",
@@ -7810,7 +9206,10 @@
     "answerRuby": "{雨晴海岸|あまはらしかいがん}",
     "dummy1Ruby": "{九十九里浜|くじゅうくりはま}",
     "dummy2Ruby": "{三保|みほ}の{松原|まつばら}",
-    "dummy3Ruby": "{浄土|じょうど}ヶ{浜|はま}"
+    "dummy3Ruby": "{浄土|じょうど}ヶ{浜|はま}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-046",
@@ -7828,7 +9227,10 @@
     "answerRuby": "{三瓶山|さんべさん}",
     "dummy1Ruby": "{大山|だいせん}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{御嶽山|おんたけさん}"
+    "dummy3Ruby": "{御嶽山|おんたけさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv8-047",
@@ -7846,7 +9248,11 @@
     "answerRuby": "{鶴見岳|つるみだけ}",
     "dummy1Ruby": "{由布岳|ゆふだけ}",
     "dummy2Ruby": "{阿蘇山|あそさん}",
-    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}"
+    "dummy3Ruby": "{雲仙普賢岳|うんぜんふげんだけ}",
+    "categories": [
+      "山",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv8-048",
@@ -7864,7 +9270,11 @@
     "answerRuby": "{大涌谷|おおわくだに}",
     "dummy1Ruby": "{地獄谷|じごくだに}",
     "dummy2Ruby": "{草津白根山|くさつしらねさん}",
-    "dummy3Ruby": "{有珠山|うすざん}"
+    "dummy3Ruby": "{有珠山|うすざん}",
+    "categories": [
+      "山",
+      "温泉"
+    ]
   },
   {
     "id": "geojp-lv8-049",
@@ -7882,7 +9292,10 @@
     "answerRuby": "{五色沼|ごしきぬま}",
     "dummy1Ruby": "{尾瀬沼|おぜぬま}",
     "dummy2Ruby": "{田沢湖|たざわこ}",
-    "dummy3Ruby": "{十三湖|じゅうさんこ}"
+    "dummy3Ruby": "{十三湖|じゅうさんこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv8-050",
@@ -7900,7 +9313,10 @@
     "answerRuby": "{苗場山|なえばさん}",
     "dummy1Ruby": "{妙高山|みょうこうさん}",
     "dummy2Ruby": "{八|や}ヶ{岳|たけ}",
-    "dummy3Ruby": "{燧|ひうち}ヶ{岳|たけ}"
+    "dummy3Ruby": "{燧|ひうち}ヶ{岳|たけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-021",
@@ -7918,7 +9334,10 @@
     "answerRuby": "{首里城|しゅりじょう}",
     "dummy1Ruby": "{五稜郭|ごりょうかく}",
     "dummy2Ruby": "{大阪城|おおさかじょう}",
-    "dummy3Ruby": "{熊本城|くまもとじょう}"
+    "dummy3Ruby": "{熊本城|くまもとじょう}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-022",
@@ -7936,7 +9355,10 @@
     "answerRuby": "{軍艦島|ぐんかんじま}",
     "dummy1Ruby": "{五島|ごとう}{列島|れっとう}",
     "dummy2Ruby": "{天草|あまくさ}{諸島|しょとう}",
-    "dummy3Ruby": "{壱岐|いき}"
+    "dummy3Ruby": "{壱岐|いき}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-023",
@@ -7954,7 +9376,10 @@
     "answerRuby": "{日光|にっこう}の{社寺|しゃじ}",
     "dummy1Ruby": "{石見銀山|いわみぎんざん}",
     "dummy2Ruby": "{平泉|ひらいずみ}",
-    "dummy3Ruby": "{白神山地|しらかみさんち}"
+    "dummy3Ruby": "{白神山地|しらかみさんち}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-024",
@@ -7972,7 +9397,10 @@
     "answerRuby": "{大浦天主堂|おおうらてんしゅどう}",
     "dummy1Ruby": "{日光|にっこう}の{社寺|しゃじ}",
     "dummy2Ruby": "{首里城|しゅりじょう}",
-    "dummy3Ruby": "{軍艦島|ぐんかんじま}"
+    "dummy3Ruby": "{軍艦島|ぐんかんじま}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-025",
@@ -7990,7 +9418,10 @@
     "answerRuby": "{韮山反射炉|にらやまはんしゃろ}",
     "dummy1Ruby": "{富岡|とみおか}{製糸|せいし}{場|ば}",
     "dummy2Ruby": "{石見銀山|いわみぎんざん}",
-    "dummy3Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}"
+    "dummy3Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
+    "categories": [
+      "世界遺産"
+    ]
   },
   {
     "id": "geojp-lv9-026",
@@ -8008,7 +9439,10 @@
     "answerRuby": "{南大東島|みなみだいとうじま}",
     "dummy1Ruby": "{南|みなみ}{鳥|とり}{島|しま}",
     "dummy2Ruby": "{沖|おき}ノ{鳥|とり}{島|しま}",
-    "dummy3Ruby": "{波照間|はてるま}{島|じま}"
+    "dummy3Ruby": "{波照間|はてるま}{島|じま}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv9-027",
@@ -8026,7 +9460,10 @@
     "answerRuby": "{慶良間|けらま}{諸島|しょとう}",
     "dummy1Ruby": "{大東|だいとう}{諸島|しょとう}",
     "dummy2Ruby": "{八重山|やえやま}{諸島|しょとう}",
-    "dummy3Ruby": "{宮古島|みやこじま}"
+    "dummy3Ruby": "{宮古島|みやこじま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-028",
@@ -8044,7 +9481,10 @@
     "answerRuby": "{渡嘉敷島|とかしきじま}",
     "dummy1Ruby": "{座間味島|ざまみじま}",
     "dummy2Ruby": "{粟国島|あぐにじま}",
-    "dummy3Ruby": "{久米|くめ}{島|しま}"
+    "dummy3Ruby": "{久米|くめ}{島|しま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-029",
@@ -8062,7 +9502,10 @@
     "answerRuby": "{座間味島|ざまみじま}",
     "dummy1Ruby": "{渡嘉敷島|とかしきじま}",
     "dummy2Ruby": "{粟国島|あぐにじま}",
-    "dummy3Ruby": "{西表島|いりおもてじま}"
+    "dummy3Ruby": "{西表島|いりおもてじま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-030",
@@ -8080,7 +9523,10 @@
     "answerRuby": "{粟国島|あぐにじま}",
     "dummy1Ruby": "{渡嘉敷島|とかしきじま}",
     "dummy2Ruby": "{座間味島|ざまみじま}",
-    "dummy3Ruby": "{南大東島|みなみだいとうじま}"
+    "dummy3Ruby": "{南大東島|みなみだいとうじま}",
+    "categories": [
+      "特産品"
+    ]
   },
   {
     "id": "geojp-lv9-031",
@@ -8098,7 +9544,10 @@
     "answerRuby": "{与論島|よろんとう}",
     "dummy1Ruby": "{徳之島|とくのしま}",
     "dummy2Ruby": "{奄美|あまみ}{大島|おおしま}",
-    "dummy3Ruby": "{種子島|たねがしま}"
+    "dummy3Ruby": "{種子島|たねがしま}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-032",
@@ -8116,7 +9565,10 @@
     "answerRuby": "{甑島|こしきしま}{列島|れっとう}",
     "dummy1Ruby": "{五島|ごとう}{列島|れっとう}",
     "dummy2Ruby": "{天草|あまくさ}{諸島|しょとう}",
-    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}"
+    "dummy3Ruby": "{隠岐|おき}{諸島|しょとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-033",
@@ -8134,7 +9586,10 @@
     "answerRuby": "{飛島|とびしま}",
     "dummy1Ruby": "{佐渡|さど}{島|しま}",
     "dummy2Ruby": "{淡路|あわじ}{島|しま}",
-    "dummy3Ruby": "{礼文島|れぶんとう}"
+    "dummy3Ruby": "{礼文島|れぶんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-034",
@@ -8152,7 +9607,10 @@
     "answerRuby": "{神津島|こうづしま}",
     "dummy1Ruby": "{伊豆|いず}{大島|おおしま}",
     "dummy2Ruby": "{新島|にいじま}",
-    "dummy3Ruby": "{利尻島|りしりとう}"
+    "dummy3Ruby": "{利尻島|りしりとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-035",
@@ -8170,7 +9628,10 @@
     "answerRuby": "{新島|にいじま}",
     "dummy1Ruby": "{神津島|こうづしま}",
     "dummy2Ruby": "{伊豆|いず}{大島|おおしま}",
-    "dummy3Ruby": "{礼文島|れぶんとう}"
+    "dummy3Ruby": "{礼文島|れぶんとう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-036",
@@ -8188,7 +9649,10 @@
     "answerRuby": "{燕岳|つばくろだけ}",
     "dummy1Ruby": "{常念岳|じょうねんだけ}",
     "dummy2Ruby": "{唐松岳|からまつだけ}",
-    "dummy3Ruby": "{笠|かさ}ヶ{岳|たけ}"
+    "dummy3Ruby": "{笠|かさ}ヶ{岳|たけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-037",
@@ -8206,7 +9670,10 @@
     "answerRuby": "{常念岳|じょうねんだけ}",
     "dummy1Ruby": "{燕岳|つばくろだけ}",
     "dummy2Ruby": "{五竜岳|ごりゅうだけ}",
-    "dummy3Ruby": "{黒姫山|くろひめやま}"
+    "dummy3Ruby": "{黒姫山|くろひめやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-038",
@@ -8224,7 +9691,10 @@
     "answerRuby": "{鹿島槍|かしまやり}ヶ{岳|たけ}",
     "dummy1Ruby": "{五竜岳|ごりゅうだけ}",
     "dummy2Ruby": "{唐松岳|からまつだけ}",
-    "dummy3Ruby": "{燕岳|つばくろだけ}"
+    "dummy3Ruby": "{燕岳|つばくろだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-039",
@@ -8242,7 +9712,10 @@
     "answerRuby": "{五竜岳|ごりゅうだけ}",
     "dummy1Ruby": "{鹿島槍|かしまやり}ヶ{岳|たけ}",
     "dummy2Ruby": "{唐松岳|からまつだけ}",
-    "dummy3Ruby": "{常念岳|じょうねんだけ}"
+    "dummy3Ruby": "{常念岳|じょうねんだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-040",
@@ -8260,7 +9733,10 @@
     "answerRuby": "{唐松岳|からまつだけ}",
     "dummy1Ruby": "{五竜岳|ごりゅうだけ}",
     "dummy2Ruby": "{鹿島槍|かしまやり}ヶ{岳|たけ}",
-    "dummy3Ruby": "{燕岳|つばくろだけ}"
+    "dummy3Ruby": "{燕岳|つばくろだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-041",
@@ -8278,7 +9754,10 @@
     "answerRuby": "{笠|かさ}ヶ{岳|たけ}",
     "dummy1Ruby": "{燕岳|つばくろだけ}",
     "dummy2Ruby": "{常念岳|じょうねんだけ}",
-    "dummy3Ruby": "{妙義山|みょうぎさん}"
+    "dummy3Ruby": "{妙義山|みょうぎさん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-042",
@@ -8296,7 +9775,10 @@
     "answerRuby": "{火打山|ひうちやま}",
     "dummy1Ruby": "{妙高山|みょうこうさん}",
     "dummy2Ruby": "{苗場山|なえばさん}",
-    "dummy3Ruby": "{谷川岳|たにがわだけ}"
+    "dummy3Ruby": "{谷川岳|たにがわだけ}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-043",
@@ -8314,7 +9796,10 @@
     "answerRuby": "{妙義山|みょうぎさん}",
     "dummy1Ruby": "{笠|かさ}ヶ{岳|たけ}",
     "dummy2Ruby": "{谷川岳|たにがわだけ}",
-    "dummy3Ruby": "{黒姫山|くろひめやま}"
+    "dummy3Ruby": "{黒姫山|くろひめやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-044",
@@ -8332,7 +9817,10 @@
     "answerRuby": "{黒姫山|くろひめやま}",
     "dummy1Ruby": "{妙義山|みょうぎさん}",
     "dummy2Ruby": "{常念岳|じょうねんだけ}",
-    "dummy3Ruby": "{美|うつくし}ヶ{原|はら}"
+    "dummy3Ruby": "{美|うつくし}ヶ{原|はら}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-045",
@@ -8350,7 +9838,10 @@
     "answerRuby": "{谷川岳|たにがわだけ}",
     "dummy1Ruby": "{妙義山|みょうぎさん}",
     "dummy2Ruby": "{苗場山|なえばさん}",
-    "dummy3Ruby": "{火打山|ひうちやま}"
+    "dummy3Ruby": "{火打山|ひうちやま}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv9-046",
@@ -8368,7 +9859,10 @@
     "answerRuby": "{吉野|よしの}ヶ{里|り}{遺跡|いせき}",
     "dummy1Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
     "dummy2Ruby": "{登呂遺跡|とろいせき}",
-    "dummy3Ruby": "{岩宿遺跡|いわじゅくいせき}"
+    "dummy3Ruby": "{岩宿遺跡|いわじゅくいせき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-047",
@@ -8386,7 +9880,10 @@
     "answerRuby": "{大森貝塚|おおもりかいづか}",
     "dummy1Ruby": "{加曽利貝塚|かそりかいづか}",
     "dummy2Ruby": "{登呂遺跡|とろいせき}",
-    "dummy3Ruby": "{岩宿遺跡|いわじゅくいせき}"
+    "dummy3Ruby": "{岩宿遺跡|いわじゅくいせき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-048",
@@ -8404,7 +9901,10 @@
     "answerRuby": "{登呂遺跡|とろいせき}",
     "dummy1Ruby": "{吉野|よしの}ヶ{里|り}{遺跡|いせき}",
     "dummy2Ruby": "{大森貝塚|おおもりかいづか}",
-    "dummy3Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}"
+    "dummy3Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-049",
@@ -8422,7 +9922,10 @@
     "answerRuby": "{加曽利貝塚|かそりかいづか}",
     "dummy1Ruby": "{大森貝塚|おおもりかいづか}",
     "dummy2Ruby": "{登呂遺跡|とろいせき}",
-    "dummy3Ruby": "{吉野|よしの}ヶ{里|り}{遺跡|いせき}"
+    "dummy3Ruby": "{吉野|よしの}ヶ{里|り}{遺跡|いせき}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv9-050",
@@ -8440,7 +9943,10 @@
     "answerRuby": "{岩宿遺跡|いわじゅくいせき}",
     "dummy1Ruby": "{三内|さんない}{丸山|まるやま}{遺跡|いせき}",
     "dummy2Ruby": "{登呂遺跡|とろいせき}",
-    "dummy3Ruby": "{大森貝塚|おおもりかいづか}"
+    "dummy3Ruby": "{大森貝塚|おおもりかいづか}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-021",
@@ -8457,7 +9963,10 @@
     "dummy3": "中央構造線",
     "answerRuby": "{環太平洋造山帯|かんたいへいようぞうざんたい}",
     "dummy2Ruby": "{南海|なんかい}トラフ",
-    "dummy3Ruby": "{中央|ちゅうおう}{構造線|こうぞうせん}"
+    "dummy3Ruby": "{中央|ちゅうおう}{構造線|こうぞうせん}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-022",
@@ -8475,7 +9984,10 @@
     "answerRuby": "{内陸型地震|ないりくがたじしん}",
     "dummy1Ruby": "{海溝型地震|かいこうがたじしん}",
     "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
-    "dummy3Ruby": "{活|かつ}{断層|だんそう}"
+    "dummy3Ruby": "{活|かつ}{断層|だんそう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-023",
@@ -8493,7 +10005,10 @@
     "answerRuby": "{海溝型地震|かいこうがたじしん}",
     "dummy1Ruby": "{内陸型地震|ないりくがたじしん}",
     "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
-    "dummy3Ruby": "{干拓|かんたく}"
+    "dummy3Ruby": "{干拓|かんたく}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-024",
@@ -8511,7 +10026,10 @@
     "answerRuby": "{高潮|たかしお}",
     "dummy1Ruby": "{津波|つなみ}",
     "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
-    "dummy3Ruby": "{地盤沈下|じばんちんか}"
+    "dummy3Ruby": "{地盤沈下|じばんちんか}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-025",
@@ -8529,7 +10047,10 @@
     "answerRuby": "{津波|つなみ}",
     "dummy1Ruby": "{高潮|たかしお}",
     "dummy2Ruby": "{海溝型地震|かいこうがたじしん}",
-    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}"
+    "dummy3Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-026",
@@ -8546,7 +10067,10 @@
     "dummy3": "やませ",
     "answerRuby": "フェーン{現象|げんしょう}",
     "dummy1Ruby": "ヒートアイランド{現象|げんしょう}",
-    "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}"
+    "dummy2Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
+    "categories": [
+      "山"
+    ]
   },
   {
     "id": "geojp-lv10-027",
@@ -8563,7 +10087,10 @@
     "dummy3": "偏西風",
     "answerRuby": "{季節風|きせつふう}",
     "dummy2Ruby": "フェーン{現象|げんしょう}",
-    "dummy3Ruby": "{偏西風|へんせいふう}"
+    "dummy3Ruby": "{偏西風|へんせいふう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-028",
@@ -8580,7 +10107,10 @@
     "dummy3": "偏西風",
     "dummy1Ruby": "{季節風|きせつふう}",
     "dummy2Ruby": "フェーン{現象|げんしょう}",
-    "dummy3Ruby": "{偏西風|へんせいふう}"
+    "dummy3Ruby": "{偏西風|へんせいふう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-029",
@@ -8598,7 +10128,10 @@
     "answerRuby": "ヒートアイランド{現象|げんしょう}",
     "dummy1Ruby": "フェーン{現象|げんしょう}",
     "dummy2Ruby": "{地盤沈下|じばんちんか}",
-    "dummy3Ruby": "{過密化|かみつか}"
+    "dummy3Ruby": "{過密化|かみつか}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-030",
@@ -8616,7 +10149,10 @@
     "answerRuby": "{過密化|かみつか}",
     "dummy1Ruby": "{過疎|かそ}{化|か}",
     "dummy2Ruby": "ドーナツ{化|か}{現象|げんしょう}",
-    "dummy3Ruby": "{限界集落|げんかいしゅうらく}"
+    "dummy3Ruby": "{限界集落|げんかいしゅうらく}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-031",
@@ -8634,7 +10170,10 @@
     "answerRuby": "{天井川|てんじょうがわ}",
     "dummy1Ruby": "{扇状地|せんじょうち}",
     "dummy2Ruby": "{三角州|さんかくす}",
-    "dummy3Ruby": "{河岸段丘|かがんだんきゅう}"
+    "dummy3Ruby": "{河岸段丘|かがんだんきゅう}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-032",
@@ -8652,7 +10191,10 @@
     "answerRuby": "{河岸段丘|かがんだんきゅう}",
     "dummy1Ruby": "{天井川|てんじょうがわ}",
     "dummy2Ruby": "{扇状地|せんじょうち}",
-    "dummy3Ruby": "{三日月湖|みかづきこ}"
+    "dummy3Ruby": "{三日月湖|みかづきこ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-033",
@@ -8669,7 +10211,10 @@
     "dummy3": "カルデラ",
     "answerRuby": "{三日月湖|みかづきこ}",
     "dummy1Ruby": "{河岸段丘|かがんだんきゅう}",
-    "dummy2Ruby": "{天井川|てんじょうがわ}"
+    "dummy2Ruby": "{天井川|てんじょうがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-034",
@@ -8687,7 +10232,10 @@
     "answerRuby": "{砂州|さす}",
     "dummy1Ruby": "{砂嘴|さし}",
     "dummy2Ruby": "{三角州|さんかくす}",
-    "dummy3Ruby": "{扇状地|せんじょうち}"
+    "dummy3Ruby": "{扇状地|せんじょうち}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-035",
@@ -8705,7 +10253,10 @@
     "answerRuby": "{砂嘴|さし}",
     "dummy1Ruby": "{砂州|さす}",
     "dummy2Ruby": "{三角州|さんかくす}",
-    "dummy3Ruby": "{扇状地|せんじょうち}"
+    "dummy3Ruby": "{扇状地|せんじょうち}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-036",
@@ -8723,7 +10274,10 @@
     "answerRuby": "{地盤沈下|じばんちんか}",
     "dummy1Ruby": "{液状|えきじょう}{化|か}{現象|げんしょう}",
     "dummy2Ruby": "{高潮|たかしお}",
-    "dummy3Ruby": "{過密化|かみつか}"
+    "dummy3Ruby": "{過密化|かみつか}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-037",
@@ -8741,7 +10295,10 @@
     "answerRuby": "{限界集落|げんかいしゅうらく}",
     "dummy1Ruby": "{過疎|かそ}{化|か}",
     "dummy2Ruby": "{過密化|かみつか}",
-    "dummy3Ruby": "ドーナツ{化|か}{現象|げんしょう}"
+    "dummy3Ruby": "ドーナツ{化|か}{現象|げんしょう}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-038",
@@ -8759,7 +10316,10 @@
     "answerRuby": "ドーナツ{化|か}{現象|げんしょう}",
     "dummy1Ruby": "{過密化|かみつか}",
     "dummy2Ruby": "{過疎|かそ}{化|か}",
-    "dummy3Ruby": "{限界集落|げんかいしゅうらく}"
+    "dummy3Ruby": "{限界集落|げんかいしゅうらく}",
+    "categories": [
+      "都道府県"
+    ]
   },
   {
     "id": "geojp-lv10-039",
@@ -8777,7 +10337,10 @@
     "answerRuby": "{自然堤防|しぜんていぼう}",
     "dummy1Ruby": "{後背湿地|こうはいしっち}",
     "dummy2Ruby": "{天井川|てんじょうがわ}",
-    "dummy3Ruby": "{三角州|さんかくす}"
+    "dummy3Ruby": "{三角州|さんかくす}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-040",
@@ -8795,7 +10358,10 @@
     "answerRuby": "{後背湿地|こうはいしっち}",
     "dummy1Ruby": "{自然堤防|しぜんていぼう}",
     "dummy2Ruby": "{天井川|てんじょうがわ}",
-    "dummy3Ruby": "{扇状地|せんじょうち}"
+    "dummy3Ruby": "{扇状地|せんじょうち}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-041",
@@ -8813,7 +10379,10 @@
     "answerRuby": "{十勝川|とかちがわ}",
     "dummy1Ruby": "{石狩川|いしかりがわ}",
     "dummy2Ruby": "{天塩川|てしおがわ}",
-    "dummy3Ruby": "{北上|きたかみ}{川|かわ}"
+    "dummy3Ruby": "{北上|きたかみ}{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-042",
@@ -8831,7 +10400,10 @@
     "answerRuby": "{江戸川|えどがわ}",
     "dummy1Ruby": "{多摩川|たまがわ}",
     "dummy2Ruby": "{荒川|あらかわ}",
-    "dummy3Ruby": "{利根川|とねがわ}"
+    "dummy3Ruby": "{利根川|とねがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-043",
@@ -8849,7 +10421,10 @@
     "answerRuby": "{紀|き}の{川|かわ}",
     "dummy1Ruby": "{由良川|ゆらがわ}",
     "dummy2Ruby": "{太田川|おおたがわ}",
-    "dummy3Ruby": "{遠賀川|おんががわ}"
+    "dummy3Ruby": "{遠賀川|おんががわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-044",
@@ -8867,7 +10442,10 @@
     "answerRuby": "{太田川|おおたがわ}",
     "dummy1Ruby": "{紀|き}の{川|かわ}",
     "dummy2Ruby": "{遠賀川|おんががわ}",
-    "dummy3Ruby": "{由良川|ゆらがわ}"
+    "dummy3Ruby": "{由良川|ゆらがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-045",
@@ -8885,7 +10463,10 @@
     "answerRuby": "{遠賀川|おんががわ}",
     "dummy1Ruby": "{太田川|おおたがわ}",
     "dummy2Ruby": "{紀|き}の{川|かわ}",
-    "dummy3Ruby": "{筑後川|ちくごがわ}"
+    "dummy3Ruby": "{筑後川|ちくごがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-046",
@@ -8903,7 +10484,10 @@
     "answerRuby": "{由良川|ゆらがわ}",
     "dummy1Ruby": "{紀|き}の{川|かわ}",
     "dummy2Ruby": "{太田川|おおたがわ}",
-    "dummy3Ruby": "{遠賀川|おんががわ}"
+    "dummy3Ruby": "{遠賀川|おんががわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-047",
@@ -8921,7 +10505,10 @@
     "answerRuby": "{相模川|さがみがわ}",
     "dummy1Ruby": "{酒匂川|さかわがわ}",
     "dummy2Ruby": "{多摩川|たまがわ}",
-    "dummy3Ruby": "{荒川|あらかわ}"
+    "dummy3Ruby": "{荒川|あらかわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-048",
@@ -8939,7 +10526,10 @@
     "answerRuby": "{酒匂川|さかわがわ}",
     "dummy1Ruby": "{相模川|さがみがわ}",
     "dummy2Ruby": "{多摩川|たまがわ}",
-    "dummy3Ruby": "{富士川|ふじがわ}"
+    "dummy3Ruby": "{富士川|ふじがわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-049",
@@ -8957,7 +10547,10 @@
     "answerRuby": "{揖斐川|いびがわ}",
     "dummy1Ruby": "{長良川|ながらがわ}",
     "dummy2Ruby": "{木曽|きそ}{川|かわ}",
-    "dummy3Ruby": "{紀|き}の{川|かわ}"
+    "dummy3Ruby": "{紀|き}の{川|かわ}",
+    "categories": [
+      "川・湖"
+    ]
   },
   {
     "id": "geojp-lv10-050",
@@ -8975,6 +10568,10 @@
     "answerRuby": "{長良川|ながらがわ}",
     "dummy1Ruby": "{揖斐川|いびがわ}",
     "dummy2Ruby": "{木曽|きそ}{川|かわ}",
-    "dummy3Ruby": "{紀|き}の{川|かわ}"
+    "dummy3Ruby": "{紀|き}の{川|かわ}",
+    "categories": [
+      "川・湖",
+      "祭り・行事"
+    ]
   }
 ]

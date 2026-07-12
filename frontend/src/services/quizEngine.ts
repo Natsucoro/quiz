@@ -19,6 +19,7 @@ export interface QuizData {
   dummy2Ruby?: string;
   dummy3: string;
   dummy3Ruby?: string;
+  categories?: string[];
 }
 
 export interface QuizOption {

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { getQuizzesForLevel } from '../../services/quizEngine';
 import { useHistoryStore } from '../../store/historyStore';
 import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
+import { getCategoriesForGenre } from '../../constants/categories';
 import { colors, fonts, shadow } from '../../styles/theme';
 import MaruIcon from '../../assets/icons/icon_maru.svg';
 import BatsuIcon from '../../assets/icons/icon_batsu.svg';
@@ -72,22 +73,44 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
   };
 
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
+  const genreCategories = useMemo(() => getCategoriesForGenre(genre), [genre]);
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(cat)) {
+        next.delete(cat);
+      } else {
+        next.add(cat);
+      }
+      return next;
+    });
+  };
 
   const filteredQuizzes = useMemo(() => {
     return quizzes.filter((q) => {
       const record = recordsForLevel[q.id];
       const isDisabled = disabledSet.has(q.id);
-      switch (filterMode) {
-        case 'unplayed': return !record;
-        case 'played': return !!record;
-        case 'correct': return !!record?.isCorrect;
-        case 'incorrect': return !!record && !record.isCorrect;
-        case 'enabled': return !isDisabled;
-        case 'disabled': return isDisabled;
-        default: return true;
+      const passesStatusFilter = (() => {
+        switch (filterMode) {
+          case 'unplayed': return !record;
+          case 'played': return !!record;
+          case 'correct': return !!record?.isCorrect;
+          case 'incorrect': return !!record && !record.isCorrect;
+          case 'enabled': return !isDisabled;
+          case 'disabled': return isDisabled;
+          default: return true;
+        }
+      })();
+      if (!passesStatusFilter) return false;
+      if (selectedCategories.size > 0) {
+        const cats = q.categories ?? [];
+        if (!cats.some((c) => selectedCategories.has(c))) return false;
       }
+      return true;
     });
-  }, [quizzes, recordsForLevel, disabledSet, filterMode]);
+  }, [quizzes, recordsForLevel, disabledSet, filterMode, selectedCategories]);
 
   const handleBulkEnable = () => {
     filteredQuizzes.forEach((q) => setDisabled(q.id, false));
@@ -134,6 +157,23 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
           ))}
         </div>
 
+        {genreCategories.length > 0 && (
+          <div style={filterRowStyle}>
+            {genreCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => toggleCategory(cat)}
+                style={{
+                  ...categoryChipStyle,
+                  ...(selectedCategories.has(cat) ? categoryChipActiveStyle : {}),
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div style={bulkActionRowStyle}>
           <button
             onClick={handleBulkEnable}
@@ -163,6 +203,13 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
                 <span style={rowIndexStyle}>{originalIndexById[quiz.id] + 1}</span>
                 <div style={rowQuestionWrapStyle}>
                   <p style={rowQuestionStyle}>{renderRuby(quiz.questionRuby || quiz.question)}</p>
+                  {quiz.categories && quiz.categories.length > 0 && (
+                    <div style={rowCategoryRowStyle}>
+                      {quiz.categories.map((cat) => (
+                        <span key={cat} style={rowCategoryBadgeStyle}>{cat}</span>
+                      ))}
+                    </div>
+                  )}
                   <div style={rowStatusStyle}>
                     {record ? (
                       <span style={playedBadgeStyle}>出題済み</span>
@@ -262,6 +309,16 @@ const filterChipActiveStyle: React.CSSProperties = {
   background: colors.primary, color: '#fff', border: `1.5px solid ${colors.primaryDark}`,
 };
 
+const categoryChipStyle: React.CSSProperties = {
+  background: '#FFF3E0', color: colors.tertiaryDark, border: `1.5px solid ${colors.tertiary}`,
+  borderRadius: '50px', padding: '4px 10px', fontSize: '0.72em', fontWeight: 'bold',
+  cursor: 'pointer',
+};
+
+const categoryChipActiveStyle: React.CSSProperties = {
+  background: colors.tertiaryDark, color: '#fff', border: `1.5px solid ${colors.tertiaryDark}`,
+};
+
 const bulkActionRowStyle: React.CSSProperties = {
   display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '8px',
 };
@@ -302,6 +359,13 @@ const rowQuestionWrapStyle: React.CSSProperties = { flex: 1, minWidth: 0 };
 
 const rowQuestionStyle: React.CSSProperties = {
   margin: '0 0 6px 0', fontSize: '0.85em', color: colors.ink, lineHeight: '1.4',
+};
+
+const rowCategoryRowStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', gap: '4px', margin: '0 0 6px 0' };
+
+const rowCategoryBadgeStyle: React.CSSProperties = {
+  fontSize: '0.62em', fontWeight: 'bold', color: colors.tertiaryDark, background: '#FFF3E0',
+  border: `1px solid ${colors.tertiary}`, borderRadius: '50px', padding: '1px 7px', whiteSpace: 'nowrap',
 };
 
 const rowStatusStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px' };
