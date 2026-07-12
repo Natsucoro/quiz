@@ -2,17 +2,26 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// ジャンルIDのリスト
-const ALL_GENRES = [
-  "mammals",
-  "insects",
-  "plants",
-  "vehicles",
-  "tools",
-  "food",
-  "historical_figures",
-  "japan_geography",
-  "world_geography",
+// 全ジャンルの日本語名（itemId は `${日本語ジャンル名}_${難易度}` 形式で管理される）
+const ALL_GENRE_NAMES = [
+  "哺乳類",
+  "昆虫",
+  "植物",
+  "魚類",
+  "鳥類",
+  "爬虫類",
+  "海洋生物",
+  "乗り物",
+  "道具",
+  "歴史上の人物",
+  "日本の地理",
+  "世界の地理",
+  "食べ物",
+];
+
+// デバッグ用アカウント（ログインすると全クイズを購入済みとして扱う）
+const DEBUG_ACCOUNTS = [
+  "watashihadare.quiz@gmail.com",
 ];
 
 interface PurchaseState {
@@ -36,17 +45,12 @@ export const usePurchaseStore = create<PurchaseState>()(
       userEmail: null,
       login: (email: string) => {
         let itemsToUnlock: string[] = [];
-        if (email === "watashihadare.quiz@gmail.com") {
-          // テストアカウントの場合、全ジャンル、難易度3-5, 8-10を解放
-          const JP_GENRES: Record<string, string> = {
-            "mammals": "哺乳類", "insects": "昆虫", "plants": "植物",
-            "vehicles": "乗り物", "tools": "道具", "food": "食べ物"
-          };
-          ALL_GENRES.forEach(genre => {
-            const jpGenre = JP_GENRES[genre] || genre;
-            [3, 4, 5, 8, 9, 10].forEach(difficulty => {
-              itemsToUnlock.push(`${jpGenre}_${difficulty}`);
-            });
+        if (DEBUG_ACCOUNTS.includes(email)) {
+          // デバッグ用アカウントの場合、全13ジャンル・全難易度(1〜10)を購入済みとして解放
+          ALL_GENRE_NAMES.forEach(genre => {
+            for (let difficulty = 1; difficulty <= 10; difficulty++) {
+              itemsToUnlock.push(`${genre}_${difficulty}`);
+            }
           });
         }
         set((state) => ({
