@@ -16,7 +16,7 @@ const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
 const ALL_BUNDLE_PRICE_JPY = 1480;
 // ジャンルまとめ買いとして許容する有料レベル数(それ以外はなりすまし防止のため拒否する)
 const VALID_GENRE_BUNDLE_SIZES = [3, 6];
-// 全13ジャンルLv1-10のうち、ゲスト無料レベル[1,2,6,7]を除いた有料レベル
+// 全16ジャンルLv1-10のうち、ゲスト無料レベル[1,2,6,7]を除いた有料レベル
 // (frontend/src/store/purchaseStore.ts等と一致させること)
 const PAID_DIFFICULTIES = [3, 4, 5, 8, 9, 10];
 // AndroidアプリのパッケージID(frontend/src/services/platform.tsと一致させること)
