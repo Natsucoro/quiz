@@ -644,14 +644,12 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         {(feedback === 'correct' || feedback === 'surrender') && currentQuiz && (
           <p style={answerInBoxStyle}>
             答え「{currentQuiz.answer}」
-            <a
-              href={buildImageSearchUrl(currentQuiz.answer)}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => window.open(buildImageSearchUrl(currentQuiz.answer), '_blank', 'noopener,noreferrer')}
               style={imageSearchLinkStyle}
             >
               🔍 画像で見る
-            </a>
+            </button>
           </p>
         )}
         {!(feedback === 'correct' || feedback === 'surrender') && showHint === null && (
@@ -784,8 +782,8 @@ const surrenderButtonStyle: React.CSSProperties = { background: colors.dangerGra
 const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.ink, textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF3D6', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px solid ${colors.warning}` };
 const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: colors.successDark, textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(61,201,176,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px dashed ${colors.success}` };
 // 答え・選択肢から画像検索(別タブ)へ飛ぶリンク/バッジ
-const imageSearchLinkStyle: React.CSSProperties = { display: 'inline-block', marginLeft: '10px', fontSize: '0.6em', fontWeight: 'bold', color: '#fff', background: colors.violet, padding: '5px 12px', borderRadius: '50px', textDecoration: 'none', verticalAlign: 'middle', boxShadow: shadow.sm };
-const imageSearchBadgeStyle: React.CSSProperties = { position: 'absolute', bottom: '2px', right: '4px', fontSize: '0.85em', pointerEvents: 'none' };
+const imageSearchLinkStyle: React.CSSProperties = { display: 'block', margin: '10px auto 0', fontSize: '0.95em', fontWeight: 'bold', color: '#fff', background: colors.violet, padding: '10px 22px', borderRadius: '50px', border: '2px solid #fff', boxShadow: `0 4px 0 ${colors.violetDark}`, cursor: 'pointer' };
+const imageSearchBadgeStyle: React.CSSProperties = { position: 'absolute', bottom: '-9px', right: '-9px', width: '30px', height: '30px', minWidth: '30px', minHeight: '30px', borderRadius: '50%', background: '#fff', border: `2px solid ${colors.violet}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1em', boxShadow: shadow.sm, pointerEvents: 'none' };
 const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
 const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: colors.primaryDark, fontWeight: 'bold', margin: 0 };
 const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: colors.ink, fontWeight: 'bold', margin: 0 };
