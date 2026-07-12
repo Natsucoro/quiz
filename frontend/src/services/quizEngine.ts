@@ -195,3 +195,17 @@ export const getAvailableDifficultiesForGenre = (genre: string): number[] => {
              .forEach(quiz => difficulties.add(quiz.difficulty));
   return Array.from(difficulties).sort((a, b) => a - b);
 };
+
+// 無料で遊べるレベル（子ども向けLv1-2、おとな向けLv6-7の体験用）
+export const FREE_DIFFICULTIES = [1, 2, 6, 7];
+
+// あるジャンルの「購入が必要なレベル」一覧（実データに基づくため、ジャンルの
+// レベル構成が将来変わっても自動的に追従する）
+export const getPaidDifficultiesForGenre = (genre: string): number[] => {
+  return getAvailableDifficultiesForGenre(genre).filter((d) => !FREE_DIFFICULTIES.includes(d));
+};
+
+// ジャンルまとめ買いで解放されるitemIdの一覧
+export const getGenreBundleItemIds = (genre: string): string[] => {
+  return getPaidDifficultiesForGenre(genre).map((d) => `${genre}_${d}`);
+};

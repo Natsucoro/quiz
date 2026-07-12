@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
-import { getAllAvailableQuizzesCount } from '../../services/quizEngine';
+import { getAllAvailableQuizzesCount, getGenreBundleItemIds } from '../../services/quizEngine';
 import { colors, fonts, shadow } from '../../styles/theme';
+
+// バックエンド(functions/src/index.ts)の価格設定と一致させること
+const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
+const ALL_BUNDLE_PRICE_JPY = 1480;
 
 interface PaywallModalProps {
   genre: string;
@@ -13,14 +17,18 @@ interface PaywallModalProps {
 }
 
 const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose, onTestPurchase, onLoginRequest }) => {
-  const { isPurchased, isLoggedIn } = usePurchaseStore();
+  const { isPurchased, isLoggedIn, purchasedItems, allUnlocked } = usePurchaseStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const itemId = `${genre}_${difficulty}`;
   const alreadyPurchased = isPurchased(itemId);
   const questionCount = getAllAvailableQuizzesCount(genre, difficulty);
 
-  const handlePurchase = async () => {
-    if (alreadyPurchased || isProcessing) return;
+  const genreBundleItemIds = getGenreBundleItemIds(genre);
+  const genreBundlePrice = genreBundleItemIds.length * GENRE_BUNDLE_PRICE_PER_LEVEL_JPY;
+  const genreAlreadyUnlocked = allUnlocked || genreBundleItemIds.every((id) => purchasedItems.includes(id));
+
+  const startCheckout = async (body: Record<string, unknown>) => {
+    if (isProcessing) return;
 
     // 未ログインの場合は購入前にログイン画面を出す
     if (!isLoggedIn || !auth.currentUser) {
@@ -37,7 +45,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ itemId, genre, difficulty, origin: window.location.origin }),
+        body: JSON.stringify({ ...body, origin: window.location.origin }),
       });
       if (!res.ok) throw new Error(await res.text());
       const { url } = await res.json();
@@ -45,11 +53,28 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
       window.location.href = url;
     } catch (error) {
       console.error('Failed to start checkout:', error);
-      // Cloud Function呼び出しに失敗した場合のみ、開発用モック購入にフォールバック
-      onTestPurchase();
+      // 単品購入時のみ、Cloud Function呼び出し失敗時に開発用モック購入にフォールバック
+      if (body.bundleType === 'single') {
+        onTestPurchase();
+      }
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handlePurchase = () => {
+    if (alreadyPurchased) return;
+    startCheckout({ bundleType: 'single', itemId, genre, difficulty });
+  };
+
+  const handleGenreBundlePurchase = () => {
+    if (genreAlreadyUnlocked) return;
+    startCheckout({ bundleType: 'genre', genre, itemIds: genreBundleItemIds });
+  };
+
+  const handleAllBundlePurchase = () => {
+    if (allUnlocked) return;
+    startCheckout({ bundleType: 'all' });
   };
 
   return (
@@ -83,6 +108,22 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
         <p style={{ marginTop: '14px', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' }}>
           ※買い切り。一度購入するとずっと遊べます。
         </p>
+
+        {!allUnlocked && (
+          <div style={bundleSectionStyle}>
+            <p style={bundleDividerStyle}>🎁 まとめ買いでもっとお得に</p>
+
+            {!genreAlreadyUnlocked && (
+              <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+                「{genre}」全レベルまとめ買い（{genreBundlePrice}円）
+              </button>
+            )}
+
+            <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, background: colors.violet, opacity: isProcessing ? 0.7 : 1 }}>
+              全ジャンル・全レベル まとめ買い（{ALL_BUNDLE_PRICE_JPY}円）
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -95,5 +136,8 @@ const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily:
 const featureBoxStyle: React.CSSProperties = { background: colors.successGradient, borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(61,201,176,0.3)' };
 const purchaseButtonStyle: React.CSSProperties = { background: colors.actionGradient, color: '#fff', border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'pointer', boxShadow: `0 6px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
+const bundleSectionStyle: React.CSSProperties = { marginTop: '20px', paddingTop: '18px', borderTop: `2px dashed ${colors.lock}` };
+const bundleDividerStyle: React.CSSProperties = { margin: '0 0 12px', fontSize: '0.85em', fontWeight: 'bold', color: colors.tertiaryDark, textAlign: 'center' };
+const bundleButtonStyle: React.CSSProperties = { background: colors.secondary, color: '#fff', border: 'none', borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: shadow.sm, marginBottom: '10px' };
 
 export default PaywallModal;
