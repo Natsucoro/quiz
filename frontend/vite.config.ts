@@ -37,7 +37,13 @@ export default defineConfig({
         // PWAとしてキャッシュさせたいファイルの種類（jsonデータなどを含む）
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webp,mp3,wav}'],
         // クイズデータの増加でバンドルが5MBを超えるため上限を再度引き上げる
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        // デフォルトのnavigateFallbackは「/」以外への直接アクセス(/faq.html, /blog/*,
+        // /genres/*, /sitemap.xml等)もすべてindex.htmlへ差し替えてしまい、
+        // これらの静的ページがブラウザ・検索エンジンから閲覧できなくなるバグの原因だった。
+        // このSPA自体は常に「/」でしか表示されない(URLパスを変更しないナビゲーション実装)ため、
+        // フォールバック対象を「/」のみに限定する。
+        navigateFallbackAllowlist: [/^\/$/]
       }
     })
   ],
