@@ -25,6 +25,7 @@ const footerStyle: React.CSSProperties = {
   background: 'linear-gradient(to bottom, #BFE8D4 0%, #8FD1AE 100%)',
   padding: '16px 0',
   display: 'flex',
+  flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
   marginTop: 'auto',
@@ -38,6 +39,8 @@ const footerStyle: React.CSSProperties = {
 const linksRowStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
   gap: '8px',
   margin: '4px 0 8px',
   fontFamily: fonts.body,
