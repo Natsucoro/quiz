@@ -234,7 +234,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           </div>
         )}
 
-        <p style={footNoteStyle}>※買い切り。一度購入するとずっと遊べます。広告は表示されません。</p>
+        <p style={footNoteStyle}>※買い切り。一度購入するとずっと遊べます。</p>
       </div>
     </div>,
     document.body
