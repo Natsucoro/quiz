@@ -246,16 +246,16 @@ const App: React.FC = () => {
     }}>
       <FloatingShapes />
       
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+      <div key={currentPage} style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' }}>
         {currentPage === 'top' ? (
         <TopPage onStart={handleStart} initialView={topInitialView} onLoginRequest={() => setShowLogin(true)} />
       ) : (
-        <GamePage 
-          genre={selectedGenre} 
-          difficulty={selectedDifficulty} 
-          questionCount={selectedCount} 
-          onBack={handleBack} 
-          onBackToDifficulty={handleBackToDifficulty} 
+        <GamePage
+          genre={selectedGenre}
+          difficulty={selectedDifficulty}
+          questionCount={selectedCount}
+          onBack={handleBack}
+          onBackToDifficulty={handleBackToDifficulty}
           onMicStatus={handleMicStatus}
           onLoginRequest={() => setShowLogin(true)}
         />

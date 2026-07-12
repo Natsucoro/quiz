@@ -561,9 +561,11 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   return (
     <div style={containerStyle}>
       <style>{`
-        @keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } } 
-        @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } } 
-        @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } 
+        @keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } }
+        @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
+        @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes optionPop { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .option-pop { animation: optionPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; }
         rt { font-size: 0.5em; font-weight: normal; }
         
         /* 紙吹雪アニメーション */
@@ -613,7 +615,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         <span style={scoreStyle}>スコア: {score}</span>
       </div>
 
-      <div style={questionBoxStyle}>
+      <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' }}>
         <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
         {showHint === 1 && currentQuiz && (
           <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby || currentQuiz.hint1)}</p>
@@ -642,7 +644,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
         </div>
       ) : (
-        <div style={optionsContainerStyle}>
+        <div key={`opts-${currentQuiz?.id}`} style={optionsContainerStyle}>
           {options.map((option, index) => {
             const isCorrectOption = option.text === currentQuiz?.answer;
             const isRevealed = feedback === 'correct' || feedback === 'surrender';
@@ -650,6 +652,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             return (
               <button
                 key={index}
+                className="option-pop"
                 onClick={() => handleAnswer(option.text)}
                 disabled={isRevealed}
                 style={{
@@ -657,6 +660,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
                   backgroundColor: bg,
                   cursor: isRevealed ? 'not-allowed' : 'pointer',
                   position: 'relative', // 番号配置用
+                  animationDelay: `${index * 0.05}s`,
                 } as React.CSSProperties}
               >
                 <span style={{
