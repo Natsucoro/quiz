@@ -118,9 +118,6 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
           <span style={summaryItemStyle}>出題済み <strong>{playedCount}</strong>問</span>
           <span style={summaryItemStyle}>正解 <strong>{correctCount}</strong>問</span>
         </div>
-        <p style={helpTextStyle}>
-          チェックを外すと、その問題はこれから出題されなくなります（この端末だけの設定です）
-        </p>
 
         <div style={filterRowStyle}>
           {FILTER_OPTIONS.map((opt) => (
@@ -213,7 +210,7 @@ const overlayStyle: React.CSSProperties = {
 const modalContentStyle: React.CSSProperties = {
   position: 'relative',
   backgroundColor: '#fff',
-  padding: '25px',
+  padding: '18px 20px',
   borderRadius: '20px',
   boxShadow: shadow.lg,
   maxWidth: '560px',
@@ -227,41 +224,37 @@ const modalContentStyle: React.CSSProperties = {
 };
 
 const closeButtonStyle: React.CSSProperties = {
-  position: 'absolute', top: '14px', right: '16px',
-  background: 'none', border: 'none', fontSize: '1.3em',
+  position: 'absolute', top: '10px', right: '12px',
+  background: 'none', border: 'none', fontSize: '1.2em',
   color: colors.inkSoft, cursor: 'pointer', lineHeight: 1, padding: '4px',
 };
 
 const modalTitleStyle: React.CSSProperties = {
   color: colors.primaryDark, fontFamily: fonts.heading,
-  marginBottom: '4px', fontSize: '1.5em', fontWeight: 'bold',
+  margin: '0 0 2px 0', fontSize: '1.2em', fontWeight: 'bold',
 };
 
 const subTitleStyle: React.CSSProperties = {
-  color: colors.ink, fontWeight: 'bold', margin: '0 0 14px 0', fontSize: '1.05em',
+  color: colors.ink, fontWeight: 'bold', margin: '0 0 8px 0', fontSize: '0.9em',
 };
 
 const summaryBarStyle: React.CSSProperties = {
-  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px',
-  marginBottom: '10px',
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px',
+  marginBottom: '8px',
 };
 
 const summaryItemStyle: React.CSSProperties = {
-  background: colors.surfaceSoft, color: colors.ink, fontSize: '0.85em',
-  borderRadius: '50px', padding: '5px 12px', boxShadow: shadow.sm,
-};
-
-const helpTextStyle: React.CSSProperties = {
-  fontSize: '0.75em', color: colors.inkSoft, marginBottom: '14px',
+  background: colors.surfaceSoft, color: colors.ink, fontSize: '0.78em',
+  borderRadius: '50px', padding: '4px 10px', boxShadow: shadow.sm,
 };
 
 const filterRowStyle: React.CSSProperties = {
-  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px', marginBottom: '10px',
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px', marginBottom: '8px',
 };
 
 const filterChipStyle: React.CSSProperties = {
   background: '#F0EDF4', color: colors.inkSoft, border: '1.5px solid #E4DEE8',
-  borderRadius: '50px', padding: '5px 12px', fontSize: '0.78em', fontWeight: 'bold',
+  borderRadius: '50px', padding: '4px 10px', fontSize: '0.72em', fontWeight: 'bold',
   cursor: 'pointer',
 };
 
@@ -270,13 +263,13 @@ const filterChipActiveStyle: React.CSSProperties = {
 };
 
 const bulkActionRowStyle: React.CSSProperties = {
-  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '14px',
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '8px',
 };
 
 const bulkButtonStyle: React.CSSProperties = {
-  background: colors.violet, color: '#fff', border: 'none', borderRadius: '50px',
-  padding: '8px 14px', fontSize: '0.78em', fontWeight: 'bold', cursor: 'pointer',
-  boxShadow: '0 3px 0 rgba(74,68,88,0.2)',
+  background: colors.tertiary, color: '#fff', border: 'none', borderRadius: '50px',
+  padding: '6px 12px', fontSize: '0.72em', fontWeight: 'bold', cursor: 'pointer',
+  boxShadow: `0 3px 0 ${colors.tertiaryDark}`,
 };
 
 const bulkButtonOffStyle: React.CSSProperties = {
@@ -287,9 +280,12 @@ const emptyStateStyle: React.CSSProperties = {
   fontSize: '0.85em', color: colors.inkSoft, textAlign: 'center', padding: '20px 0',
 };
 
+// 上部の見出し・操作エリアをできるだけ小さくし、実際に操作する一覧に縦の表示領域を多く割く
 const listContainerStyle: React.CSSProperties = {
+  flex: 1,
+  minHeight: 0,
   overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px',
-  paddingRight: '2px', marginBottom: '16px', textAlign: 'left',
+  paddingRight: '2px', marginBottom: '12px', textAlign: 'left',
 };
 
 const rowStyle: React.CSSProperties = {
@@ -311,7 +307,7 @@ const rowQuestionStyle: React.CSSProperties = {
 const rowStatusStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px' };
 
 const playedBadgeStyle: React.CSSProperties = {
-  fontSize: '0.68em', fontWeight: 'bold', color: '#fff', background: colors.violet,
+  fontSize: '0.68em', fontWeight: 'bold', color: '#fff', background: colors.tertiaryDark,
   borderRadius: '50px', padding: '2px 8px',
 };
 
