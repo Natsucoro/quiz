@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyPayment = exports.createCheckoutSession = void 0;
+exports.verifyPlayPurchase = exports.verifyPayment = exports.createCheckoutSession = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const stripe_1 = require("stripe");
 const cors = require("cors");
+const googleapis_1 = require("googleapis");
+const genreSlugs_1 = require("./genreSlugs");
 // Firebase Admin SDK の初期化
 admin.initializeApp();
 const corsHandler = cors({ origin: true });
@@ -15,6 +17,11 @@ const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
 const ALL_BUNDLE_PRICE_JPY = 1480;
 // ジャンルまとめ買いとして許容する有料レベル数(それ以外はなりすまし防止のため拒否する)
 const VALID_GENRE_BUNDLE_SIZES = [3, 6];
+// 全13ジャンルLv1-10のうち、ゲスト無料レベル[1,2,6,7]を除いた有料レベル
+// (frontend/src/store/purchaseStore.ts等と一致させること)
+const PAID_DIFFICULTIES = [3, 4, 5, 8, 9, 10];
+// AndroidアプリのパッケージID(frontend/src/services/platform.tsと一致させること)
+const ANDROID_PACKAGE_NAME = "app.web.watashihadare_quiz.twa";
 // 本番ドメインからのリクエストだけLiveキーを使い、それ以外(開発プレビュー等)は
 // 常にテストキーを使う。誤って開発中にテスト以外の決済が発生しないようにするため。
 const PROD_ORIGINS = ["https://watashihadare-quiz.web.app", "https://watashihadare-quiz.firebaseapp.com"];
@@ -196,6 +203,107 @@ exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: [
         catch (error) {
             console.error('Error verifying payment:', error);
             res.status(500).json({ error: error.message || 'Internal Server Error' });
+        }
+    });
+});
+// Google Play Consoleの「API アクセス」で紐付けたサービスアカウントの認証情報を使う。
+// 事前に `firebase functions:secrets:set GOOGLE_PLAY_SERVICE_ACCOUNT_KEY` で、
+// サービスアカウントのJSON鍵ファイルの中身をそのまま登録しておくこと。
+function getAndroidPublisher() {
+    const keyJson = process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY || "";
+    if (!keyJson) {
+        throw new Error("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY is not configured.");
+    }
+    const credentials = JSON.parse(keyJson);
+    const auth = new googleapis_1.google.auth.GoogleAuth({
+        credentials,
+        scopes: ["https://www.googleapis.com/auth/androidpublisher"],
+    });
+    return googleapis_1.google.androidpublisher({ version: "v3", auth });
+}
+// productId(例: single_tools_lv3 / genre_tools / bundle_all)から、
+// このアプリの「itemId」語彙(${genre}_${difficulty} 形式)に変換する。
+// 商品IDの命名規則は frontend/src/services/playBilling.ts と完全一致させること。
+function resolvePlayProduct(productId) {
+    if (productId === "bundle_all") {
+        return { bundleType: "all", itemIds: [] };
+    }
+    const genreMatch = productId.match(/^genre_(.+)$/);
+    if (genreMatch) {
+        const genre = (0, genreSlugs_1.getGenreFromSlug)(genreMatch[1]);
+        if (!genre)
+            return null;
+        return { bundleType: "genre", itemIds: PAID_DIFFICULTIES.map((lv) => `${genre}_${lv}`) };
+    }
+    const singleMatch = productId.match(/^single_(.+)_lv(\d+)$/);
+    if (singleMatch) {
+        const genre = (0, genreSlugs_1.getGenreFromSlug)(singleMatch[1]);
+        if (!genre)
+            return null;
+        return { bundleType: "single", itemIds: [`${genre}_${singleMatch[2]}`] };
+    }
+    return null;
+}
+// AndroidアプリでのGoogle Play Billing購入を検証し、Stripe版のverifyPaymentと
+// 同じcustom claims(purchasedItems / allUnlocked)を付与する。
+exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secrets: ["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"] }).https.onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            if (req.method !== "POST") {
+                res.status(405).send("Method Not Allowed");
+                return;
+            }
+            const { productId, purchaseToken } = req.body;
+            if (!productId || !purchaseToken) {
+                res.status(400).json({ error: "Missing productId or purchaseToken" });
+                return;
+            }
+            const uid = await getUidFromAuthHeader(req.headers.authorization);
+            const resolved = resolvePlayProduct(productId);
+            if (!resolved) {
+                res.status(400).json({ error: "Unknown productId" });
+                return;
+            }
+            const androidPublisher = getAndroidPublisher();
+            const purchase = await androidPublisher.purchases.products.get({
+                packageName: ANDROID_PACKAGE_NAME,
+                productId,
+                token: purchaseToken,
+            });
+            // purchaseState: 0=購入済み, 1=キャンセル済み, 2=保留中
+            if (purchase.data.purchaseState !== 0) {
+                res.status(400).json({ error: "Purchase is not in a completed state" });
+                return;
+            }
+            // 3日以内に確認応答しないとGoogle側で自動返金されるため、未確認なら確認する
+            if (purchase.data.acknowledgementState === 0) {
+                await androidPublisher.purchases.products.acknowledge({
+                    packageName: ANDROID_PACKAGE_NAME,
+                    productId,
+                    token: purchaseToken,
+                    requestBody: {},
+                });
+            }
+            const userRecord = await admin.auth().getUser(uid);
+            const currentClaims = userRecord.customClaims || {};
+            const purchasedItems = currentClaims.purchasedItems || [];
+            if (resolved.bundleType === "all") {
+                if (!currentClaims.allUnlocked) {
+                    await admin.auth().setCustomUserClaims(uid, { ...currentClaims, allUnlocked: true });
+                }
+                res.status(200).json({ success: true, purchasedItems, allUnlocked: true });
+                return;
+            }
+            const merged = new Set([...purchasedItems, ...resolved.itemIds]);
+            const newPurchasedItems = Array.from(merged);
+            if (newPurchasedItems.length !== purchasedItems.length) {
+                await admin.auth().setCustomUserClaims(uid, { ...currentClaims, purchasedItems: newPurchasedItems });
+            }
+            res.status(200).json({ success: true, purchasedItems: newPurchasedItems, allUnlocked: !!currentClaims.allUnlocked });
+        }
+        catch (error) {
+            console.error("Error verifying Play purchase:", error);
+            res.status(500).json({ error: error.message || "Internal Server Error" });
         }
     });
 });
