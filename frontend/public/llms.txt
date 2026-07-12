@@ -48,6 +48,7 @@
 
 - [よくある質問](https://watashihadare-quiz.web.app/faq.html): 料金・広告の有無・対象年齢・オフライン対応・ヒント機能・購入方法などのFAQ
 - [クイズで学ぶ雑学ブログ](https://watashihadare-quiz.web.app/blog/): 動物・歴史・地理・乗り物にまつわる雑学記事一覧
+- [ジャンル別クイズ一覧](https://watashihadare-quiz.web.app/genres/): 全16ジャンルそれぞれの紹介ページ(サンプル問題・レベル構成つき)
 
 ## お問い合わせ
 
