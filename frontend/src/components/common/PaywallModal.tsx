@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
 import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getAvailableDifficultiesForGenre, getPaidDifficultiesForGenre, getTotalQuizzesCountForGenre, getTotalQuizzesCount } from '../../services/quizEngine';
@@ -91,14 +92,16 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
     startCheckout({ bundleType: 'all' });
   };
 
-  return (
+  // position: fixed のオーバーレイが親要素のtransform等の影響で画面全体を覆えなくなる
+  // (フッターより下に表示される・縦が窮屈になる)問題を避けるため、document.bodyに直接描画する
+  return createPortal(
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <div style={stickyCloseBarStyle}>
           <button onClick={onClose} style={closeButtonStyle}>✖</button>
         </div>
         <h2 style={titleStyle}>🔒 レベル解放</h2>
-        <p style={{ textAlign: 'center', margin: '0 0 14px', fontSize: '1em' }}>
+        <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: '1em' }}>
           <strong>「{genre} Lv.{difficulty}」</strong>はプレミアムレベルです！
         </p>
 
@@ -166,20 +169,21 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
 
         <p style={footNoteStyle}>※買い切り。一度購入するとずっと遊べます。</p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
-const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 };
-// 3プラン分すべて表示すると縦に長くなるため、画面に収まらない場合はモーダル内でスクロールできるようにする
-const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', maxHeight: '92vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '24px', padding: '22px 22px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body } as React.CSSProperties;
+const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 };
+// モーダル自体を画面いっぱいに近い高さで表示し、収まらない分だけ内部でスクロールできるようにする
+const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', maxHeight: '95vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '24px', padding: '26px 24px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body } as React.CSSProperties;
 // スクロールしても閉じるボタンが見えなくならないよう、sticky にする
 const stickyCloseBarStyle: React.CSSProperties = { position: 'sticky', top: 0, height: 0, textAlign: 'right', zIndex: 10 };
 const closeButtonStyle: React.CSSProperties = { position: 'relative', top: '2px', right: '-2px', background: colors.surfaceSoft, border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontSize: '1.1em', cursor: 'pointer', color: colors.inkSoft, boxShadow: shadow.sm };
-const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 6px 0', textAlign: 'center', fontSize: '1.3em' };
+const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 8px 0', textAlign: 'center', fontSize: '1.35em' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '13px', width: '100%', fontSize: '1.1em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
-const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '10px', width: '100%', fontSize: '0.9em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
-const footNoteStyle: React.CSSProperties = { margin: '10px 0 0', fontSize: '0.7em', color: colors.inkSoft, textAlign: 'center' };
+const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
+const footNoteStyle: React.CSSProperties = { margin: '16px 0 0', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' };
 
 // レベル単体プラン: まとめ買いと同じカード構成にしつつ、あえて控えめな配色にする
 // (割引もなく50問だけなので、目立たせすぎない)
@@ -187,47 +191,47 @@ const singleCardStyle: React.CSSProperties = {
   position: 'relative',
   background: colors.surfaceSoft,
   border: `2px solid #EDEAF2`,
-  borderRadius: '18px',
-  padding: '14px 18px',
-  marginBottom: '10px',
+  borderRadius: '20px',
+  padding: '20px',
+  marginBottom: '22px',
   textAlign: 'center',
   boxShadow: shadow.sm,
 };
-const singleCardTitleStyle: React.CSSProperties = { margin: '0 0 3px', color: colors.ink, fontSize: '0.95em', fontWeight: 'bold' };
-const singleCardSubtitleStyle: React.CSSProperties = { margin: '0 0 6px', fontSize: '0.8em', color: colors.inkSoft };
-const singleCardPriceStyle: React.CSSProperties = { margin: '0 0 8px', fontSize: '1.15em', fontWeight: 'bold', color: colors.ink };
+const singleCardTitleStyle: React.CSSProperties = { margin: '0 0 6px', color: colors.ink, fontSize: '1em', fontWeight: 'bold' };
+const singleCardSubtitleStyle: React.CSSProperties = { margin: '0 0 10px', fontSize: '0.85em', color: colors.inkSoft };
+const singleCardPriceStyle: React.CSSProperties = { margin: '0 0 12px', fontSize: '1.25em', fontWeight: 'bold', color: colors.ink };
 
 // 「イチオシ」まとめ買いカード関連
 const heroCardStyle: React.CSSProperties = {
   position: 'relative',
   background: colors.actionGradient,
-  borderRadius: '18px',
-  padding: '18px 18px 14px',
-  marginBottom: '12px',
+  borderRadius: '20px',
+  padding: '24px 20px 20px',
+  marginBottom: '26px',
   textAlign: 'center',
   boxShadow: `0 8px 22px rgba(226,82,122,0.35), 0 0 0 3px ${colors.tertiary}`,
 };
 const ribbonStyle: React.CSSProperties = {
   position: 'absolute',
-  top: '-11px',
-  left: '14px',
+  top: '-12px',
+  left: '16px',
   background: colors.violet,
   color: '#fff',
-  fontSize: '0.72em',
+  fontSize: '0.75em',
   fontWeight: 'bold',
-  padding: '4px 12px',
+  padding: '5px 14px',
   borderRadius: '50px',
   boxShadow: shadow.sm,
 };
 const discountBadgeStyle: React.CSSProperties = {
   position: 'absolute',
-  top: '-13px',
+  top: '-14px',
   right: '10px',
   background: colors.danger,
   color: '#fff',
-  fontSize: '0.9em',
+  fontSize: '0.95em',
   fontWeight: 'bold',
-  padding: '6px 12px',
+  padding: '8px 14px',
   borderRadius: '50px',
   boxShadow: `0 4px 10px rgba(255,107,107,0.5), 0 0 0 3px #fff`,
   transform: 'rotate(8deg)',
@@ -236,20 +240,20 @@ const discountBadgeStyle: React.CSSProperties = {
 const strikePriceStyle: React.CSSProperties = {
   color: 'rgba(255,255,255,0.75)',
   textDecoration: 'line-through',
-  fontSize: '0.9em',
+  fontSize: '0.95em',
   marginRight: '8px',
 };
 const heroPriceStyle: React.CSSProperties = {
   color: '#fff',
-  fontSize: '1.4em',
+  fontSize: '1.6em',
   fontWeight: 'bold',
 };
-const heroButtonStyle: React.CSSProperties = { background: '#fff', color: colors.primaryDark, border: 'none', borderRadius: '50px', padding: '12px', width: '100%', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
+const heroButtonStyle: React.CSSProperties = { background: '#fff', color: colors.primaryDark, border: 'none', borderRadius: '50px', padding: '14px', width: '100%', fontSize: '1.05em', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
 const allCardStyle: React.CSSProperties = {
   position: 'relative',
   background: `linear-gradient(135deg, ${colors.violet} 0%, ${colors.violetDark} 100%)`,
-  borderRadius: '18px',
-  padding: '18px 18px 14px',
+  borderRadius: '20px',
+  padding: '24px 20px 20px',
   marginBottom: '6px',
   textAlign: 'center',
   boxShadow: `0 8px 22px rgba(123,104,214,0.35)`,
