@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { getQuizzesForLevel } from '../../services/quizEngine';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getQuizzesForLevel, QuizData } from '../../services/quizEngine';
 import { useHistoryStore } from '../../store/historyStore';
 import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
 import { getCategoriesForGenre } from '../../constants/categories';
@@ -33,7 +33,20 @@ const renderRuby = (text: string): React.ReactNode[] =>
   });
 
 const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty, onClose }) => {
-  const quizzes = useMemo(() => getQuizzesForLevel(genre, difficulty), [genre, difficulty]);
+  const [quizzes, setQuizzes] = useState<QuizData[]>([]);
+  const [isLoadingQuizzes, setIsLoadingQuizzes] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setIsLoadingQuizzes(true);
+    getQuizzesForLevel(genre, difficulty).then((result) => {
+      if (cancelled) return;
+      setQuizzes(result);
+      setIsLoadingQuizzes(false);
+    });
+    return () => { cancelled = true; };
+  }, [genre, difficulty]);
+
   const originalIndexById = useMemo(() => {
     const map: Record<string, number> = {};
     quizzes.forEach((q, i) => { map[q.id] = i; });
@@ -192,10 +205,13 @@ const QuestionListModal: React.FC<QuestionListModalProps> = ({ genre, difficulty
         </div>
 
         <div style={listContainerStyle}>
-          {filteredQuizzes.length === 0 && (
+          {isLoadingQuizzes && (
+            <p style={emptyStateStyle}>問題を読み込み中...</p>
+          )}
+          {!isLoadingQuizzes && filteredQuizzes.length === 0 && (
             <p style={emptyStateStyle}>この条件に当てはまる問題はありません。</p>
           )}
-          {filteredQuizzes.map((quiz) => {
+          {!isLoadingQuizzes && filteredQuizzes.map((quiz) => {
             const record = recordsForLevel[quiz.id];
             const isDisabled = disabledSet.has(quiz.id);
             return (

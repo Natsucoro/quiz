@@ -177,10 +177,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const onBackRef = useRef(onBack);
   useEffect(() => { onBackRef.current = onBack; }, [onBack]);
 
-  const loadNextQuiz = useCallback((questionIndex: number) => {
+  const loadNextQuiz = useCallback(async (questionIndex: number) => {
     // 出題除外設定（この端末でオフにされた問題）も、既出問題と同様に候補から除外する
     const excludedIds = new Set([...playedIdsThisSession.current, ...getDisabledSet()]);
-    const nextQuiz = getNextQuiz(selectedGenre, selectedDifficulty, excludedIds);
+    const nextQuiz = await getNextQuiz(selectedGenre, selectedDifficulty, excludedIds);
     if (nextQuiz) {
       setCurrentQuiz(nextQuiz);
       setOptions(getShuffledOptions(nextQuiz));
