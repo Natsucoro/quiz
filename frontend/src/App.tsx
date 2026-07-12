@@ -16,6 +16,13 @@ import Footer from './components/common/Footer/Footer';
 import Toast from './components/common/Toast/Toast';
 import PromptDialog from './components/common/PromptDialog';
 import { colors, fonts } from './styles/theme';
+import { getPaidDifficultiesForGenre } from './services/quizEngine';
+import { trackEvent } from './services/analytics';
+
+// バックエンド(functions/src/index.ts)の価格設定と一致させること
+const SINGLE_PRICE_JPY = 120;
+const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
+const ALL_BUNDLE_PRICE_JPY = 1480;
 
 const App: React.FC = () => {
   const { isHandsFree: isHandsFreeMode } = useSettingsStore();
@@ -62,6 +69,7 @@ const App: React.FC = () => {
           }
         }
 
+        trackEvent('login_success', { method: 'email' });
         setToastMessage('ログインに成功しました！');
       })
       .catch((error) => {
@@ -133,16 +141,24 @@ const App: React.FC = () => {
         // 単品購入(${genre}_${level})か、まとめ買い(BUNDLE_GENRE_${genre} / BUNDLE_ALL)かを判定して
         // 完了メッセージを出し分ける
         let successMessage: string;
+        let planType: 'single' | 'genre' | 'all';
+        let planValue: number;
         if (itemId === 'BUNDLE_ALL') {
           successMessage = '🎉 決済完了！全ジャンル・全レベルが解放されました！';
+          planType = 'all';
+          planValue = ALL_BUNDLE_PRICE_JPY;
         } else if (itemId.startsWith('BUNDLE_GENRE_')) {
           const bundleGenre = decodeURIComponent(itemId.slice('BUNDLE_GENRE_'.length));
           successMessage = `🎉 決済完了！「${bundleGenre}」が全レベル解放されました！`;
+          planType = 'genre';
+          planValue = getPaidDifficultiesForGenre(bundleGenre).length * GENRE_BUNDLE_PRICE_PER_LEVEL_JPY;
         } else {
           const lastUnderscore = itemId.lastIndexOf('_');
           const genre = itemId.slice(0, lastUnderscore);
           const level = itemId.slice(lastUnderscore + 1);
           successMessage = `🎉 決済完了！「${genre} Lv.${level}」が解放されました！`;
+          planType = 'single';
+          planValue = SINGLE_PRICE_JPY;
         }
 
         try {
@@ -169,6 +185,7 @@ const App: React.FC = () => {
                addPurchase(itemId); // 単品購入時のみのフォールバック
             }
 
+            trackEvent('purchase', { transaction_id: sessionId, plan_type: planType, value: planValue, currency: 'JPY' });
             setToastMessage(successMessage);
           } else {
             console.error('Payment verification failed', await res.text());

@@ -3,6 +3,7 @@ import HatoIcon from '../../assets/icons/hato.svg';
 import { sendSignInLinkToEmail, signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { auth, googleProvider } from '../../lib/firebase';
 import { useToastStore } from '../../store/toastStore';
+import { trackEvent } from '../../services/analytics';
 
 interface LoginPageProps {
   onBack: () => void;
@@ -27,10 +28,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
   const handleGoogleLogin = async () => {
     setErrorMsg('');
     setIsGoogleLoading(true);
+    trackEvent('login_start', { method: 'google' });
     try {
       await signInWithPopup(auth, googleProvider);
       // 購入状態への反映はApp.tsx側のonAuthStateChangedが検知して行うので、
       // ここでは成功通知を出してモーダルを閉じるだけでよい
+      trackEvent('login_success', { method: 'google' });
       showToast('Googleでログインしました！');
       onBack();
     } catch (error: any) {
@@ -66,6 +69,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     try {
       // 言語を日本語に設定
       auth.languageCode = 'ja';
+      trackEvent('login_start', { method: 'email' });
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem('emailForSignIn', email);
       setIsSent(true);
