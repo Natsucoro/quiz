@@ -175,6 +175,7 @@ const overlayStyle: React.CSSProperties = {
   backgroundColor: 'rgba(0, 0, 0, 0.6)',
   display: 'flex', justifyContent: 'center', alignItems: 'center',
   zIndex: 1000,
+  animation: 'fadeIn 0.2s ease-out',
 };
 const contentStyle: React.CSSProperties = {
   backgroundColor: '#fff',
@@ -185,6 +186,7 @@ const contentStyle: React.CSSProperties = {
   textAlign: 'center',
   position: 'relative',
   fontFamily: "'Yomogi', cursive",
+  animation: 'screenIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
 };
 const closeButtonStyle: React.CSSProperties = {
   position: 'absolute', top: '10px', right: '15px',

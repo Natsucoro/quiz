@@ -174,9 +174,9 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   );
 };
 
-const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 };
+const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, animation: 'fadeIn 0.2s ease-out' };
 // モーダル自体を画面いっぱいに近い高さで表示し、収まらない分だけ内部でスクロールできるようにする
-const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', maxHeight: '95vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '24px', padding: '26px 24px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body } as React.CSSProperties;
+const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', maxHeight: '95vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '24px', padding: '26px 24px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body, animation: 'screenIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' } as React.CSSProperties;
 // スクロールしても閉じるボタンが見えなくならないよう、sticky にする
 const stickyCloseBarStyle: React.CSSProperties = { position: 'sticky', top: 0, height: 0, textAlign: 'right', zIndex: 10 };
 const closeButtonStyle: React.CSSProperties = { position: 'relative', top: '2px', right: '-2px', background: colors.surfaceSoft, border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontSize: '1.1em', cursor: 'pointer', color: colors.inkSoft, boxShadow: shadow.sm };

@@ -42,6 +42,24 @@
     button, input, select, textarea {
       font-family: inherit;
     }
+    /* タップした瞬間に少し縮んで押した感触を出す(inline transformより優先させるためimportant) */
+    button:not(:disabled) {
+      transition: transform 0.12s ease-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:not(:disabled):active {
+      transform: scale(0.94) !important;
+      transition: transform 0.05s ease-out;
+    }
+    /* 画面切り替え時にふわっと現れるアニメーション */
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
     </style>
 </head>
   <body>
