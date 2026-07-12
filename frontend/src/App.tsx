@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import TopPage from './components/TopPage/TopPage';
 import GamePage from './components/GamePage/GamePage';
 import FloatingMicBar from './components/common/FloatingMicBar/FloatingMicBar';
@@ -15,6 +15,7 @@ import PasswordGate from './components/common/PasswordGate';
 import Footer from './components/common/Footer/Footer';
 import Toast from './components/common/Toast/Toast';
 import PromptDialog from './components/common/PromptDialog';
+import ConfirmDialog from './components/common/ConfirmDialog';
 import { colors, fonts } from './styles/theme';
 import { getPaidDifficultiesForGenre } from './services/quizEngine';
 import { trackEvent } from './services/analytics';
@@ -39,11 +40,15 @@ const App: React.FC = () => {
     );
   });
   
-  const [currentPage, setCurrentPage] = useState<'top' | 'game'>('top');
+  // 画面の階層: 0=ジャンル選択, 1=レベル選択, 2=クイズ/結果画面
+  // ブラウザの戻るボタンで正しく1階層ずつ戻れるよう、history.pushState/popstateと同期させる
+  const [depth, setDepth] = useState<0 | 1 | 2>(0);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const currentPage: 'top' | 'game' = depth === 2 ? 'game' : 'top';
+  const showDifficultySelection = depth >= 1;
   const [selectedGenre, setSelectedGenre] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(1);
   const [selectedCount, setSelectedCount] = useState<number>(10);
-  const [topInitialView, setTopInitialView] = useState<'genre' | 'difficulty'>('genre');
   const [micStatus, setMicStatus] = useState({ isRecognizing: false, isListening: false, isProcessing: false, transcript: '' });
   const [user, setUser] = useState<User | null>(null);
   const { addPurchase, syncWithClaims, login: purchaseLogin, setLoggedOut: purchaseSetLoggedOut } = usePurchaseStore();
@@ -232,21 +237,79 @@ const App: React.FC = () => {
     setMicStatus(status);
   }, []);
 
+  // ブラウザ履歴に新しい階層を積んで、より深い画面へ進む(pushStateはpopstateを発火しないため、depthの更新もここで行う)
+  const navigateForward = useCallback((newDepth: 1 | 2) => {
+    window.history.pushState({ depth: newDepth }, '');
+    setDepth(newDepth);
+  }, []);
+
+  // ブラウザの「戻る」を実際に(newDepth階層分)発生させ、depthの更新自体はpopstateハンドラに任せる
+  const navigateBackward = useCallback((newDepth: 0 | 1) => {
+    // depth0(ジャンル選択)まで戻る場合、離脱トラップ用バッファエントリの分1つ余分に戻る必要がある
+    const steps = depth - newDepth + (newDepth === 0 ? 1 : 0);
+    if (steps > 0) {
+      window.history.go(-steps);
+    }
+  }, [depth]);
+
+  // 初回マウント時: 現在のエントリをdepth0とし、その下に「離脱トラップ」用のバッファエントリを積む
+  // (StrictModeでのeffect二重発火でも1回しか実行されないようrefで保護する)
+  const hasInitializedHistory = useRef(false);
+  useEffect(() => {
+    if (hasInitializedHistory.current) return;
+    hasInitializedHistory.current = true;
+    window.history.replaceState({ depth: 0 }, '');
+    window.history.pushState({ depth: 0, buffer: true }, '');
+  }, []);
+
+  useEffect(() => {
+    const onPopState = (e: PopStateEvent) => {
+      const state = e.state as { depth?: 0 | 1 | 2; buffer?: boolean } | null;
+      const newDepth = state?.depth ?? 0;
+      const isBuffer = !!state?.buffer;
+      // ジャンル選択画面(depth0)からさらに戻ろうとした = アプリを離れようとしている
+      if (newDepth === 0 && !isBuffer && depth === 0) {
+        setShowLeaveConfirm(true);
+        return;
+      }
+      setDepth(newDepth);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [depth]);
+
+  const handleConfirmLeave = () => {
+    setShowLeaveConfirm(false);
+    window.history.back();
+  };
+
+  const handleCancelLeave = () => {
+    setShowLeaveConfirm(false);
+    // 離脱トラップを再設置し、次にブラウザバックされた時も同じ確認を出せるようにする
+    window.history.pushState({ depth: 0, buffer: true }, '');
+  };
+
   const handleStart = (genre: string, difficulty: number, count: number) => {
     setSelectedGenre(genre);
     setSelectedDifficulty(difficulty);
     setSelectedCount(count);
-    setCurrentPage('game');
+    navigateForward(2);
   };
 
   const handleBack = () => {
-    setTopInitialView('genre');
-    setCurrentPage('top');
+    navigateBackward(0);
   };
 
   const handleBackToDifficulty = () => {
-    setTopInitialView('difficulty');
-    setCurrentPage('top');
+    navigateBackward(1);
+  };
+
+  const setShowDifficultySelection = (value: boolean) => {
+    if (value) {
+      navigateForward(1);
+    } else {
+      navigateBackward(0);
+    }
   };
 
   if (!isUnlocked) {
@@ -270,7 +333,12 @@ const App: React.FC = () => {
       
       <div key={currentPage} style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
         {currentPage === 'top' ? (
-        <TopPage onStart={handleStart} initialView={topInitialView} onLoginRequest={() => setShowLogin(true)} />
+        <TopPage
+          onStart={handleStart}
+          showDifficultySelection={showDifficultySelection}
+          setShowDifficultySelection={setShowDifficultySelection}
+          onLoginRequest={() => setShowLogin(true)}
+        />
       ) : (
         <GamePage
           genre={selectedGenre}
@@ -285,9 +353,19 @@ const App: React.FC = () => {
       </div>
 
       <Footer />
-      
+
       {showLogin && (
         <LoginPage onBack={() => setShowLogin(false)} />
+      )}
+
+      {showLeaveConfirm && (
+        <ConfirmDialog
+          message="ページを離れますか？"
+          confirmLabel="OK"
+          cancelLabel="キャンセル"
+          onConfirm={handleConfirmLeave}
+          onCancel={handleCancelLeave}
+        />
       )}
 
       {isHandsFreeMode && (

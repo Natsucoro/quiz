@@ -42,7 +42,8 @@ import ListIcon from '../../assets/icons/list.svg';
 
 interface TopPageProps {
   onStart: (genre: string, difficulty: number, count: number) => void;
-  initialView?: 'genre' | 'difficulty';
+  showDifficultySelection: boolean;
+  setShowDifficultySelection: (value: boolean) => void;
   onLoginRequest?: () => void;
 }
 
@@ -65,7 +66,7 @@ const GENRE_RUBY: Record<string, string> = {
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
 const TOP_PAGE_DIFFICULTY_KEY = 'quizAppSelectedDifficulty';
 
-const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLoginRequest }) => {
+const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, setShowDifficultySelection, onLoginRequest }) => {
   const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
   const isHandsFreeMode = isHandsFree;
   const { isLoggedIn, isPurchased, addPurchase } = usePurchaseStore();
@@ -84,7 +85,6 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const [localSelectedGenre, setLocalSelectedGenre] = useState<string>(initialGenre);
   const [localSelectedDifficulty, setLocalSelectedDifficulty] = useState<number>(initialDifficulty);
   const localSelectedCount = 10;
-  const [showDifficultySelection, setShowDifficultySelection] = useState<boolean>(initialView === 'difficulty');
 
   const [isBottomButtonVisible, setIsBottomButtonVisible] = useState(false);
   const bottomButtonRef = useRef<HTMLDivElement>(null);
