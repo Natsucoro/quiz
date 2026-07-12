@@ -22,6 +22,7 @@ const ALL_GENRE_NAMES = [
 // デバッグ用アカウント（ログインすると全クイズを購入済みとして扱う）
 const DEBUG_ACCOUNTS = [
   "watashihadare.quiz@gmail.com",
+  "nakaharanatsumi+test1@gmail.com",
 ];
 
 interface PurchaseState {
