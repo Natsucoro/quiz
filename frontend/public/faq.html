@@ -29,10 +29,10 @@
   main { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
   h1 { font-family: 'Yomogi', cursive; color: #E2527A; text-align: center; font-size: 1.6em; }
   .qa { background: #fff; border-radius: 20px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(74,68,88,0.08); }
-  .q { font-weight: 800; color: #E2527A; margin: 0 0 8px; display: flex; gap: 8px; }
-  .q::before { content: "Q"; flex-shrink: 0; }
-  .a { margin: 0; display: flex; gap: 8px; }
-  .a::before { content: "A"; flex-shrink: 0; color: #3DC9B0; font-weight: 800; }
+  .q { font-weight: 800; color: #E2527A; margin: 0 0 8px; padding-left: 24px; position: relative; }
+  .q::before { content: "Q"; position: absolute; left: 0; top: 0; }
+  .a { margin: 0; padding-left: 24px; position: relative; }
+  .a::before { content: "A"; position: absolute; left: 0; top: 0; color: #3DC9B0; font-weight: 800; }
   nav.back { text-align: center; margin-top: 30px; }
   nav.back a { color: #E2527A; font-weight: bold; text-decoration: none; }
   footer { text-align: center; padding: 20px; color: #8B8598; font-size: 0.85em; }
