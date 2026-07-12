@@ -38,6 +38,7 @@ import KaniIcon from '../../assets/icons/kani.svg';
 import HagurumaIcon from '../../assets/icons/haguruma.svg';
 import RekishiIcon from '../../assets/icons/rekishi.svg';
 import FoodIcon from '../../assets/icons/food.svg';
+import AiIcon from '../../assets/icons/ai.svg';
 import FlagIcon from '../../assets/icons/flag.svg';
 import MedalKinIcon from '../../assets/icons/medaru_kin.svg';
 import MedalGinIcon from '../../assets/icons/medaru_gin.svg';
@@ -103,6 +104,7 @@ const GENRE_RUBY: Record<string, string> = {
   '哺乳類': 'ほにゅうるい', '海洋生物': 'かいようせいぶつ',
   '乗り物': 'のりもの', '道具': 'どうぐ', '歴史上の人物': 'れきしのじんぶつ',
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
+  '生成AI': 'せいせいAI',
 };
 
 const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
@@ -389,6 +391,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
+      case '生成AI': return <img src={AiIcon} alt="生成AI" style={iconStyle} />;
       default: return '❓';
     }
   };
