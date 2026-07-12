@@ -94,7 +94,9 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        <button onClick={onClose} style={closeButtonStyle}>✖</button>
+        <div style={stickyCloseBarStyle}>
+          <button onClick={onClose} style={closeButtonStyle}>✖</button>
+        </div>
         <h2 style={titleStyle}>🔒 レベル解放</h2>
         <p style={{ textAlign: 'center', margin: '20px 0', fontSize: '1.2em' }}>
           <strong>「{genre} Lv.{difficulty}」</strong> は<br />
@@ -181,8 +183,11 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
 };
 
 const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(74,68,88,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 };
-const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', backgroundColor: '#fff', borderRadius: '24px', padding: '30px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body };
-const closeButtonStyle: React.CSSProperties = { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', fontSize: '1.4em', cursor: 'pointer', color: colors.inkSoft };
+// 3プラン分すべて表示すると縦に長くなるため、画面に収まらない場合はモーダル内でスクロールできるようにする
+const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', maxHeight: '88vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderRadius: '24px', padding: '30px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body } as React.CSSProperties;
+// スクロールしても閉じるボタンが見えなくならないよう、sticky にする
+const stickyCloseBarStyle: React.CSSProperties = { position: 'sticky', top: 0, height: 0, textAlign: 'right', zIndex: 10 };
+const closeButtonStyle: React.CSSProperties = { position: 'relative', top: '2px', right: '-2px', background: colors.surfaceSoft, border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontSize: '1.1em', cursor: 'pointer', color: colors.inkSoft, boxShadow: shadow.sm };
 const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 10px 0', textAlign: 'center', fontSize: '1.5em' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
 const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
