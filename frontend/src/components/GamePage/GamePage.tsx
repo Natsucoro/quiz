@@ -638,7 +638,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         <span style={scoreStyle}>スコア: {score}</span>
       </div>
 
-      <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' }}>
+      <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
         <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
         {/* 一度見たヒントは、次のヒントに進んでも・答えが表示されても消さずに積み上げて表示する */}
         {showHint !== null && showHint >= 1 && currentQuiz && (

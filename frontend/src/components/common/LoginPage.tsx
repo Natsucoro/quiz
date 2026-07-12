@@ -190,7 +190,7 @@ const contentStyle: React.CSSProperties = {
   textAlign: 'center',
   position: 'relative',
   fontFamily: "'Yomogi', cursive",
-  animation: 'screenIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+  animation: 'screenIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
 };
 const closeButtonStyle: React.CSSProperties = {
   position: 'absolute', top: '10px', right: '15px',
