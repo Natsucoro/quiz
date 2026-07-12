@@ -57,7 +57,9 @@ const App: React.FC = () => {
           const u = result.user;
           purchaseLogin(u.email ?? '');
           const token = await u.getIdTokenResult(true);
-          if (token.claims.purchasedItems) syncWithClaims(token.claims.purchasedItems as string[]);
+          if (token.claims.purchasedItems || token.claims.allUnlocked) {
+            syncWithClaims((token.claims.purchasedItems as string[]) || [], token.claims.allUnlocked as boolean);
+          }
         }
 
         setToastMessage('ログインに成功しました！');
@@ -108,8 +110,8 @@ const App: React.FC = () => {
         setUser(u);
         purchaseLogin(u.email ?? '');
         const token = await u.getIdTokenResult(true);
-        if (token.claims.purchasedItems && Array.isArray(token.claims.purchasedItems)) {
-          syncWithClaims(token.claims.purchasedItems);
+        if ((token.claims.purchasedItems && Array.isArray(token.claims.purchasedItems)) || token.claims.allUnlocked) {
+          syncWithClaims((token.claims.purchasedItems as string[]) || [], token.claims.allUnlocked as boolean);
         }
       } else {
         setUser(null);
@@ -128,9 +130,20 @@ const App: React.FC = () => {
       const sessionId = params.get('session_id');
 
       if (isSuccess === 'true' && itemId && sessionId && user) {
-        const lastUnderscore = itemId.lastIndexOf('_');
-        const genre = itemId.slice(0, lastUnderscore);
-        const level = itemId.slice(lastUnderscore + 1);
+        // 単品購入(${genre}_${level})か、まとめ買い(BUNDLE_GENRE_${genre} / BUNDLE_ALL)かを判定して
+        // 完了メッセージを出し分ける
+        let successMessage: string;
+        if (itemId === 'BUNDLE_ALL') {
+          successMessage = '🎉 決済完了！全ジャンル・全レベルが解放されました！';
+        } else if (itemId.startsWith('BUNDLE_GENRE_')) {
+          const bundleGenre = decodeURIComponent(itemId.slice('BUNDLE_GENRE_'.length));
+          successMessage = `🎉 決済完了！「${bundleGenre}」が全レベル解放されました！`;
+        } else {
+          const lastUnderscore = itemId.lastIndexOf('_');
+          const genre = itemId.slice(0, lastUnderscore);
+          const level = itemId.slice(lastUnderscore + 1);
+          successMessage = `🎉 決済完了！「${genre} Lv.${level}」が解放されました！`;
+        }
 
         try {
           // Functionsへ決済確認と解放リクエスト
@@ -147,16 +160,16 @@ const App: React.FC = () => {
           if (res.ok) {
             // パラメータを消してリロード
             window.history.replaceState({}, document.title, window.location.pathname);
-            
+
             // トークンをリフレッシュして最新の Claims を store に反映
             const newToken = await user.getIdTokenResult(true);
-            if (newToken.claims.purchasedItems) {
-               syncWithClaims(newToken.claims.purchasedItems as string[]);
-            } else {
-               addPurchase(itemId); // fallback
+            if (newToken.claims.purchasedItems || newToken.claims.allUnlocked) {
+               syncWithClaims((newToken.claims.purchasedItems as string[]) || [], newToken.claims.allUnlocked as boolean);
+            } else if (!itemId.startsWith('BUNDLE_')) {
+               addPurchase(itemId); // 単品購入時のみのフォールバック
             }
 
-            setToastMessage(`🎉 決済完了！「${genre} Lv.${level}」が解放されました！`);
+            setToastMessage(successMessage);
           } else {
             console.error('Payment verification failed', await res.text());
             setToastMessage('決済の確認に失敗しました。');
