@@ -28,6 +28,34 @@
     <meta name="twitter:description" content="タップで遊べる、こどもから大人まで楽しめるクイズアプリ。" />
     <meta name="twitter:image" content="https://watashihadare-quiz.web.app/ogp.png" />
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "わたしはダレでしょう？クイズ集！",
+      "alternateName": "わたしはダレでしょうクイズ",
+      "url": "https://watashihadare-quiz.web.app/",
+      "description": "タップで遊べる、こどもから大人まで楽しめる4択クイズアプリ。哺乳類・昆虫・植物・魚類・鳥類・爬虫類・海洋生物・乗り物・道具・歴史上の人物・日本の地理・世界の地理・食べ物の全13ジャンル、各レベル1〜10・50問ずつを収録。声で読み上げ・ヒントあり・オフラインでも遊べます。",
+      "applicationCategory": "GameApplication",
+      "applicationSubCategory": "EducationApplication",
+      "operatingSystem": "Any (Web / PWA)",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": "ja",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "120",
+        "priceCurrency": "JPY",
+        "description": "レベル単体解放。ジャンルまとめ買い(330円)・全ジャンルまとめ買い(1,480円)もあり"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "こどもから大人まで"
+      },
+      "image": "https://watashihadare-quiz.web.app/ogp.png"
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Yomogi&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -64,6 +92,36 @@
 </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width: 700px; margin: 0 auto; padding: 24px; font-family: sans-serif; line-height: 1.7;">
+        <h1>わたしはダレでしょう？クイズ集！</h1>
+        <p>
+          タップで遊べる、こどもから大人まで楽しめる4択クイズアプリです。
+          このアプリを遊ぶにはJavaScriptを有効にしてください。
+        </p>
+        <h2>あそべるジャンル(全13ジャンル・各レベル1〜10・50問ずつ)</h2>
+        <ul>
+          <li>哺乳類 — イヌやネコから、めずらしい動物までの4択クイズ</li>
+          <li>昆虫 — 身近な虫からめずらしい虫まで学べるクイズ</li>
+          <li>植物 — 花や木、野菜や果物についてのクイズ</li>
+          <li>魚類 — 川や海に住む魚のクイズ</li>
+          <li>鳥類 — 身近な鳥から渡り鳥まで学べるクイズ</li>
+          <li>爬虫類 — ヘビやトカゲ、カメについてのクイズ</li>
+          <li>海洋生物 — クジラやタコなど海の生き物のクイズ</li>
+          <li>乗り物 — 電車・車・飛行機・船のクイズ</li>
+          <li>道具 — 日用品や工具、文房具のクイズ</li>
+          <li>歴史上の人物 — 日本と世界の偉人クイズ</li>
+          <li>日本の地理 — 都道府県や名所についてのクイズ</li>
+          <li>世界の地理 — 世界の国や名所についてのクイズ</li>
+          <li>食べ物 — 料理や食材についてのクイズ</li>
+        </ul>
+        <p>
+          レベル1・2(こども向け)とレベル6・7(おとな向け)は無料で体験でき、
+          その他のレベルは買い切り(120円〜)で解放できます。
+        </p>
+        <p><a href="/faq.html">よくある質問</a> | <a href="/blog/">クイズで学ぶ雑学ブログ</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
