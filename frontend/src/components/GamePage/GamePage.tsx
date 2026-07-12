@@ -39,7 +39,7 @@ import HagurumaIcon from '../../assets/icons/haguruma.svg';
 import RekishiIcon from '../../assets/icons/rekishi.svg';
 import FoodIcon from '../../assets/icons/food.svg';
 import AiIcon from '../../assets/icons/ai.svg';
-import DinosaurIcon from '../../assets/icons/dinosaur.svg';
+import DinosaurIcon from '../../assets/icons/texirano.svg';
 import SpaceIcon from '../../assets/icons/space.svg';
 import FlagIcon from '../../assets/icons/flag.svg';
 import MedalKinIcon from '../../assets/icons/medaru_kin.svg';

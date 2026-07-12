@@ -178,9 +178,9 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
             「{genre} Lv.{difficulty}」を遊べるように
           </h3>
           <p style={singleCardSubtitleStyle}>
-            全 {questionCount}問 が遊び放題に
+            全 {questionCount.toLocaleString()}問 が遊び放題に
           </p>
-          <p style={singleCardPriceStyle}>{SINGLE_PRICE_JPY}円</p>
+          <p style={singleCardPriceStyle}>{SINGLE_PRICE_JPY.toLocaleString()}円</p>
           {alreadyPurchased ? (
             <button style={purchasedButtonStyle} disabled>
               ✅ 購入済みです
@@ -201,14 +201,14 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
               「{genre}」を全レベル遊び放題に！
             </h3>
             <p style={{ margin: '0 0 8px', fontSize: '0.8em', color: 'rgba(255,255,255,0.9)' }}>
-              全 {genreLevelCount} レベル・<strong>全{genreTotalQuestions}問</strong>が遊び放題に！
+              全 {genreLevelCount} レベル・<strong>全{genreTotalQuestions.toLocaleString()}問</strong>が遊び放題に！
             </p>
             <p style={{ margin: '0 0 8px' }}>
-              <span style={strikePriceStyle}>{genreNormalPrice}円</span>
-              <span style={heroPriceStyle}>{genreBundlePrice}円</span>
+              <span style={strikePriceStyle}>{genreNormalPrice.toLocaleString()}円</span>
+              <span style={heroPriceStyle}>{genreBundlePrice.toLocaleString()}円</span>
             </p>
             <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
-              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${genreBundlePrice}円）`}
+              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${genreBundlePrice.toLocaleString()}円）`}
             </button>
           </div>
         )}
@@ -222,14 +222,14 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
               全ジャンルを遊び放題に！
             </h3>
             <p style={{ margin: '0 0 8px', fontSize: '0.8em', color: 'rgba(255,255,255,0.9)' }}>
-              全16ジャンル・<strong>全{allTotalQuestions}問</strong>が遊び放題に！
+              全16ジャンル・<strong>全{allTotalQuestions.toLocaleString()}問</strong>が遊び放題に！
             </p>
             <p style={{ margin: '0 0 8px' }}>
-              <span style={strikePriceStyle}>{allNormalPrice}円</span>
-              <span style={heroPriceStyle}>{ALL_BUNDLE_PRICE_JPY}円</span>
+              <span style={strikePriceStyle}>{allNormalPrice.toLocaleString()}円</span>
+              <span style={heroPriceStyle}>{ALL_BUNDLE_PRICE_JPY.toLocaleString()}円</span>
             </p>
             <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, color: colors.violetDark, opacity: isProcessing ? 0.7 : 1 }}>
-              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${ALL_BUNDLE_PRICE_JPY}円）`}
+              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${ALL_BUNDLE_PRICE_JPY.toLocaleString()}円）`}
             </button>
           </div>
         )}
