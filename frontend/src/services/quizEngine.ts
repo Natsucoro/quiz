@@ -46,6 +46,8 @@ import historyQuizzes from '../../../data/quizzes/history.json';
 import geographyJpQuizzes from '../../../data/quizzes/geography_jp.json';
 import geographyWorldQuizzes from '../../../data/quizzes/geography_world.json';
 import aiRobotQuizzes from '../../../data/quizzes/ai_robot.json';
+import dinosaursQuizzes from '../../../data/quizzes/dinosaurs.json';
+import spaceQuizzes from '../../../data/quizzes/space.json';
 
 const allQuizzes: QuizData[] = [
   ...mammalsQuizzes,
@@ -62,6 +64,8 @@ const allQuizzes: QuizData[] = [
   ...toolsQuizzes,
   ...foodQuizzes,
   ...aiRobotQuizzes,
+  ...dinosaursQuizzes,
+  ...spaceQuizzes,
 ];
 
 /**

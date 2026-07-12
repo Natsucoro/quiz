@@ -18,6 +18,8 @@ export const GENRE_SLUGS: Record<string, string> = {
   '世界の地理': 'geography_world',
   '食べ物': 'food',
   'AI・ロボット': 'ai_robot',
+  '恐竜': 'dinosaurs',
+  '宇宙・天体': 'space',
 };
 
 export const getGenreSlug = (genre: string): string => GENRE_SLUGS[genre] ?? genre;
