@@ -17,6 +17,10 @@ import { signOut } from 'firebase/auth';
 import LegalModal from '../LegalModal';
 import ConfirmDialog from '../ConfirmDialog';
 import { colors, fonts, shadow } from '../../../styles/theme';
+import { trackEvent } from '../../../services/analytics';
+
+const REQUEST_EMAIL = 'watashihadare.quiz@gmail.com';
+const REQUEST_MAX_LENGTH = 500;
 
 interface SettingsProps {
   onClose: () => void;
@@ -28,6 +32,8 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
   const [speechRate, setLocalSpeechRate] = useState<number>(getSpeechRate());
   const [showLegal, setShowLegal] = useState<'tokushoho' | 'privacy' | 'terms' | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [requestText, setRequestText] = useState('');
   const { isLoggedIn, userEmail, logout } = usePurchaseStore();
   const showToast = useToastStore((state) => state.showToast);
 
@@ -47,6 +53,18 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
     logout();
     showToast('ログアウトしました');
     onClose();
+  };
+
+  const handleSubmitRequest = () => {
+    const trimmed = requestText.trim();
+    if (!trimmed) return;
+    trackEvent('question_request_submit', { text_length: trimmed.length });
+    const subject = encodeURIComponent('【わたしはダレでしょう？クイズ】問題リクエスト');
+    const body = encodeURIComponent(trimmed);
+    window.location.href = `mailto:${REQUEST_EMAIL}?subject=${subject}&body=${body}`;
+    showToast('メールアプリが開きます。そのまま送信してください！');
+    setRequestText('');
+    setShowRequestForm(false);
   };
 
   return (
@@ -105,6 +123,48 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
               style={sliderStyle}
             />
             <span style={speechRateValueStyle}>{speechRate.toFixed(1)}倍</span>
+          </div>
+
+          {/* 問題リクエスト */}
+          <div style={settingSectionStyle}>
+            <h3 style={settingSectionTitleStyle}>問題リクエスト</h3>
+            {!showRequestForm ? (
+              <>
+                <p style={{ fontSize: '0.85em', color: colors.inkSoft, marginBottom: '10px' }}>
+                  💡 「こんな問題・ジャンルがほしい！」があれば教えてね
+                </p>
+                <button onClick={() => setShowRequestForm(true)} style={buttonStyle}>
+                  リクエストする
+                </button>
+              </>
+            ) : (
+              <>
+                <textarea
+                  value={requestText}
+                  onChange={(e) => setRequestText(e.target.value.slice(0, REQUEST_MAX_LENGTH))}
+                  placeholder="例：恐竜のクイズがほしいです！"
+                  maxLength={REQUEST_MAX_LENGTH}
+                  style={requestTextareaStyle}
+                  autoFocus
+                />
+                <p style={requestCountStyle}>{requestText.length} / {REQUEST_MAX_LENGTH}</p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={handleSubmitRequest}
+                    disabled={!requestText.trim()}
+                    style={{ ...buttonStyle, backgroundColor: colors.tertiaryDark, boxShadow: `0 4px ${colors.tertiaryDark}`, opacity: requestText.trim() ? 1 : 0.5, cursor: requestText.trim() ? 'pointer' : 'not-allowed' }}
+                  >
+                    メールで送信
+                  </button>
+                  <button
+                    onClick={() => { setShowRequestForm(false); setRequestText(''); }}
+                    style={{ ...buttonStyle, backgroundColor: '#E4DEE8', color: colors.ink, boxShadow: '0 4px #C7BFCF' }}
+                  >
+                    やめる
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* その他 */}
@@ -283,6 +343,27 @@ const settingsIconStyle: React.CSSProperties = {
   objectFit: 'contain',
   verticalAlign: 'middle',
   marginRight: '10px',
+};
+
+const requestTextareaStyle: React.CSSProperties = {
+  width: '100%',
+  minHeight: '80px',
+  padding: '10px 12px',
+  borderRadius: '14px',
+  border: `2px solid ${colors.tertiary}`,
+  fontFamily: fonts.body,
+  fontSize: '0.95em',
+  color: colors.ink,
+  boxSizing: 'border-box',
+  resize: 'vertical',
+  outline: 'none',
+};
+
+const requestCountStyle: React.CSSProperties = {
+  fontSize: '0.75em',
+  color: colors.inkSoft,
+  textAlign: 'right',
+  margin: '4px 0 10px',
 };
 
 const versionStyle: React.CSSProperties = {
