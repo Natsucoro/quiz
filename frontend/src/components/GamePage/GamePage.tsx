@@ -493,11 +493,11 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           </div>
         ))}
 
-        <h1 style={{ ...titleStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+        <h2 style={{ ...titleStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
           <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
           結果発表
           <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain', transform: 'scaleX(-1)' }} />
-        </h1>
+        </h2>
         <p style={resultGenreLevelStyle}>
           <ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby>
           <span style={difficultyInlineBadgeStyle}>Lv.{selectedDifficulty}</span>
