@@ -448,10 +448,12 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
                       <span>
                         {getDifficultyLabel(difficulty)}
                       </span>
-                      <p style={playedCountStyle}>
-                        <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>{totalCount}<ruby className="btn-ruby">問<rt>もん</rt></ruby>
-                        {isLocked && <span style={{ fontSize: '1.2em', marginLeft: '3px' }}>🔒</span>}
-                      </p>
+                      <span style={genreCountStyle}>
+                        <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>
+                        <span style={genreCountNumberStyle}>{totalCount}</span>
+                        <ruby className="btn-ruby">問<rt>もん</rt></ruby>
+                        {isLocked && <span style={{ fontSize: '1em', marginLeft: '3px' }}>🔒</span>}
+                      </span>
                       {isLocked && (
                         <span className="lock-balloon" style={lockBalloonStyle}>
                           120円で解放！
@@ -615,11 +617,10 @@ const difficultyGridStyle: React.CSSProperties = { display: 'grid', gridTemplate
 const difficultyButtonStyle: React.CSSProperties = { padding: '15px 10px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.8)', fontSize: '1.1em', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90px', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' } as React.CSSProperties;
 const lockBalloonStyle: React.CSSProperties = { position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', background: '#fff', color: colors.primaryDark, fontSize: '0.55em', fontWeight: 'bold', padding: '3px 7px', borderRadius: '10px', boxShadow: shadow.sm, whiteSpace: 'nowrap', lineHeight: '1.4', zIndex: 2, border: `1.5px solid ${colors.primary}55` };
 const lockBalloonTailStyle: React.CSSProperties = { position: 'absolute', top: '-7px', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '7px solid #fff' };
-const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.secondary, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
-const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-10px', right: '-6px', background: colors.violet, color: '#fff', fontSize: '0.5em', fontWeight: 'bold', padding: '2px 7px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', whiteSpace: 'nowrap', border: '1.5px solid #fff' };
-const detailIconButtonStyle: React.CSSProperties = { position: 'absolute', top: '-10px', left: '-6px', width: '26px', height: '26px', minWidth: '26px', minHeight: '26px', borderRadius: '50%', background: '#fff', border: `2px solid ${colors.violet}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(74,68,88,0.2)', zIndex: 3, padding: 0 };
-const detailIconImageStyle: React.CSSProperties = { width: '13px', height: '13px', objectFit: 'contain' };
-const playedCountStyle: React.CSSProperties = { fontSize: '0.72em', color: '#fff', marginTop: '2px', marginBottom: '0' };
+const freeBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-13px', right: '-8px', background: colors.secondary, color: '#fff', fontSize: '0.7em', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', boxShadow: '0 2px 4px rgba(74,68,88,0.25)', whiteSpace: 'nowrap', border: '2px solid #fff', zIndex: 3 };
+const purchasedBadgeStyle: React.CSSProperties = { position: 'absolute', top: '-13px', right: '-8px', background: colors.violet, color: '#fff', fontSize: '0.7em', fontWeight: 'bold', padding: '3px 10px', borderRadius: '12px', boxShadow: '0 2px 4px rgba(74,68,88,0.25)', whiteSpace: 'nowrap', border: '2px solid #fff', zIndex: 3 };
+const detailIconButtonStyle: React.CSSProperties = { position: 'absolute', top: '-13px', left: '-8px', width: '32px', height: '32px', minWidth: '32px', minHeight: '32px', borderRadius: '50%', background: '#fff', border: `2px solid ${colors.violet}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(74,68,88,0.25)', zIndex: 3, padding: 0 };
+const detailIconImageStyle: React.CSSProperties = { width: '16px', height: '16px', objectFit: 'contain' };
 const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 28px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' } as React.CSSProperties;
 // フローティングボタン用: ページに浮いているように見せる、はっきりした落ち影
 const floatingActionShadow = '0 14px 10px -6px rgba(74,68,88,0.35), 0 6px 16px rgba(255,111,145,0.5)';
