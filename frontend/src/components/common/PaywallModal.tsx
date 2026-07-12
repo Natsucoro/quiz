@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
-import { getAllAvailableQuizzesCount, getGenreBundleItemIds } from '../../services/quizEngine';
+import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getPaidDifficultiesForGenre } from '../../services/quizEngine';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 // バックエンド(functions/src/index.ts)の価格設定と一致させること
+const SINGLE_PRICE_JPY = 120;
 const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
 const ALL_BUNDLE_PRICE_JPY = 1480;
 
@@ -26,6 +27,14 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   const genreBundleItemIds = getGenreBundleItemIds(genre);
   const genreBundlePrice = genreBundleItemIds.length * GENRE_BUNDLE_PRICE_PER_LEVEL_JPY;
   const genreAlreadyUnlocked = allUnlocked || genreBundleItemIds.every((id) => purchasedItems.includes(id));
+  const genreNormalPrice = genreBundleItemIds.length * SINGLE_PRICE_JPY;
+  const genreDiscountPercent = Math.round((1 - genreBundlePrice / genreNormalPrice) * 100);
+
+  const allNormalPrice = getAvailableGenres().reduce(
+    (sum, g) => sum + getPaidDifficultiesForGenre(g).length * SINGLE_PRICE_JPY,
+    0
+  );
+  const allDiscountPercent = Math.round((1 - ALL_BUNDLE_PRICE_JPY / allNormalPrice) * 100);
 
   const startCheckout = async (body: Record<string, unknown>) => {
     if (isProcessing) return;
@@ -87,6 +96,29 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           プレミアムレベルです！
         </p>
         
+        {!genreAlreadyUnlocked && (
+          <div style={heroCardStyle}>
+            <span style={ribbonStyle}>イチオシ！</span>
+            <span style={discountBadgeStyle}>{genreDiscountPercent}%OFF</span>
+            <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
+              「{genre}」を全レベル遊び放題に！
+            </h3>
+            <p style={{ margin: '0 0 12px', fontSize: '0.85em', color: 'rgba(255,255,255,0.9)' }}>
+              このレベルだけでなく、全 {genreBundleItemIds.length} レベル分をまとめて解放！
+            </p>
+            <p style={{ margin: '0 0 12px' }}>
+              <span style={strikePriceStyle}>{genreNormalPrice}円</span>
+              <span style={heroPriceStyle}>{genreBundlePrice}円</span>
+            </p>
+            <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${genreBundlePrice}円）`}
+            </button>
+            <p style={{ margin: '10px 0 0', fontSize: '0.75em', color: 'rgba(255,255,255,0.85)' }}>
+              1レベルずつ買うより {genreNormalPrice - genreBundlePrice}円 お得です！
+            </p>
+          </div>
+        )}
+
         <div style={featureBoxStyle}>
           <h3 style={{ margin: '0 0 10px', color: '#fff' }}>✨ 買い切り特典 ✨</h3>
           <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
@@ -94,14 +126,14 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
             <li>一度購入すればずっと遊べます！</li>
           </ul>
         </div>
-        
+
         {alreadyPurchased ? (
           <button style={purchasedButtonStyle} disabled>
             ✅ 購入済みです
           </button>
         ) : (
-          <button onClick={handlePurchase} disabled={isProcessing} style={{ ...purchaseButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
-            {isProcessing ? '準備中…' : '💴 120円 で解放する'}
+          <button onClick={handlePurchase} disabled={isProcessing} style={{ ...singleButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+            {isProcessing ? '準備中…' : `このレベルだけ購入する（${SINGLE_PRICE_JPY}円）`}
           </button>
         )}
 
@@ -111,17 +143,13 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
 
         {!allUnlocked && (
           <div style={bundleSectionStyle}>
-            <p style={bundleDividerStyle}>🎁 まとめ買いでもっとお得に</p>
-
-            {!genreAlreadyUnlocked && (
-              <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
-                「{genre}」全レベルまとめ買い（{genreBundlePrice}円）
+            <div style={{ position: 'relative' }}>
+              <span style={discountBadgeStyle}>{allDiscountPercent}%OFF</span>
+              <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, background: colors.violet, opacity: isProcessing ? 0.7 : 1 }}>
+                全ジャンル・全レベル まとめ買い<br />
+                <span style={strikePriceStyle}>{allNormalPrice}円</span> → <strong>{ALL_BUNDLE_PRICE_JPY}円</strong>
               </button>
-            )}
-
-            <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, background: colors.violet, opacity: isProcessing ? 0.7 : 1 }}>
-              全ジャンル・全レベル まとめ買い（{ALL_BUNDLE_PRICE_JPY}円）
-            </button>
+            </div>
           </div>
         )}
       </div>
@@ -134,10 +162,58 @@ const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', ma
 const closeButtonStyle: React.CSSProperties = { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', fontSize: '1.4em', cursor: 'pointer', color: colors.inkSoft };
 const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 10px 0', textAlign: 'center', fontSize: '1.5em' };
 const featureBoxStyle: React.CSSProperties = { background: colors.successGradient, borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(61,201,176,0.3)' };
-const purchaseButtonStyle: React.CSSProperties = { background: colors.actionGradient, color: '#fff', border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'pointer', boxShadow: `0 6px 0 ${colors.primaryDark}`, transition: 'transform 0.1s, box-shadow 0.1s' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
-const bundleSectionStyle: React.CSSProperties = { marginTop: '20px', paddingTop: '18px', borderTop: `2px dashed ${colors.lock}` };
-const bundleDividerStyle: React.CSSProperties = { margin: '0 0 12px', fontSize: '0.85em', fontWeight: 'bold', color: colors.tertiaryDark, textAlign: 'center' };
-const bundleButtonStyle: React.CSSProperties = { background: colors.secondary, color: '#fff', border: 'none', borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: shadow.sm, marginBottom: '10px' };
+const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
+const bundleSectionStyle: React.CSSProperties = { marginTop: '18px', paddingTop: '18px', borderTop: `2px dashed ${colors.lock}` };
+const bundleButtonStyle: React.CSSProperties = { background: colors.secondary, color: '#fff', border: 'none', borderRadius: '50px', padding: '14px 12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: shadow.sm, lineHeight: 1.6 };
+
+// 「イチオシ」まとめ買いカード関連
+const heroCardStyle: React.CSSProperties = {
+  position: 'relative',
+  background: colors.actionGradient,
+  borderRadius: '20px',
+  padding: '24px 20px 20px',
+  marginBottom: '20px',
+  textAlign: 'center',
+  boxShadow: `0 8px 22px rgba(226,82,122,0.35), 0 0 0 3px ${colors.tertiary}`,
+};
+const ribbonStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '-12px',
+  left: '16px',
+  background: colors.violet,
+  color: '#fff',
+  fontSize: '0.75em',
+  fontWeight: 'bold',
+  padding: '5px 14px',
+  borderRadius: '50px',
+  boxShadow: shadow.sm,
+};
+const discountBadgeStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '-14px',
+  right: '10px',
+  background: colors.danger,
+  color: '#fff',
+  fontSize: '0.95em',
+  fontWeight: 'bold',
+  padding: '8px 14px',
+  borderRadius: '50px',
+  boxShadow: `0 4px 10px rgba(255,107,107,0.5), 0 0 0 3px #fff`,
+  transform: 'rotate(8deg)',
+  whiteSpace: 'nowrap',
+};
+const strikePriceStyle: React.CSSProperties = {
+  color: 'rgba(255,255,255,0.75)',
+  textDecoration: 'line-through',
+  fontSize: '0.95em',
+  marginRight: '8px',
+};
+const heroPriceStyle: React.CSSProperties = {
+  color: '#fff',
+  fontSize: '1.6em',
+  fontWeight: 'bold',
+};
+const heroButtonStyle: React.CSSProperties = { background: '#fff', color: colors.primaryDark, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.1em', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
 
 export default PaywallModal;
