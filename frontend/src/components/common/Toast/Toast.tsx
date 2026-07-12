@@ -1,6 +1,7 @@
 
 // frontend/src/components/common/Toast/Toast.tsx
 import React, { useState, useEffect } from 'react';
+import { colors, fonts, shadow } from '../../../styles/theme';
 
 interface ToastProps {
   message: string | null;
@@ -56,17 +57,19 @@ const toastStyle: React.CSSProperties = {
   position: 'fixed',
   top: '50%',
   left: '50%',
-  backgroundColor: 'rgba(0, 0, 0, 0.75)',
-  color: 'white',
-  padding: '18px 28px',
-  borderRadius: '20px',
+  backgroundColor: colors.surface,
+  color: colors.ink,
+  border: `2px solid ${colors.tertiary}`,
+  padding: '18px 30px',
+  borderRadius: '24px',
   textAlign: 'center',
-  fontSize: '1.15em',
+  fontSize: '1.1em',
   fontWeight: 'bold',
+  lineHeight: 1.5,
   zIndex: 3000,
   maxWidth: '85vw',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
-  fontFamily: "'Zen Maru Gothic', sans-serif",
+  boxShadow: shadow.lg,
+  fontFamily: fonts.body,
   pointerEvents: 'none', // 下の要素の操作を邪魔しない
   transition: `opacity ${FADE_DURATION}ms ease, transform ${FADE_DURATION}ms ease`,
 };
