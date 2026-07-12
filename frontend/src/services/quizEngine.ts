@@ -45,6 +45,7 @@ import marineQuizzes from '../../../data/quizzes/marine.json';
 import historyQuizzes from '../../../data/quizzes/history.json';
 import geographyJpQuizzes from '../../../data/quizzes/geography_jp.json';
 import geographyWorldQuizzes from '../../../data/quizzes/geography_world.json';
+import generativeAiQuizzes from '../../../data/quizzes/generative_ai.json';
 
 const allQuizzes: QuizData[] = [
   ...mammalsQuizzes,
@@ -60,6 +61,7 @@ const allQuizzes: QuizData[] = [
   ...geographyWorldQuizzes,
   ...toolsQuizzes,
   ...foodQuizzes,
+  ...generativeAiQuizzes,
 ];
 
 /**
