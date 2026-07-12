@@ -35,6 +35,7 @@ import KaniIcon from '../../assets/icons/kani.svg';
 import HagurumaIcon from '../../assets/icons/haguruma.svg';
 import RekishiIcon from '../../assets/icons/rekishi.svg';
 import FoodIcon from '../../assets/icons/food.svg';
+import AiIcon from '../../assets/icons/ai.svg';
 import GuestIcon from '../../assets/icons/guest.svg';
 import UserIcon from '../../assets/icons/user.svg';
 import MaruIcon from '../../assets/icons/icon_maru.svg';
@@ -61,6 +62,7 @@ const GENRE_RUBY: Record<string, string> = {
   '日本の地理': 'にほんのちり',
   '世界の地理': 'せかいのちり',
   '食べ物': 'たべもの',
+  '生成AI': 'せいせいAI',
 };
 
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
@@ -169,6 +171,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
+      case '生成AI': return <img src={AiIcon} alt="生成AI" style={iconStyle} />;
       default: return '❓';
     }
   };

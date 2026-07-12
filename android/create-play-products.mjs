@@ -2,7 +2,7 @@
 // android/create-play-products.mjs
 //
 // Google Play Consoleに、このアプリの購入商品(In-app products)を一括登録する。
-// 13ジャンル×有料レベル6つ+ジャンルまとめ買い13個+全ジャンルまとめ買い1個=92商品を
+// 14ジャンル×有料レベル6つ+ジャンルまとめ買い14個+全ジャンルまとめ買い1個=99商品を
 // 手作業で登録するのは大変なため、Google Play Developer APIでまとめて作成する。
 //
 // 事前準備:
@@ -43,6 +43,7 @@ const GENRE_SLUGS = {
   '日本の地理': 'geography_jp',
   '世界の地理': 'geography_world',
   '食べ物': 'food',
+  '生成AI': 'generative_ai',
 };
 
 const PAID_DIFFICULTIES = [3, 4, 5, 8, 9, 10];
@@ -70,7 +71,7 @@ function buildProductList() {
   products.push({
     sku: 'bundle_all',
     title: '全ジャンル・全レベル まとめ買い解放',
-    description: '全13ジャンル・全レベルをまとめて解放します。',
+    description: '全14ジャンル・全レベルをまとめて解放します。',
     priceJpy: ALL_BUNDLE_PRICE_JPY,
   });
 

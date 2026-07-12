@@ -16,6 +16,7 @@ export const GENRE_SLUGS: Record<string, string> = {
   "日本の地理": "geography_jp",
   "世界の地理": "geography_world",
   "食べ物": "food",
+  "生成AI": "generative_ai",
 };
 
 const SLUG_TO_GENRE: Record<string, string> = Object.fromEntries(

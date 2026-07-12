@@ -54,6 +54,7 @@ export const genreColors: Record<string, string> = {
   '日本の地理': '#FF8A5C',
   '世界の地理': '#3AA9C9',
   '食べ物': '#E85D8C',
+  '生成AI': '#4FB4E0',
 };
 
 // 難易度ボタン・選択肢ボタンの持ち回り配色(同系統4色をローテーション)
