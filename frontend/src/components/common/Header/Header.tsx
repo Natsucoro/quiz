@@ -11,8 +11,6 @@ import { colors, fonts } from '../../../styles/theme';
 import WalkingAnimals from '../WalkingAnimals';
 
 const TITLE_TEXT = 'わたしはダレでしょう？クイズ';
-// 白と淡いイエローを交互にして、キャンディっぽい賑やかさを出す
-const TITLE_COLORS = ['#FFFFFF', '#FFF3B0'];
 
 interface HeaderProps {
   onLoginRequest: () => void;
@@ -42,29 +40,14 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
   return (
     <>
       <style>{`
-        @keyframes title-letter-bounce {
-          0%, 80%, 100% { transform: translateY(0) rotate(0deg); }
-          40% { transform: translateY(-5px) rotate(-4deg); }
-        }
-        .title-letter {
-          display: inline-block;
-          animation: title-letter-bounce 2.4s ease-in-out infinite;
+        @keyframes title-pop-in {
+          from { opacity: 0; transform: scale(0.85); }
+          to { opacity: 1; transform: scale(1); }
         }
       `}</style>
       <header style={stickyHeaderStyle}>
         <h1 style={titleStyle} onClick={onTitleClick}>
-          {TITLE_TEXT.split('').map((char, i) => (
-            <span
-              key={i}
-              className="title-letter"
-              style={{
-                animationDelay: `${i * 0.07}s`,
-                color: TITLE_COLORS[i % TITLE_COLORS.length],
-              }}
-            >
-              {char === ' ' ? ' ' : char}
-            </span>
-          ))}
+          {TITLE_TEXT}
         </h1>
         <div style={headerIconsStyle}>
           <button
@@ -124,11 +107,17 @@ const stickyHeaderStyle: React.CSSProperties = {
 const titleStyle: React.CSSProperties = {
   cursor: 'pointer',
   fontFamily: fonts.heading,
-  fontSize: 'clamp(0.85em, 4.2vw, 1.65em)',
+  fontSize: 'clamp(0.75em, 3.8vw, 1.55em)',
   margin: 0,
-  textShadow: `1.5px 1.5px 0 ${colors.primaryDark}, -1.5px 1.5px 0 ${colors.primaryDark}, 1.5px -1.5px 0 ${colors.primaryDark}, -1.5px -1.5px 0 ${colors.primaryDark}, 3px 4px 5px rgba(74,68,88,0.35)`,
+  color: colors.primaryDark,
+  background: '#fff',
+  padding: '5px 14px',
+  borderRadius: '50px',
+  boxShadow: '0 3px 0 rgba(74,68,88,0.15), 0 4px 8px rgba(74,68,88,0.12)',
+  animation: 'title-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
+  textOverflow: 'ellipsis',
   flexShrink: 1,
   minWidth: 0,
 };
