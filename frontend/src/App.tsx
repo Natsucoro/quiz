@@ -8,7 +8,7 @@ import { syncWithPurchases } from './services/syncService';
 import FloatingShapes from './components/common/FloatingShapes';
 import { usePurchaseStore } from './store/purchaseStore';
 import { auth } from './lib/firebase';
-import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
+import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink, getRedirectResult } from 'firebase/auth';
 import { LoginPage } from './components/common/LoginPage';
 import PasswordGate from './components/common/PasswordGate';
 import Footer from './components/common/Footer/Footer';
@@ -89,6 +89,13 @@ const App: React.FC = () => {
         setPendingEmailPrompt(true);
       }
     }
+
+    // Googleログインがポップアップ不可な環境でリダイレクト方式にフォールバックした場合の復帰処理
+    // （成功時のストア反映はonAuthStateChangedが行うので、ここではエラー通知のみ担当）
+    getRedirectResult(auth).catch((error) => {
+      console.error('Google redirect login error:', error);
+      setToastMessage('Googleログインに失敗しました。もう一度お試しください。');
+    });
 
     // ログイン状態の監視
     const unsub = onAuthStateChanged(auth, async (u) => {
