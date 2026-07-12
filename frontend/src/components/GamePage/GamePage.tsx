@@ -104,7 +104,7 @@ const GENRE_RUBY: Record<string, string> = {
   '哺乳類': 'ほにゅうるい', '海洋生物': 'かいようせいぶつ',
   '乗り物': 'のりもの', '道具': 'どうぐ', '歴史上の人物': 'れきしのじんぶつ',
   '日本の地理': 'にほんのちり', '世界の地理': 'せかいのちり',
-  '生成AI': 'せいせいAI',
+  'AI・ロボット': 'エーアイ・ロボット',
 };
 
 const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
@@ -391,7 +391,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
-      case '生成AI': return <img src={AiIcon} alt="生成AI" style={iconStyle} />;
+      case 'AI・ロボット': return <img src={AiIcon} alt="AI・ロボット" style={iconStyle} />;
       default: return '❓';
     }
   };

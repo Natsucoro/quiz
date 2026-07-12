@@ -62,7 +62,7 @@ const GENRE_RUBY: Record<string, string> = {
   '日本の地理': 'にほんのちり',
   '世界の地理': 'せかいのちり',
   '食べ物': 'たべもの',
-  '生成AI': 'せいせいAI',
+  'AI・ロボット': 'エーアイ・ロボット',
 };
 
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
@@ -171,7 +171,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
       case '日本の地理': return <img src={NihonIcon} alt="日本の地理" style={iconStyle} />;
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
-      case '生成AI': return <img src={AiIcon} alt="生成AI" style={iconStyle} />;
+      case 'AI・ロボット': return <img src={AiIcon} alt="AI・ロボット" style={iconStyle} />;
       default: return '❓';
     }
   };
