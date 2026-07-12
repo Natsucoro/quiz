@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
-import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getPaidDifficultiesForGenre } from '../../services/quizEngine';
+import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getAvailableDifficultiesForGenre, getPaidDifficultiesForGenre, getTotalQuizzesCountForGenre, getTotalQuizzesCount } from '../../services/quizEngine';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 // バックエンド(functions/src/index.ts)の価格設定と一致させること
@@ -35,6 +35,11 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
     0
   );
   const allDiscountPercent = Math.round((1 - ALL_BUNDLE_PRICE_JPY / allNormalPrice) * 100);
+
+  // 各プランで「遊び放題になる問題数・レベル数」を明示するための集計
+  const genreTotalQuestions = getTotalQuizzesCountForGenre(genre);
+  const genreLevelCount = getAvailableDifficultiesForGenre(genre).length;
+  const allTotalQuestions = getTotalQuizzesCount();
 
   const startCheckout = async (body: Record<string, unknown>) => {
     if (isProcessing) return;
@@ -96,33 +101,12 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           プレミアムレベルです！
         </p>
         
-        {!genreAlreadyUnlocked && (
-          <div style={heroCardStyle}>
-            <span style={ribbonStyle}>イチオシ！</span>
-            <span style={discountBadgeStyle}>{genreDiscountPercent}%OFF</span>
-            <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
-              「{genre}」を全レベル遊び放題に！
-            </h3>
-            <p style={{ margin: '0 0 12px', fontSize: '0.85em', color: 'rgba(255,255,255,0.9)' }}>
-              このレベルだけでなく、全 {genreBundleItemIds.length} レベル分をまとめて解放！
-            </p>
-            <p style={{ margin: '0 0 12px' }}>
-              <span style={strikePriceStyle}>{genreNormalPrice}円</span>
-              <span style={heroPriceStyle}>{genreBundlePrice}円</span>
-            </p>
-            <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
-              {isProcessing ? '準備中…' : `🎁 まとめ買いする（${genreBundlePrice}円）`}
-            </button>
-            <p style={{ margin: '10px 0 0', fontSize: '0.75em', color: 'rgba(255,255,255,0.85)' }}>
-              1レベルずつ買うより {genreNormalPrice - genreBundlePrice}円 お得です！
-            </p>
-          </div>
-        )}
-
+        {/* ① レベル単体 */}
+        <p style={planLabelStyle}>① このレベルだけ</p>
         <div style={featureBoxStyle}>
           <h3 style={{ margin: '0 0 10px', color: '#fff' }}>✨ 買い切り特典 ✨</h3>
           <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
-            <li>全 <strong>{questionCount}問</strong> が遊び放題に！</li>
+            <li>「{genre} Lv.{difficulty}」の全 <strong>{questionCount}問</strong> が遊び放題に！</li>
             <li>一度購入すればずっと遊べます！</li>
           </ul>
         </div>
@@ -137,20 +121,58 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           </button>
         )}
 
-        <p style={{ marginTop: '14px', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' }}>
+        <p style={{ margin: '14px 0 0', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' }}>
           ※買い切り。一度購入するとずっと遊べます。
         </p>
 
+        {/* ② ジャンル買い切り */}
+        {!genreAlreadyUnlocked && (
+          <>
+            <p style={planLabelStyle}>② 「{genre}」ジャンルまとめ買い</p>
+            <div style={heroCardStyle}>
+              <span style={ribbonStyle}>イチオシ！</span>
+              <span style={discountBadgeStyle}>{genreDiscountPercent}%OFF</span>
+              <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
+                「{genre}」を全レベル遊び放題に！
+              </h3>
+              <p style={{ margin: '0 0 12px', fontSize: '0.85em', color: 'rgba(255,255,255,0.9)' }}>
+                全 {genreLevelCount} レベル・<strong>全{genreTotalQuestions}問</strong>が遊び放題に！
+              </p>
+              <p style={{ margin: '0 0 12px' }}>
+                <span style={strikePriceStyle}>{genreNormalPrice}円</span>
+                <span style={heroPriceStyle}>{genreBundlePrice}円</span>
+              </p>
+              <button onClick={handleGenreBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+                {isProcessing ? '準備中…' : `🎁 まとめ買いする（${genreBundlePrice}円）`}
+              </button>
+              <p style={{ margin: '10px 0 0', fontSize: '0.75em', color: 'rgba(255,255,255,0.85)' }}>
+                1レベルずつ買うより {genreNormalPrice - genreBundlePrice}円 お得です！
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* ③ 全問買い切り */}
         {!allUnlocked && (
-          <div style={bundleSectionStyle}>
-            <div style={{ position: 'relative' }}>
+          <>
+            <p style={planLabelStyle}>③ 全ジャンル・全レベルまとめ買い</p>
+            <div style={allCardStyle}>
               <span style={discountBadgeStyle}>{allDiscountPercent}%OFF</span>
-              <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...bundleButtonStyle, background: colors.violet, opacity: isProcessing ? 0.7 : 1 }}>
-                全ジャンル・全レベル まとめ買い<br />
-                <span style={strikePriceStyle}>{allNormalPrice}円</span> → <strong>{ALL_BUNDLE_PRICE_JPY}円</strong>
+              <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
+                全ジャンルを遊び放題に！
+              </h3>
+              <p style={{ margin: '0 0 12px', fontSize: '0.85em', color: 'rgba(255,255,255,0.9)' }}>
+                全13ジャンル・<strong>全{allTotalQuestions}問</strong>が遊び放題に！
+              </p>
+              <p style={{ margin: '0 0 12px' }}>
+                <span style={strikePriceStyle}>{allNormalPrice}円</span>
+                <span style={heroPriceStyle}>{ALL_BUNDLE_PRICE_JPY}円</span>
+              </p>
+              <button onClick={handleAllBundlePurchase} disabled={isProcessing} style={{ ...heroButtonStyle, color: colors.violetDark, opacity: isProcessing ? 0.7 : 1 }}>
+                {isProcessing ? '準備中…' : `🎁 まとめ買いする（${ALL_BUNDLE_PRICE_JPY}円）`}
               </button>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
@@ -164,8 +186,7 @@ const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily:
 const featureBoxStyle: React.CSSProperties = { background: colors.successGradient, borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(61,201,176,0.3)' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
 const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
-const bundleSectionStyle: React.CSSProperties = { marginTop: '18px', paddingTop: '18px', borderTop: `2px dashed ${colors.lock}` };
-const bundleButtonStyle: React.CSSProperties = { background: colors.secondary, color: '#fff', border: 'none', borderRadius: '50px', padding: '14px 12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: shadow.sm, lineHeight: 1.6 };
+const planLabelStyle: React.CSSProperties = { margin: '22px 0 20px', fontSize: '0.8em', fontWeight: 'bold', color: colors.inkSoft, textAlign: 'center', letterSpacing: '0.02em' };
 
 // 「イチオシ」まとめ買いカード関連
 const heroCardStyle: React.CSSProperties = {
@@ -215,5 +236,14 @@ const heroPriceStyle: React.CSSProperties = {
   fontWeight: 'bold',
 };
 const heroButtonStyle: React.CSSProperties = { background: '#fff', color: colors.primaryDark, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.1em', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
+const allCardStyle: React.CSSProperties = {
+  position: 'relative',
+  background: `linear-gradient(135deg, ${colors.violet} 0%, ${colors.violetDark} 100%)`,
+  borderRadius: '20px',
+  padding: '24px 20px 20px',
+  marginBottom: '10px',
+  textAlign: 'center',
+  boxShadow: `0 8px 22px rgba(123,104,214,0.35)`,
+};
 
 export default PaywallModal;
