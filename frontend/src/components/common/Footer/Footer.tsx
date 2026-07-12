@@ -8,6 +8,11 @@ const Footer: React.FC = () => {
   return (
     <footer style={footerStyle}>
       <WalkingAnimals />
+      <nav style={linksRowStyle}>
+        <a href="/faq.html" style={footerLinkStyle}>よくある質問</a>
+        <span style={dividerStyle}>|</span>
+        <a href="/blog/" style={footerLinkStyle}>雑学ブログ</a>
+      </nav>
       <p style={copyrightStyle}>
         🌱 &copy; {currentYear} わたしはダレでしょう？クイズ 🌳
       </p>
@@ -28,6 +33,26 @@ const footerStyle: React.CSSProperties = {
   zIndex: 10,
   position: 'relative',
   boxShadow: '0 -2px 8px rgba(74,68,88,0.08)',
+};
+
+const linksRowStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  margin: '4px 0 8px',
+  fontFamily: fonts.body,
+};
+
+const footerLinkStyle: React.CSSProperties = {
+  color: '#2E7D5C',
+  fontSize: '0.85em',
+  fontWeight: 'bold',
+  textDecoration: 'none',
+};
+
+const dividerStyle: React.CSSProperties = {
+  color: '#79BE9B',
+  fontSize: '0.8em',
 };
 
 const copyrightStyle: React.CSSProperties = {
