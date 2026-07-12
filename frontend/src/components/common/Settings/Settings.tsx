@@ -11,6 +11,7 @@ import KeyLockIcon from '../../../assets/icons/key_lock.svg';
 import ListIcon from '../../../assets/icons/list.svg';
 import { getSpeechRate, setSpeechRate } from '../../../services/speechSynthesis';
 import { usePurchaseStore } from '../../../store/purchaseStore';
+import { useToastStore } from '../../../store/toastStore';
 import { auth } from '../../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import LegalModal from '../LegalModal';
@@ -28,6 +29,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
   const [showLegal, setShowLegal] = useState<'tokushoho' | 'privacy' | 'terms' | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { isLoggedIn, userEmail, logout } = usePurchaseStore();
+  const showToast = useToastStore((state) => state.showToast);
 
   const handleSpeechRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newRate = parseFloat(event.target.value);
@@ -43,6 +45,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onLoginRequest }) => {
     setShowLogoutConfirm(false);
     await signOut(auth);
     logout();
+    showToast('ログアウトしました');
     onClose();
   };
 

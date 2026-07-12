@@ -7,6 +7,7 @@ import { speechRecognitionService } from './services/speechRecognition';
 import { syncWithPurchases } from './services/syncService';
 import FloatingShapes from './components/common/FloatingShapes';
 import { usePurchaseStore } from './store/purchaseStore';
+import { useToastStore } from './store/toastStore';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, User, isSignInWithEmailLink, signInWithEmailLink, getRedirectResult } from 'firebase/auth';
 import { LoginPage } from './components/common/LoginPage';
@@ -41,7 +42,7 @@ const App: React.FC = () => {
   const { addPurchase, syncWithClaims, login: purchaseLogin, setLoggedOut: purchaseSetLoggedOut } = usePurchaseStore();
   const [showLogin, setShowLogin] = useState(false);
   const [isProcessingLogin, setIsProcessingLogin] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const { message: toastMessage, showToast: setToastMessage, hideToast } = useToastStore();
   const [pendingEmailPrompt, setPendingEmailPrompt] = useState(false);
 
   const completeEmailSignIn = useCallback((email: string) => {
@@ -91,11 +92,15 @@ const App: React.FC = () => {
     }
 
     // Googleログインがポップアップ不可な環境でリダイレクト方式にフォールバックした場合の復帰処理
-    // （成功時のストア反映はonAuthStateChangedが行うので、ここではエラー通知のみ担当）
-    getRedirectResult(auth).catch((error) => {
-      console.error('Google redirect login error:', error);
-      setToastMessage('Googleログインに失敗しました。もう一度お試しください。');
-    });
+    // （購入状態のストア反映はonAuthStateChangedが行うので、ここでは通知表示のみ担当）
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) setToastMessage('Googleでログインしました！');
+      })
+      .catch((error) => {
+        console.error('Google redirect login error:', error);
+        setToastMessage('Googleログインに失敗しました。もう一度お試しください。');
+      });
 
     // ログイン状態の監視
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -279,7 +284,7 @@ const App: React.FC = () => {
         />
       )}
 
-      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      <Toast message={toastMessage} onClose={hideToast} />
     </div>
   );
 };
