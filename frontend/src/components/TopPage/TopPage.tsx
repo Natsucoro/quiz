@@ -10,6 +10,7 @@ import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { speechRecognitionService, detectVoiceCommand } from '../../services/speechRecognition';
+import { trackEvent } from '../../services/analytics';
 import PaywallModal from '../common/PaywallModal';
 import QuestionListModal from '../common/QuestionListModal';
 import { SpriteIcon } from '../common/SpriteIcon';
@@ -179,6 +180,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       return;
     }
     setLocalSelectedGenre(genre);
+    trackEvent('select_genre', { genre });
     const isHistoryGenre = ['歴史上の人物', '日本の歴史', '世界の歴史'].includes(genre);
     const guestFreeLevels = [1, 2, 6, 7];
     let defaultDifficulty: number;
@@ -224,6 +226,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
       handleStartQuiz();
     } else {
       setLocalSelectedDifficulty(difficulty);
+      trackEvent('select_difficulty', { genre: localSelectedGenre, difficulty });
     }
   }, [isOffline, showToast, localSelectedGenre, localSelectedDifficulty, handleStartQuiz]);
 

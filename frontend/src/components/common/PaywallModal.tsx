@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
 import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getAvailableDifficultiesForGenre, getPaidDifficultiesForGenre, getTotalQuizzesCountForGenre, getTotalQuizzesCount } from '../../services/quizEngine';
+import { trackEvent } from '../../services/analytics';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 // バックエンド(functions/src/index.ts)の価格設定と一致させること
@@ -42,6 +43,10 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
   const genreLevelCount = getAvailableDifficultiesForGenre(genre).length;
   const allTotalQuestions = getTotalQuizzesCount();
 
+  useEffect(() => {
+    trackEvent('view_paywall', { genre, difficulty });
+  }, [genre, difficulty]);
+
   const startCheckout = async (body: Record<string, unknown>) => {
     if (isProcessing) return;
 
@@ -50,6 +55,10 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
       onLoginRequest();
       return;
     }
+
+    const planType = (body.bundleType as 'single' | 'genre' | 'all') ?? 'single';
+    const planValue = planType === 'all' ? ALL_BUNDLE_PRICE_JPY : planType === 'genre' ? genreBundlePrice : SINGLE_PRICE_JPY;
+    trackEvent('begin_checkout', { plan_type: planType, value: planValue, currency: 'JPY' });
 
     setIsProcessing(true);
     try {
@@ -98,7 +107,13 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <div style={stickyCloseBarStyle}>
-          <button onClick={onClose} style={closeButtonStyle}>✖</button>
+          <button
+            onClick={() => {
+              trackEvent('close_paywall', { genre, difficulty, purchased: alreadyPurchased });
+              onClose();
+            }}
+            style={closeButtonStyle}
+          >✖</button>
         </div>
         <h2 style={titleStyle}>🔒 レベル解放</h2>
         <p style={{ textAlign: 'center', margin: '0 0 16px', fontSize: '1em' }}>

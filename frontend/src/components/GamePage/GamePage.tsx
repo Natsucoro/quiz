@@ -14,6 +14,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
 import { useHistoryStore } from '../../store/historyStore';
 import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
+import { trackEvent } from '../../services/analytics';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
 import ConfirmDialog from '../common/ConfirmDialog';
@@ -201,6 +202,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setIsQuizEnded(false);
     loadNextQuiz(0);
     initializedRef.current = true;
+    trackEvent('quiz_start', { genre: selectedGenre, difficulty: selectedDifficulty });
   }, [selectedGenre, selectedDifficulty, loadNextQuiz]);
 
   // 問題の読み上げ
@@ -218,9 +220,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       const next = prev + 1;
       if (next >= questionCount) {
         setIsQuizEnded(true);
-        if (!isMutedRef.current && isSpeakingAllowed) {
-          setScore(s => { speak(`クイズ終了です。あなたのスコアは${s}点でした。`); return s; });
-        }
+        setScore(s => {
+          trackEvent('quiz_complete', { genre: selectedGenre, difficulty: selectedDifficulty, score: s, question_count: questionCount });
+          if (!isMutedRef.current && isSpeakingAllowed) {
+            speak(`クイズ終了です。あなたのスコアは${s}点でした。`);
+          }
+          return s;
+        });
       } else {
         quizSequenceRef.current = 0;
         setFeedback(null);
@@ -230,7 +236,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       }
       return next;
     });
-  }, [isSpeakingAllowed, loadNextQuiz, questionCount]);
+  }, [isSpeakingAllowed, loadNextQuiz, questionCount, selectedGenre, selectedDifficulty]);
 
   handleNextQuestionRef.current = handleNextQuestion;
 
@@ -253,6 +259,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     quizSequenceRef.current++;
     const correct = checkAnswer(currentQuiz, userAnswer);
     setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, correct);
+    trackEvent('question_answered', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id, is_correct: correct });
     if (correct) {
       playSound('correct');
       if (!hasAnsweredIncorrectlyRef.current) setScore(prev => prev + 1);
@@ -286,6 +293,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     quizSequenceRef.current++;
     playSound('correct');
     setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, false);
+    trackEvent('surrender', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id });
     setFeedback('surrender');
     if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
       wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
@@ -311,6 +319,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       hintText = (currentQuiz as any).hint3 ?? '';
     } else return;
     setShowHint(hintNumber);
+    trackEvent('hint_used', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id, hint_number: hintNumber });
     if (!isMuted && isSpeakingAllowed) {
       const readableHint = hintNumber === 1
         ? toReadableText(currentQuiz.hint1Ruby || currentQuiz.hint1)
@@ -318,7 +327,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       speak(`ヒント${hintNumber}：${readableHint}`);
       setConciergeMessage(null);
     }
-  }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed]);
+  }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed, selectedGenre, selectedDifficulty]);
 
   handleShowHintRef.current = handleShowHint;
 
@@ -645,7 +654,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           <p style={answerInBoxStyle}>
             答え「{currentQuiz.answer}」
             <button
-              onClick={() => window.open(buildImageSearchUrl(currentQuiz.answer), '_blank', 'noopener,noreferrer')}
+              onClick={() => {
+                trackEvent('image_search_click', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id, source: 'answer' });
+                window.open(buildImageSearchUrl(currentQuiz.answer), '_blank', 'noopener,noreferrer');
+              }}
               style={imageSearchLinkStyle}
             >
               🔍 画像で見る
@@ -678,6 +690,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
                 className="option-pop"
                 onClick={() => {
                   if (isRevealed) {
+                    trackEvent('image_search_click', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz?.id ?? '', source: 'option' });
                     window.open(buildImageSearchUrl(option.text), '_blank', 'noopener,noreferrer');
                   } else {
                     handleAnswer(option.text);
