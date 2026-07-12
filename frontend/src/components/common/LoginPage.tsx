@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import HatoIcon from '../../assets/icons/hato.svg';
 import { sendSignInLinkToEmail, signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { auth, googleProvider } from '../../lib/firebase';
+import { useToastStore } from '../../store/toastStore';
 
 interface LoginPageProps {
   onBack: () => void;
@@ -21,14 +22,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
   const [isSent, setIsSent] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const showToast = useToastStore((state) => state.showToast);
 
   const handleGoogleLogin = async () => {
     setErrorMsg('');
     setIsGoogleLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
-      // ログイン成功はApp.tsx側のonAuthStateChangedが検知して購入状態に反映するので、
-      // ここではモーダルを閉じるだけでよい
+      // 購入状態への反映はApp.tsx側のonAuthStateChangedが検知して行うので、
+      // ここでは成功通知を出してモーダルを閉じるだけでよい
+      showToast('Googleでログインしました！');
       onBack();
     } catch (error: any) {
       console.error('Google login error:', error);
