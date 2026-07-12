@@ -50,6 +50,10 @@ const renderRuby = (text: string): React.ReactNode[] =>
     return m ? <ruby key={i}>{m[1]}<rt>{m[2]}</rt></ruby> : part;
   });
 
+// 画像検索(別タブ)用のURLを組み立てる。SafeSearchを常にonにして子ども向けに配慮する。
+const buildImageSearchUrl = (term: string): string =>
+  `https://www.google.com/search?tbm=isch&safe=active&q=${encodeURIComponent(term)}`;
+
 const playCorrectSound = () => {
   const ctx = new AudioContext();
   const gain = ctx.createGain();
@@ -627,17 +631,28 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
       <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' }}>
         <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
-        {showHint === 1 && currentQuiz && (
+        {/* 一度見たヒントは、次のヒントに進んでも・答えが表示されても消さずに積み上げて表示する */}
+        {showHint !== null && showHint >= 1 && currentQuiz && (
           <p style={hintTextStyle}>ヒント1: {renderRuby(currentQuiz.hint1Ruby || currentQuiz.hint1)}</p>
         )}
-        {showHint === 2 && currentQuiz && (
+        {showHint !== null && showHint >= 2 && currentQuiz && (
           <p style={hintTextStyle}>ヒント2: {(currentQuiz as any).hint2}</p>
         )}
-        {showHint === 3 && currentQuiz && (
+        {showHint !== null && showHint >= 3 && currentQuiz && (
           <p style={hintTextStyle}>ヒント3: {(currentQuiz as any).hint3}</p>
         )}
         {(feedback === 'correct' || feedback === 'surrender') && currentQuiz && (
-          <p style={answerInBoxStyle}>答え「{currentQuiz.answer}」</p>
+          <p style={answerInBoxStyle}>
+            答え「{currentQuiz.answer}」
+            <a
+              href={buildImageSearchUrl(currentQuiz.answer)}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={imageSearchLinkStyle}
+            >
+              🔍 画像で見る
+            </a>
+          </p>
         )}
         {!(feedback === 'correct' || feedback === 'surrender') && showHint === null && (
           <button onClick={() => handleShowHint(1)} style={{ ...actionButtonStyle, backgroundColor: showHint === 1 ? colors.warning : colors.primary, width: '100%', maxWidth: '100%', boxSizing: 'border-box' } as React.CSSProperties}>
@@ -663,12 +678,18 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
               <button
                 key={index}
                 className="option-pop"
-                onClick={() => handleAnswer(option.text)}
-                disabled={isRevealed}
+                onClick={() => {
+                  if (isRevealed) {
+                    window.open(buildImageSearchUrl(option.text), '_blank', 'noopener,noreferrer');
+                  } else {
+                    handleAnswer(option.text);
+                  }
+                }}
+                title={isRevealed ? `「${option.text}」の画像を見る` : undefined}
                 style={{
                   ...optionButtonStyle,
                   backgroundColor: bg,
-                  cursor: isRevealed ? 'not-allowed' : 'pointer',
+                  cursor: 'pointer',
                   position: 'relative', // 番号配置用
                   animationDelay: `${index * 0.05}s`,
                 } as React.CSSProperties}
@@ -686,6 +707,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
                   {['①', '②', '③', '④'][index]}
                 </span>
                 {renderRuby(option.ruby || option.text)}
+                {isRevealed && <span style={imageSearchBadgeStyle}>🔍</span>}
               </button>
             );
           })}
@@ -761,6 +783,9 @@ const actionButtonStyle: React.CSSProperties = { background: colors.actionGradie
 const surrenderButtonStyle: React.CSSProperties = { background: colors.dangerGradient, color: 'white', padding: '14px 22px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.dangerDark}`, width: '100%' };
 const hintTextStyle: React.CSSProperties = { fontSize: '1.05em', color: colors.ink, textAlign: 'center', margin: 0, padding: '8px 16px', backgroundColor: '#FFF3D6', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px solid ${colors.warning}` };
 const answerInBoxStyle: React.CSSProperties = { fontSize: '1.2em', fontWeight: 'bold', color: colors.successDark, textAlign: 'center', margin: 0, padding: '10px 16px', background: 'rgba(61,201,176,0.12)', borderRadius: '12px', width: '100%', boxSizing: 'border-box' as const, border: `2px dashed ${colors.success}` };
+// 答え・選択肢から画像検索(別タブ)へ飛ぶリンク/バッジ
+const imageSearchLinkStyle: React.CSSProperties = { display: 'inline-block', marginLeft: '10px', fontSize: '0.6em', fontWeight: 'bold', color: '#fff', background: colors.violet, padding: '5px 12px', borderRadius: '50px', textDecoration: 'none', verticalAlign: 'middle', boxShadow: shadow.sm };
+const imageSearchBadgeStyle: React.CSSProperties = { position: 'absolute', bottom: '2px', right: '4px', fontSize: '0.85em', pointerEvents: 'none' };
 const handsFreeGuideStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '20px', padding: '20px', margin: '10px 0', width: '90%', maxWidth: '700px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '10px' };
 const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: colors.primaryDark, fontWeight: 'bold', margin: 0 };
 const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: colors.ink, fontWeight: 'bold', margin: 0 };
