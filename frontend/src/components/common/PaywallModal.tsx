@@ -101,36 +101,36 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           プレミアムレベルです！
         </p>
         
-        {/* ① レベル単体 */}
+        {/* ① レベル単体（バッジなし・控えめ） */}
         <p style={planLabelStyle}>① このレベルだけ</p>
-        <div style={featureBoxStyle}>
-          <h3 style={{ margin: '0 0 10px', color: '#fff' }}>✨ 買い切り特典 ✨</h3>
-          <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
-            <li>「{genre} Lv.{difficulty}」の全 <strong>{questionCount}問</strong> が遊び放題に！</li>
-            <li>一度購入すればずっと遊べます！</li>
-          </ul>
+        <div style={singleCardStyle}>
+          <h3 style={singleCardTitleStyle}>
+            「{genre} Lv.{difficulty}」を遊べるように
+          </h3>
+          <p style={singleCardSubtitleStyle}>
+            全 {questionCount}問 が遊び放題に
+          </p>
+          <p style={singleCardPriceStyle}>{SINGLE_PRICE_JPY}円</p>
+          {alreadyPurchased ? (
+            <button style={purchasedButtonStyle} disabled>
+              ✅ 購入済みです
+            </button>
+          ) : (
+            <button onClick={handlePurchase} disabled={isProcessing} style={{ ...singleButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
+              {isProcessing ? '準備中…' : 'このレベルだけ購入する'}
+            </button>
+          )}
+          <p style={singleCardNoteStyle}>
+            ※買い切り。一度購入するとずっと遊べます。
+          </p>
         </div>
-
-        {alreadyPurchased ? (
-          <button style={purchasedButtonStyle} disabled>
-            ✅ 購入済みです
-          </button>
-        ) : (
-          <button onClick={handlePurchase} disabled={isProcessing} style={{ ...singleButtonStyle, opacity: isProcessing ? 0.7 : 1 }}>
-            {isProcessing ? '準備中…' : `このレベルだけ購入する（${SINGLE_PRICE_JPY}円）`}
-          </button>
-        )}
-
-        <p style={{ margin: '14px 0 0', fontSize: '0.75em', color: colors.inkSoft, textAlign: 'center' }}>
-          ※買い切り。一度購入するとずっと遊べます。
-        </p>
 
         {/* ② ジャンル買い切り */}
         {!genreAlreadyUnlocked && (
           <>
             <p style={planLabelStyle}>② 「{genre}」ジャンルまとめ買い</p>
             <div style={heroCardStyle}>
-              <span style={ribbonStyle}>イチオシ！</span>
+              <span style={ribbonStyle}>おすすめ！</span>
               <span style={discountBadgeStyle}>{genreDiscountPercent}%OFF</span>
               <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
                 「{genre}」を全レベル遊び放題に！
@@ -157,6 +157,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
           <>
             <p style={planLabelStyle}>③ 全ジャンル・全レベルまとめ買い</p>
             <div style={allCardStyle}>
+              <span style={ribbonStyle}>イチオシ！</span>
               <span style={discountBadgeStyle}>{allDiscountPercent}%OFF</span>
               <h3 style={{ margin: '6px 0 4px', color: '#fff', fontSize: '1.05em' }}>
                 全ジャンルを遊び放題に！
@@ -183,10 +184,26 @@ const overlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, 
 const modalStyle: React.CSSProperties = { position: 'relative', width: '90%', maxWidth: '400px', backgroundColor: '#fff', borderRadius: '24px', padding: '30px', boxShadow: shadow.lg, boxSizing: 'border-box', fontFamily: fonts.body };
 const closeButtonStyle: React.CSSProperties = { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', fontSize: '1.4em', cursor: 'pointer', color: colors.inkSoft };
 const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, margin: '0 0 10px 0', textAlign: 'center', fontSize: '1.5em' };
-const featureBoxStyle: React.CSSProperties = { background: colors.successGradient, borderRadius: '15px', padding: '20px', color: '#fff', marginBottom: '25px', boxShadow: '0 4px 15px rgba(61,201,176,0.3)' };
 const purchasedButtonStyle: React.CSSProperties = { background: '#eee', color: colors.inkSoft, border: 'none', borderRadius: '50px', padding: '15px', width: '100%', fontSize: '1.2em', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: 'none' };
 const singleButtonStyle: React.CSSProperties = { background: '#fff', color: colors.inkSoft, border: `2px solid ${colors.lock}`, borderRadius: '50px', padding: '12px', width: '100%', fontSize: '0.95em', fontWeight: 'bold', cursor: 'pointer', boxShadow: 'none' };
 const planLabelStyle: React.CSSProperties = { margin: '22px 0 20px', fontSize: '0.8em', fontWeight: 'bold', color: colors.inkSoft, textAlign: 'center', letterSpacing: '0.02em' };
+
+// ①レベル単体プラン: ②③と同じカード構成にしつつ、あえて控えめな配色にする
+// (①はまとめ買いと違って割引もなく50問だけなので、目立たせすぎない)
+const singleCardStyle: React.CSSProperties = {
+  position: 'relative',
+  background: colors.surfaceSoft,
+  border: `2px solid #EDEAF2`,
+  borderRadius: '20px',
+  padding: '22px 20px',
+  marginBottom: '10px',
+  textAlign: 'center',
+  boxShadow: shadow.sm,
+};
+const singleCardTitleStyle: React.CSSProperties = { margin: '0 0 6px', color: colors.ink, fontSize: '1em', fontWeight: 'bold' };
+const singleCardSubtitleStyle: React.CSSProperties = { margin: '0 0 12px', fontSize: '0.85em', color: colors.inkSoft };
+const singleCardPriceStyle: React.CSSProperties = { margin: '0 0 12px', fontSize: '1.3em', fontWeight: 'bold', color: colors.ink };
+const singleCardNoteStyle: React.CSSProperties = { margin: '10px 0 0', fontSize: '0.72em', color: colors.inkSoft };
 
 // 「イチオシ」まとめ買いカード関連
 const heroCardStyle: React.CSSProperties = {
