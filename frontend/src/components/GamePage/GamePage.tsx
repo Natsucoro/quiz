@@ -129,6 +129,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [isResultActionsVisible, setIsResultActionsVisible] = useState(false);
   const resultActionsRef = useRef<HTMLDivElement>(null);
 
+  // 次の問題に進むたび、画面の一番上にスクロールし直す
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [currentQuestionIndex]);
+
+  // クイズ終了画面に切り替わったときも一番上にスクロールし直す
+  useEffect(() => {
+    if (isQuizEnded) window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [isQuizEnded]);
+
   // 結果画面のボタンエリアを監視
   useEffect(() => {
     if (!isQuizEnded || !resultActionsRef.current) return;

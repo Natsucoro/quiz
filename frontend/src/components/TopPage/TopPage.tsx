@@ -91,6 +91,11 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   const [isBottomStartButtonVisible, setIsBottomStartButtonVisible] = useState(false);
   const bottomStartButtonRef = useRef<HTMLDivElement>(null);
 
+  // ジャンル選択⇔むずかしさ選択の切り替え時、画面の一番上にスクロールし直す
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [showDifficultySelection]);
+
   // 最下部のボタン（ジャンル/難易度それぞれ）が画面内に入ったか監視
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -188,6 +188,11 @@ const App: React.FC = () => {
     });
   }, []);
 
+  // TOP画面⇔クイズ画面の切り替え時、画面の一番上にスクロールし直す
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [currentPage]);
+
   useEffect(() => {
     if (currentPage === 'top') {
       speechRecognitionService.onResult((transcript, isFinal) => {
