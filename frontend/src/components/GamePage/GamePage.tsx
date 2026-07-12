@@ -489,6 +489,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           結果発表
           <img src={FlagIcon} alt="flag" style={{ width: '40px', height: '40px', objectFit: 'contain', transform: 'scaleX(-1)' }} />
         </h1>
+        <p style={resultGenreLevelStyle}>
+          <ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby>
+          <span style={difficultyInlineBadgeStyle}>Lv.{selectedDifficulty}</span>
+        </p>
 
         <div style={resultBoxStyle}>
           {/* メダル表示 */}
@@ -633,7 +637,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 
       <div style={genreInfoStyle}>
         <span style={genreIconStyle}>{getGenreIcon(selectedGenre)}</span>
-        <h2 style={genreNameStyle}><ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby></h2>
+        <h2 style={genreNameStyle}>
+          <ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby>
+          <span style={difficultyInlineBadgeStyle}>Lv.{selectedDifficulty}</span>
+        </h2>
         <span style={questionCountStyle}>{currentQuestionIndex + 1}/{questionCount}問</span>
         <span style={scoreStyle}>スコア: {score}</span>
       </div>
@@ -789,7 +796,8 @@ const containerStyle: React.CSSProperties = {
 };
 const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: colors.surfaceSoft, borderRadius: '50px', padding: '8px 20px', boxShadow: shadow.sm, width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
 const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
-const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, margin: 0, fontWeight: 'bold', flexGrow: 1 };
+const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, margin: 0, fontWeight: 'bold', flexGrow: 1, display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' };
+const difficultyInlineBadgeStyle: React.CSSProperties = { fontSize: '0.7em', color: '#fff', backgroundColor: colors.tertiaryDark, padding: '2px 9px', borderRadius: '50px', fontWeight: 'bold', whiteSpace: 'nowrap' };
 const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.primary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.primaryDark}`, whiteSpace: 'nowrap' };
 const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.secondary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.secondaryDark}`, whiteSpace: 'nowrap' };
 const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
@@ -814,6 +822,7 @@ const loadingStyle: React.CSSProperties = { fontSize: '2em', color: colors.prima
 const titleStyle: React.CSSProperties = { color: '#fff', fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: `2px 3px 0px ${colors.primaryDark}` };
 const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: shadow.lg, width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
 const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: colors.ink, margin: '10px 0' };
+const resultGenreLevelStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', margin: '0 0 8px' };
 const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginTop: '24px', width: '100%' };
 const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}` };
 const backButtonStyle: React.CSSProperties = { background: '#E4DEE8', color: colors.ink, padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: '0 5px 0 #C7BFCF' };
