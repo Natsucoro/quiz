@@ -639,6 +639,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       </div>
 
       <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
+        {currentQuiz?.categories && currentQuiz.categories.length > 0 && (
+          <div style={categoryBadgeRowStyle}>
+            {currentQuiz.categories.map((cat) => (
+              <span key={cat} style={categoryBadgeStyle}>{cat}</span>
+            ))}
+          </div>
+        )}
         <p style={questionTextStyle}>{renderRuby(currentQuiz?.questionRuby || currentQuiz?.question || '')}</p>
         {/* 一度見たヒントは、次のヒントに進んでも・答えが表示されても消さずに積み上げて表示する */}
         {showHint !== null && showHint >= 1 && currentQuiz && (
@@ -786,6 +793,8 @@ const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.p
 const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.primary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.primaryDark}`, whiteSpace: 'nowrap' };
 const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.secondary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.secondaryDark}`, whiteSpace: 'nowrap' };
 const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
+const categoryBadgeRowStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px', marginBottom: '-6px' };
+const categoryBadgeStyle: React.CSSProperties = { fontSize: '0.7em', fontWeight: 'bold', color: colors.tertiaryDark, background: '#FFF3E0', border: `1.5px solid ${colors.tertiary}`, borderRadius: '50px', padding: '2px 10px', whiteSpace: 'nowrap' };
 const questionTextStyle: React.CSSProperties = { fontSize: '1.2em', color: colors.ink, textAlign: 'center', fontWeight: 'bold', lineHeight: '1.5', margin: 0 };
 const optionsContainerStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '90%', maxWidth: '700px', margin: '10px 0' };
 const optionButtonStyle: React.CSSProperties = { padding: '16px 12px', borderRadius: '20px', border: '3px solid rgba(255,255,255,0.7)', fontSize: '1.05em', fontWeight: 'bold', color: '#fff', textAlign: 'center', transition: 'transform 0.1s', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', boxShadow: '0 5px 0 rgba(74,68,88,0.15)' };
