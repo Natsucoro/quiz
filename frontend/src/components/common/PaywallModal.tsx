@@ -222,7 +222,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
               全ジャンルを遊び放題に！
             </h3>
             <p style={{ margin: '0 0 8px', fontSize: '0.8em', color: 'rgba(255,255,255,0.9)' }}>
-              全14ジャンル・<strong>全{allTotalQuestions}問</strong>が遊び放題に！
+              全16ジャンル・<strong>全{allTotalQuestions}問</strong>が遊び放題に！
             </p>
             <p style={{ margin: '0 0 8px' }}>
               <span style={strikePriceStyle}>{allNormalPrice}円</span>

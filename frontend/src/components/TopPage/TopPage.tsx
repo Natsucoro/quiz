@@ -36,6 +36,8 @@ import HagurumaIcon from '../../assets/icons/haguruma.svg';
 import RekishiIcon from '../../assets/icons/rekishi.svg';
 import FoodIcon from '../../assets/icons/food.svg';
 import AiIcon from '../../assets/icons/ai.svg';
+import DinosaurIcon from '../../assets/icons/dinosaur.svg';
+import SpaceIcon from '../../assets/icons/space.svg';
 import GuestIcon from '../../assets/icons/guest.svg';
 import UserIcon from '../../assets/icons/user.svg';
 import MaruIcon from '../../assets/icons/icon_maru.svg';
@@ -63,6 +65,8 @@ const GENRE_RUBY: Record<string, string> = {
   '世界の地理': 'せかいのちり',
   '食べ物': 'たべもの',
   'AI・ロボット': 'エーアイ・ロボット',
+  '恐竜': 'きょうりゅう',
+  '宇宙・天体': 'うちゅう・てんたい',
 };
 
 const TOP_PAGE_GENRE_KEY = 'quizAppSelectedGenre';
@@ -172,6 +176,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
       case '世界の地理': return <img src={ChikyuIcon} alt="世界の地理" style={iconStyle} />;
       case '食べ物': return <img src={FoodIcon} alt="食べ物" style={iconStyle} />;
       case 'AI・ロボット': return <img src={AiIcon} alt="AI・ロボット" style={iconStyle} />;
+      case '恐竜': return <img src={DinosaurIcon} alt="恐竜" style={iconStyle} />;
+      case '宇宙・天体': return <img src={SpaceIcon} alt="宇宙・天体" style={iconStyle} />;
       default: return '❓';
     }
   };
