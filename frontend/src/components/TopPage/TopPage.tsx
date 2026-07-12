@@ -300,7 +300,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
       )}
 
       {!showDifficultySelection && <div style={hashtagContainerStyle}>
-        {['#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる',  '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
+        {['#広告なし', '#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる',  '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
           <span key={tag} style={hashtagStyle}>{tag}</span>
         ))}
       </div>}
