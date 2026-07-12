@@ -244,9 +244,11 @@ const App: React.FC = () => {
   }, []);
 
   // ブラウザの「戻る」を実際に(newDepth階層分)発生させ、depthの更新自体はpopstateハンドラに任せる
+  // depth0(ジャンル選択)へ戻る場合も、履歴スタック上は「離脱トラップ用バッファエントリ」自体が
+  // 既にdepth0を表しているため、余分に戻る必要はない(以前+1していたのはバグで、バッファを
+  // 飛び越えてしまい、タイトル連打でアプリごと離脱してしまう不具合の原因だった)。
   const navigateBackward = useCallback((newDepth: 0 | 1) => {
-    // depth0(ジャンル選択)まで戻る場合、離脱トラップ用バッファエントリの分1つ余分に戻る必要がある
-    const steps = depth - newDepth + (newDepth === 0 ? 1 : 0);
+    const steps = depth - newDepth;
     if (steps > 0) {
       window.history.go(-steps);
     }
