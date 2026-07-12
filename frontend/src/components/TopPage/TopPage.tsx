@@ -36,7 +36,7 @@ import HagurumaIcon from '../../assets/icons/haguruma.svg';
 import RekishiIcon from '../../assets/icons/rekishi.svg';
 import FoodIcon from '../../assets/icons/food.svg';
 import AiIcon from '../../assets/icons/ai.svg';
-import DinosaurIcon from '../../assets/icons/dinosaur.svg';
+import DinosaurIcon from '../../assets/icons/texirano.svg';
 import SpaceIcon from '../../assets/icons/space.svg';
 import GuestIcon from '../../assets/icons/guest.svg';
 import UserIcon from '../../assets/icons/user.svg';
@@ -356,7 +356,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
                     {isAvailable && (
                       <span style={genreCountStyle}>
                         <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>
-                        <span style={genreCountNumberStyle}>{getTotalQuizzesCountForGenre(genre)}</span>
+                        <span style={genreCountNumberStyle}>{getTotalQuizzesCountForGenre(genre).toLocaleString()}</span>
                         <ruby className="btn-ruby">問<rt>もん</rt></ruby>
                       </span>
                     )}
@@ -460,7 +460,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
                       </span>
                       <span style={genreCountStyle}>
                         <ruby className="btn-ruby">全<rt>ぜん</rt></ruby>
-                        <span style={genreCountNumberStyle}>{totalCount}</span>
+                        <span style={genreCountNumberStyle}>{totalCount.toLocaleString()}</span>
                         <ruby className="btn-ruby">問<rt>もん</rt></ruby>
                         {isLocked && <span style={{ fontSize: '1em', marginLeft: '3px' }}>🔒</span>}
                       </span>
