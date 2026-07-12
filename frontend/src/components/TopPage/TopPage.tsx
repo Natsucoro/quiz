@@ -181,14 +181,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
     }
     setLocalSelectedGenre(genre);
     trackEvent('select_genre', { genre });
-    const isHistoryGenre = ['歴史上の人物', '日本の歴史', '世界の歴史'].includes(genre);
     const guestFreeLevels = [1, 2, 6, 7];
-    let defaultDifficulty: number;
-    if (isHistoryGenre) {
-      defaultDifficulty = isPremiumUser ? 6 : 6; // 歴史は6から
-    } else {
-      defaultDifficulty = isPremiumUser ? 1 : guestFreeLevels[0];
-    }
+    const defaultDifficulty = isPremiumUser ? 1 : guestFreeLevels[0];
     setLocalSelectedDifficulty(defaultDifficulty);
   }, [isPremiumUser, localSelectedGenre]);
 
@@ -231,9 +225,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, initialView = 'genre', onLog
   }, [isOffline, showToast, localSelectedGenre, localSelectedDifficulty, handleStartQuiz]);
 
   const GENRE_COLORS = genreColors;
-  const HISTORY_GENRES = ['歴史上の人物', '日本の歴史', '世界の歴史'];
-  const getDifficultiesForGenre = (genre: string) =>
-    HISTORY_GENRES.includes(genre) ? [6, 7, 8, 9, 10] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  // 歴史上の人物もLv1-10全レベルに拡充済み(2026年7月)なので、他ジャンルと同じ全レベルを使う
+  const getDifficultiesForGenre = (_genre: string) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const difficultiesForSelectedGenre = getDifficultiesForGenre(localSelectedGenre);
 
   return (
