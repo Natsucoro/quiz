@@ -827,8 +827,8 @@
         }
       }
     },
-    "生成AI": {
-      "file": "generative_ai.json",
+    "AI・ロボット": {
+      "file": "ai_robot.json",
       "count": 500,
       "checks": {
         "A1": {

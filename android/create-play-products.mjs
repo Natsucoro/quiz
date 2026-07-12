@@ -43,7 +43,7 @@ const GENRE_SLUGS = {
   '日本の地理': 'geography_jp',
   '世界の地理': 'geography_world',
   '食べ物': 'food',
-  '生成AI': 'generative_ai',
+  'AI・ロボット': 'ai_robot',
 };
 
 const PAID_DIFFICULTIES = [3, 4, 5, 8, 9, 10];
