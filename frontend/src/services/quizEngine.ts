@@ -32,41 +32,47 @@ interface QuizWithHints extends QuizData {
   hint3: string;
 }
 
-import mammalsQuizzes from '../../../data/quizzes/mammals.json';
-import insectsQuizzes from '../../../data/quizzes/insects.json';
-import plantsQuizzes from '../../../data/quizzes/plants.json';
-import vehiclesQuizzes from '../../../data/quizzes/vehicles.json';
-import toolsQuizzes from '../../../data/quizzes/tools.json';
-import foodQuizzes from '../../../data/quizzes/food.json';
-import fishQuizzes from '../../../data/quizzes/fish.json';
-import birdsQuizzes from '../../../data/quizzes/birds.json';
-import reptilesQuizzes from '../../../data/quizzes/reptiles.json';
-import marineQuizzes from '../../../data/quizzes/marine.json';
-import historyQuizzes from '../../../data/quizzes/history.json';
-import geographyJpQuizzes from '../../../data/quizzes/geography_jp.json';
-import geographyWorldQuizzes from '../../../data/quizzes/geography_world.json';
-import aiRobotQuizzes from '../../../data/quizzes/ai_robot.json';
-import dinosaursQuizzes from '../../../data/quizzes/dinosaurs.json';
-import spaceQuizzes from '../../../data/quizzes/space.json';
+// 全16ジャンルの問題データ(1ジャンンルあたり約500KB、合計8MB超)を毎回まとめて
+// 静的importするとJSバンドルが肥大化しCore Web Vitalsが悪化するため、
+// 件数だけを軽量な生成済みJSONから読み込み、問題本文は選択されたジャンルのみ
+// dynamic importで遅延読み込みする(genreDataCacheでキャッシュ)。
+// quizCounts.generated.jsonは npm run dev/build 時に scripts/generate-quiz-counts.mjs
+// が自動生成するため、データとの乖離は起きない。
+import quizCounts from '../data/quizCounts.generated.json';
 
-const allQuizzes: QuizData[] = [
-  ...mammalsQuizzes,
-  ...insectsQuizzes,
-  ...plantsQuizzes,
-  ...vehiclesQuizzes,
-  ...fishQuizzes,
-  ...birdsQuizzes,
-  ...reptilesQuizzes,
-  ...marineQuizzes,
-  ...historyQuizzes,
-  ...geographyJpQuizzes,
-  ...geographyWorldQuizzes,
-  ...toolsQuizzes,
-  ...foodQuizzes,
-  ...aiRobotQuizzes,
-  ...dinosaursQuizzes,
-  ...spaceQuizzes,
-];
+type QuizCounts = Record<string, Record<string, number>>;
+const counts = quizCounts as QuizCounts;
+
+const GENRE_LOADERS: Record<string, () => Promise<{ default: QuizData[] }>> = {
+  '哺乳類': () => import('../../../data/quizzes/mammals.json'),
+  '昆虫': () => import('../../../data/quizzes/insects.json'),
+  '植物': () => import('../../../data/quizzes/plants.json'),
+  '乗り物': () => import('../../../data/quizzes/vehicles.json'),
+  '魚類': () => import('../../../data/quizzes/fish.json'),
+  '鳥類': () => import('../../../data/quizzes/birds.json'),
+  '爬虫類': () => import('../../../data/quizzes/reptiles.json'),
+  '海洋生物': () => import('../../../data/quizzes/marine.json'),
+  '歴史上の人物': () => import('../../../data/quizzes/history.json'),
+  '日本の地理': () => import('../../../data/quizzes/geography_jp.json'),
+  '世界の地理': () => import('../../../data/quizzes/geography_world.json'),
+  '道具': () => import('../../../data/quizzes/tools.json'),
+  '食べ物': () => import('../../../data/quizzes/food.json'),
+  'AI・ロボット': () => import('../../../data/quizzes/ai_robot.json'),
+  '恐竜': () => import('../../../data/quizzes/dinosaurs.json'),
+  '宇宙・天体': () => import('../../../data/quizzes/space.json'),
+};
+
+const genreDataCache = new Map<string, Promise<QuizData[]>>();
+
+const loadGenreQuizzes = (genre: string): Promise<QuizData[]> => {
+  let cached = genreDataCache.get(genre);
+  if (!cached) {
+    const loader = GENRE_LOADERS[genre];
+    cached = loader ? loader().then((m) => m.default as QuizData[]) : Promise.resolve([]);
+    genreDataCache.set(genre, cached);
+  }
+  return cached;
+};
 
 /**
  * 答えの文字列からヒント2（先頭1文字）とヒント3（末尾1文字）を動的に生成します。
@@ -92,14 +98,14 @@ export const generateDynamicHints = (answer: string): { hint2: string; hint3: st
  * @param playedQuizIds 既に出題された問題のIDのセット
  * @returns QuizWithHints | null 新しいクイズデータ（ヒント2,3含む）、または利用可能な問題がない場合はnull
  */
-export const getNextQuiz = (
+export const getNextQuiz = async (
   genre: string,
   difficulty: number,
   playedQuizIds: Set<string>
-): QuizWithHints | null => {
-  const availableQuizzes = allQuizzes.filter(
+): Promise<QuizWithHints | null> => {
+  const quizzes = await loadGenreQuizzes(genre);
+  const availableQuizzes = quizzes.filter(
     (quiz) =>
-      quiz.genre === genre &&
       quiz.difficulty === difficulty &&
       !playedQuizIds.has(quiz.id)
   );
@@ -167,40 +173,39 @@ export const checkAnswer = (quiz: QuizData, userAnswer: string): boolean => {
 };
 
 export const getAllAvailableQuizzesCount = (genre: string, difficulty: number): number => {
-  return allQuizzes.filter(
-    (quiz) => quiz.genre === genre && quiz.difficulty === difficulty
-  ).length;
+  return counts[genre]?.[String(difficulty)] ?? 0;
 };
 
 // 指定したジャンル・難易度の全問題一覧を取得する（問題管理画面用）
-export const getQuizzesForLevel = (genre: string, difficulty: number): QuizData[] => {
-  return allQuizzes.filter(
-    (quiz) => quiz.genre === genre && quiz.difficulty === difficulty
-  );
+export const getQuizzesForLevel = async (genre: string, difficulty: number): Promise<QuizData[]> => {
+  const quizzes = await loadGenreQuizzes(genre);
+  return quizzes.filter((quiz) => quiz.difficulty === difficulty);
 };
 
 // 全ジャンル・全レベルの問題数の合計を取得する
 export const getTotalQuizzesCount = (): number => {
-  return allQuizzes.length;
+  return Object.values(counts).reduce(
+    (sum, byDifficulty) => sum + Object.values(byDifficulty).reduce((s, c) => s + c, 0),
+    0
+  );
 };
 
 // 指定したジャンルの全レベル合計の問題数を取得する
 export const getTotalQuizzesCountForGenre = (genre: string): number => {
-  return allQuizzes.filter((quiz) => quiz.genre === genre).length;
+  const byDifficulty = counts[genre];
+  if (!byDifficulty) return 0;
+  return Object.values(byDifficulty).reduce((s, c) => s + c, 0);
 };
 
 // 全ジャンル、難易度を取得する
 export const getAvailableGenres = (): string[] => {
-  const genres = new Set<string>();
-  allQuizzes.forEach(quiz => genres.add(quiz.genre));
-  return Array.from(genres);
+  return Object.keys(counts);
 };
 
 export const getAvailableDifficultiesForGenre = (genre: string): number[] => {
-  const difficulties = new Set<number>();
-  allQuizzes.filter(quiz => quiz.genre === genre)
-             .forEach(quiz => difficulties.add(quiz.difficulty));
-  return Array.from(difficulties).sort((a, b) => a - b);
+  const byDifficulty = counts[genre];
+  if (!byDifficulty) return [];
+  return Object.keys(byDifficulty).map(Number).sort((a, b) => a - b);
 };
 
 // 無料で遊べるレベル（子ども向けLv1-2、おとな向けLv6-7の体験用）
