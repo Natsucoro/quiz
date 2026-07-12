@@ -20,8 +20,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ message, confirmLabel = '
       <div style={cardStyle}>
         <p style={messageStyle}>{message}</p>
         <div style={buttonRowStyle}>
-          <button onClick={onCancel} style={cancelButtonStyle}>{cancelLabel}</button>
           <button onClick={onConfirm} style={confirmButtonStyle}>{confirmLabel}</button>
+          <button onClick={onCancel} style={cancelButtonStyle}>{cancelLabel}</button>
         </div>
       </div>
     </div>
