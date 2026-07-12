@@ -16,6 +16,8 @@ export default defineConfig({
         name: 'わたしはダレでしょう？クイズ！',
         short_name: 'クイズ！',
         description: '音声とタップで遊べる楽しいクイズアプリ',
+        lang: 'ja',
+        id: '/',
         theme_color: '#FF6EC7',
         background_color: '#FFC0CB',
         icons: [

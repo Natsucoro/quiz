@@ -1,0 +1,12 @@
+{
+  "name": "watashihadare-quiz-android-setup",
+  "private": true,
+  "type": "module",
+  "description": "Google Play商品の一括登録スクリプトなど、Androidアプリ化(TWA)関連の補助ツール",
+  "scripts": {
+    "create-play-products": "node create-play-products.mjs"
+  },
+  "dependencies": {
+    "googleapis": "^173.0.0"
+  }
+}

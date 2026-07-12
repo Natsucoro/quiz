@@ -4,6 +4,8 @@ import { usePurchaseStore } from '../../store/purchaseStore';
 import { auth } from '../../lib/firebase';
 import { getAllAvailableQuizzesCount, getGenreBundleItemIds, getAvailableGenres, getAvailableDifficultiesForGenre, getPaidDifficultiesForGenre, getTotalQuizzesCountForGenre, getTotalQuizzesCount } from '../../services/quizEngine';
 import { trackEvent } from '../../services/analytics';
+import { isRunningInTwa } from '../../services/platform';
+import { purchasePlayProduct, getPlaySingleProductId, getPlayGenreBundleProductId, PLAY_ALL_BUNDLE_PRODUCT_ID } from '../../services/playBilling';
 import { colors, fonts, shadow } from '../../styles/theme';
 
 // バックエンド(functions/src/index.ts)の価格設定と一致させること
@@ -20,7 +22,7 @@ interface PaywallModalProps {
 }
 
 const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose, onTestPurchase, onLoginRequest }) => {
-  const { isPurchased, isLoggedIn, purchasedItems, allUnlocked } = usePurchaseStore();
+  const { isPurchased, isLoggedIn, purchasedItems, allUnlocked, syncWithClaims } = usePurchaseStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const itemId = `${genre}_${difficulty}`;
   const alreadyPurchased = isPurchased(itemId);
@@ -86,19 +88,69 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ genre, difficulty, onClose,
     }
   };
 
+  // Androidアプリ(TWA)内では、Google Playの規約によりPlay Billingでの購入が必須のため、
+  // Stripeへのリダイレクトではなく Digital Goods API / Payment Request API 経由で購入する
+  const startPlayCheckout = async (bundleType: 'single' | 'genre' | 'all', productId: string, planValue: number) => {
+    if (isProcessing) return;
+    if (!isLoggedIn || !auth.currentUser) {
+      onLoginRequest();
+      return;
+    }
+    trackEvent('begin_checkout', { plan_type: bundleType, value: planValue, currency: 'JPY' });
+    setIsProcessing(true);
+    try {
+      const { purchaseToken } = await purchasePlayProduct(productId);
+      const idToken = await auth.currentUser.getIdToken();
+      const res = await fetch('/api/verifyPlayPurchase', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ productId, purchaseToken, bundleType }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+
+      // サーバー側で検証済みのcustom claimsを取り直してから権利を反映する
+      // (クライアントから受け取ったitemIdを直接信用しない)
+      const newToken = await auth.currentUser.getIdTokenResult(true);
+      if (newToken.claims.purchasedItems || newToken.claims.allUnlocked) {
+        syncWithClaims((newToken.claims.purchasedItems as string[]) || [], newToken.claims.allUnlocked as boolean);
+      }
+      trackEvent('purchase', { transaction_id: purchaseToken, plan_type: bundleType, value: planValue, currency: 'JPY' });
+      onClose();
+    } catch (error) {
+      console.error('Play Billing purchase failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handlePurchase = () => {
     if (alreadyPurchased) return;
-    startCheckout({ bundleType: 'single', itemId, genre, difficulty });
+    if (isRunningInTwa()) {
+      startPlayCheckout('single', getPlaySingleProductId(genre, difficulty), SINGLE_PRICE_JPY);
+    } else {
+      startCheckout({ bundleType: 'single', itemId, genre, difficulty });
+    }
   };
 
   const handleGenreBundlePurchase = () => {
     if (genreAlreadyUnlocked) return;
-    startCheckout({ bundleType: 'genre', genre, itemIds: genreBundleItemIds });
+    if (isRunningInTwa()) {
+      startPlayCheckout('genre', getPlayGenreBundleProductId(genre), genreBundlePrice);
+    } else {
+      startCheckout({ bundleType: 'genre', genre, itemIds: genreBundleItemIds });
+    }
   };
 
   const handleAllBundlePurchase = () => {
     if (allUnlocked) return;
-    startCheckout({ bundleType: 'all' });
+    if (isRunningInTwa()) {
+      startPlayCheckout('all', PLAY_ALL_BUNDLE_PRODUCT_ID, ALL_BUNDLE_PRICE_JPY);
+    } else {
+      startCheckout({ bundleType: 'all' });
+    }
   };
 
   // position: fixed のオーバーレイが親要素のtransform等の影響で画面全体を覆えなくなる
