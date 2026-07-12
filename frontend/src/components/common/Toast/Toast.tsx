@@ -4,51 +4,71 @@ import React, { useState, useEffect } from 'react';
 
 interface ToastProps {
   message: string | null;
-  duration?: number; // ms
+  duration?: number; // ms（表示している時間。フェードアウトの時間は含まない）
   onClose: () => void;
 }
 
+const FADE_DURATION = 400; // ms
+
 const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  // renderedMessage: フェードアウト中も表示し続けるための保持用
+  const [renderedMessage, setRenderedMessage] = useState<string | null>(null);
+  const [isShown, setIsShown] = useState(false);
 
+  // 新しいメッセージが来たら、ふわっと表示 → duration後にふわっと非表示
   useEffect(() => {
-    if (message) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        onClose();
-      }, duration);
-      return () => clearTimeout(timer);
-    } else {
-      setIsVisible(false);
-    }
-  }, [message, duration, onClose]);
+    if (!message) return;
+    setRenderedMessage(message);
+    const showTimer = requestAnimationFrame(() => setIsShown(true));
+    const hideTimer = setTimeout(() => setIsShown(false), duration);
+    return () => {
+      cancelAnimationFrame(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [message, duration]);
 
-  if (!isVisible) return null;
+  // フェードアウトのアニメーションが終わってからDOMを消してonCloseを呼ぶ
+  useEffect(() => {
+    if (isShown || !renderedMessage) return;
+    const timer = setTimeout(() => {
+      setRenderedMessage(null);
+      onClose();
+    }, FADE_DURATION);
+    return () => clearTimeout(timer);
+  }, [isShown, renderedMessage, onClose]);
+
+  if (!renderedMessage) return null;
 
   return (
-    <div style={toastStyle}>
-      {message}
+    <div
+      style={{
+        ...toastStyle,
+        opacity: isShown ? 1 : 0,
+        transform: isShown ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.9)',
+      }}
+    >
+      {renderedMessage}
     </div>
   );
 };
 
 const toastStyle: React.CSSProperties = {
   position: 'fixed',
-  bottom: '50px',
+  top: '50%',
   left: '50%',
-  transform: 'translateX(-50%)',
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  backgroundColor: 'rgba(0, 0, 0, 0.75)',
   color: 'white',
-  padding: '12px 20px',
-  borderRadius: '25px',
+  padding: '18px 28px',
+  borderRadius: '20px',
   textAlign: 'center',
-  fontSize: '1.1em',
-  zIndex: 2000,
-  whiteSpace: 'nowrap',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+  fontSize: '1.15em',
+  fontWeight: 'bold',
+  zIndex: 3000,
+  maxWidth: '85vw',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
   fontFamily: "'Zen Maru Gothic', sans-serif",
-  animation: 'fadeInOut 3s forwards', // アニメーションはApp.cssなどのグローバルスタイルシートで定義
+  pointerEvents: 'none', // 下の要素の操作を邪魔しない
+  transition: `opacity ${FADE_DURATION}ms ease, transform ${FADE_DURATION}ms ease`,
 };
 
 export default Toast;
