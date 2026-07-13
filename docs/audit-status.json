@@ -912,10 +912,10 @@
           "notes": "事実バンクに基づき作成。専門エージェントによる全件ファクトチェックで4件の誤り(語源系ヒントの誤情報)を検出・修正済み"
         },
         "A5": {
-          "status": "partial",
+          "status": "swept",
           "version": 2,
-          "date": "2026-07-12",
-          "notes": "Lv6-10はA5を意識した設計方針で作成・抜き取り確認のみ。全件走査は未実施"
+          "date": "2026-07-13",
+          "notes": "Lv6〜10の250問全件を通読し、questionだけで(選択肢を見ずに)答えが一意に確定してしまう即答性を洗い出し。企業名を答えとする問題で、AI知識ゼロでも一般消費者向けブランド認知だけで即答できてしまう識別情報(iPhone/Mac、Windows/オフィスソフト、検索サービス、ネット通販、Facebook/Instagram等)が問題文の先頭で使われていたケースを計10問検出し修正: (1) Lv6の6問はいずれも企業名が答えの問題で、一般消費者向けの非AI識別子をquestionからhint1へ移動し、代わりにAI関連の具体的な製品・事実(Llama/Siri/GitHub Copilot/Gemini・DeepMind/アレクサ等、いずれもAIジャンル知識がないと会社名に結び付かない情報)をquestionに配置(ai-lv6-004 Meta: 「SNS Facebook/Instagramを運営」→hint1へ、questionは無料公開AIモデル「Llama」提供に変更/ai-lv6-011 DALL-E: 「ロボット映画キャラ+画家名の合成語」という名前導出リドルがLv5の同一表現の使い回しで実質即答可能だったためhint1へ移動、questionはChatGPT開発元と同じ会社という点に変更/ai-lv6-020 Apple: 「iPhoneやMacで知られる」→hint1へ、questionは音声アシスタントSiriの開発元に変更/ai-lv6-021 Microsoft: 「Windows・オフィスソフトで知られる」→hint1へ、questionはOpenAIへの出資・GitHub Copilot共同開発に変更/ai-lv6-022 Google: 「検索サービスで知られる」→hint1へ、questionはGemini・DeepMindの記述に変更/ai-lv6-023 Amazon: 「ネット通販で知られる」→hint1へ、questionは音声アシスタント「アレクサ」の開発元に変更)。(2) Lv9の4問(ai-lv9-027 Siri/ai-lv9-028 Alexa/ai-lv9-029 Googleアシスタント/ai-lv9-031 Google翻訳)は「わたしは○○社の音声アシスタント/翻訳サービスだよ」という1文のみの構成で、Lv9という最上位帯にもかかわらずLv3相当以下の即答性だったため、企業名を直接名指しする一文をhint1へ移動し、questionは各サービスの登場年・後継関係等のAI業界史的事実(Siri:2011年にスマートフォン搭載で登場/Alexa:2014年にスマートスピーカーとともに登場/Googleアシスタント:2016年に「Google Now」の後継として登場/Google翻訳:2006年登場、2016年にAI翻訳方式へ刷新)に置き換え、ジャンル知識(AIプロダクト史)がないと選択肢から絞り込めない構成に修正。全10問ともanswer/dummy1〜3は変更せず、questionRuby/hint1Rubyも本文と整合するよう更新済み。Python検証により、JSON構文・全500件(各レベル50件)・ruby/プレーンテキスト整合性(修正対象10問はすべて整合、既存の無関係なLv2の6件の不整合は本タスクのスコープ外のため未修正)・自己リーク(A1)なしを確認"
         },
         "B4": {
           "status": "swept",
