@@ -5137,8 +5137,7 @@
     "answer": "流量計",
     "answerReading": "りゅうりょうけい",
     "answerAliases": [
-      "Flowmeter",
-      "流速計"
+      "Flowmeter"
     ],
     "dummy1": "加速度計",
     "dummy2": "圧力計",
@@ -6307,9 +6306,7 @@
     "answer": "電子顕微鏡",
     "answerReading": "でんしけんびきょう",
     "answerAliases": [
-      "Electron Microscope",
-      "TEM",
-      "SEM"
+      "Electron Microscope"
     ],
     "dummy1": "望遠鏡",
     "dummy2": "双眼鏡",
