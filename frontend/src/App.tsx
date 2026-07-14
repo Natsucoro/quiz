@@ -14,6 +14,7 @@ import { LoginPage } from './components/common/LoginPage';
 import PasswordGate from './components/common/PasswordGate';
 import Footer from './components/common/Footer/Footer';
 import Toast from './components/common/Toast/Toast';
+import InstallPrompt from './components/common/InstallPrompt/InstallPrompt';
 import PromptDialog from './components/common/PromptDialog';
 import ConfirmDialog from './components/common/ConfirmDialog';
 import { colors, fonts } from './styles/theme';
@@ -400,6 +401,8 @@ const App: React.FC = () => {
       )}
 
       <Toast message={toastMessage} onClose={hideToast} />
+
+      <InstallPrompt />
     </div>
   );
 };

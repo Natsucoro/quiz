@@ -20,7 +20,10 @@ type AnalyticsEvent =
   | { name: 'login_success'; params: { method: 'email' | 'google' } }
   | { name: 'begin_checkout'; params: { plan_type: 'single' | 'genre' | 'all'; value: number; currency: 'JPY' } }
   | { name: 'purchase'; params: { transaction_id: string; plan_type: 'single' | 'genre' | 'all'; value: number; currency: 'JPY' } }
-  | { name: 'question_request_submit'; params: { text_length: number } };
+  | { name: 'question_request_submit'; params: { text_length: number } }
+  | { name: 'pwa_prompt_shown'; params: { mode: 'native' | 'ios' } }
+  | { name: 'pwa_prompt_dismissed'; params: { mode: 'native' | 'ios' } }
+  | { name: 'pwa_install_result'; params: { outcome: 'accepted' | 'dismissed' } };
 
 // analyticsの初期化に失敗する環境(一部のWebView・プライベートブラウジング等)でも
 // アプリ本体が落ちないよう、必ずtry/catchで包む。
