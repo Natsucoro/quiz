@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node ../scripts/generate-quiz-counts.mjs",
+    "predev": "node ../scripts/generate-quiz-counts.mjs && node ../scripts/generate-sitemap.mjs",
     "dev": "vite",
-    "prebuild": "node ../scripts/generate-quiz-counts.mjs",
+    "prebuild": "node ../scripts/generate-quiz-counts.mjs && node ../scripts/generate-sitemap.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
