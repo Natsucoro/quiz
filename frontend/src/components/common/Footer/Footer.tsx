@@ -9,6 +9,8 @@ const Footer: React.FC = () => {
     <footer style={footerStyle}>
       <WalkingAnimals />
       <nav style={linksRowStyle}>
+        <a href="/genres/" style={footerLinkStyle}>ジャンル一覧</a>
+        <span style={dividerStyle}>|</span>
         <a href="/faq.html" style={footerLinkStyle}>よくある質問</a>
         <span style={dividerStyle}>|</span>
         <a href="/blog/" style={footerLinkStyle}>雑学ブログ</a>

@@ -1,3 +1,8 @@
+# わたしはダレでしょう？クイズ集！
+# すべてのクローラーを歓迎します(全ページ公開・クロール可)。
+# AI検索/回答エンジン(ChatGPT・Claude・Perplexity・Google AI など)にも
+# 積極的に情報提供しています。サイトの要約は /llms.txt を参照してください。
+
 User-agent: *
 Allow: /
 
