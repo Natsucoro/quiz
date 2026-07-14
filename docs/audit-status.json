@@ -150,7 +150,7 @@
     },
     "歴史上の人物": {
       "file": "history.json",
-      "count": 100,
+      "count": 500,
       "checks": {
         "A1": {
           "status": "swept",
@@ -540,7 +540,7 @@
     },
     "植物": {
       "file": "plants.json",
-      "count": 287,
+      "count": 500,
       "checks": {
         "A1": {
           "status": "swept",
