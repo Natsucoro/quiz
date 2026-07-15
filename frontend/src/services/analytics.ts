@@ -23,7 +23,8 @@ type AnalyticsEvent =
   | { name: 'question_request_submit'; params: { text_length: number } }
   | { name: 'pwa_prompt_shown'; params: { mode: 'native' | 'ios' } }
   | { name: 'pwa_prompt_dismissed'; params: { mode: 'native' | 'ios' } }
-  | { name: 'pwa_install_result'; params: { outcome: 'accepted' | 'dismissed' } };
+  | { name: 'pwa_install_result'; params: { outcome: 'accepted' | 'dismissed' } }
+  | { name: 'time_attack_finish'; params: { genre: string; difficulty: number; question_count: number; time_ms: number; is_best: boolean } };
 
 // analyticsの初期化に失敗する環境(一部のWebView・プライベートブラウジング等)でも
 // アプリ本体が落ちないよう、必ずtry/catchで包む。

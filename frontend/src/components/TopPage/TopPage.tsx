@@ -42,9 +42,11 @@ import GuestIcon from '../../assets/icons/guest.svg';
 import UserIcon from '../../assets/icons/user.svg';
 import MaruIcon from '../../assets/icons/icon_maru.svg';
 import ListIcon from '../../assets/icons/list.svg';
+import StartConfirmModal from '../common/StartConfirmModal/StartConfirmModal';
+import type { QuizMode } from '../../types/quizMode';
 
 interface TopPageProps {
-  onStart: (genre: string, difficulty: number, count: number) => void;
+  onStart: (genre: string, difficulty: number, count: number, mode: QuizMode) => void;
   showDifficultySelection: boolean;
   setShowDifficultySelection: (value: boolean) => void;
   onLoginRequest?: () => void;
@@ -82,6 +84,8 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
   const [paywallTarget, setPaywallTarget] = useState<{ genre: string; difficulty: number } | null>(null);
   const [showQuestionList, setShowQuestionList] = useState(false);
   const [questionListTarget, setQuestionListTarget] = useState<{ genre: string; difficulty: number } | null>(null);
+  // 開始前の確認ポップアップ(モード選択)の対象。null の間は非表示。
+  const [pendingStart, setPendingStart] = useState<{ genre: string; difficulty: number; count: number } | null>(null);
   const [isSpeakingAllowed, setIsSpeakingAllowed] = useState(false);
   const isOffline = useOffline();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -133,12 +137,13 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
     localStorage.setItem(TOP_PAGE_DIFFICULTY_KEY, String(localSelectedDifficulty));
   }, [localSelectedGenre, localSelectedDifficulty]);
 
+  // 「スタート」ではまず開始前の確認ポップアップを開き、モードを選んでから実際に始める。
   const handleStartQuiz = async () => {
     if (!isSpeakingAllowed) {
       await unlockAudioContext();
       setIsSpeakingAllowed(true);
     }
-    onStart(localSelectedGenre, localSelectedDifficulty, localSelectedCount);
+    setPendingStart({ genre: localSelectedGenre, difficulty: localSelectedDifficulty, count: localSelectedCount });
   };
 
   const handleToggleMute = useCallback(() => {
@@ -590,6 +595,19 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
           genre={questionListTarget.genre}
           difficulty={questionListTarget.difficulty}
           onClose={() => setShowQuestionList(false)}
+        />
+      )}
+      {pendingStart && (
+        <StartConfirmModal
+          genre={pendingStart.genre}
+          difficulty={pendingStart.difficulty}
+          count={pendingStart.count}
+          onStart={(mode) => {
+            const target = pendingStart;
+            setPendingStart(null);
+            onStart(target.genre, target.difficulty, target.count, mode);
+          }}
+          onCancel={() => setPendingStart(null)}
         />
       )}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
