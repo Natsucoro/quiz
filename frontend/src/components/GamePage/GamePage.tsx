@@ -20,6 +20,7 @@ import type { QuizMode } from '../../types/quizMode';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
 import ConfirmDialog from '../common/ConfirmDialog';
+import ResultShare from '../common/ResultShare/ResultShare';
 import { colors, fonts, rotatingColors, shadow } from '../../styles/theme';
 
 // SVGアイコンのインポート
@@ -572,8 +573,16 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             )}
           </div>
 
-          <p style={resultTextStyle}>正解数: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{score}</span> / {questionCount}問</p>
-          <p style={resultTextStyle}>正解率: <span style={{ color: colors.primary, fontSize: '1.2em' }}>{accuracy.toFixed(1)}</span>%</p>
+          <div style={statsRowStyle}>
+            <div style={statBoxStyle}>
+              <span style={statLabelStyle}>正解数</span>
+              <span style={statValueStyle}>{score}<span style={statUnitStyle}> / {questionCount}</span></span>
+            </div>
+            <div style={{ ...statBoxStyle, background: 'linear-gradient(135deg, #FFF0F5 0%, #FFE3EE 100%)' }}>
+              <span style={statLabelStyle}>正解率</span>
+              <span style={{ ...statValueStyle, color: colors.primaryDark }}>{accuracy.toFixed(0)}<span style={statUnitStyle}>%</span></span>
+            </div>
+          </div>
 
           {wrongQuizzes.length > 0 && (
             <div style={wrongListContainerStyle}>
@@ -586,6 +595,17 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
               ))}
             </div>
           )}
+
+          <ResultShare
+            genre={selectedGenre}
+            difficulty={selectedDifficulty}
+            mode={mode}
+            score={score}
+            questionCount={questionCount}
+            accuracy={accuracy}
+            timeMs={isTimeAttack ? finalTimeMs : null}
+            isBest={isBestUpdated}
+          />
 
         </div>
 
@@ -902,7 +922,11 @@ const loadingStyle: React.CSSProperties = { fontSize: '2em', color: colors.prima
 // コントラストを確保する(TOPページの見出しと同じ可読パターン)。
 const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 4px 8px rgba(74,68,88,0.18)' };
 const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: shadow.lg, width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
-const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: colors.ink, margin: '10px 0' };
+const statsRowStyle: React.CSSProperties = { display: 'flex', gap: '12px', justifyContent: 'center', margin: '4px 0 18px' };
+const statBoxStyle: React.CSSProperties = { flex: 1, maxWidth: '200px', background: 'linear-gradient(135deg, #F3FBF8 0%, #E6F7F1 100%)', borderRadius: '18px', padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' };
+const statLabelStyle: React.CSSProperties = { fontSize: '0.85em', color: colors.inkSoft, fontWeight: 'bold' };
+const statValueStyle: React.CSSProperties = { fontSize: '2em', color: colors.secondaryDark, fontFamily: fonts.heading, fontWeight: 800, lineHeight: 1 };
+const statUnitStyle: React.CSSProperties = { fontSize: '0.5em', color: colors.inkSoft, fontWeight: 'bold' };
 const resultGenreLevelStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', margin: '0 0 8px' };
 const resultActionButtonsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginTop: '24px', width: '100%' };
 const buttonStyle: React.CSSProperties = { background: colors.actionGradient, color: 'white', padding: '14px 20px', border: 'none', borderRadius: '50px', cursor: 'pointer', fontSize: '1.1em', fontWeight: 'bold', boxShadow: `0 5px 0 ${colors.primaryDark}` };
