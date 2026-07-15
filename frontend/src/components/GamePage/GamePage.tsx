@@ -137,6 +137,8 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [conciergeMessage, setConciergeMessage] = useState<string | null>(null);
   const [effectKey, setEffectKey] = useState<{ type: 'correct' | 'incorrect'; id: number } | null>(null);
+  // タイムアタックでヒント/降参した瞬間にふわっと出す「+5秒」等のペナルティ表示。
+  const [penaltyFx, setPenaltyFx] = useState<{ id: number; text: string } | null>(null);
 
   // タイムアタック用: 計測開始時刻・確定タイム・自己ベスト・更新フラグ・再描画用tick。
   const startTimeRef = useRef<number>(0);
@@ -181,6 +183,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     observer.observe(resultActionsRef.current);
     return () => observer.disconnect();
   }, [isQuizEnded]);
+
+  // ペナルティ発生時に「+◯秒」をふわっと表示して、少し経ったら消す。
+  const showPenaltyFx = useCallback((seconds: number) => {
+    const id = Date.now();
+    setPenaltyFx({ id, text: `+${seconds}秒` });
+    window.setTimeout(() => setPenaltyFx((cur) => (cur && cur.id === id ? null : cur)), 1100);
+  }, []);
 
   const playSound = useCallback((type: 'correct' | 'incorrect') => {
     if (isMuted) return;
@@ -363,6 +372,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, false);
     trackEvent('surrender', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id });
     surrendersUsedRef.current++;
+    if (isTimeAttack) showPenaltyFx(SURRENDER_PENALTY_SEC);
     setFeedback('surrender');
     if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
       wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
@@ -371,7 +381,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       const ans = toReadableText(currentQuiz.answerReading ?? currentQuiz.answer);
       speak(`答えは${ans}です。`);
     }
-  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound, setHistoryResult, selectedGenre, selectedDifficulty]);
+  }, [currentQuiz, feedback, isMuted, isSpeakingAllowed, playSound, setHistoryResult, selectedGenre, selectedDifficulty, isTimeAttack, showPenaltyFx]);
 
   handleSurrenderRef.current = handleSurrender;
 
@@ -389,6 +399,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     } else return;
     setShowHint(hintNumber);
     hintsUsedRef.current++;
+    if (isTimeAttack) showPenaltyFx(HINT_PENALTY_SEC);
     trackEvent('hint_used', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id, hint_number: hintNumber });
     if (!isMuted && isSpeakingAllowed) {
       const readableHint = hintNumber === 1
@@ -397,7 +408,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       speak(`ヒント${hintNumber}：${readableHint}`);
       setConciergeMessage(null);
     }
-  }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed, selectedGenre, selectedDifficulty]);
+  }, [currentQuiz, isHandsFreeMode, isMuted, isSpeakingAllowed, selectedGenre, selectedDifficulty, isTimeAttack, showPenaltyFx]);
 
   handleShowHintRef.current = handleShowHint;
 
@@ -701,6 +712,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     <div style={containerStyle}>
       <style>{`
         @keyframes popFade { 0% { transform: scale(0.3); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0; } }
+        @keyframes penaltyFloat { 0% { opacity: 0; transform: translate(-50%, 24px) scale(0.7); } 25% { opacity: 1; transform: translate(-50%, 0) scale(1.15); } 60% { opacity: 1; transform: translate(-50%, -24px) scale(1); } 100% { opacity: 0; transform: translate(-50%, -90px) scale(1); } }
         @keyframes micPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
         @keyframes micFade { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes optionPop { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -731,6 +743,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           animation: confetti-sway ease-in-out infinite;
         }
       `}</style>
+      {penaltyFx && (
+        <div key={penaltyFx.id} style={penaltyFxStyle}>{penaltyFx.text}</div>
+      )}
       {effectKey && (
         <div key={effectKey.id} style={effectOverlayStyle}>
           {effectKey.type === 'correct' ? (
@@ -898,6 +913,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
 };
 
 const effectOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000, pointerEvents: 'none', background: 'rgba(74,68,88,0.08)' };
+const penaltyFxStyle: React.CSSProperties = { position: 'fixed', top: '34%', left: '50%', zIndex: 2100, pointerEvents: 'none', color: colors.danger, fontFamily: fonts.heading, fontWeight: 800, fontSize: '3.2em', whiteSpace: 'nowrap', textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 6px 16px rgba(226,82,122,0.3)', animation: 'penaltyFloat 1.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' };
 const containerStyle: React.CSSProperties = {
   fontFamily: fonts.body,
   minHeight: '100vh',
