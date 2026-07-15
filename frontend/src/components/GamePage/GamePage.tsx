@@ -707,11 +707,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
           <ruby>{selectedGenre}<rt style={{ fontSize: '0.6em', fontWeight: 'normal' }}>{GENRE_RUBY[selectedGenre] ?? ''}</rt></ruby>
           <span style={difficultyInlineBadgeStyle}>Lv.{selectedDifficulty}</span>
         </h2>
-        <span style={questionCountStyle}>{currentQuestionIndex + 1}/{questionCount}問</span>
-        <span style={scoreStyle}>スコア: {score}</span>
-        {isTimeAttack && (
-          <span style={timerBadgeStyle}>⏱️ {formatTime(Date.now() - startTimeRef.current)}</span>
-        )}
+        <div style={metaBadgesStyle}>
+          <span style={questionCountStyle}>{currentQuestionIndex + 1}/{questionCount}問</span>
+          <span style={scoreStyle}>スコア: {score}</span>
+          {isTimeAttack && (
+            <span style={timerBadgeStyle}>⏱️ {formatTime(Date.now() - startTimeRef.current)}</span>
+          )}
+        </div>
       </div>
 
       <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
@@ -863,7 +865,9 @@ const containerStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   position: 'relative',
 };
-const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', marginBottom: '10px', backgroundColor: colors.surfaceSoft, borderRadius: '50px', padding: '8px 20px', boxShadow: shadow.sm, width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+const genreInfoStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '8px', rowGap: '8px', marginTop: '10px', marginBottom: '10px', backgroundColor: colors.surfaceSoft, borderRadius: '26px', padding: '10px 18px', boxShadow: shadow.sm, width: '90%', maxWidth: '700px', boxSizing: 'border-box' };
+// 問数・スコア・タイマーのバッジ群。狭い画面では折り返して見切れないようにする。
+const metaBadgesStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '8px' };
 const genreIconStyle: React.CSSProperties = { fontSize: '1.8em', marginRight: '8px' };
 const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, margin: 0, fontWeight: 'bold', flexGrow: 1, display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' };
 const difficultyInlineBadgeStyle: React.CSSProperties = { fontSize: '0.7em', color: '#fff', backgroundColor: colors.tertiaryDark, padding: '2px 9px', borderRadius: '50px', fontWeight: 'bold', whiteSpace: 'nowrap' };
@@ -894,7 +898,9 @@ const conciergeMessageStyle: React.CSSProperties = { fontSize: '1.4em', color: c
 const voiceCommandStyle: React.CSSProperties = { fontSize: '1.6em', color: colors.ink, fontWeight: 'bold', margin: 0 };
 const voiceCommandExampleStyle: React.CSSProperties = { fontSize: '0.95em', color: colors.inkSoft, margin: 0 };
 const loadingStyle: React.CSSProperties = { fontSize: '2em', color: colors.primaryDark, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontFamily: fonts.heading };
-const titleStyle: React.CSSProperties = { color: '#fff', fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: `2px 3px 0px ${colors.primaryDark}` };
+// 明るいクリーム系の背景に白文字だと見えにくいため、ブランドピンク＋白フチで
+// コントラストを確保する(TOPページの見出しと同じ可読パターン)。
+const titleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '2.2em', marginTop: '20px', marginBottom: '30px', textAlign: 'center', textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 4px 8px rgba(74,68,88,0.18)' };
 const resultBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '30px', boxShadow: shadow.lg, width: '90%', maxWidth: '700px', boxSizing: 'border-box', textAlign: 'center' };
 const resultTextStyle: React.CSSProperties = { fontSize: '1.5em', color: colors.ink, margin: '10px 0' };
 const resultGenreLevelStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '1.1em', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', margin: '0 0 8px' };
