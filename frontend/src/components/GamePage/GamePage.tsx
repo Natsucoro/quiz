@@ -115,6 +115,10 @@ const GENRE_RUBY: Record<string, string> = {
   '宇宙・天体': 'うちゅう・てんたい',
 };
 
+// タイムアタックのペナルティ(クリアタイムに加算)。ヒント1回=+5秒、降参1問=+10秒。
+const HINT_PENALTY_SEC = 5;
+const SURRENDER_PENALTY_SEC = 10;
+
 const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, mode = 'normal', onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
   const isTimeAttack = mode === 'timeattack';
   const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
@@ -140,6 +144,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [finalTimeMs, setFinalTimeMs] = useState<number | null>(null);
   const [bestTimeMs, setBestTimeMs] = useState<number | null>(null);
   const [isBestUpdated, setIsBestUpdated] = useState(false);
+  // ペナルティ集計用: この試行で使ったヒント回数・降参問数。
+  const hintsUsedRef = useRef(0);
+  const surrendersUsedRef = useRef(0);
+  const [penalty, setPenalty] = useState<{ rawMs: number; hints: number; surrenders: number } | null>(null);
   // 値自体は使わず、0.1秒ごとの再描画トリガーとしてのみ使う。
   const [, setNowTick] = useState(0);
 
@@ -223,7 +231,10 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     // タイム計測をリセットして開始。
     startTimeRef.current = Date.now();
     endHandledRef.current = false;
+    hintsUsedRef.current = 0;
+    surrendersUsedRef.current = 0;
     setFinalTimeMs(null);
+    setPenalty(null);
     setIsBestUpdated(false);
     loadNextQuiz(0);
     initializedRef.current = true;
@@ -242,8 +253,14 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     if (!isTimeAttack) return;
     if (isQuizEnded && !endHandledRef.current) {
       endHandledRef.current = true;
-      const t = Date.now() - startTimeRef.current;
+      const rawMs = Date.now() - startTimeRef.current;
+      const hints = hintsUsedRef.current;
+      const surrenders = surrendersUsedRef.current;
+      // クリアタイム = 素タイム + ヒント/降参ペナルティ。
+      const penaltyMs = (hints * HINT_PENALTY_SEC + surrenders * SURRENDER_PENALTY_SEC) * 1000;
+      const t = rawMs + penaltyMs;
       setFinalTimeMs(t);
+      setPenalty({ rawMs, hints, surrenders });
       const { updated, best } = saveBestTimeMs(selectedGenre, selectedDifficulty, questionCount, t);
       setBestTimeMs(best);
       setIsBestUpdated(updated);
@@ -345,6 +362,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     playSound('correct');
     setHistoryResult(currentQuiz.id, selectedGenre, selectedDifficulty, false);
     trackEvent('surrender', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id });
+    surrendersUsedRef.current++;
     setFeedback('surrender');
     if (!wrongQuizzesRef.current.find(q => q.id === currentQuiz.id)) {
       wrongQuizzesRef.current = [...wrongQuizzesRef.current, currentQuiz];
@@ -370,6 +388,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
       hintText = (currentQuiz as any).hint3 ?? '';
     } else return;
     setShowHint(hintNumber);
+    hintsUsedRef.current++;
     trackEvent('hint_used', { genre: selectedGenre, difficulty: selectedDifficulty, quiz_id: currentQuiz.id, hint_number: hintNumber });
     if (!isMuted && isSpeakingAllowed) {
       const readableHint = hintNumber === 1
@@ -554,6 +573,13 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
             <div style={timeResultBoxStyle}>
               <p style={timeResultLabelStyle}>⏱️ クリアタイム</p>
               <p style={timeResultValueStyle}>{formatTime(finalTimeMs)}</p>
+              {penalty && (penalty.hints > 0 || penalty.surrenders > 0) && (
+                <p style={penaltyBreakdownStyle}>
+                  素タイム {formatTime(penalty.rawMs)}
+                  {penalty.hints > 0 && ` ＋ヒント${penalty.hints}回(+${penalty.hints * HINT_PENALTY_SEC}秒)`}
+                  {penalty.surrenders > 0 && ` ＋降参${penalty.surrenders}問(+${penalty.surrenders * SURRENDER_PENALTY_SEC}秒)`}
+                </p>
+              )}
               {isBestUpdated ? (
                 <p style={bestUpdatedStyle}>🎉 自己ベスト更新！</p>
               ) : bestTimeMs !== null ? (
@@ -612,7 +638,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         <div ref={resultActionsRef} style={{ ...resultActionButtonsStyle, width: '90%', maxWidth: '700px' }}>
           <button className="shine-button" onClick={onBackToDifficulty} style={buttonStyle}>べつのレベルへ →</button>
           <button onClick={onBack} style={buttonStyle}>べつのジャンルへ →</button>
-          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); startTimeRef.current = Date.now(); endHandledRef.current = false; setFinalTimeMs(null); setIsBestUpdated(false); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
+          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); startTimeRef.current = Date.now(); endHandledRef.current = false; hintsUsedRef.current = 0; surrendersUsedRef.current = 0; setFinalTimeMs(null); setPenalty(null); setIsBestUpdated(false); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
           <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
         </div>
 
@@ -899,6 +925,7 @@ const timeResultLabelStyle: React.CSSProperties = { margin: '0 0 4px', color: co
 const timeResultValueStyle: React.CSSProperties = { margin: '0', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 800, fontSize: '2.4em', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' };
 const bestUpdatedStyle: React.CSSProperties = { margin: '8px 0 0', color: colors.secondaryDark, fontWeight: 'bold', fontSize: '1.05em' };
 const bestTimeTextStyle: React.CSSProperties = { margin: '8px 0 0', color: colors.inkSoft, fontWeight: 'bold', fontSize: '0.9em' };
+const penaltyBreakdownStyle: React.CSSProperties = { margin: '6px 0 0', color: colors.inkSoft, fontSize: '0.8em', lineHeight: 1.5 };
 const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
 const categoryBadgeRowStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px', marginBottom: '-6px' };
 const categoryBadgeStyle: React.CSSProperties = { fontSize: '0.7em', fontWeight: 'bold', color: colors.tertiaryDark, background: '#FFF3E0', border: `1.5px solid ${colors.tertiary}`, borderRadius: '50px', padding: '2px 10px', whiteSpace: 'nowrap' };

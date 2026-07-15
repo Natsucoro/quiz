@@ -44,7 +44,7 @@ const StartConfirmModal: React.FC<StartConfirmModalProps> = ({ genre, difficulty
           >
             <span style={modeEmojiStyle}>⏱️</span>
             <span style={modeNameStyle}>タイムアタック</span>
-            <span style={modeDescStyle}>クリアタイムに<br />ちょうせん！</span>
+            <span style={modeDescStyle}>クリアタイムに挑戦！<br />ヒント・降参は加算</span>
           </button>
         </div>
 
