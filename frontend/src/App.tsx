@@ -20,6 +20,7 @@ import ConfirmDialog from './components/common/ConfirmDialog';
 import { colors, fonts } from './styles/theme';
 import { getPaidDifficultiesForGenre } from './services/quizEngine';
 import { trackEvent } from './services/analytics';
+import type { QuizMode } from './types/quizMode';
 
 // バックエンド(functions/src/index.ts)の価格設定と一致させること
 const SINGLE_PRICE_JPY = 120;
@@ -50,6 +51,7 @@ const App: React.FC = () => {
   const [selectedGenre, setSelectedGenre] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(1);
   const [selectedCount, setSelectedCount] = useState<number>(10);
+  const [selectedMode, setSelectedMode] = useState<QuizMode>('normal');
   const [micStatus, setMicStatus] = useState({ isRecognizing: false, isListening: false, isProcessing: false, transcript: '' });
   const [user, setUser] = useState<User | null>(null);
   const { addPurchase, syncWithClaims, login: purchaseLogin, setLoggedOut: purchaseSetLoggedOut } = usePurchaseStore();
@@ -292,10 +294,11 @@ const App: React.FC = () => {
     window.history.pushState({ depth: 0, buffer: true }, '');
   };
 
-  const handleStart = (genre: string, difficulty: number, count: number) => {
+  const handleStart = (genre: string, difficulty: number, count: number, mode: QuizMode = 'normal') => {
     setSelectedGenre(genre);
     setSelectedDifficulty(difficulty);
     setSelectedCount(count);
+    setSelectedMode(mode);
     navigateForward(2);
   };
 
@@ -347,6 +350,7 @@ const App: React.FC = () => {
           genre={selectedGenre}
           difficulty={selectedDifficulty}
           questionCount={selectedCount}
+          mode={selectedMode}
           onBack={handleBack}
           onBackToDifficulty={handleBackToDifficulty}
           onMicStatus={handleMicStatus}

@@ -15,6 +15,8 @@ import { usePurchaseStore } from '../../store/purchaseStore';
 import { useHistoryStore } from '../../store/historyStore';
 import { useQuestionSettingsStore } from '../../store/questionSettingsStore';
 import { trackEvent } from '../../services/analytics';
+import { saveBestTimeMs, formatTime } from '../../services/bestTimeStore';
+import type { QuizMode } from '../../types/quizMode';
 import { SpriteIcon } from '../common/SpriteIcon';
 import Header from '../common/Header/Header';
 import ConfirmDialog from '../common/ConfirmDialog';
@@ -94,6 +96,7 @@ interface GamePageProps {
   genre: string;
   difficulty: number;
   questionCount: number;
+  mode?: QuizMode;
   onBack: () => void;
   onBackToDifficulty: () => void;
   onMicStatus?: (status: { isRecognizing: boolean; isListening: boolean; isProcessing: boolean; transcript: string }) => void;
@@ -111,7 +114,8 @@ const GENRE_RUBY: Record<string, string> = {
   '宇宙・天体': 'うちゅう・てんたい',
 };
 
-const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
+const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: selectedDifficulty, questionCount, mode = 'normal', onBack, onBackToDifficulty, onMicStatus, onLoginRequest }) => {
+  const isTimeAttack = mode === 'timeattack';
   const { isMuted, setIsMuted, isHandsFree, setIsHandsFree } = useSettingsStore();
   const { isLoggedIn } = usePurchaseStore();
   const setHistoryResult = useHistoryStore((s) => s.setResult);
@@ -128,6 +132,15 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [conciergeMessage, setConciergeMessage] = useState<string | null>(null);
   const [effectKey, setEffectKey] = useState<{ type: 'correct' | 'incorrect'; id: number } | null>(null);
+
+  // タイムアタック用: 計測開始時刻・確定タイム・自己ベスト・更新フラグ・再描画用tick。
+  const startTimeRef = useRef<number>(0);
+  const endHandledRef = useRef(false);
+  const [finalTimeMs, setFinalTimeMs] = useState<number | null>(null);
+  const [bestTimeMs, setBestTimeMs] = useState<number | null>(null);
+  const [isBestUpdated, setIsBestUpdated] = useState(false);
+  // 値自体は使わず、0.1秒ごとの再描画トリガーとしてのみ使う。
+  const [, setNowTick] = useState(0);
 
   const quizSequenceRef = useRef<number>(0);
   // 循環依存を避けるためにhandlerをrefで保持
@@ -206,10 +219,41 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
     setCurrentQuestionIndex(0);
     setScore(0);
     setIsQuizEnded(false);
+    // タイム計測をリセットして開始。
+    startTimeRef.current = Date.now();
+    endHandledRef.current = false;
+    setFinalTimeMs(null);
+    setIsBestUpdated(false);
     loadNextQuiz(0);
     initializedRef.current = true;
     trackEvent('quiz_start', { genre: selectedGenre, difficulty: selectedDifficulty });
   }, [selectedGenre, selectedDifficulty, loadNextQuiz]);
+
+  // タイムアタック中はライブタイマーを動かす(0.1秒ごとに再描画)。
+  useEffect(() => {
+    if (!isTimeAttack || isQuizEnded) return;
+    const id = window.setInterval(() => setNowTick((t) => t + 1), 100);
+    return () => window.clearInterval(id);
+  }, [isTimeAttack, isQuizEnded]);
+
+  // クイズ終了時、タイムアタックなら確定タイムを計算して自己ベストを保存する(1回だけ)。
+  useEffect(() => {
+    if (!isTimeAttack) return;
+    if (isQuizEnded && !endHandledRef.current) {
+      endHandledRef.current = true;
+      const t = Date.now() - startTimeRef.current;
+      setFinalTimeMs(t);
+      const { updated, best } = saveBestTimeMs(selectedGenre, selectedDifficulty, questionCount, t);
+      setBestTimeMs(best);
+      setIsBestUpdated(updated);
+      trackEvent('time_attack_finish', {
+        genre: selectedGenre, difficulty: selectedDifficulty,
+        question_count: questionCount, time_ms: Math.round(t), is_best: updated,
+      });
+    } else if (!isQuizEnded) {
+      endHandledRef.current = false;
+    }
+  }, [isTimeAttack, isQuizEnded, selectedGenre, selectedDifficulty, questionCount]);
 
   // 問題の読み上げ
   useEffect(() => {
@@ -504,6 +548,19 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         </p>
 
         <div style={resultBoxStyle}>
+          {/* タイムアタック: クリアタイムを主役として表示 */}
+          {isTimeAttack && finalTimeMs !== null && (
+            <div style={timeResultBoxStyle}>
+              <p style={timeResultLabelStyle}>⏱️ クリアタイム</p>
+              <p style={timeResultValueStyle}>{formatTime(finalTimeMs)}</p>
+              {isBestUpdated ? (
+                <p style={bestUpdatedStyle}>🎉 自己ベスト更新！</p>
+              ) : bestTimeMs !== null ? (
+                <p style={bestTimeTextStyle}>自己ベスト: {formatTime(bestTimeMs)}</p>
+              ) : null}
+            </div>
+          )}
+
           {/* メダル表示 */}
           <div style={{ marginBottom: '20px' }}>
             {accuracy >= 90 ? (
@@ -535,7 +592,7 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         <div ref={resultActionsRef} style={{ ...resultActionButtonsStyle, width: '90%', maxWidth: '700px' }}>
           <button className="shine-button" onClick={onBackToDifficulty} style={buttonStyle}>べつのレベルへ →</button>
           <button onClick={onBack} style={buttonStyle}>べつのジャンルへ →</button>
-          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
+          <button onClick={() => { playedIdsThisSession.current = new Set(); wrongQuizzesRef.current = []; setCurrentQuestionIndex(0); setScore(0); startTimeRef.current = Date.now(); endHandledRef.current = false; setFinalTimeMs(null); setIsBestUpdated(false); setIsQuizEnded(false); loadNextQuiz(0); }} style={{ ...buttonStyle, background: `linear-gradient(135deg, ${colors.tertiary}, #FFD9A0)`, color: '#8A5A2B', boxShadow: `0 5px 0 ${colors.tertiaryDark}` }}>もういちど</button>
           <button onClick={onBack} style={backButtonStyle}>← TOPにもどる</button>
         </div>
 
@@ -652,6 +709,9 @@ const GamePage: React.FC<GamePageProps> = ({ genre: selectedGenre, difficulty: s
         </h2>
         <span style={questionCountStyle}>{currentQuestionIndex + 1}/{questionCount}問</span>
         <span style={scoreStyle}>スコア: {score}</span>
+        {isTimeAttack && (
+          <span style={timerBadgeStyle}>⏱️ {formatTime(Date.now() - startTimeRef.current)}</span>
+        )}
       </div>
 
       <div key={`q-${currentQuiz?.id}`} style={{ ...questionBoxStyle, animation: 'screenIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
@@ -809,6 +869,12 @@ const genreNameStyle: React.CSSProperties = { fontSize: '1.1em', color: colors.p
 const difficultyInlineBadgeStyle: React.CSSProperties = { fontSize: '0.7em', color: '#fff', backgroundColor: colors.tertiaryDark, padding: '2px 9px', borderRadius: '50px', fontWeight: 'bold', whiteSpace: 'nowrap' };
 const questionCountStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.primary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.primaryDark}`, whiteSpace: 'nowrap' };
 const scoreStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.secondary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.secondaryDark}`, whiteSpace: 'nowrap' };
+const timerBadgeStyle: React.CSSProperties = { fontSize: '0.9em', color: '#fff', backgroundColor: colors.tertiary, padding: '4px 12px', borderRadius: '50px', fontWeight: 'bold', boxShadow: `0 3px 0 ${colors.tertiaryDark}`, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' };
+const timeResultBoxStyle: React.CSSProperties = { background: 'linear-gradient(135deg, #FFF6E9 0%, #FFEFD6 100%)', borderRadius: '20px', padding: '16px 20px', marginBottom: '20px', border: `2px solid ${colors.tertiary}` };
+const timeResultLabelStyle: React.CSSProperties = { margin: '0 0 4px', color: colors.tertiaryDark, fontWeight: 'bold', fontSize: '0.95em' };
+const timeResultValueStyle: React.CSSProperties = { margin: '0', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 800, fontSize: '2.4em', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' };
+const bestUpdatedStyle: React.CSSProperties = { margin: '8px 0 0', color: colors.secondaryDark, fontWeight: 'bold', fontSize: '1.05em' };
+const bestTimeTextStyle: React.CSSProperties = { margin: '8px 0 0', color: colors.inkSoft, fontWeight: 'bold', fontSize: '0.9em' };
 const questionBoxStyle: React.CSSProperties = { backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '28px', padding: '28px', margin: '12px 0', boxShadow: shadow.md, width: '90%', maxWidth: '700px', minHeight: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', boxSizing: 'border-box', gap: '14px', border: '3px solid rgba(255,255,255,0.8)' };
 const categoryBadgeRowStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px', marginBottom: '-6px' };
 const categoryBadgeStyle: React.CSSProperties = { fontSize: '0.7em', fontWeight: 'bold', color: colors.tertiaryDark, background: '#FFF3E0', border: `1.5px solid ${colors.tertiary}`, borderRadius: '50px', padding: '2px 10px', whiteSpace: 'nowrap' };
