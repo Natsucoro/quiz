@@ -7,3 +7,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://watashihadare-quiz.web.app/sitemap.xml
+Sitemap: https://watashihadare-quiz.web.app/sitemap-pages.xml
