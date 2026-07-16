@@ -250,8 +250,10 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
         .btn-ruby rt { font-size: 0.35em !important; } 
         .btn-ruby { font-size: 0.6em; } 
         .btn-ruby > :not(rt) { font-size: calc(1/0.6 * 1em); } 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} } 
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
         .lock-balloon { animation: float 2s ease-in-out infinite; }
+        @keyframes mascotBob { 0%,100%{transform:translateY(0) rotate(-1.5deg)} 50%{transform:translateY(-9px) rotate(1.5deg)} }
+        .top-mascot { animation: mascotBob 3.2s ease-in-out infinite; }
         
         @keyframes slideUp {
           from { transform: translate(-50%, 100px); opacity: 0; }
@@ -295,12 +297,20 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
           animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
       `}</style>
-      <Header 
-        onLoginRequest={onLoginRequest!} 
-        onTitleClick={() => setShowDifficultySelection(false)} 
-        currentView="TOP" 
+      <Header
+        onLoginRequest={onLoginRequest!}
+        onTitleClick={() => setShowDifficultySelection(false)}
+        currentView="TOP"
       />
 
+      {!showDifficultySelection && (
+        <img
+          className="top-mascot"
+          src="/character.png"
+          alt="わたしはダレでしょう？クイズ集！公式キャラクター"
+          style={mascotStyle}
+        />
+      )}
 
       {!showDifficultySelection && (
         <div style={totalCountLabelStyle}>
@@ -629,6 +639,7 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
+const mascotStyle: React.CSSProperties = { width: '128px', height: 'auto', display: 'block', margin: '2px auto 8px', filter: 'drop-shadow(0 7px 14px rgba(74,68,88,0.18))', transformOrigin: 'center bottom' };
 const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.35em', marginBottom: '16px', textShadow: '1px 1px 0 #fff' };
 const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.7em', color: colors.primary, margin: '0 2px' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '700px', width: '100%' };
