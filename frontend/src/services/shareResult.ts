@@ -57,6 +57,14 @@ export const xShareUrl = (text: string): string =>
 export const lineShareUrl = (): string =>
   `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SITE_URL)}`;
 
+const loadImage = (src: string): Promise<HTMLImageElement | null> =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+
 const roundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -152,6 +160,16 @@ export const generateResultCard = async (p: ShareParams): Promise<File | null> =
       ctx.fillStyle = '#4A4458';
       ctx.font = `700 56px ${FF}`;
       ctx.fillText(`${p.score} / ${p.questionCount}問 正解`, S / 2, 895);
+    }
+
+    // 公式キャラクター(翼のはえた柴犬)を左下にちょこんと配置。主張しすぎない
+    // サイズにして、中央のタイム・正解率とは重ならないようにする。読み込めなくても
+    // カード生成は続行する(same-origin画像なのでcanvasは汚染されない)。
+    const mascot = await loadImage('/character.png');
+    if (mascot && mascot.width > 0) {
+      const mw = 180;
+      const mh = mw * (mascot.height / mascot.width);
+      ctx.drawImage(mascot, 58, S - 52 - mh, mw, mh);
     }
 
     // フッター URL。
