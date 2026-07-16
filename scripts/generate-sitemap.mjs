@@ -134,4 +134,9 @@ ${body}
 `;
 
 writeFileSync(outPath, xml);
-console.log(`[generate-sitemap] ${outPath} を生成しました (${urls.length}URL)`);
+// 同一内容を別ファイル名でも発行する。Search Console で従来の sitemap.xml の登録が
+// 「読み込めませんでした」状態で固着した場合に、まっさらな新URLとして再登録して
+// バイパスできるようにするための予備サイトマップ(内容は sitemap.xml と常に同一)。
+const altPath = join(publicDir, 'sitemap-pages.xml');
+writeFileSync(altPath, xml);
+console.log(`[generate-sitemap] ${outPath} / ${altPath} を生成しました (${urls.length}URL)`);
