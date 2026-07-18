@@ -253,9 +253,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
         .btn-ruby > :not(rt) { font-size: calc(1/0.6 * 1em); } 
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
         .lock-balloon { animation: float 2s ease-in-out infinite; }
-        @keyframes mascotBob { 0%,100%{transform:translateY(0) rotate(-1.5deg)} 50%{transform:translateY(-9px) rotate(1.5deg)} }
-        .top-mascot { animation: mascotBob 3.2s ease-in-out infinite; }
-        
+
         @keyframes slideUp {
           from { transform: translate(-50%, 100px); opacity: 0; }
           to { transform: translate(-50%, 0); opacity: 1; }
@@ -303,18 +301,6 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
         onTitleClick={() => setShowDifficultySelection(false)}
         currentView="TOP"
       />
-
-      {!showDifficultySelection && (
-        <div style={mascotWrapStyle}>
-          <img
-            className="top-mascot"
-            src="/character.png"
-            alt="公式キャラクター「まるしば」"
-            style={mascotStyle}
-          />
-          <span style={mascotNameStyle}>まるしば</span>
-        </div>
-      )}
 
       {!showDifficultySelection && (
         <div style={totalCountLabelStyle}>
@@ -653,9 +639,6 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
-const mascotWrapStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', margin: '2px auto 10px' };
-const mascotStyle: React.CSSProperties = { width: '128px', height: 'auto', display: 'block', filter: 'drop-shadow(0 7px 14px rgba(74,68,88,0.18))', transformOrigin: 'center bottom' };
-const mascotNameStyle: React.CSSProperties = { display: 'inline-block', background: '#fff', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '0.85em', padding: '3px 16px', borderRadius: '50px', boxShadow: '0 3px 0 rgba(226,82,122,0.18)' };
 const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.35em', marginBottom: '16px', textShadow: '1px 1px 0 #fff' };
 const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.7em', color: colors.primary, margin: '0 2px' };
 const catchCopyStyle: React.CSSProperties = { textAlign: 'center', maxWidth: '620px', width: '100%', margin: '0 auto 16px', padding: '10px 18px', background: 'rgba(255,255,255,0.7)', borderRadius: '18px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.95em', lineHeight: 1.7, boxShadow: '0 3px 0 rgba(226,82,122,0.12)' };

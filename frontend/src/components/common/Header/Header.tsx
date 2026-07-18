@@ -44,11 +44,22 @@ const Header: React.FC<HeaderProps> = ({ onLoginRequest, onTitleClick, currentVi
           from { opacity: 0; transform: scale(0.85); }
           to { opacity: 1; transform: scale(1); }
         }
+        @keyframes header-mascot-bob {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-2.5px); }
+        }
       `}</style>
       <header style={stickyHeaderStyle}>
-        <h1 style={titleStyle} onClick={onTitleClick}>
-          {TITLE_TEXT}
-        </h1>
+        <div style={brandGroupStyle} onClick={onTitleClick} title="トップにもどる">
+          <img
+            src="/character.png"
+            alt="公式キャラクター「まるしば」"
+            style={headerMascotStyle}
+          />
+          <h1 style={titleStyle}>
+            {TITLE_TEXT}
+          </h1>
+        </div>
         <div style={headerIconsStyle}>
           <button
             onClick={() => setShowSettings(true)}
@@ -104,14 +115,30 @@ const stickyHeaderStyle: React.CSSProperties = {
   boxShadow: '0 3px 12px rgba(74,68,88,0.2)',
   flexWrap: 'nowrap',
 };
+const brandGroupStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  minWidth: 0,
+  flexShrink: 1,
+  cursor: 'pointer',
+};
+const headerMascotStyle: React.CSSProperties = {
+  height: '40px',
+  width: 'auto',
+  flexShrink: 0,
+  filter: 'drop-shadow(0 2px 4px rgba(74,68,88,0.28))',
+  animation: 'header-mascot-bob 3.2s ease-in-out infinite',
+  transformOrigin: 'center bottom',
+};
 const titleStyle: React.CSSProperties = {
   cursor: 'pointer',
   fontFamily: fonts.heading,
-  fontSize: 'clamp(0.75em, 3.8vw, 1.55em)',
+  fontSize: 'clamp(0.62em, 3.0vw, 1.45em)',
   margin: 0,
   color: colors.primaryDark,
   background: '#fff',
-  padding: '5px 14px',
+  padding: '5px 10px',
   borderRadius: '50px',
   boxShadow: '0 3px 0 rgba(74,68,88,0.15), 0 4px 8px rgba(74,68,88,0.12)',
   animation: 'title-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards',
