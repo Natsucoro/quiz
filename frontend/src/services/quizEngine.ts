@@ -211,6 +211,21 @@ export const getAvailableDifficultiesForGenre = (genre: string): number[] => {
 // 無料で遊べるレベル（子ども向けLv1-2、おとな向けLv6-7の体験用）
 export const FREE_DIFFICULTIES = [1, 2, 6, 7];
 
+// ゲスト(未購入)が無料で遊べる問題数の合計。全ジャンルの無料レベル(FREE_DIFFICULTIES)の
+// 実データ件数を合算するため、問題数やレベル構成が将来変わっても自動的に追従する。
+// CLAUDE.mdの「固定文言で嘘の数字を書かない」方針に従い、必ず実データから算出する。
+export const getTotalFreeQuizzesCount = (): number => {
+  return Object.values(counts).reduce(
+    (sum, byDifficulty) =>
+      sum +
+      Object.entries(byDifficulty).reduce(
+        (s, [difficulty, c]) => (FREE_DIFFICULTIES.includes(Number(difficulty)) ? s + c : s),
+        0
+      ),
+    0
+  );
+};
+
 // あるジャンルの「購入が必要なレベル」一覧（実データに基づくため、ジャンルの
 // レベル構成が将来変わっても自動的に追従する）
 export const getPaidDifficultiesForGenre = (genre: string): number[] => {
