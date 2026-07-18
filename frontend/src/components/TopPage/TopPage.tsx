@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Settings from '../common/Settings/Settings';
 import { unlockAudioContext, stopSpeaking } from '../../services/speechSynthesis';
 import { useOffline } from '../../hooks/useOffline';
-import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount, getTotalQuizzesCount, getTotalQuizzesCountForGenre } from '../../services/quizEngine';
+import { getAvailableGenres, getAvailableDifficultiesForGenre, getAllAvailableQuizzesCount, getTotalQuizzesCount, getTotalQuizzesCountForGenre, getTotalFreeQuizzesCount } from '../../services/quizEngine';
 import Toast from '../common/Toast/Toast';
 import { useSettingsStore } from '../../store/settingsStore';
 import { usePurchaseStore } from '../../store/purchaseStore';
@@ -161,6 +161,7 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
 
   const genres = getAvailableGenres();
   const totalQuizzesCount = getTotalQuizzesCount();
+  const FREE_QUIZ_COUNT = getTotalFreeQuizzesCount();
 
   const getDifficultyLabel = (difficulty: number) => `Lv.${difficulty}`;
 
@@ -323,6 +324,16 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
           <span style={totalCountNumberStyle}>{totalQuizzesCount.toLocaleString()}</span>
           <ruby>問<rt style={{ fontSize: '0.4em' }}>もん</rt></ruby>
           ！
+        </div>
+      )}
+
+      {!showDifficultySelection && (
+        <div style={catchCopyStyle}>
+          <span style={catchCopyStrongStyle}>広告ゼロ・登録もインストールも不要</span>
+          <span style={catchCopyBreakStyle}> ｜ </span>
+          リンクを開くだけで、
+          <span style={catchCopyFreeStyle}>無料で{FREE_QUIZ_COUNT.toLocaleString()}問</span>
+          あそべる！
         </div>
       )}
 
@@ -647,6 +658,10 @@ const mascotStyle: React.CSSProperties = { width: '128px', height: 'auto', displ
 const mascotNameStyle: React.CSSProperties = { display: 'inline-block', background: '#fff', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '0.85em', padding: '3px 16px', borderRadius: '50px', boxShadow: '0 3px 0 rgba(226,82,122,0.18)' };
 const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.35em', marginBottom: '16px', textShadow: '1px 1px 0 #fff' };
 const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.7em', color: colors.primary, margin: '0 2px' };
+const catchCopyStyle: React.CSSProperties = { textAlign: 'center', maxWidth: '620px', width: '100%', margin: '0 auto 16px', padding: '10px 18px', background: 'rgba(255,255,255,0.7)', borderRadius: '18px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.95em', lineHeight: 1.7, boxShadow: '0 3px 0 rgba(226,82,122,0.12)' };
+const catchCopyStrongStyle: React.CSSProperties = { color: colors.primaryDark, fontWeight: 800 };
+const catchCopyBreakStyle: React.CSSProperties = { color: colors.inkSoft, fontWeight: 700 };
+const catchCopyFreeStyle: React.CSSProperties = { color: colors.primary, fontWeight: 800, fontSize: '1.15em', margin: '0 2px' };
 const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '20px', maxWidth: '700px', width: '100%' };
 const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: colors.primaryDark, borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
 const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
