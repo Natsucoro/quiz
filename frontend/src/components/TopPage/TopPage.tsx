@@ -317,9 +317,9 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
         <div style={catchCopyStyle}>
           <span style={catchCopyStrongStyle}>広告ゼロ・登録もインストールも不要</span>
           <span style={catchCopyBreakStyle}> ｜ </span>
-          リンクを開くだけで、
           <span style={catchCopyFreeStyle}>無料で{FREE_QUIZ_COUNT.toLocaleString()}問</span>
-          あそべる！
+          ！<br />
+          答えは🔍画像でも見られて、楽しく勉強になる♪
         </div>
       )}
 
