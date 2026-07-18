@@ -60,7 +60,13 @@ const Tokushoho: React.FC = () => (
         <Row label="所在地" value="請求があった場合は遅滞なく開示します" />
         <Row label="電話番号" value="請求があった場合は遅滞なく開示します" />
         <Row label="メールアドレス" value="watashihadare.quiz@gmail.com" />
-        <Row label="販売価格" value="各難易度レベル 120円（税込）" />
+        <Row label="販売価格" value={(
+          <>
+            ・レベル単体解放：120円（税込）<br />
+            ・ジャンルまとめ買い（有料レベル6段階分）：330円（税込）<br />
+            ・全ジャンル・全レベル解放：1,480円（税込）
+          </>
+        )} />
         <Row label="商品の性質" value="デジタルコンテンツ（追加クイズ問題・難易度解放）" />
         <Row label="代金の支払い方法" value="クレジットカード決済（Stripe）" />
         <Row label="商品の引渡し時期" value="決済完了後、即時にご利用いただけます" />
@@ -144,7 +150,7 @@ const Terms: React.FC = () => (
   </div>
 );
 
-const Row: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+const Row: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
   <tr>
     <td style={labelCellStyle}>{label}</td>
     <td style={valueCellStyle}>{value}</td>
