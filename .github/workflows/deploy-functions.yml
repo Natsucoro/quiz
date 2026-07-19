@@ -3,8 +3,9 @@ name: Deploy Functions
 # Cloud Functions(決済処理・課金通知)を自動デプロイする。
 # - functions/ に変更が入って main にpushされたとき
 # - GitHubの画面から「Run workflow」ボタンで手動実行したとき
-# 課金通知メール(Resend)の設定は、GitHub Secret「RESEND_API_KEY」「NOTIFY_EMAIL_TO」から
-# functions/.env に書き込んで関数に渡す(未設定でもデプロイは成功し、通知だけ出ない)。
+# 課金通知メール(既存Gmailから送信)の設定は、GitHub Secret「GMAIL_USER」
+# 「GMAIL_APP_PASSWORD」「NOTIFY_EMAIL_TO(任意)」から functions/.env に書き込んで
+# 関数に渡す(未設定でもデプロイは成功し、通知だけ出ない)。
 on:
   push:
     branches: [main]
@@ -31,14 +32,16 @@ jobs:
         working-directory: functions
         run: npm run build
 
-      - name: Write .env (課金通知メール Resend)
+      - name: Write .env (課金通知メール Gmail)
         working-directory: functions
         env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           NOTIFY_EMAIL_TO: ${{ secrets.NOTIFY_EMAIL_TO }}
         run: |
           {
-            printf 'RESEND_API_KEY=%s\n' "$RESEND_API_KEY"
+            printf 'GMAIL_USER=%s\n' "$GMAIL_USER"
+            printf 'GMAIL_APP_PASSWORD=%s\n' "$GMAIL_APP_PASSWORD"
             printf 'NOTIFY_EMAIL_TO=%s\n' "$NOTIFY_EMAIL_TO"
           } > .env
 

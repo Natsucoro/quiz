@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import Stripe from "stripe";
 import * as cors from "cors";
 import { google } from "googleapis";
+import * as nodemailer from "nodemailer";
 import { getGenreFromSlug } from "./genreSlugs";
 
 // Firebase Admin SDK の初期化
@@ -60,10 +61,12 @@ function describeItemId(itemId: string): string {
   return `${itemId.slice(0, idx)} Lv${itemId.slice(idx + 1)}`;
 }
 
-// 課金の成立をメール(Resend)で通知する。
-// - RESEND_API_KEY: ResendのAPIキー(環境変数。functions/.env経由でCIがGitHub Secretから書き込む)
-// - NOTIFY_EMAIL_TO: 通知の届け先メールアドレス(未設定なら運営アドレスにフォールバック)
-// RESEND_API_KEYが未設定なら何もしない。
+// 課金の成立を、運営者の既存のGmailからメールで通知する(新規サービス登録は不要)。
+// - GMAIL_USER: 送信元にするGmailアドレス
+// - GMAIL_APP_PASSWORD: そのGmailで発行した「アプリパスワード」(16桁)
+// - NOTIFY_EMAIL_TO: 届け先(未設定なら GMAIL_USER 自身に送る)
+// いずれも環境変数(functions/.env経由でCIがGitHub Secretから書き込む)。
+// GMAIL_USER か GMAIL_APP_PASSWORD が未設定なら何もしない。
 // 通知に失敗しても購入処理そのものには絶対に影響させない(必ず握りつぶす)。
 async function notifyPurchase(params: {
   description: string;
@@ -72,9 +75,11 @@ async function notifyPurchase(params: {
   uid: string;
   source: "Web" | "Android";
 }): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
-  const to = process.env.NOTIFY_EMAIL_TO || "watashihadare.quiz@gmail.com";
+  const user = process.env.GMAIL_USER;
+  // アプリパスワードは表示時にスペース区切りのことがあるため、空白は除去する。
+  const pass = (process.env.GMAIL_APP_PASSWORD || "").replace(/\s/g, "");
+  if (!user || !pass) return;
+  const to = process.env.NOTIFY_EMAIL_TO || user;
   try {
     const now = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
     const amount = `${params.amountJpy.toLocaleString()}円`;
@@ -88,25 +93,18 @@ async function notifyPurchase(params: {
       `日時　： ${now}`,
       `UID 　： ${params.uid}`,
     ].join("\n");
-    const resp = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // onboarding@resend.dev はResendが用意する共通の送信元(ドメイン認証不要)。
-        // 送信先(to)は、Resendに登録したメールアドレスにすること。
-        from: "わたしはダレでしょう？クイズ 課金通知 <onboarding@resend.dev>",
-        to: [to],
-        subject: `🎉 課金がありました！(${amount}) ${params.description}`,
-        text,
-      }),
+    const transport = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: { user, pass },
     });
-    if (!resp.ok) {
-      const body = await resp.text().catch(() => "");
-      console.error(`notifyPurchase: Resend responded ${resp.status} ${body}`);
-    }
+    await transport.sendMail({
+      from: `わたしはダレでしょう？クイズ 課金通知 <${user}>`,
+      to,
+      subject: `🎉 課金がありました！(${amount}) ${params.description}`,
+      text,
+    });
   } catch (e) {
     console.error("notifyPurchase failed:", e);
   }
