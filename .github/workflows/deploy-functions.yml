@@ -37,10 +37,14 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: printf 'DISCORD_WEBHOOK_URL=%s\n' "$DISCORD_WEBHOOK_URL" > .env
 
+      # Web(Stripe)の決済関数だけをデプロイする。
+      # verifyPlayPurchase は Google Play 用の Secret(GOOGLE_PLAY_SERVICE_ACCOUNT_KEY)が
+      # まだ未設定でデプロイ検証に通らないため、ここには含めない。
+      # 将来Playの課金を有効化してSecretを登録したら functions:verifyPlayPurchase を追記する。
       - name: Deploy functions to Firebase
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WATASHIHADARE_QUIZ }}
         run: |
           printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/sa.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npx --yes firebase-tools@13 deploy --only functions --project watashihadare-quiz --non-interactive
+          npx --yes firebase-tools@13 deploy --only functions:createCheckoutSession,functions:verifyPayment --project watashihadare-quiz --non-interactive
