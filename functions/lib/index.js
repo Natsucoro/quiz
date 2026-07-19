@@ -57,7 +57,8 @@ function describeItemId(itemId) {
     return `${itemId.slice(0, idx)} Lv${itemId.slice(idx + 1)}`;
 }
 // 課金の成立を Discord のチャンネルに通知する。
-// DISCORD_WEBHOOK_URL(Firebase Secret)が未設定なら何もしない。
+// Webフック URL は環境変数 DISCORD_WEBHOOK_URL から読む(functions/.env 経由。
+// CIがGitHub Secretから書き込む)。未設定なら何もしない。
 // 通知に失敗しても購入処理そのものには絶対に影響させない(必ず握りつぶす)。
 async function notifyPurchase(params) {
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -176,7 +177,7 @@ exports.createCheckoutSession = functions.region('asia-northeast1').runWith({ se
         }
     });
 });
-exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE", "DISCORD_WEBHOOK_URL"] }).https.onRequest((req, res) => {
+exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE"] }).https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
             if (req.method !== 'POST') {
@@ -298,7 +299,7 @@ function resolvePlayProduct(productId) {
 }
 // AndroidアプリでのGoogle Play Billing購入を検証し、Stripe版のverifyPaymentと
 // 同じcustom claims(purchasedItems / allUnlocked)を付与する。
-exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secrets: ["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY", "DISCORD_WEBHOOK_URL"] }).https.onRequest((req, res) => {
+exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secrets: ["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"] }).https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
             if (req.method !== "POST") {

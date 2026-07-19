@@ -1,0 +1,46 @@
+name: Deploy Functions
+
+# Cloud Functions(決済処理・課金通知)を自動デプロイする。
+# - functions/ に変更が入って main にpushされたとき
+# - GitHubの画面から「Run workflow」ボタンで手動実行したとき
+# 課金通知先の Discord Webフックは、GitHub Secret「DISCORD_WEBHOOK_URL」から
+# functions/.env に書き込んで関数に渡す(未設定でもデプロイは成功し、通知だけ出ない)。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'functions/**'
+      - '.github/workflows/deploy-functions.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy_functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install functions dependencies
+        working-directory: functions
+        run: npm ci
+
+      - name: Build functions
+        working-directory: functions
+        run: npm run build
+
+      - name: Write .env (Discord webhook URL)
+        working-directory: functions
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: printf 'DISCORD_WEBHOOK_URL=%s\n' "$DISCORD_WEBHOOK_URL" > .env
+
+      - name: Deploy functions to Firebase
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WATASHIHADARE_QUIZ }}
+        run: |
+          printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          npx --yes firebase-tools@13 deploy --only functions --project watashihadare-quiz --non-interactive
