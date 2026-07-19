@@ -17,7 +17,7 @@ const GENRE_BUNDLE_PRICE_PER_LEVEL_JPY = 55;
 const ALL_BUNDLE_PRICE_JPY = 1480;
 // ジャンルまとめ買いとして許容する有料レベル数(それ以外はなりすまし防止のため拒否する)
 const VALID_GENRE_BUNDLE_SIZES = [3, 6];
-// 全13ジャンルLv1-10のうち、ゲスト無料レベル[1,2,6,7]を除いた有料レベル
+// 全16ジャンルLv1-10のうち、ゲスト無料レベル[1,2,6,7]を除いた有料レベル
 // (frontend/src/store/purchaseStore.ts等と一致させること)
 const PAID_DIFFICULTIES = [3, 4, 5, 8, 9, 10];
 // AndroidアプリのパッケージID(frontend/src/services/platform.tsと一致させること)
@@ -42,6 +42,50 @@ async function getUidFromAuthHeader(authHeader) {
     const idToken = authHeader.split('Bearer ')[1];
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     return decodedToken.uid;
+}
+// itemId(`${日本語ジャンル名}_${難易度}`)から、ジャンル名部分だけを取り出す。
+// ジャンル名にアンダースコアは含まれない前提で、末尾の `_難易度` を切り落とす。
+function genreNameFromItemId(itemId) {
+    const idx = itemId.lastIndexOf("_");
+    return idx < 0 ? itemId : itemId.slice(0, idx);
+}
+// itemId を「ジャンル名 Lv◯」という表示用の文字列にする。
+function describeItemId(itemId) {
+    const idx = itemId.lastIndexOf("_");
+    if (idx < 0)
+        return itemId;
+    return `${itemId.slice(0, idx)} Lv${itemId.slice(idx + 1)}`;
+}
+// 課金の成立を Discord のチャンネルに通知する。
+// DISCORD_WEBHOOK_URL(Firebase Secret)が未設定なら何もしない。
+// 通知に失敗しても購入処理そのものには絶対に影響させない(必ず握りつぶす)。
+async function notifyPurchase(params) {
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!webhookUrl)
+        return;
+    try {
+        const now = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+        const content = [
+            "🎉 **課金がありました！**",
+            `・内容：${params.description}`,
+            `・金額：${params.amountJpy.toLocaleString()}円`,
+            `・購入者：${params.email || "(メール未取得)"}`,
+            `・経路：${params.source}`,
+            `・日時：${now}`,
+            `・UID：\`${params.uid}\``,
+        ].join("\n");
+        const resp = await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content }),
+        });
+        if (!resp.ok) {
+            console.error(`notifyPurchase: Discord webhook responded ${resp.status}`);
+        }
+    }
+    catch (e) {
+        console.error("notifyPurchase failed:", e);
+    }
 }
 // 購入ボタンが押されたときに、その場でStripe Checkout Sessionを作成する。
 // どのジャンル/レベル(itemId)の購入かをmetadataに埋め込み、Stripe側にサーバー起点で記録させる。
@@ -132,7 +176,7 @@ exports.createCheckoutSession = functions.region('asia-northeast1').runWith({ se
         }
     });
 });
-exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE"] }).https.onRequest((req, res) => {
+exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: ["STRIPE_SECRET_KEY", "STRIPE_SECRET_KEY_LIVE", "DISCORD_WEBHOOK_URL"] }).https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
             if (req.method !== 'POST') {
@@ -167,11 +211,14 @@ exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: [
                         ...currentClaims,
                         allUnlocked: true,
                     });
+                    await notifyPurchase({ description: '全ジャンル・全レベル解放', amountJpy: ALL_BUNDLE_PRICE_JPY, email: userRecord.email, uid, source: 'Web' });
                 }
                 res.status(200).json({ success: true, purchasedItems, allUnlocked: true });
                 return;
             }
             let newPurchasedItems = purchasedItems;
+            let purchaseDesc = '';
+            let purchaseAmount = 0;
             if (bundleType === 'genre') {
                 const itemIdsStr = session.metadata?.itemIds;
                 if (!itemIdsStr) {
@@ -181,6 +228,8 @@ exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: [
                 const itemIds = itemIdsStr.split(',');
                 const merged = new Set([...purchasedItems, ...itemIds]);
                 newPurchasedItems = Array.from(merged);
+                purchaseAmount = itemIds.length * GENRE_BUNDLE_PRICE_PER_LEVEL_JPY;
+                purchaseDesc = `「${genreNameFromItemId(itemIds[0])}」ジャンルまとめ買い(有料${itemIds.length}レベル)`;
             }
             else {
                 const itemId = session.metadata?.itemId;
@@ -191,12 +240,15 @@ exports.verifyPayment = functions.region('asia-northeast1').runWith({ secrets: [
                 if (!purchasedItems.includes(itemId)) {
                     newPurchasedItems = [...purchasedItems, itemId];
                 }
+                purchaseAmount = PRICE_JPY;
+                purchaseDesc = `${describeItemId(itemId)} を解放`;
             }
             if (newPurchasedItems.length !== purchasedItems.length) {
                 await admin.auth().setCustomUserClaims(uid, {
                     ...currentClaims,
                     purchasedItems: newPurchasedItems,
                 });
+                await notifyPurchase({ description: purchaseDesc, amountJpy: purchaseAmount, email: userRecord.email, uid, source: 'Web' });
             }
             res.status(200).json({ success: true, purchasedItems: newPurchasedItems, allUnlocked: !!currentClaims.allUnlocked });
         }
@@ -246,7 +298,7 @@ function resolvePlayProduct(productId) {
 }
 // AndroidアプリでのGoogle Play Billing購入を検証し、Stripe版のverifyPaymentと
 // 同じcustom claims(purchasedItems / allUnlocked)を付与する。
-exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secrets: ["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"] }).https.onRequest((req, res) => {
+exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secrets: ["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY", "DISCORD_WEBHOOK_URL"] }).https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
             if (req.method !== "POST") {
@@ -290,6 +342,7 @@ exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secre
             if (resolved.bundleType === "all") {
                 if (!currentClaims.allUnlocked) {
                     await admin.auth().setCustomUserClaims(uid, { ...currentClaims, allUnlocked: true });
+                    await notifyPurchase({ description: "全ジャンル・全レベル解放", amountJpy: ALL_BUNDLE_PRICE_JPY, email: userRecord.email, uid, source: "Android" });
                 }
                 res.status(200).json({ success: true, purchasedItems, allUnlocked: true });
                 return;
@@ -298,6 +351,16 @@ exports.verifyPlayPurchase = functions.region("asia-northeast1").runWith({ secre
             const newPurchasedItems = Array.from(merged);
             if (newPurchasedItems.length !== purchasedItems.length) {
                 await admin.auth().setCustomUserClaims(uid, { ...currentClaims, purchasedItems: newPurchasedItems });
+                const isGenre = resolved.bundleType === "genre";
+                await notifyPurchase({
+                    description: isGenre
+                        ? `「${genreNameFromItemId(resolved.itemIds[0])}」ジャンルまとめ買い(有料${resolved.itemIds.length}レベル)`
+                        : `${describeItemId(resolved.itemIds[0])} を解放`,
+                    amountJpy: isGenre ? resolved.itemIds.length * GENRE_BUNDLE_PRICE_PER_LEVEL_JPY : PRICE_JPY,
+                    email: userRecord.email,
+                    uid,
+                    source: "Android",
+                });
             }
             res.status(200).json({ success: true, purchasedItems: newPurchasedItems, allUnlocked: !!currentClaims.allUnlocked });
         }
