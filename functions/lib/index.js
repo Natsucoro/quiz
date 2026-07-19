@@ -56,32 +56,47 @@ function describeItemId(itemId) {
         return itemId;
     return `${itemId.slice(0, idx)} Lv${itemId.slice(idx + 1)}`;
 }
-// 課金の成立を Discord のチャンネルに通知する。
-// Webフック URL は環境変数 DISCORD_WEBHOOK_URL から読む(functions/.env 経由。
-// CIがGitHub Secretから書き込む)。未設定なら何もしない。
+// 課金の成立をメール(Resend)で通知する。
+// - RESEND_API_KEY: ResendのAPIキー(環境変数。functions/.env経由でCIがGitHub Secretから書き込む)
+// - NOTIFY_EMAIL_TO: 通知の届け先メールアドレス(未設定なら運営アドレスにフォールバック)
+// RESEND_API_KEYが未設定なら何もしない。
 // 通知に失敗しても購入処理そのものには絶対に影響させない(必ず握りつぶす)。
 async function notifyPurchase(params) {
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    if (!webhookUrl)
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey)
         return;
+    const to = process.env.NOTIFY_EMAIL_TO || "watashihadare.quiz@gmail.com";
     try {
         const now = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
-        const content = [
-            "🎉 **課金がありました！**",
-            `・内容：${params.description}`,
-            `・金額：${params.amountJpy.toLocaleString()}円`,
-            `・購入者：${params.email || "(メール未取得)"}`,
-            `・経路：${params.source}`,
-            `・日時：${now}`,
-            `・UID：\`${params.uid}\``,
+        const amount = `${params.amountJpy.toLocaleString()}円`;
+        const text = [
+            "課金がありました！",
+            "",
+            `内容　： ${params.description}`,
+            `金額　： ${amount}`,
+            `購入者： ${params.email || "(メール未取得)"}`,
+            `経路　： ${params.source}`,
+            `日時　： ${now}`,
+            `UID 　： ${params.uid}`,
         ].join("\n");
-        const resp = await fetch(webhookUrl, {
+        const resp = await fetch("https://api.resend.com/emails", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content }),
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                // onboarding@resend.dev はResendが用意する共通の送信元(ドメイン認証不要)。
+                // 送信先(to)は、Resendに登録したメールアドレスにすること。
+                from: "わたしはダレでしょう？クイズ 課金通知 <onboarding@resend.dev>",
+                to: [to],
+                subject: `🎉 課金がありました！(${amount}) ${params.description}`,
+                text,
+            }),
         });
         if (!resp.ok) {
-            console.error(`notifyPurchase: Discord webhook responded ${resp.status}`);
+            const body = await resp.text().catch(() => "");
+            console.error(`notifyPurchase: Resend responded ${resp.status} ${body}`);
         }
     }
     catch (e) {

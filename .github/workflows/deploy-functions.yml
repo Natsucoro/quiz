@@ -3,7 +3,7 @@ name: Deploy Functions
 # Cloud Functions(決済処理・課金通知)を自動デプロイする。
 # - functions/ に変更が入って main にpushされたとき
 # - GitHubの画面から「Run workflow」ボタンで手動実行したとき
-# 課金通知先の Discord Webフックは、GitHub Secret「DISCORD_WEBHOOK_URL」から
+# 課金通知メール(Resend)の設定は、GitHub Secret「RESEND_API_KEY」「NOTIFY_EMAIL_TO」から
 # functions/.env に書き込んで関数に渡す(未設定でもデプロイは成功し、通知だけ出ない)。
 on:
   push:
@@ -31,11 +31,16 @@ jobs:
         working-directory: functions
         run: npm run build
 
-      - name: Write .env (Discord webhook URL)
+      - name: Write .env (課金通知メール Resend)
         working-directory: functions
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: printf 'DISCORD_WEBHOOK_URL=%s\n' "$DISCORD_WEBHOOK_URL" > .env
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFY_EMAIL_TO: ${{ secrets.NOTIFY_EMAIL_TO }}
+        run: |
+          {
+            printf 'RESEND_API_KEY=%s\n' "$RESEND_API_KEY"
+            printf 'NOTIFY_EMAIL_TO=%s\n' "$NOTIFY_EMAIL_TO"
+          } > .env
 
       # Web(Stripe)の決済関数だけをデプロイする。
       # verifyPlayPurchase は Google Play 用の Secret(GOOGLE_PLAY_SERVICE_ACCOUNT_KEY)が
