@@ -19,6 +19,9 @@ exports.GENRE_SLUGS = {
     "日本の地理": "geography_jp",
     "世界の地理": "geography_world",
     "食べ物": "food",
+    "AI・ロボット": "ai_robot",
+    "恐竜": "dinosaurs",
+    "宇宙・天体": "space",
 };
 const SLUG_TO_GENRE = Object.fromEntries(Object.entries(exports.GENRE_SLUGS).map(([genre, slug]) => [slug, genre]));
 function getGenreFromSlug(slug) {
