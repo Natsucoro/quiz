@@ -303,11 +303,31 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
       />
 
       {!showDifficultySelection && (
-        <div style={heroCompactStyle}>
-          <span style={catchCopyStrongStyle}>広告ゼロ・登録不要</span>
+        <div style={totalCountLabelStyle}>
+          <ruby>問題数<rt style={{ fontSize: '0.4em' }}>もんだいすう</rt></ruby>
+          {' '}
+          <ruby>全<rt style={{ fontSize: '0.4em' }}>ぜん</rt></ruby>
+          <span style={totalCountNumberStyle}>{totalQuizzesCount.toLocaleString()}</span>
+          <ruby>問<rt style={{ fontSize: '0.4em' }}>もん</rt></ruby>
+          ！
+        </div>
+      )}
+
+      {!showDifficultySelection && (
+        <div style={catchCopyStyle}>
+          <span style={catchCopyStrongStyle}>広告ゼロ・登録もインストールも不要</span>
           <span style={catchCopyBreakStyle}> ｜ </span>
           <span style={catchCopyFreeStyle}>無料で{FREE_QUIZ_COUNT.toLocaleString()}問</span>
-          <span style={heroTotalStyle}>（全{totalQuizzesCount.toLocaleString()}問）</span>
+          ！<br />
+          答えは🔍画像でも見られて、楽しく勉強になる♪
+        </div>
+      )}
+
+      {!showDifficultySelection && (
+        <div style={hashtagContainerStyle}>
+          {['#広告なし', '#子どもから大人まで', '#レベル選べる', '#ヒントあり', '#声で読み上げ', '#暇つぶし', '#勉強・豆知識になる', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
+            <span key={tag} style={hashtagStyle}>{tag}</span>
+          ))}
         </div>
       )}
 
@@ -385,15 +405,6 @@ const TopPage: React.FC<TopPageProps> = ({ onStart, showDifficultySelection, set
             >
               むずかしさをえらぶ →
             </button>
-          </div>
-
-          <div style={infoBelowStyle}>
-            <p style={infoLineStyle}>答えは🔍画像でも見られて、楽しく勉強になる♪　ヒントあり・声で読み上げ・オフラインでも遊べます。</p>
-            <div style={hashtagContainerStyle}>
-              {['#広告なし', '#子どもから大人まで', '#レベル選べる', '#暇つぶし', '#勉強・豆知識になる', '#声で読み上げ', '#ヒントあり', '#全問ランダム出題', '#オフラインでも遊べる'].map((tag) => (
-                <span key={tag} style={hashtagStyle}>{tag}</span>
-              ))}
-            </div>
           </div>
 
           {/* フローティングボタン (ジャンル選択済み かつ 最下部ボタンが見えていない時) */}
@@ -629,15 +640,14 @@ const containerStyle: React.CSSProperties = {
   position: 'relative',
   zIndex: 1,
 };
-const heroCompactStyle: React.CSSProperties = { textAlign: 'center', width: '100%', maxWidth: '640px', margin: '0 auto 14px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '1.02em', lineHeight: 1.5, textShadow: '1px 1px 0 #fff' };
-const heroTotalStyle: React.CSSProperties = { color: colors.inkSoft, fontWeight: 700, fontSize: '0.8em', marginLeft: '4px', whiteSpace: 'nowrap' };
+const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.25em', marginBottom: '8px', textShadow: '1px 1px 0 #fff' };
+const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.6em', color: colors.primary, margin: '0 2px' };
+const catchCopyStyle: React.CSSProperties = { textAlign: 'center', maxWidth: '620px', width: '100%', margin: '0 auto 10px', padding: '8px 16px', background: 'rgba(255,255,255,0.72)', borderRadius: '16px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.92em', lineHeight: 1.55, boxShadow: '0 3px 0 rgba(226,82,122,0.12)' };
 const catchCopyStrongStyle: React.CSSProperties = { color: colors.primaryDark, fontWeight: 800 };
 const catchCopyBreakStyle: React.CSSProperties = { color: colors.inkSoft, fontWeight: 700 };
 const catchCopyFreeStyle: React.CSSProperties = { color: colors.primary, fontWeight: 800, fontSize: '1.15em', margin: '0 2px' };
-const infoBelowStyle: React.CSSProperties = { width: '100%', maxWidth: '700px', margin: '28px auto 0', textAlign: 'center' };
-const infoLineStyle: React.CSSProperties = { color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.9em', margin: '0 0 14px', lineHeight: 1.7 };
-const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px', marginBottom: '4px', maxWidth: '700px', width: '100%' };
-const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.75)', color: colors.primaryDark, borderRadius: '50px', padding: '4px 10px', fontSize: '0.75em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
+const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '7px', marginBottom: '16px', maxWidth: '620px', width: '100%' };
+const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.78)', color: colors.primaryDark, borderRadius: '50px', padding: '3px 10px', fontSize: '0.72em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
 const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
 const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '30px', padding: '30px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box', animation: 'screenIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' };
 const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
