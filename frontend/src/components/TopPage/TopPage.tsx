@@ -632,25 +632,25 @@ const containerStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  paddingTop: '84px',
-  paddingLeft: '20px',
-  paddingRight: '20px',
+  paddingTop: '76px',
+  paddingLeft: '16px',
+  paddingRight: '16px',
   paddingBottom: '100px',
   boxSizing: 'border-box',
   position: 'relative',
   zIndex: 1,
 };
-const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '5px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.25em', marginBottom: '8px', textShadow: '1px 1px 0 #fff' };
-const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.6em', color: colors.primary, margin: '0 2px' };
-const catchCopyStyle: React.CSSProperties = { textAlign: 'center', maxWidth: '620px', width: '100%', margin: '0 auto 10px', padding: '8px 16px', background: 'rgba(255,255,255,0.72)', borderRadius: '16px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.92em', lineHeight: 1.55, boxShadow: '0 3px 0 rgba(226,82,122,0.12)' };
+const totalCountLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center', color: colors.primaryDark, fontFamily: fonts.heading, fontWeight: 'bold', fontSize: '1.15em', marginBottom: '5px', textShadow: '1px 1px 0 #fff' };
+const totalCountNumberStyle: React.CSSProperties = { fontFamily: fonts.body, fontWeight: 800, fontSize: '1.5em', color: colors.primary, margin: '0 2px' };
+const catchCopyStyle: React.CSSProperties = { textAlign: 'center', maxWidth: '680px', width: '100%', margin: '0 auto 8px', padding: '6px 16px', background: 'rgba(255,255,255,0.72)', borderRadius: '14px', color: colors.ink, fontFamily: fonts.body, fontWeight: 700, fontSize: '0.9em', lineHeight: 1.5, boxShadow: '0 3px 0 rgba(226,82,122,0.12)' };
 const catchCopyStrongStyle: React.CSSProperties = { color: colors.primaryDark, fontWeight: 800 };
 const catchCopyBreakStyle: React.CSSProperties = { color: colors.inkSoft, fontWeight: 700 };
 const catchCopyFreeStyle: React.CSSProperties = { color: colors.primary, fontWeight: 800, fontSize: '1.15em', margin: '0 2px' };
-const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '7px', marginBottom: '16px', maxWidth: '620px', width: '100%' };
-const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.78)', color: colors.primaryDark, borderRadius: '50px', padding: '3px 10px', fontSize: '0.72em', fontWeight: 'bold', boxShadow: '0 3px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
-const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.6em', margin: '0 0 25px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
-const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '30px', padding: '30px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box', animation: 'screenIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' };
-const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
+const hashtagContainerStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px', marginBottom: '10px', maxWidth: '760px', width: '100%' };
+const hashtagStyle: React.CSSProperties = { background: 'rgba(255,255,255,0.78)', color: colors.primaryDark, borderRadius: '50px', padding: '2px 8px', fontSize: '0.66em', fontWeight: 'bold', boxShadow: '0 2px 0 rgba(226,82,122,0.18)', whiteSpace: 'nowrap' };
+const sectionTitleStyle: React.CSSProperties = { color: colors.primaryDark, fontFamily: fonts.heading, fontSize: '1.35em', margin: '0 0 14px 0', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', textShadow: '1px 1px 0 #fff' };
+const genreSelectionContainerStyle: React.CSSProperties = { backgroundColor: colors.surfaceSoft, borderRadius: '26px', padding: '18px 14px', boxShadow: shadow.lg, width: '100%', maxWidth: '700px', boxSizing: 'border-box', animation: 'screenIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' };
+const genreGridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '13px' };
 const genreButtonStyle: React.CSSProperties = { padding: '10px 8px', borderRadius: '24px', border: '3px solid rgba(255,255,255,0.8)', fontSize: 'clamp(0.8em, 3.5vw, 1.05em)', fontWeight: 'bold', color: '#fff', cursor: 'pointer', transition: 'transform 0.1s, box-shadow 0.1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px', textShadow: '1px 1px 2px rgba(0,0,0,0.2)', justifyContent: 'center', minHeight: '90px', textAlign: 'center', whiteSpace: 'nowrap' } as React.CSSProperties;
 const genreIconStyle: React.CSSProperties = { fontSize: '2.4em', flexShrink: 0, marginBottom: '-4px' };
 const genreCountStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'baseline', gap: '2px', fontSize: '0.75em', fontWeight: 'bold', color: '#fff', background: 'rgba(0,0,0,0.18)', borderRadius: '10px', padding: '1px 8px', marginTop: '3px' };
