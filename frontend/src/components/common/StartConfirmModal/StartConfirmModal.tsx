@@ -106,12 +106,14 @@ const modeRowStyle: React.CSSProperties = {
 const modeCardStyle = (selected: boolean, accent: string): React.CSSProperties => ({
   flex: 1,
   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-  background: selected ? '#fff' : '#FAF8FC',
-  border: selected ? `3px solid ${accent}` : '3px solid transparent',
+  // 未選択でも「選べる項目」だとわかるよう、常にアクセント色で薄く塗り＋枠線を付ける。
+  // 選択時はさらに濃く・枠を太く・浮かせて区別する。
+  background: selected ? `${accent}26` : `${accent}12`,
+  border: selected ? `3px solid ${accent}` : `2px solid ${accent}66`,
   borderRadius: '18px',
   padding: '14px 8px',
   cursor: 'pointer',
-  boxShadow: selected ? `0 4px 14px ${accent}55` : '0 2px 8px rgba(74,68,88,0.08)',
+  boxShadow: selected ? `0 5px 16px ${accent}55` : '0 2px 6px rgba(74,68,88,0.10)',
   transform: selected ? 'translateY(-2px)' : 'none',
   transition: 'all 0.15s ease',
   fontFamily: fonts.body,
