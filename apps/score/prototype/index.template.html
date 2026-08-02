@@ -1,0 +1,781 @@
+<title>楽譜カメラ</title>
+
+<style>
+/* ─────────── トークン ───────────
+   色は楽譜出版の道具立てから採る。
+   濃紺＝製版インク / 生成り＝楽譜用紙 / 朱＝校正の朱入れ / 琥珀＝いま鳴っている音 */
+:root{
+  --ink:#16233A; --ink-soft:#42506B; --ink-faint:#8A93A6;
+  --bg:#FBF9F4; --surface:#FFFFFF; --sunken:#F1EDE3;
+  --line:rgba(22,35,58,.14); --line-strong:rgba(22,35,58,.28);
+  --shu:#B4342A; --shu-soft:rgba(180,52,42,.10);
+  --amber:#C97F17; --amber-soft:rgba(201,127,23,.20);
+  --sheet:#FDFCF8; --sheet-ink:#141821;
+  --shadow:0 1px 2px rgba(22,35,58,.07), 0 8px 24px rgba(22,35,58,.06);
+  --r:14px; --r-sm:9px;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  --mincho:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP","Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ink:#E4E8F0; --ink-soft:#A6AEC1; --ink-faint:#6E7789;
+    --bg:#12161F; --surface:#1A202C; --sunken:#0D1118;
+    --line:rgba(228,232,240,.13); --line-strong:rgba(228,232,240,.26);
+    --shu:#E0685A; --shu-soft:rgba(224,104,90,.14);
+    --amber:#E5A845; --amber-soft:rgba(229,168,69,.26);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --ink:#16233A; --ink-soft:#42506B; --ink-faint:#8A93A6;
+  --bg:#FBF9F4; --surface:#FFFFFF; --sunken:#F1EDE3;
+  --line:rgba(22,35,58,.14); --line-strong:rgba(22,35,58,.28);
+  --shu:#B4342A; --shu-soft:rgba(180,52,42,.10);
+  --amber:#C97F17; --amber-soft:rgba(201,127,23,.20);
+  --shadow:0 1px 2px rgba(22,35,58,.07), 0 8px 24px rgba(22,35,58,.06);
+}
+:root[data-theme="dark"]{
+  --ink:#E4E8F0; --ink-soft:#A6AEC1; --ink-faint:#6E7789;
+  --bg:#12161F; --surface:#1A202C; --sunken:#0D1118;
+  --line:rgba(228,232,240,.13); --line-strong:rgba(228,232,240,.26);
+  --shu:#E0685A; --shu-soft:rgba(224,104,90,.14);
+  --amber:#E5A845; --amber-soft:rgba(229,168,69,.26);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.7;
+  -webkit-text-size-adjust:100%; overflow-x:hidden;
+}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2.5px solid var(--amber); outline-offset:2px; border-radius:4px}
+
+/* ─────────── 外枠 ─────────── */
+.app{max-width:760px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column}
+.masthead{
+  padding:20px 20px 14px; border-bottom:1px solid var(--line);
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+}
+.masthead h1{
+  font-family:var(--mincho); font-size:25px; font-weight:600; margin:0;
+  letter-spacing:.10em; line-height:1.2;
+}
+.masthead .sub{font-size:12.5px; color:var(--ink-faint); letter-spacing:.04em}
+.stave{display:block; width:100%; height:9px; opacity:.5}
+
+main{flex:1; padding:20px 16px 108px}
+.panel{display:none}
+.panel.on{display:block; animation:rise .28s cubic-bezier(.2,.7,.3,1)}
+@keyframes rise{from{opacity:0; transform:translateY(7px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.panel.on{animation:none}}
+
+/* ─────────── タブ ─────────── */
+.tabs{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  background:color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter:blur(14px); border-top:1px solid var(--line);
+  padding:7px 10px calc(7px + env(safe-area-inset-bottom));
+  display:flex; justify-content:center; gap:5px;
+}
+.tab{
+  flex:1; max-width:170px; background:none; border:0; padding:8px 4px 7px;
+  border-radius:var(--r-sm); color:var(--ink-faint);
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-size:11.5px; letter-spacing:.07em; transition:color .16s, background .16s;
+}
+.tab svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round}
+.tab[aria-selected="true"]{color:var(--ink); background:var(--sunken)}
+
+/* ─────────── 共通パーツ ─────────── */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:18px; margin-bottom:16px}
+.eyebrow{
+  font-size:11px; letter-spacing:.17em; color:var(--ink-faint);
+  text-transform:uppercase; margin:0 0 7px; font-weight:600;
+}
+h2{font-family:var(--mincho); font-size:19px; font-weight:600; margin:0 0 6px;
+  letter-spacing:.06em; text-wrap:balance}
+p{margin:0 0 12px; color:var(--ink-soft); font-size:14.5px}
+p:last-child{margin-bottom:0}
+.hint{font-size:13px; color:var(--ink-faint); line-height:1.65}
+
+.btn{
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
+  border-radius:var(--r-sm); padding:11px 17px; font-size:14.5px; font-weight:600;
+  letter-spacing:.03em; transition:transform .12s, background .16s, border-color .16s;
+}
+.btn:active{transform:scale(.975)}
+.btn:disabled{opacity:.38; cursor:not-allowed}
+.btn.primary{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.btn.shu{border-color:var(--shu); color:var(--shu); background:var(--shu-soft)}
+.btn.wide{display:block; width:100%; padding:15px; font-size:16px}
+.row{display:flex; gap:9px; flex-wrap:wrap}
+.row>.btn{flex:1; min-width:118px}
+
+label.file{display:block}
+label.file input{position:absolute; width:1px; height:1px; opacity:0; pointer-events:none}
+label.file .btn{display:block; text-align:center}
+
+/* ─────────── 撮る ─────────── */
+.stage{position:relative; background:var(--sunken); border-radius:var(--r);
+  overflow:hidden; touch-action:none; margin-bottom:14px}
+.stage img{display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none}
+.stage svg.guide{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.stage .grip{
+  position:absolute; width:38px; height:38px; margin:-19px 0 0 -19px;
+  border-radius:50%; border:2.5px solid var(--shu);
+  background:color-mix(in srgb, var(--shu) 20%, transparent);
+  touch-action:none; cursor:grab;
+}
+.stage .grip::after{content:""; position:absolute; inset:13px; border-radius:50%; background:var(--shu)}
+
+.slider-row{display:flex; align-items:center; gap:13px; margin:11px 0}
+.slider-row label{font-size:13px; color:var(--ink-soft); min-width:6.5em; letter-spacing:.03em}
+input[type=range]{flex:1; accent-color:var(--shu); height:26px}
+
+.pages{display:grid; grid-template-columns:repeat(auto-fill,minmax(94px,1fr)); gap:11px; margin-top:6px}
+.pg{position:relative; border:1px solid var(--line); border-radius:var(--r-sm);
+  overflow:hidden; background:var(--sheet)}
+.pg img{display:block; width:100%; aspect-ratio:1/1.414; object-fit:cover}
+.pg .no{position:absolute; left:5px; top:5px; background:var(--ink); color:var(--bg);
+  font-size:11px; padding:1px 7px; border-radius:20px; font-weight:600}
+.pg .x{position:absolute; right:4px; top:4px; width:26px; height:26px; border-radius:50%;
+  border:0; background:var(--shu); color:#fff; font-size:15px; line-height:1; padding:0}
+
+.field{display:flex; flex-direction:column; gap:6px; margin-bottom:13px}
+.field span{font-size:12.5px; color:var(--ink-faint); letter-spacing:.06em}
+.field input[type=text]{
+  font:inherit; font-size:16px; padding:11px 13px; border-radius:var(--r-sm);
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
+}
+
+/* ─────────── 本棚 ─────────── */
+.shelf{display:grid; grid-template-columns:repeat(auto-fill,minmax(146px,1fr)); gap:15px}
+.book{background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  overflow:hidden; box-shadow:var(--shadow); text-align:left; padding:0; width:100%; border-width:1px}
+.book img{display:block; width:100%; aspect-ratio:1/1.414; object-fit:cover;
+  background:var(--sheet); border-bottom:1px solid var(--line)}
+.book .meta{padding:10px 11px 12px}
+.book .t{font-family:var(--mincho); font-size:15px; letter-spacing:.04em; margin-bottom:3px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.book .d{font-size:11.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+.empty{text-align:center; padding:52px 20px; color:var(--ink-faint)}
+.empty .mark{font-family:var(--mincho); font-size:44px; opacity:.28; line-height:1}
+
+/* ─────────── ビューア ─────────── */
+.viewer{position:fixed; inset:0; z-index:50; background:var(--sunken);
+  display:none; flex-direction:column}
+.viewer.on{display:flex}
+.vbar{display:flex; align-items:center; gap:8px; padding:9px 12px;
+  padding-top:calc(9px + env(safe-area-inset-top));
+  background:var(--surface); border-bottom:1px solid var(--line)}
+.vbar .ttl{flex:1; font-family:var(--mincho); font-size:15px; letter-spacing:.05em;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.vbar .btn{padding:8px 12px; font-size:13px}
+.vscroll{flex:1; overflow:auto; -webkit-overflow-scrolling:touch; padding:14px;
+  display:flex; flex-direction:column; align-items:center; gap:14px}
+.vscroll img{width:100%; max-width:760px; height:auto; background:var(--sheet);
+  border-radius:6px; box-shadow:var(--shadow)}
+
+/* ─────────── 移調 ─────────── */
+.keybar{display:flex; align-items:baseline; justify-content:center; gap:11px;
+  padding:6px 0 12px; flex-wrap:wrap}
+.keybar .from{font-size:14px; color:var(--ink-faint)}
+.keybar .arrow{color:var(--ink-faint)}
+.keybar .to{font-family:var(--mincho); font-size:30px; letter-spacing:.09em; color:var(--shu)}
+.keybar .semi{font-size:13px; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+
+.sheet{
+  position:relative; background:var(--sheet); border-radius:var(--r);
+  border:1px solid var(--line); padding:9px 6px; overflow-x:auto; box-shadow:var(--shadow);
+}
+.sheet svg{display:block; width:100%; height:auto; color:var(--sheet-ink)}
+.hl{position:absolute; border-radius:3px; background:var(--amber-soft);
+  box-shadow:0 0 0 1.5px var(--amber); pointer-events:none; transition:opacity .09s}
+
+.transport{display:flex; align-items:center; gap:10px; margin-top:13px; flex-wrap:wrap}
+.play{
+  width:56px; height:56px; border-radius:50%; border:0; background:var(--ink); color:var(--bg);
+  display:grid; place-items:center; flex:0 0 auto; transition:transform .12s;
+}
+.play:active{transform:scale(.93)}
+.play svg{width:23px; height:23px; fill:currentColor}
+.transport .tempo{flex:1; min-width:172px; display:flex; align-items:center; gap:10px}
+.transport .tempo span{font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums;
+  min-width:5.4em}
+
+.steps{display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:12px}
+.step{border:1px solid var(--line-strong); background:var(--surface); border-radius:20px;
+  padding:6px 13px; font-size:13px; font-weight:600; letter-spacing:.02em}
+.step[aria-pressed="true"]{background:var(--shu); border-color:var(--shu); color:#fff}
+
+.note-box{border-left:2.5px solid var(--shu); padding:2px 0 2px 13px; margin-top:16px}
+.note-box p{font-size:13px; color:var(--ink-faint); line-height:1.68}
+
+.todo{list-style:none; padding:0; margin:10px 0 0}
+.todo li{display:flex; gap:9px; align-items:flex-start; font-size:13.5px;
+  color:var(--ink-soft); padding:5px 0; border-bottom:1px dashed var(--line)}
+.todo li:last-child{border-bottom:0}
+.todo .mk{color:var(--shu); font-weight:700; flex:0 0 auto; font-size:12px; padding-top:3px}
+.todo .mk.done{color:var(--ink-faint)}
+
+.busy{position:fixed; inset:0; z-index:80; background:rgba(10,14,22,.55);
+  display:none; place-items:center; backdrop-filter:blur(2px)}
+.busy.on{display:grid}
+.busy div{background:var(--surface); padding:20px 30px; border-radius:var(--r);
+  font-size:14.5px; box-shadow:var(--shadow)}
+
+/* ─────────── 印刷 ─────────── */
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  .app,.viewer,.tabs,.busy{display:none !important}
+  #printArea{display:block !important}
+  #printArea img{display:block; width:100%; height:auto; break-after:page; page-break-after:always}
+  #printArea img:last-child{break-after:auto; page-break-after:auto}
+  @page{size:A4; margin:9mm}
+}
+</style>
+
+<div class="app">
+  <header class="masthead">
+    <h1>楽譜カメラ</h1>
+    <span class="sub">撮って、直して、キーを変えて、印刷する</span>
+  </header>
+  <svg class="stave" viewBox="0 0 100 9" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="currentColor" stroke-width=".35" opacity=".33">
+      <line x1="0" y1="1" x2="100" y2="1"/><line x1="0" y1="3" x2="100" y2="3"/>
+      <line x1="0" y1="5" x2="100" y2="5"/><line x1="0" y1="7" x2="100" y2="7"/>
+      <line x1="0" y1="9" x2="100" y2="9"/>
+    </g>
+  </svg>
+
+  <main>
+    <!-- ── 撮る ── -->
+    <section class="panel on" id="p-shoot" role="tabpanel" aria-label="撮る">
+      <div class="card">
+        <p class="eyebrow">1. とりこむ</p>
+        <h2>楽譜を撮る</h2>
+        <p>譜面を真上から、紙全体が入るように撮ってください。斜めになっても、次の画面で四隅を合わせれば まっすぐに直ります。</p>
+        <label class="file">
+          <input type="file" accept="image/*" capture="environment" id="cam">
+          <span class="btn primary wide">カメラで撮る</span>
+        </label>
+        <div style="height:9px"></div>
+        <label class="file">
+          <input type="file" accept="image/*" id="pick">
+          <span class="btn wide">写真から選ぶ</span>
+        </label>
+      </div>
+
+      <div class="card" id="cropCard" hidden>
+        <p class="eyebrow">2. 四隅を合わせる</p>
+        <h2>紙の角に印を動かす</h2>
+        <div class="stage" id="stage">
+          <img id="shot" alt="撮った楽譜">
+          <svg class="guide" id="guide" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="slider-row">
+          <label for="thr">くっきり</label>
+          <input type="range" id="thr" min="-30" max="30" value="6">
+        </div>
+        <div class="row">
+          <button class="btn" id="btnGray" aria-pressed="true">白黒にする</button>
+          <button class="btn primary" id="btnCrop">この形で取り込む</button>
+        </div>
+      </div>
+
+      <div class="card" id="bundle" hidden>
+        <p class="eyebrow">3. まとめる</p>
+        <h2>取り込んだページ</h2>
+        <div class="pages" id="pageList"></div>
+        <div style="height:15px"></div>
+        <div class="field">
+          <span>曲名</span>
+          <input type="text" id="title" placeholder="れんしゅう曲" autocomplete="off">
+        </div>
+        <button class="btn primary wide" id="btnSave">本棚にしまう</button>
+      </div>
+    </section>
+
+    <!-- ── 本棚 ── -->
+    <section class="panel" id="p-shelf" role="tabpanel" aria-label="本棚">
+      <div class="shelf" id="shelf"></div>
+      <div class="empty" id="shelfEmpty">
+        <div class="mark">𝄞</div>
+        <p>まだ何もありません。<br>「撮る」から楽譜を取り込んでください。</p>
+      </div>
+    </section>
+
+    <!-- ── 移調 ── -->
+    <section class="panel" id="p-key" role="tabpanel" aria-label="移調">
+      <div class="card">
+        <p class="eyebrow">キーを変える</p>
+        <div class="keybar">
+          <span class="from">ハ長調</span>
+          <span class="arrow">→</span>
+          <span class="to" id="keyName">ハ長調</span>
+          <span class="semi" id="semiLabel">±0</span>
+        </div>
+        <div class="slider-row">
+          <label for="semi">半音</label>
+          <input type="range" id="semi" min="-12" max="12" value="0" step="1">
+        </div>
+        <div class="steps">
+          <button class="step" data-jump="-12">1オクターブ下</button>
+          <button class="step" data-jump="0" aria-pressed="true">原調</button>
+          <button class="step" data-jump="2">＋2度</button>
+          <button class="step" data-jump="12">1オクターブ上</button>
+        </div>
+
+        <div style="height:14px"></div>
+        <div class="sheet" id="sheet"></div>
+
+        <div class="transport">
+          <button class="play" id="btnPlay" aria-label="再生">
+            <svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
+          </button>
+          <div class="tempo">
+            <input type="range" id="tempo" min="50" max="150" value="100">
+            <span id="tempoLabel">はやさ 100%</span>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <p>鳴っている楽譜は、モーツァルト ピアノソナタ K.545 の冒頭8小節です（著作権の切れた曲）。1オクターブ下から1オクターブ上まで25通りのキーを、すべて実際に浄書し直してあります。調号も書き換わります。<br>
+          あなたが撮った楽譜をここに読み込むには、写真から音符を読み取るサーバ処理が要ります。それはまだ動いていません。</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">いまの状態</p>
+        <h2>できていること／これから</h2>
+        <ul class="todo">
+          <li><span class="mk done">済</span><span>楽譜を撮って、四隅を合わせて、まっすぐに直す</span></li>
+          <li><span class="mk done">済</span><span>白黒にして読みやすくする・複数ページをまとめる</span></li>
+          <li><span class="mk done">済</span><span>本棚に保存する（この端末の中だけ。外に送りません）</span></li>
+          <li><span class="mk done">済</span><span>スマホで見る・紙に印刷する</span></li>
+          <li><span class="mk done">済</span><span>キーを変える・音を鳴らす・鳴っている音符が光る</span></li>
+          <li><span class="mk">未</span><span>撮った写真から音符を読み取る（サーバが必要。1ページ5〜6分）</span></li>
+          <li><span class="mk">未</span><span>読み取りの間違いを直すエディタ（拍子 → 音の長さ → 音の高さ）</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-go="p-shoot">
+      <svg viewBox="0 0 24 24"><path d="M3 8.5A2 2 0 0 1 5 6.5h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/></svg>
+      撮る
+    </button>
+    <button class="tab" role="tab" aria-selected="false" data-go="p-shelf">
+      <svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>
+      本棚
+    </button>
+    <button class="tab" role="tab" aria-selected="false" data-go="p-key">
+      <svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg>
+      移調
+    </button>
+  </nav>
+</div>
+
+<div class="viewer" id="viewer">
+  <div class="vbar">
+    <button class="btn" id="vClose">とじる</button>
+    <span class="ttl" id="vTitle"></span>
+    <button class="btn" id="vPrint">印刷</button>
+    <button class="btn shu" id="vDel">削除</button>
+  </div>
+  <div class="vscroll" id="vScroll"></div>
+</div>
+
+<div id="printArea"></div>
+<div class="busy" id="busy"><div>まっすぐに直しています…</div></div>
+
+<script id="demo" type="application/json">__DEMO_DATA__</script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+/* ══════════ タブ ══════════ */
+$$(".tab").forEach(t => t.addEventListener("click", () => {
+  $$(".tab").forEach(x => x.setAttribute("aria-selected", String(x === t)));
+  $$(".panel").forEach(p => p.classList.toggle("on", p.id === t.dataset.go));
+  window.scrollTo({top: 0, behavior: "smooth"});
+}));
+
+/* ══════════ 保存（この端末の中だけ） ══════════ */
+const DB = "gakufu-camera", STORE = "scores";
+function open_() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore(STORE, {keyPath: "id"});
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function tx(mode, fn) {
+  const db = await open_();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE, mode), s = t.objectStore(STORE);
+    const out = fn(s);
+    t.oncomplete = () => res(out && out.result !== undefined ? out.result : out);
+    t.onerror = () => rej(t.error);
+  });
+}
+const putScore = v => tx("readwrite", s => s.put(v));
+const allScores = () => tx("readonly", s => s.getAll());
+const delScore = id => tx("readwrite", s => s.delete(id));
+
+/* ══════════ 撮る ══════════ */
+const stage = $("#stage"), shot = $("#shot"), guide = $("#guide");
+let corners = null, srcImg = null, gray = true;
+
+function loadFile(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const im = new Image();
+  im.onload = () => {
+    srcImg = im;
+    shot.src = url;
+    $("#cropCard").hidden = false;
+    const w = im.naturalWidth, h = im.naturalHeight, m = 0.07;
+    corners = [[w*m, h*m], [w*(1-m), h*m], [w*(1-m), h*(1-m)], [w*m, h*(1-m)]];
+    requestAnimationFrame(drawGuide);
+    $("#cropCard").scrollIntoView({behavior: "smooth", block: "start"});
+  };
+  im.src = url;
+}
+$("#cam").addEventListener("change", e => loadFile(e.target.files[0]));
+$("#pick").addEventListener("change", e => loadFile(e.target.files[0]));
+
+function drawGuide() {
+  if (!srcImg) return;
+  const w = srcImg.naturalWidth, h = srcImg.naturalHeight;
+  guide.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  const pts = corners.map(p => p.join(",")).join(" ");
+  const sw = Math.max(w, h) / 260;
+  guide.innerHTML =
+    `<polygon points="${pts}" fill="rgba(180,52,42,.10)" stroke="#B4342A" stroke-width="${sw}"/>`;
+  stage.querySelectorAll(".grip").forEach(g => g.remove());
+  const r = shot.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  corners.forEach((p, i) => {
+    const g = document.createElement("div");
+    g.className = "grip";
+    g.style.left = (r.left - sr.left + p[0] / w * r.width) + "px";
+    g.style.top = (r.top - sr.top + p[1] / h * r.height) + "px";
+    g.addEventListener("pointerdown", ev => {
+      ev.preventDefault();
+      g.setPointerCapture(ev.pointerId);
+      const move = e2 => {
+        const rr = shot.getBoundingClientRect();
+        corners[i] = [
+          Math.max(0, Math.min(w, (e2.clientX - rr.left) / rr.width * w)),
+          Math.max(0, Math.min(h, (e2.clientY - rr.top) / rr.height * h))
+        ];
+        drawGuide();
+      };
+      const up = () => { g.removeEventListener("pointermove", move); g.removeEventListener("pointerup", up); };
+      g.addEventListener("pointermove", move);
+      g.addEventListener("pointerup", up);
+    });
+    stage.appendChild(g);
+  });
+}
+window.addEventListener("resize", () => { if (srcImg) drawGuide(); });
+
+$("#btnGray").addEventListener("click", e => {
+  gray = !gray;
+  e.currentTarget.setAttribute("aria-pressed", String(gray));
+  e.currentTarget.textContent = gray ? "白黒にする" : "そのままの色";
+});
+
+/* 4点から射影変換の係数を解く（出力の点 → 元画像の点） */
+function homography(dst, src) {
+  const A = [], b = [];
+  for (let i = 0; i < 4; i++) {
+    const [x, y] = dst[i], [u, v] = src[i];
+    A.push([x, y, 1, 0, 0, 0, -x*u, -y*u]); b.push(u);
+    A.push([0, 0, 0, x, y, 1, -x*v, -y*v]); b.push(v);
+  }
+  for (let c = 0; c < 8; c++) {
+    let p = c;
+    for (let r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    [A[c], A[p]] = [A[p], A[c]]; [b[c], b[p]] = [b[p], b[c]];
+    const d = A[c][c] || 1e-9;
+    for (let k = c; k < 8; k++) A[c][k] /= d;
+    b[c] /= d;
+    for (let r = 0; r < 8; r++) {
+      if (r === c) continue;
+      const f = A[r][c];
+      if (!f) continue;
+      for (let k = c; k < 8; k++) A[r][k] -= f * A[c][k];
+      b[r] -= f * b[c];
+    }
+  }
+  return b;
+}
+
+function warp() {
+  const OW = 1240, OH = Math.round(OW * 1.414);
+  const sc = document.createElement("canvas");
+  sc.width = srcImg.naturalWidth; sc.height = srcImg.naturalHeight;
+  sc.getContext("2d").drawImage(srcImg, 0, 0);
+  const sd = sc.getContext("2d").getImageData(0, 0, sc.width, sc.height).data;
+  const sw = sc.width, sh = sc.height;
+
+  const H = homography([[0,0],[OW,0],[OW,OH],[0,OH]], corners);
+  const [a,bb,c,d,e,f,g,h] = H;
+
+  const out = document.createElement("canvas");
+  out.width = OW; out.height = OH;
+  const octx = out.getContext("2d");
+  const od = octx.createImageData(OW, OH);
+  const lum = new Float32Array(OW * OH);
+
+  for (let y = 0; y < OH; y++) {
+    for (let x = 0; x < OW; x++) {
+      const w = g*x + h*y + 1;
+      const u = (a*x + bb*y + c) / w, v = (d*x + e*y + f) / w;
+      const i = (y * OW + x) * 4;
+      if (u < 0 || v < 0 || u >= sw - 1 || v >= sh - 1) {
+        od.data[i] = od.data[i+1] = od.data[i+2] = 255; od.data[i+3] = 255;
+        lum[y * OW + x] = 255; continue;
+      }
+      const x0 = u | 0, y0 = v | 0, fx = u - x0, fy = v - y0;
+      let R = 0, G = 0, B = 0;
+      for (let k = 0; k < 4; k++) {
+        const xx = x0 + (k & 1), yy = y0 + (k >> 1);
+        const wgt = ((k & 1) ? fx : 1 - fx) * ((k >> 1) ? fy : 1 - fy);
+        const j = (yy * sw + xx) * 4;
+        R += sd[j] * wgt; G += sd[j+1] * wgt; B += sd[j+2] * wgt;
+      }
+      od.data[i] = R; od.data[i+1] = G; od.data[i+2] = B; od.data[i+3] = 255;
+      lum[y * OW + x] = 0.299*R + 0.587*G + 0.114*B;
+    }
+  }
+
+  if (gray) {
+    // 局所平均で二値化（影やムラに強い）。
+    // あわせて局所のばらつきも見て、平坦な場所は紙とみなす
+    // ＝ 紙の外の暗い背景や、影だけの部分が黒く潰れるのを防ぐ。
+    const W1 = OW + 1;
+    const ii = new Float64Array(W1 * (OH + 1));
+    const i2 = new Float64Array(W1 * (OH + 1));
+    for (let y = 0; y < OH; y++) {
+      let run = 0, run2 = 0;
+      for (let x = 0; x < OW; x++) {
+        const L = lum[y * OW + x];
+        run += L; run2 += L * L;
+        ii[(y + 1) * W1 + x + 1] = ii[y * W1 + x + 1] + run;
+        i2[(y + 1) * W1 + x + 1] = i2[y * W1 + x + 1] + run2;
+      }
+    }
+    const box = (T, x0, y0, x1, y1) =>
+      T[(y1+1)*W1 + x1+1] - T[y0*W1 + x1+1] - T[(y1+1)*W1 + x0] + T[y0*W1 + x0];
+    const rad = Math.max(8, OW / 26 | 0), C = +$("#thr").value;
+    for (let y = 0; y < OH; y++) {
+      const y0 = Math.max(0, y - rad), y1 = Math.min(OH - 1, y + rad);
+      for (let x = 0; x < OW; x++) {
+        const x0 = Math.max(0, x - rad), x1 = Math.min(OW - 1, x + rad);
+        const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+        const m = box(ii, x0, y0, x1, y1) / area;
+        const sd = Math.sqrt(Math.max(0, box(i2, x0, y0, x1, y1) / area - m * m));
+        const v = (sd > 11 && lum[y * OW + x] < m - C) ? 0 : 255;
+        const i = (y * OW + x) * 4;
+        od.data[i] = od.data[i+1] = od.data[i+2] = v;
+      }
+    }
+  }
+  octx.putImageData(od, 0, 0);
+  return out.toDataURL("image/jpeg", 0.88);
+}
+
+let bundlePages = [];
+$("#btnCrop").addEventListener("click", () => {
+  $("#busy").classList.add("on");
+  setTimeout(() => {
+    try {
+      bundlePages.push(warp());
+      renderBundle();
+      $("#cropCard").hidden = true;
+      srcImg = null;
+      $("#bundle").scrollIntoView({behavior: "smooth", block: "start"});
+    } finally {
+      $("#busy").classList.remove("on");
+    }
+  }, 40);
+});
+
+function renderBundle() {
+  $("#bundle").hidden = bundlePages.length === 0;
+  $("#pageList").innerHTML = bundlePages.map((p, i) =>
+    `<div class="pg"><img src="${p}" alt="${i+1}ページ目"><span class="no">${i+1}</span>
+     <button class="x" data-rm="${i}" aria-label="${i+1}ページ目を削除">×</button></div>`).join("");
+  $$("#pageList .x").forEach(b => b.addEventListener("click", () => {
+    bundlePages.splice(+b.dataset.rm, 1); renderBundle();
+  }));
+}
+
+$("#btnSave").addEventListener("click", async () => {
+  if (!bundlePages.length) return;
+  const title = ($("#title").value || "").trim() || "なまえのない楽譜";
+  await putScore({id: "s" + Date.now(), title, pages: bundlePages, at: Date.now()});
+  bundlePages = []; $("#title").value = "";
+  renderBundle();
+  await renderShelf();
+  $$(".tab")[1].click();
+});
+
+/* ══════════ 本棚 ══════════ */
+async function renderShelf() {
+  const list = (await allScores()).sort((a, b) => b.at - a.at);
+  $("#shelfEmpty").style.display = list.length ? "none" : "block";
+  $("#shelf").innerHTML = list.map(s => {
+    const d = new Date(s.at);
+    const ds = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+    return `<button class="book" data-open="${s.id}">
+      <img src="${s.pages[0]}" alt="">
+      <span class="meta"><span class="t">${esc(s.title)}</span>
+      <span class="d">${s.pages.length}ページ ・ ${ds}</span></span></button>`;
+  }).join("");
+  $$("#shelf .book").forEach(b => b.addEventListener("click", () => openViewer(b.dataset.open)));
+}
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let current = null;
+async function openViewer(id) {
+  current = (await allScores()).find(s => s.id === id);
+  if (!current) return;
+  $("#vTitle").textContent = current.title;
+  $("#vScroll").innerHTML = current.pages.map((p, i) =>
+    `<img src="${p}" alt="${i+1}ページ目">`).join("");
+  $("#viewer").classList.add("on");
+}
+$("#vClose").addEventListener("click", () => $("#viewer").classList.remove("on"));
+$("#vPrint").addEventListener("click", () => {
+  $("#printArea").innerHTML = current.pages.map(p => `<img src="${p}" alt="">`).join("");
+  setTimeout(() => window.print(), 120);
+});
+$("#vDel").addEventListener("click", async () => {
+  if (!current) return;
+  await delScore(current.id);
+  $("#viewer").classList.remove("on");
+  await renderShelf();
+});
+
+/* ══════════ 移調と再生 ══════════ */
+const DEMO = JSON.parse($("#demo").textContent);
+const sheet = $("#sheet");
+let semi = 0, ac = null, playing = false, startedAt = 0, raf = 0, sources = [];
+
+function svgFor(s) {
+  let svg = DEMO[String(s)].svg;
+  // 幅の指定を外し、画面幅に追従させる
+  const m = svg.match(/^<svg width="(\d+)px" height="(\d+)px"/);
+  if (m) svg = svg.replace(m[0], `<svg viewBox="0 0 ${m[1]} ${m[2]}" preserveAspectRatio="xMidYMid meet"`);
+  return svg;
+}
+function paint() {
+  const d = DEMO[String(semi)];
+  sheet.innerHTML = svgFor(semi);
+  const oct = semi === 12 ? "（1オクターブ上）" : semi === -12 ? "（1オクターブ下）" : "";
+  $("#keyName").textContent = d.key + oct;
+  $("#semiLabel").textContent = (semi > 0 ? "＋" : semi < 0 ? "−" : "±") + Math.abs(semi) + "半音";
+  $$(".step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.jump === semi)));
+}
+function setSemi(v) {
+  semi = v;
+  $("#semi").value = v;
+  if (playing) stop();
+  paint();
+}
+$("#semi").addEventListener("input", e => setSemi(+e.target.value));
+$$(".step").forEach(b => b.addEventListener("click", () => setSemi(+b.dataset.jump)));
+$("#tempo").addEventListener("input", e => {
+  $("#tempoLabel").textContent = "はやさ " + e.target.value + "%";
+  if (playing) stop();
+});
+
+/* ピアノに寄せた音づくり：基音＋倍音を重ね、高い音ほど速く減衰させる */
+function pluck(midi, at, dur) {
+  const f = 440 * Math.pow(2, (midi - 69) / 12);
+  const g = ac.createGain();
+  g.connect(ac.destination);
+  const peak = 0.17 * Math.pow(0.5, (midi - 60) / 34);
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(peak, at + 0.008);
+  g.gain.exponentialRampToValueAtTime(peak * 0.28, at + 0.16);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + Math.max(0.32, dur));
+  [[1, 1], [2, 0.34], [3, 0.13], [4.02, 0.06]].forEach(([h, amp]) => {
+    const o = ac.createOscillator();
+    o.type = h === 1 ? "triangle" : "sine";
+    o.frequency.value = f * h;
+    const og = ac.createGain();
+    og.gain.value = amp;
+    o.connect(og).connect(g);
+    o.start(at);
+    o.stop(at + Math.max(0.4, dur) + 0.1);
+    sources.push(o);
+  });
+}
+function stop() {
+  playing = false;
+  cancelAnimationFrame(raf);
+  sources.forEach(o => { try { o.stop(); } catch (_) {} });
+  sources = [];
+  sheet.querySelectorAll(".hl").forEach(n => n.remove());
+  $("#playIcon").innerHTML = '<path d="M7 4.5v15l13-7.5z"/>';
+}
+$("#btnPlay").addEventListener("click", () => {
+  if (playing) { stop(); return; }
+  ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+  ac.resume();
+  const rate = +$("#tempo").value / 100;
+  const data = DEMO[String(semi)];
+  playing = true;
+  $("#playIcon").innerHTML = '<rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/>';
+  const t0 = ac.currentTime + 0.12;
+  startedAt = performance.now() + 120;
+  data.ev.forEach(e => pluck(e.m, t0 + (e.t / 1000) / rate, 0.5 / rate));
+  const total = data.dur / rate;
+
+  const tick = () => {
+    if (!playing) return;
+    const now = performance.now() - startedAt;
+    if (now > total) { stop(); return; }
+    const live = data.ev.filter(e => {
+      const s = e.t / rate;
+      return now >= s - 40 && now < s + 460 / rate;
+    });
+    sheet.querySelectorAll(".hl").forEach(n => n.remove());
+    const box = sheet.getBoundingClientRect();
+    const seen = new Set();
+    live.forEach(e => {
+      if (seen.has(e.id)) return;
+      seen.add(e.id);
+      const el = sheet.querySelector("#" + CSS.escape(e.id));
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (!r.width) return;
+      const d = document.createElement("div");
+      d.className = "hl";
+      d.style.left = (r.left - box.left + sheet.scrollLeft - 3) + "px";
+      d.style.top = (r.top - box.top - 3) + "px";
+      d.style.width = (r.width + 6) + "px";
+      d.style.height = (r.height + 6) + "px";
+      sheet.appendChild(d);
+    });
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+});
+
+paint();
+renderShelf();
+renderBundle();
+</script>
