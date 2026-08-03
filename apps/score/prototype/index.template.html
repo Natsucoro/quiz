@@ -181,6 +181,21 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
   border-radius:6px; box-shadow:var(--shadow)}
 
 /* ─────────── 移調 ─────────── */
+.seg{display:flex; gap:0; border:1px solid var(--line-strong); border-radius:var(--r-sm);
+  overflow:hidden; margin:2px 0 14px}
+.segb{flex:1; border:0; background:var(--surface); padding:10px 8px; font-size:14px;
+  font-weight:600; letter-spacing:.04em; transition:background .16s, color .16s}
+.segb+.segb{border-left:1px solid var(--line-strong)}
+.segb[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+
+#mineWrap{padding:0; position:relative; max-height:66vh; overflow:auto}
+#mineWrap canvas{display:block; width:100%; height:auto; transform-origin:0 0}
+#zoomRow{margin:0 0 10px}
+#mineWrap #mineHl{position:absolute; left:0; top:0; pointer-events:none}
+#mineSel{font:inherit; font-size:16px; padding:10px 12px; border-radius:var(--r-sm);
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink)}
+.mk-note{color:var(--amber); font-weight:700}
+
 .keybar{display:flex; align-items:baseline; justify-content:center; gap:11px;
   padding:6px 0 12px; flex-wrap:wrap}
 .keybar .from{font-size:14px; color:var(--ink-faint)}
@@ -314,9 +329,13 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     <section class="panel" id="p-key" role="tabpanel" aria-label="移調">
       <div class="card">
         <p class="eyebrow">キーを変える</p>
+        <div class="seg" role="group" aria-label="移調するもの">
+          <button class="segb" data-src="demo" aria-pressed="true">お手本</button>
+          <button class="segb" data-src="mine" aria-pressed="false">撮った楽譜</button>
+        </div>
         <div class="keybar">
-          <span class="from">ハ長調</span>
-          <span class="arrow">→</span>
+          <span class="from" id="keyFrom">ハ長調</span>
+          <span class="arrow" id="keyArrow">→</span>
           <span class="to" id="keyName">ハ長調</span>
           <span class="semi" id="semiLabel">±0</span>
         </div>
@@ -324,7 +343,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <label for="semi">半音</label>
           <input type="range" id="semi" min="-12" max="12" value="0" step="1">
         </div>
-        <div class="steps">
+        <div class="steps" id="keySteps">
           <button class="step" data-jump="-12">1オクターブ下</button>
           <button class="step" data-jump="0" aria-pressed="true">原調</button>
           <button class="step" data-jump="2">＋2度</button>
@@ -332,7 +351,24 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         </div>
 
         <div style="height:14px"></div>
-        <div class="sheet" id="sheet"></div>
+        <div id="viewDemo"><div class="sheet" id="sheet"></div></div>
+
+        <div id="viewMine" hidden>
+          <div class="field">
+            <span>どの楽譜</span>
+            <select id="mineSel"></select>
+          </div>
+          <div class="steps" id="zoomRow">
+            <button class="step" data-zoom="1" aria-pressed="true">全体</button>
+            <button class="step" data-zoom="2">2倍</button>
+            <button class="step" data-zoom="3.2">3倍</button>
+          </div>
+          <div class="sheet" id="mineWrap">
+            <canvas id="mineCv"></canvas>
+            <canvas id="mineHl"></canvas>
+          </div>
+          <p class="hint" id="mineInfo">読み取り中…</p>
+        </div>
 
         <div class="transport">
           <button class="play" id="btnPlay" aria-label="再生">
@@ -344,9 +380,14 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           </div>
         </div>
 
-        <div class="note-box">
-          <p>鳴っている楽譜は、モーツァルト ピアノソナタ K.545 の冒頭8小節です（著作権の切れた曲）。1オクターブ下から1オクターブ上まで25通りのキーを、すべて実際に浄書し直してあります。調号も書き換わります。<br>
-          あなたが撮った楽譜をここに読み込むには、写真から音符を読み取るサーバ処理が要ります。それはまだ動いていません。</p>
+        <div class="note-box" id="noteDemo">
+          <p>鳴っている楽譜は、モーツァルト ピアノソナタ K.545 の冒頭8小節です（著作権の切れた曲）。1オクターブ下から1オクターブ上まで25通りのキーを、すべて実際に浄書し直してあります。調号も書き換わります。</p>
+        </div>
+        <div class="note-box" id="noteMine" hidden>
+          <p><b>読み取れるのは音の高さだけです。音の長さ（リズム）は読めていません。</b>
+          そのため、移調した楽譜をきれいに組み直して印刷することは、まだできません。<br>
+          <span class="mk-note">橙色の丸</span>が、移調後にその音符が来る場所です。灰色の細い丸は、読み取った元の音符です。
+          読み間違いは起こります。おかしな場所に丸が出ていたら、それは読み違えです。</p>
         </div>
       </div>
 
@@ -359,7 +400,8 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <li><span class="mk done">済</span><span>本棚に保存する（この端末の中だけ。外に送りません）</span></li>
           <li><span class="mk done">済</span><span>スマホで見る・紙に印刷する</span></li>
           <li><span class="mk done">済</span><span>キーを変える・音を鳴らす・鳴っている音符が光る</span></li>
-          <li><span class="mk">未</span><span>撮った写真から音符を読み取る（サーバが必要。1ページ5〜6分）</span></li>
+          <li><span class="mk done">済</span><span>撮った楽譜から<b>音の高さ</b>を読み取り、移調後の位置を重ねて示す・鳴らす</span></li>
+          <li><span class="mk">未</span><span>音の長さ（リズム）を読み取る ― ここが未達のため、移調した楽譜を組み直して印刷することはまだできません</span></li>
           <li><span class="mk">未</span><span>読み取りの間違いを直すエディタ（拍子 → 音の長さ → 音の高さ）</span></li>
         </ul>
       </div>
@@ -396,6 +438,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 <div class="busy" id="busy"><div>まっすぐに直しています…</div></div>
 
 <script id="demo" type="application/json">__DEMO_DATA__</script>
+<script>__OMR_JS__</script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
@@ -628,6 +671,7 @@ $("#btnSave").addEventListener("click", async () => {
   bundlePages = []; $("#title").value = "";
   renderBundle();
   await renderShelf();
+  if (src === "mine") await fillMineSel();
   $$(".tab")[1].click();
 });
 
@@ -680,13 +724,89 @@ function svgFor(s) {
   if (m) svg = svg.replace(m[0], `<svg viewBox="0 0 ${m[1]} ${m[2]}" preserveAspectRatio="xMidYMid meet"`);
   return svg;
 }
+/* ── 撮った楽譜を読む ── */
+let src = "demo", mineList = [], mineImg = null, mineOMR = null;
+
+async function fillMineSel() {
+  const list = (await allScores()).sort((a, b) => b.at - a.at);
+  mineList = [];
+  list.forEach(s => s.pages.forEach((p, i) =>
+    mineList.push({ label: s.title + (s.pages.length > 1 ? `（${i + 1}ページ）` : ""), url: p })));
+  $("#mineSel").innerHTML = mineList.length
+    ? mineList.map((o, i) => `<option value="${i}">${esc(o.label)}</option>`).join("")
+    : `<option value="">（本棚がまだ空です）</option>`;
+}
+
+async function loadMine(i) {
+  const o = mineList[i];
+  if (!o) {
+    mineImg = mineOMR = null;
+    $("#mineInfo").textContent = "「撮る」から楽譜を取り込むと、ここで移調できます。";
+    const cv = $("#mineCv"); cv.width = cv.height = 1;
+    $("#mineHl").width = $("#mineHl").height = 1;
+    return;
+  }
+  $("#mineInfo").textContent = "音符を読み取っています…";
+  const img = new Image();
+  img.src = o.url;
+  await img.decode();
+  mineImg = img;
+  const cv = $("#mineCv"), hl = $("#mineHl");
+  cv.width = hl.width = img.width;
+  cv.height = hl.height = img.height;
+  const g = cv.getContext("2d");
+  g.drawImage(img, 0, 0);
+  const t0 = performance.now();
+  mineOMR = OMR.readScore(g.getImageData(0, 0, cv.width, cv.height));
+  const ms = Math.round(performance.now() - t0);
+  $("#mineInfo").textContent = mineOMR.notes.length
+    ? `五線 ${mineOMR.staves.length}段 から 音符 ${mineOMR.notes.length}個 の高さを読み取りました（${ms}ミリ秒）`
+    : "音符を見つけられませんでした。「撮る」で四隅をきちんと合わせ、白黒にしてから試してください。";
+  applyZoom();
+  paintMine();
+}
+
+function paintMine() {
+  if (!mineImg || !mineOMR) return;
+  const cv = $("#mineCv"), g = cv.getContext("2d");
+  g.drawImage(mineImg, 0, 0);
+  const steps = OMR.semiToSteps(semi);
+  for (const n of mineOMR.notes) {
+    const S = n.space;
+    g.lineWidth = Math.max(1, S * 0.10);
+    g.strokeStyle = "rgba(22,35,58,.28)";
+    g.beginPath(); g.ellipse(n.x, n.y, S * 0.62, S * 0.46, -0.33, 0, 7); g.stroke();
+    if (!steps) continue;
+    g.fillStyle = "rgba(201,127,23,.80)";
+    g.beginPath(); g.ellipse(n.x, n.y - steps * (S / 2), S * 0.62, S * 0.46, -0.33, 0, 7); g.fill();
+  }
+  $("#mineHl").getContext("2d").clearRect(0, 0, cv.width, cv.height);
+}
+
+/* ── 表示の切り替えと移調 ── */
 function paint() {
-  const d = DEMO[String(semi)];
-  sheet.innerHTML = svgFor(semi);
-  const oct = semi === 12 ? "（1オクターブ上）" : semi === -12 ? "（1オクターブ下）" : "";
-  $("#keyName").textContent = d.key + oct;
-  $("#semiLabel").textContent = (semi > 0 ? "＋" : semi < 0 ? "−" : "±") + Math.abs(semi) + "半音";
-  $$(".step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.jump === semi)));
+  const isDemo = src === "demo";
+  $("#viewDemo").hidden = !isDemo;
+  $("#viewMine").hidden = isDemo;
+  $("#noteDemo").hidden = !isDemo;
+  $("#noteMine").hidden = isDemo;
+  $("#keyFrom").hidden = $("#keyArrow").hidden = !isDemo;
+  const amount = (semi > 0 ? "＋" : semi < 0 ? "−" : "±") + Math.abs(semi) + "半音";
+
+  if (isDemo) {
+    const d = DEMO[String(semi)];
+    sheet.innerHTML = svgFor(semi);
+    const oct = semi === 12 ? "（1オクターブ上）" : semi === -12 ? "（1オクターブ下）" : "";
+    $("#keyName").textContent = d.key + oct;
+    $("#semiLabel").textContent = amount;
+  } else {
+    const st = OMR.semiToSteps(semi);
+    $("#keyName").textContent = amount;
+    $("#semiLabel").textContent = st === 0 ? "そのまま"
+      : `五線の上で${Math.abs(st)}段${st > 0 ? "上" : "下"}へ`;
+    paintMine();
+  }
+  $$("#keySteps .step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.jump === semi)));
 }
 function setSemi(v) {
   semi = v;
@@ -695,7 +815,39 @@ function setSemi(v) {
   paint();
 }
 $("#semi").addEventListener("input", e => setSemi(+e.target.value));
-$$(".step").forEach(b => b.addEventListener("click", () => setSemi(+b.dataset.jump)));
+$$("#keySteps .step").forEach(b => b.addEventListener("click", () => setSemi(+b.dataset.jump)));
+$$(".segb").forEach(b => b.addEventListener("click", async () => {
+  if (playing) stop();
+  src = b.dataset.src;
+  $$(".segb").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  if (src === "mine") {
+    await fillMineSel();
+    await loadMine(+$("#mineSel").value);
+  }
+  paint();
+}));
+let mineZoom = 1;
+function applyZoom() {
+  const w = (100 * mineZoom) + "%";
+  $("#mineCv").style.width = w;
+  $("#mineHl").style.width = w;
+  $$("#zoomRow .step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.zoom === mineZoom)));
+}
+$$("#zoomRow .step").forEach(b => b.addEventListener("click", () => {
+  const wrap = $("#mineWrap");
+  const cx = (wrap.scrollLeft + wrap.clientWidth / 2) / mineZoom;
+  const cy = (wrap.scrollTop + wrap.clientHeight / 2) / mineZoom;
+  mineZoom = +b.dataset.zoom;
+  applyZoom();
+  wrap.scrollLeft = cx * mineZoom - wrap.clientWidth / 2;
+  wrap.scrollTop = cy * mineZoom - wrap.clientHeight / 2;
+}));
+
+$("#mineSel").addEventListener("change", async e => {
+  if (playing) stop();
+  await loadMine(+e.target.value);
+  paint();
+});
 $("#tempo").addEventListener("input", e => {
   $("#tempoLabel").textContent = "はやさ " + e.target.value + "%";
   if (playing) stop();
@@ -729,32 +881,37 @@ function stop() {
   sources.forEach(o => { try { o.stop(); } catch (_) {} });
   sources = [];
   sheet.querySelectorAll(".hl").forEach(n => n.remove());
+  const hl = $("#mineHl");
+  if (hl.width > 1) hl.getContext("2d").clearRect(0, 0, hl.width, hl.height);
   $("#playIcon").innerHTML = '<path d="M7 4.5v15l13-7.5z"/>';
 }
-$("#btnPlay").addEventListener("click", () => {
-  if (playing) { stop(); return; }
-  ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-  ac.resume();
-  const rate = +$("#tempo").value / 100;
-  const data = DEMO[String(semi)];
-  playing = true;
-  $("#playIcon").innerHTML = '<rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/>';
-  const t0 = ac.currentTime + 0.12;
-  startedAt = performance.now() + 120;
-  data.ev.forEach(e => pluck(e.m, t0 + (e.t / 1000) / rate, 0.5 / rate));
-  const total = data.dur / rate;
 
-  const tick = () => {
-    if (!playing) return;
-    const now = performance.now() - startedAt;
-    if (now > total) { stop(); return; }
-    const live = data.ev.filter(e => {
-      const s = e.t / rate;
-      return now >= s - 40 && now < s + 460 / rate;
-    });
+/** 鳴らす音の一覧。
+ *  お手本は浄書済みの正確な時刻を使う。
+ *  撮った楽譜は音の長さが読めていないので、読み取り順に等間隔で並べる。 */
+function playList(rate) {
+  if (src === "demo") {
+    const d = DEMO[String(semi)];
+    return { list: d.ev.map(e => ({ t: e.t / rate, m: e.m, id: e.id })),
+             total: d.dur / rate, hold: 460 / rate };
+  }
+  const notes = (mineOMR && mineOMR.notes) || [];
+  const slot = 320 / rate;
+  const list = [];
+  let t = 0, prev = null;
+  notes.forEach((n, i) => {
+    // 同じ位置に重なる音（和音）は同時に鳴らす
+    if (prev && (n.system !== prev.system || Math.abs(n.x - prev.x) > n.space * 0.7)) t += slot;
+    list.push({ t, m: n.midi + semi, id: i });
+    prev = n;
+  });
+  return { list, total: t + slot * 2, hold: slot * 0.9 };
+}
+
+function highlight(live) {
+  if (src === "demo") {
     sheet.querySelectorAll(".hl").forEach(n => n.remove());
-    const box = sheet.getBoundingClientRect();
-    const seen = new Set();
+    const box = sheet.getBoundingClientRect(), seen = new Set();
     live.forEach(e => {
       if (seen.has(e.id)) return;
       seen.add(e.id);
@@ -770,6 +927,51 @@ $("#btnPlay").addEventListener("click", () => {
       d.style.height = (r.height + 6) + "px";
       sheet.appendChild(d);
     });
+    return;
+  }
+  const hl = $("#mineHl");
+  if (hl.width <= 1 || !mineOMR) return;
+  const g = hl.getContext("2d");
+  g.clearRect(0, 0, hl.width, hl.height);
+  const steps = OMR.semiToSteps(semi);
+  let firstY = null, firstX = null;
+  live.forEach(e => {
+    const n = mineOMR.notes[e.id];
+    if (!n) return;
+    const S = n.space, y = n.y - steps * (S / 2);
+    if (firstY === null) { firstY = y; firstX = n.x; }
+    g.strokeStyle = "rgba(201,127,23,.95)";
+    g.lineWidth = Math.max(1.5, S * 0.18);
+    g.beginPath(); g.ellipse(n.x, y, S * 0.95, S * 0.78, -0.33, 0, 7); g.stroke();
+  });
+  if (firstY !== null) {   // 鳴っている場所が見えるように追いかける
+    const wrap = $("#mineWrap"), scale = (hl.clientWidth || wrap.clientWidth) / hl.width;
+    const wantY = firstY * scale - wrap.clientHeight * 0.42;
+    if (Math.abs(wrap.scrollTop - wantY) > wrap.clientHeight * 0.3) wrap.scrollTop = Math.max(0, wantY);
+    if (firstX !== null && mineZoom > 1) {
+      const wantX = firstX * scale - wrap.clientWidth * 0.45;
+      if (Math.abs(wrap.scrollLeft - wantX) > wrap.clientWidth * 0.3) wrap.scrollLeft = Math.max(0, wantX);
+    }
+  }
+}
+
+$("#btnPlay").addEventListener("click", () => {
+  if (playing) { stop(); return; }
+  const rate = +$("#tempo").value / 100;
+  const { list, total, hold } = playList(rate);
+  if (!list.length) return;
+  ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+  ac.resume();
+  playing = true;
+  $("#playIcon").innerHTML = '<rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/>';
+  const t0 = ac.currentTime + 0.12;
+  startedAt = performance.now() + 120;
+  list.forEach(e => pluck(e.m, t0 + e.t / 1000, hold / 1000));
+  const tick = () => {
+    if (!playing) return;
+    const now = performance.now() - startedAt;
+    if (now > total) { stop(); return; }
+    highlight(list.filter(e => now >= e.t - 40 && now < e.t + hold));
     raf = requestAnimationFrame(tick);
   };
   raf = requestAnimationFrame(tick);
