@@ -131,6 +131,11 @@ label.file .btn{display:block; text-align:center}
   touch-action:none; cursor:grab;
 }
 .stage .grip::after{content:""; position:absolute; inset:13px; border-radius:50%; background:var(--shu)}
+/* 指が少しずれても掴めるように、当たり判定だけ広げる */
+.stage .grip::before{content:""; position:absolute; inset:-12px; border-radius:50%}
+.stage .grip.on{border-color:var(--ink); transform:scale(1.14);
+  background:color-mix(in srgb, var(--shu) 34%, transparent)}
+.stage .grip:active{cursor:grabbing}
 
 .slider-row{display:flex; align-items:center; gap:13px; margin:11px 0}
 .slider-row label{font-size:13px; color:var(--ink-soft); min-width:6.5em; letter-spacing:.03em}
@@ -289,6 +294,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       <div class="card" id="cropCard" hidden>
         <p class="eyebrow">2. 四隅を合わせる</p>
         <h2>紙の角に印を動かす</h2>
+        <p class="hint" style="margin:-2px 0 10px">赤い丸を指でドラッグして、紙の4つの角に合わせてください。丸を選んでから矢印キーでも動かせます。</p>
         <div class="stage" id="stage">
           <img id="shot" alt="撮った楽譜">
           <svg class="guide" id="guide" preserveAspectRatio="none"></svg>
@@ -484,11 +490,13 @@ function loadFile(file) {
   const im = new Image();
   im.onload = () => {
     srcImg = im;
-    shot.src = url;
     $("#cropCard").hidden = false;
     const w = im.naturalWidth, h = im.naturalHeight, m = 0.07;
     corners = [[w*m, h*m], [w*(1-m), h*m], [w*(1-m), h*(1-m)], [w*m, h*(1-m)]];
-    requestAnimationFrame(drawGuide);
+    const ready = () => { buildGrips(); drawGuide(); };
+    shot.onload = ready;
+    shot.src = url;
+    if (shot.complete && shot.naturalWidth) ready();
     $("#cropCard").scrollIntoView({behavior: "smooth", block: "start"});
   };
   im.src = url;
@@ -496,37 +504,74 @@ function loadFile(file) {
 $("#cam").addEventListener("change", e => loadFile(e.target.files[0]));
 $("#pick").addEventListener("change", e => loadFile(e.target.files[0]));
 
+/* 四隅の印は一度だけ作る。
+   動かすたびに作り直すと、掴んでいる要素そのものが消えて指から離れてしまう。 */
+let grips = [];
+const CORNER_NAME = ["左上", "右上", "右下", "左下"];
+
+function buildGrips() {
+  stage.querySelectorAll(".grip").forEach(g => g.remove());
+  grips = corners.map((_, i) => {
+    const g = document.createElement("div");
+    g.className = "grip";
+    g.tabIndex = 0;
+    g.setAttribute("aria-label", CORNER_NAME[i] + "の角");
+    g.addEventListener("pointerdown", ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      try { g.setPointerCapture(ev.pointerId); } catch (_) {}
+      g.classList.add("on");
+      const move = e2 => {
+        e2.preventDefault();
+        const r = shot.getBoundingClientRect();
+        if (!r.width) return;
+        const w = srcImg.naturalWidth, h = srcImg.naturalHeight;
+        corners[i] = [
+          Math.max(0, Math.min(w, (e2.clientX - r.left) / r.width * w)),
+          Math.max(0, Math.min(h, (e2.clientY - r.top) / r.height * h))
+        ];
+        drawGuide();
+      };
+      const up = () => {
+        g.classList.remove("on");
+        g.removeEventListener("pointermove", move);
+        g.removeEventListener("pointerup", up);
+        g.removeEventListener("pointercancel", up);
+      };
+      g.addEventListener("pointermove", move);
+      g.addEventListener("pointerup", up);
+      g.addEventListener("pointercancel", up);
+    });
+    // 指で合わせきれないときのために、選んでから矢印キーでも動かせるようにする
+    g.addEventListener("keydown", ev => {
+      const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[ev.key];
+      if (!d) return;
+      ev.preventDefault();
+      const step = (ev.shiftKey ? 10 : 2) * (srcImg.naturalWidth / 1000);
+      corners[i] = [
+        Math.max(0, Math.min(srcImg.naturalWidth, corners[i][0] + d[0] * step)),
+        Math.max(0, Math.min(srcImg.naturalHeight, corners[i][1] + d[1] * step))
+      ];
+      drawGuide();
+    });
+    stage.appendChild(g);
+    return g;
+  });
+}
+
 function drawGuide() {
-  if (!srcImg) return;
+  if (!srcImg || !corners) return;
   const w = srcImg.naturalWidth, h = srcImg.naturalHeight;
   guide.setAttribute("viewBox", `0 0 ${w} ${h}`);
   const pts = corners.map(p => p.join(",")).join(" ");
   const sw = Math.max(w, h) / 260;
   guide.innerHTML =
     `<polygon points="${pts}" fill="rgba(180,52,42,.10)" stroke="#B4342A" stroke-width="${sw}"/>`;
-  stage.querySelectorAll(".grip").forEach(g => g.remove());
   const r = shot.getBoundingClientRect(), sr = stage.getBoundingClientRect();
-  corners.forEach((p, i) => {
-    const g = document.createElement("div");
-    g.className = "grip";
-    g.style.left = (r.left - sr.left + p[0] / w * r.width) + "px";
-    g.style.top = (r.top - sr.top + p[1] / h * r.height) + "px";
-    g.addEventListener("pointerdown", ev => {
-      ev.preventDefault();
-      g.setPointerCapture(ev.pointerId);
-      const move = e2 => {
-        const rr = shot.getBoundingClientRect();
-        corners[i] = [
-          Math.max(0, Math.min(w, (e2.clientX - rr.left) / rr.width * w)),
-          Math.max(0, Math.min(h, (e2.clientY - rr.top) / rr.height * h))
-        ];
-        drawGuide();
-      };
-      const up = () => { g.removeEventListener("pointermove", move); g.removeEventListener("pointerup", up); };
-      g.addEventListener("pointermove", move);
-      g.addEventListener("pointerup", up);
-    });
-    stage.appendChild(g);
+  if (!r.width) return;
+  grips.forEach((g, i) => {
+    g.style.left = (r.left - sr.left + corners[i][0] / w * r.width) + "px";
+    g.style.top = (r.top - sr.top + corners[i][1] / h * r.height) + "px";
   });
 }
 window.addEventListener("resize", () => { if (srcImg) drawGuide(); });
@@ -564,7 +609,8 @@ function homography(dst, src) {
 }
 
 function warp() {
-  const OW = 1240, OH = Math.round(OW * 1.414);
+  const OW = 1654, OH = Math.round(OW * 1.414);   // A4を200dpi相当で起こす。
+  // 150dpiだと五線が1px未満に潰れ、点線状に途切れて検出できなくなる
   const sc = document.createElement("canvas");
   sc.width = srcImg.naturalWidth; sc.height = srcImg.naturalHeight;
   sc.getContext("2d").drawImage(srcImg, 0, 0);
@@ -628,14 +674,18 @@ function warp() {
         const area = (x1 - x0 + 1) * (y1 - y0 + 1);
         const m = box(ii, x0, y0, x1, y1) / area;
         const sd = Math.sqrt(Math.max(0, box(i2, x0, y0, x1, y1) / area - m * m));
-        const v = (sd > 11 && lum[y * OW + x] < m - C) ? 0 : 255;
+        // ばらつきの下限は低く取る。高くすると、白い紙の上の細い五線が
+        // 「平坦＝紙」と判定されて破線状に千切れてしまう。
+        const v = (sd > 5 && lum[y * OW + x] < m - C) ? 0 : 255;
         const i = (y * OW + x) * 4;
         od.data[i] = od.data[i+1] = od.data[i+2] = v;
       }
     }
   }
   octx.putImageData(od, 0, 0);
-  return out.toDataURL("image/jpeg", 0.88);
+  // 白黒にしたページは可逆のPNGで保存する。
+  // JPEGだと細い五線が灰色ににじみ、読み直したときに消えてしまう。
+  return gray ? out.toDataURL("image/png") : out.toDataURL("image/jpeg", 0.9);
 }
 
 let bundlePages = [];
@@ -775,10 +825,11 @@ function paintMine() {
     const S = n.space;
     g.lineWidth = Math.max(1, S * 0.10);
     g.strokeStyle = "rgba(22,35,58,.28)";
-    g.beginPath(); g.ellipse(n.x, n.y, S * 0.62, S * 0.46, -0.33, 0, 7); g.stroke();
+    const y0 = n.yImg !== undefined ? n.yImg : n.y;
+    g.beginPath(); g.ellipse(n.x, y0, S * 0.62, S * 0.46, -0.33, 0, 7); g.stroke();
     if (!steps) continue;
     g.fillStyle = "rgba(201,127,23,.80)";
-    g.beginPath(); g.ellipse(n.x, n.y - steps * (S / 2), S * 0.62, S * 0.46, -0.33, 0, 7); g.fill();
+    g.beginPath(); g.ellipse(n.x, y0 - steps * (S / 2), S * 0.62, S * 0.46, -0.33, 0, 7); g.fill();
   }
   $("#mineHl").getContext("2d").clearRect(0, 0, cv.width, cv.height);
 }
@@ -938,7 +989,7 @@ function highlight(live) {
   live.forEach(e => {
     const n = mineOMR.notes[e.id];
     if (!n) return;
-    const S = n.space, y = n.y - steps * (S / 2);
+    const S = n.space, y = (n.yImg !== undefined ? n.yImg : n.y) - steps * (S / 2);
     if (firstY === null) { firstY = y; firstX = n.x; }
     g.strokeStyle = "rgba(201,127,23,.95)";
     g.lineWidth = Math.max(1.5, S * 0.18);

@@ -39,28 +39,77 @@
   const rectSum = (ii, W1, x0, y0, x1, y1) =>
     ii[(y1 + 1) * W1 + x1 + 1] - ii[y0 * W1 + x1 + 1] - ii[(y1 + 1) * W1 + x0] + ii[y0 * W1 + x0];
 
+  /** 残った傾きを見つける。
+   *  四隅を指で合わせる以上、わずかなズレは必ず残る。1290px幅で0.5°傾くだけで
+   *  11px ずれ、1本の五線が複数の行にまたがって「長い横の連なり」が消えてしまう。
+   *  縦に潰した黒画素の分布がいちばん尖る傾きを探す。 */
+  function estimateShear(bin, W, H) {
+    const cx = W / 2;
+    // 縦は1行も飛ばさない。太さ1〜2画素の五線は、間引くと丸ごと抜け落ちる。
+    // 代わりに列のほうを間引いて速さを保つ。
+    const score = s => {
+      const acc = new Int32Array(H);
+      for (let x = 0; x < W; x += 4) {
+        const dy = Math.round(s * (x - cx));
+        const y0 = Math.max(0, -dy), y1 = Math.min(H, H - dy);
+        for (let y = y0; y < y1; y++) acc[y] += bin[(y + dy) * W + x];
+      }
+      let sum = 0;
+      for (let y = 0; y < H; y++) sum += acc[y] * acc[y];
+      return sum;
+    };
+    let best = 0, bestScore = score(0);
+    for (let s = -0.09; s <= 0.0901; s += 0.005) {           // ±5度をざっと
+      const v = score(s);
+      if (v > bestScore) { bestScore = v; best = s; }
+    }
+    for (let s = best - 0.005; s <= best + 0.0051; s += 0.0008) {   // そのまわりを細かく
+      const v = score(s);
+      if (v > bestScore) { bestScore = v; best = s; }
+    }
+    return best;
+  }
+
+  /** 見つけた傾きぶんだけ、列ごとに縦へずらして水平に直す */
+  function deshear(bin, W, H, s) {
+    if (!s) return bin;
+    const out = new Uint8Array(W * H);
+    const cx = W / 2;
+    for (let x = 0; x < W; x++) {
+      const dy = Math.round(s * (x - cx));
+      const y0 = Math.max(0, -dy), y1 = Math.min(H, H - dy);
+      for (let y = y0; y < y1; y++) out[y * W + x] = bin[(y + dy) * W + x];
+    }
+    return out;
+  }
+
   /** 五線の候補行をまとめる。
    *  黒画素の総数では、符頭や符尾が密な行と区別がつかず帯が融合してしまう。
    *  五線だけが持つ「長く途切れない横の連なり」を数える。 */
   function findStaffLines(bin, W, H, sensitivity) {
     const k = sensitivity || 1;
     const minRun = Math.max(12, Math.round(W / 45));
+    const BRIDGE = 2;   // 印刷のかすれで五線は点線状に途切れる。数画素の隙間は繋がっているとみなす
     const dens = new Int32Array(H);
     for (let y = 0; y < H; y++) {
       const off = y * W;
-      let score = 0, run = 0;
+      let score = 0, run = 0, gap = 0;
       for (let x = 0; x < W; x++) {
-        if (bin[off + x]) run++;
-        else { if (run >= minRun) score += run; run = 0; }
+        if (bin[off + x]) { run += gap + 1; gap = 0; }
+        else if (run) {
+          gap++;
+          if (gap > BRIDGE) { if (run >= minRun) score += run; run = 0; gap = 0; }
+        }
       }
       if (run >= minRun) score += run;
       dens[y] = score;
     }
     let peak = 0;
     for (let y = 0; y < H; y++) if (dens[y] > peak) peak = dens[y];
-    if (peak < W * 0.15) return [];
-    // 最終段は小節が少なく横幅が短いことがあるので、しきい値は低めに取る
-    const thr = Math.max(W * 0.14, peak * 0.30) * k;
+    if (peak < W * 0.10) return [];
+    // しきい値はページ幅ではなく「いちばん長い五線」を基準にする。
+    // ページ幅を基準にすると、余白の取り方が変わっただけで検出が崩れる。
+    const thr = peak * 0.22 * k;
     const lines = [];
     let y = 0;
     while (y < H) {
@@ -78,35 +127,57 @@
    *  かすれた線は断片に割れて出てくるので、先に近すぎるものを1本に統合する。 */
   function groupStaves(lines, knownS) {
     if (lines.length < 5) return [];
-    // 線間の代表値を出す（断片同士の極端に狭い間隔は除く）
-    const gaps = [];
-    for (let i = 1; i < lines.length; i++) {
-      const g = lines[i].y - lines[i - 1].y;
-      if (g >= 5 && g <= 40) gaps.push(g);
-    }
-    if (!gaps.length) return [];
-    gaps.sort((a, b) => a - b);
-    const S = knownS || gaps[gaps.length >> 1];
 
-    const merged = [];
-    for (const l of lines) {
-      const last = merged[merged.length - 1];
-      if (last && l.y - last.y < S * 0.55) {
-        const w = last.thickness + l.thickness;
-        last.y = (last.y * last.thickness + l.y * l.thickness) / w;
-        last.thickness = w;
-      } else merged.push({ y: l.y, thickness: l.thickness });
+    /** ごく近い行はまず1本にまとめる（同じ線が2〜3行に分かれて出るため） */
+    const join = (src, limit) => {
+      const out = [];
+      for (const l of src) {
+        const last = out[out.length - 1];
+        if (last && l.y - last.y < limit) {
+          const w = last.thickness + l.thickness;
+          last.y = (last.y * last.thickness + l.y * l.thickness) / w;
+          last.thickness = w;
+        } else out.push({ y: l.y, thickness: l.thickness });
+      }
+      return out;
+    };
+    let ls = join(lines, 3);
+
+    // 線間は「いちばん多く現れる間隔」で決める。
+    // 中央値だと、かすれて割れた線が作る細かい間隔に引きずられる。
+    let S = knownS;
+    if (!S) {
+      const hist = new Map();
+      for (let i = 1; i < ls.length; i++) {
+        const g = Math.round(ls[i].y - ls[i - 1].y);
+        if (g >= 4 && g <= 60) hist.set(g, (hist.get(g) || 0) + 1);
+      }
+      let best = 0, bestScore = 0;
+      for (const [g] of hist) {
+        const sc = (hist.get(g - 1) || 0) + (hist.get(g) || 0) + (hist.get(g + 1) || 0);
+        if (sc > bestScore) { bestScore = sc; best = g; }
+      }
+      if (!best) return [];
+      // 代表値のまわりの実測から平均を取り直す
+      let sum = 0, n = 0;
+      for (let i = 1; i < ls.length; i++) {
+        const g = ls[i].y - ls[i - 1].y;
+        if (Math.abs(g - best) <= 1.6) { sum += g; n++; }
+      }
+      S = n ? sum / n : best;
     }
+    if (!(S > 3)) return [];
+
+    ls = join(ls, S * 0.45);
 
     const staves = [];
-    for (let i = 0; i + 4 < merged.length; ) {
-      const five = merged.slice(i, i + 5);
+    for (let i = 0; i + 4 < ls.length; ) {
+      const five = ls.slice(i, i + 5);
       const g = [];
       for (let k = 1; k < 5; k++) g.push(five[k].y - five[k - 1].y);
-      const mean = g.reduce((a, b) => a + b) / 4;
-      const ok = mean > 3 && Math.abs(mean - S) <= S * 0.35 &&
-                 g.every(v => Math.abs(v - mean) <= Math.max(1.8, mean * 0.30));
+      const ok = g.every(v => v >= S * 0.72 && v <= S * 1.28);
       if (ok) {
+        const mean = g.reduce((a, b) => a + b) / 4;
         staves.push({ lines: five.map(l => l.y), space: mean, top: five[0].y, bottom: five[4].y });
         i += 5;
       } else i++;
@@ -248,11 +319,15 @@
    */
   function readScore(img, opts) {
     opts = opts || {};
-    const { bin, W, H } = binarize(img);
+    const raw = binarize(img);
+    const W = raw.W, H = raw.H;
+    // 先に傾きを取り除く。これをしないと五線がどの行にも揃わず検出できない
+    const shear = estimateShear(raw.bin, W, H);
+    const bin = deshear(raw.bin, W, H, shear);
 
     // 1回目は厳しく。確実な五線だけを取り、そこから線間を知る
     let staves = groupStaves(findStaffLines(bin, W, H, 1));
-    if (!staves.length) return { staves: [], notes: [], W, H, reason: "五線が見つかりませんでした" };
+    if (!staves.length) return { staves: [], notes: [], W, H, shear, reason: "五線が見つかりませんでした" };
     const S = staves.reduce((a, s) => a + s.space, 0) / staves.length;
 
     // 2回目は緩く。小節数の少ない最終段は線が短く、音符で寸断されて
@@ -316,6 +391,8 @@
       const d = (BASE[clefs[h.staff]] !== undefined ? BASE[clefs[h.staff]] : BASE.G) + step;
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
+        // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
+        yImg: h.y + shear * (h.x - W / 2),
         space: st.space, system: h.staff >> 1,
         dia: d, midi: diaToMidi(d),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
@@ -323,7 +400,7 @@
     });
     // 段ごと・左から順に並べる
     notes.sort((a, b) => (a.staff >> 1) - (b.staff >> 1) || a.x - b.x || a.midi - b.midi);
-    return { staves, notes, W, H };
+    return { staves, notes, W, H, shear };
   }
 
   /** 半音の増減を「全音階で何段動くか」に直す。
