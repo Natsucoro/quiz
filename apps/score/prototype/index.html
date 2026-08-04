@@ -4087,18 +4087,28 @@ function scheduleFrom(mei, tm) {
     }
     pitchOf.set(id, (oct + 1) * 12 + STEP_SEMI[pn] + (MEI_ALT[a] || 0));
   });
+  // 音が鳴り終わる時刻も拾う。全音符も16分音符も同じ長さで鳴らすと、
+  // 聴いたときにまるで別の曲になってしまう。
+  const offAt = new Map();
+  for (const e of tm) if (e.off) for (const id of e.off) offAt.set(id, e.tstamp);
+
   const out = [];
   for (const e of tm) {
     if (!e.on || !e.on.length) continue;
-    const midis = [];
+    const notes = [], seen = [];
     for (const id of e.on) {
       const m = pitchOf.get(id);
-      if (m !== undefined && midis.indexOf(m) < 0) midis.push(m);
+      if (m === undefined || seen.indexOf(m) >= 0) continue;
+      seen.push(m);
+      const off = offAt.has(id) ? offAt.get(id) : e.tstamp + 400;
+      notes.push({ midi: m, dur: Math.max(60, off - e.tstamp) });
     }
-    if (midis.length) out.push({ t: e.tstamp, ids: e.on, midis });
+    if (notes.length) out.push({ t: e.tstamp, ids: e.on, notes });
   }
   return out.sort((a, b) => a.t - b.t);
 }
+/** その時刻に鳴り始めた音のうち、いちばん長いものの長さ（画面の光らせ方に使う） */
+const spanOf = e => e.notes.reduce((a, n) => Math.max(a, n.dur), 0);
 
 /* ══════════ 撮った楽譜を読み込む ══════════ */
 let mineList = [];
@@ -4282,10 +4292,11 @@ function pluck(midi, at, dur) {
   nz.start(at);
   sources.push(nz);
 
-  // 鍵を離したあとの減衰。音符が短ければ早めに閉じる
-  const rel = Math.max(0.28, Math.min(life, dur * 1.35 + 0.45));
-  out.gain.setValueAtTime(1, at + rel * 0.78);
-  out.gain.exponentialRampToValueAtTime(0.0006, at + rel + 0.30);
+  // 鍵を離すと弦は止められる。音符の長さだけ鳴らし、そのあと短く消す。
+  // ここを長く取ると、速いパッセージで音が団子になって濁る。
+  const rel = Math.max(0.22, Math.min(life, dur + 0.20));
+  out.gain.setValueAtTime(1, at + rel);
+  out.gain.exponentialRampToValueAtTime(0.0006, at + rel + Math.min(0.35, 0.12 + dur * 0.25));
 }
 function stop() {
   playing = false;
@@ -4325,9 +4336,10 @@ $("#btnPlay").addEventListener("click", () => {
   $("#playIcon").innerHTML = '<rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/>';
   const t0 = ac.currentTime + 0.12;
   startedAt = performance.now() + 120;
-  const hold = 420 / rate;
-  schedule.forEach(e => e.midis.forEach(m => pluck(m, t0 + (e.t / rate) / 1000, hold / 1000)));
-  const total = schedule[schedule.length - 1].t / rate + 1200;
+  schedule.forEach(e => e.notes.forEach(n =>
+    pluck(n.midi, t0 + (e.t / rate) / 1000, (n.dur / rate) / 1000)));
+  const last = schedule[schedule.length - 1];
+  const total = (last.t + spanOf(last)) / rate + 1200;
   const tick = () => {
     if (!playing) return;
     const now = performance.now() - startedAt;
@@ -4335,7 +4347,7 @@ $("#btnPlay").addEventListener("click", () => {
     const live = [];
     for (const e of schedule) {
       const t = e.t / rate;
-      if (now >= t - 40 && now < t + hold) live.push.apply(live, e.ids);
+      if (now >= t - 40 && now < t + spanOf(e) / rate) live.push.apply(live, e.ids);
     }
     highlight(live);
     raf = requestAnimationFrame(tick);
