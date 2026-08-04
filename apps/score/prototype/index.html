@@ -3001,33 +3001,47 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 
   /** 符尾に沿って走る梁（または旗）の本数を数える。
    *  8分＝1本、16分＝2本、32分＝3本。太さは線間の半分ほど、間に白い隙間が入る。 */
-  function countBeams(bin, W, H, stem, S) {
+  function countBeams(bin, W, H, stem, S, beamed) {
     if (!stem) return 0;
     const thickMin = S * 0.20, thickMax = S * 1.00;
-    const depth = Math.round(S * 2.8);   // 先端からここまでの間に梁が並ぶ
-    let best = 0;
+    const depth = Math.round(S * 3.0);   // 先端からここまでの間に梁が並ぶ
+    const gapMax = Math.max(2, Math.round(S * 0.55));
+    const ests = [];
     // 梁は水平ではなく傾いている。広い幅で平均すると、どの行も基準に届かず数え落とす。
-    // 3列ぶんだけならして雑音を消し、いくつかの距離で見て最も多い本数を採る。
+    // 3列ぶんだけならして雑音を消し、いくつかの距離で見る。
     for (const sgn of [1, -1]) {
       for (const f of [0.40, 0.60, 0.85, 1.10, 1.35]) {
         const xc = stem.x + sgn * Math.round(S * f);
         if (xc < 1 || xc >= W - 1) continue;
-        let bands = 0, run = 0;
+        let bands = 0, run = 0, last = -1, first = -1;
         for (let k = 0; k < depth; k++) {
           const y = stem.tip + stem.dir * k;
           if (y < 0 || y >= H) break;
           const c = bin[y * W + xc - 1] + bin[y * W + xc] + bin[y * W + xc + 1];
-          if (c >= 2) run++;
+          if (c >= 2) { run++; last = k; if (first < 0) first = k; }
           else {
             if (run >= thickMin && run <= thickMax) bands++;
             run = 0;
+            if (last >= 0 && k - last > gapMax) break;   // 梁の並びはここで終わり
           }
         }
         if (run >= thickMin && run <= thickMax) bands++;
-        if (bands > best) best = bands;
+        if (last < 0) continue;
+        // 印刷や写真のにじみで2本の梁がくっつくと、数えた「本数」は1になる。
+        // 梁は太さ0.5線間・すきま0.25線間で並ぶので、全体の広がりからも本数を出し、
+        // 多いほうを採る。（実測: 16分音符の連なりが丸ごと8分と読まれていた）
+        const byExtent = beamed ? Math.round(((last - first + 1) / S + 0.25) / 0.75) : 0;
+        ests.push(Math.max(bands, byExtent));
       }
     }
-    return Math.min(best, 3);
+    // 梁の見えない位置（梁の外側など）は数えない。見えた所だけで多数決する。
+    const seen = ests.filter(e => e > 0);
+    if (!seen.length) return 0;
+    const tally = new Map();
+    for (const e of seen) tally.set(e, (tally.get(e) || 0) + 1);
+    let win = 0, cnt = 0;
+    for (const [k, v] of tally) if (v > cnt || (v === cnt && k > win)) { win = k; cnt = v; }
+    return Math.min(win, 3);
   }
 
   /** 符尾の先から梁が横にどこまで伸びているかを測る。
@@ -3442,8 +3456,8 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const baseY = st.bottom + (st.slope || 0) * (h.x - cxAll);
       const step = Math.round((baseY - h.y) / (S / 2));
       const stem = findStem(cleaned, W, H, h, S);
-      const beams = h.hollow ? 0 : countBeams(cleaned, W, H, stem, S);
       const span = h.hollow ? null : beamSpan(cleaned, W, H, stem, S);
+      const beams = h.hollow ? 0 : countBeams(cleaned, W, H, stem, S, !!span);
       const dot = hasDot(ii, W + 1, W, H, h, S);
       // 白抜き＝2分/全音符、塗りつぶし＋梁の本数で8分・16分…と決まる
       let q = h.hollow ? (stem ? 2 : 4) : (stem ? 1 / Math.pow(2, beams) : 1);
