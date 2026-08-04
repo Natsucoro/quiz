@@ -58,7 +58,14 @@ const out = await pg.evaluate(async (u) => {
   const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
   const od=oc.getContext('2d').createImageData(W,H);
   for(let i=0;i<W*H;i++){const v=bin[i]?0:255; od.data[i*4]=od.data[i*4+1]=od.data[i*4+2]=v; od.data[i*4+3]=255;}
-  oc.getContext('2d').putImageData(od,0,0);
+  const g2=oc.getContext('2d'); g2.putImageData(od,0,0);
+  // 拾った音符に印を付ける。何を余計に拾っているかを目で確かめる
+  g2.lineWidth=2; g2.font='11px sans-serif';
+  for(const n of full.notes){
+    g2.strokeStyle = n.hollow ? '#0a0' : '#e00';
+    const S=n.space; g2.beginPath(); g2.ellipse(n.x,n.y,S*0.62,S*0.44,0,0,7); g2.stroke();
+    g2.fillStyle='#00c'; g2.fillText(String(n.q), n.x-6, n.y-S*0.7);
+  }
   return { binPng: oc.toDataURL('image/png'), W, H, shear, rep,
            final: full.staves.map(s => ({ top:+s.top.toFixed(1), bot:+s.bottom.toFixed(1),
                      sp:+s.space.toFixed(2), sys:s.system, hand:s.hand,

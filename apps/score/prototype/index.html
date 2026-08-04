@@ -3162,6 +3162,29 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     return (f.below > 0.12) ? "G" : "F";
   }
 
+  /** 音部記号が横にどこまで占めているかを測る。
+   *  「線間の3.2倍」と決めうちすると、ト音記号の下の巻きひげが残って
+   *  符頭として拾われる。実際に黒が途切れる所を見て終わりを決める。 */
+  function clefRight(bin, W, H, st) {
+    const S = st.space;
+    const y0 = Math.max(0, Math.round(st.top - S * 1.6));
+    const y1 = Math.min(H - 1, Math.round(st.bottom + S * 2.0));
+    const x0 = Math.max(0, Math.round((st.xStart || 0) + S * 0.35));
+    const xMax = Math.min(W - 1, Math.round((st.xStart || 0) + S * 6.0));
+    const ink = x => {
+      let c = 0;
+      for (let y = y0; y <= y1; y++) if (bin[y * W + x]) c++;
+      return c;
+    };
+    let seen = false, blank = 0, end = x0;
+    const need = Math.max(1, Math.round(S * 0.20));   // かすれた1〜2画素は無視する
+    for (let x = x0; x <= xMax; x++) {
+      if (ink(x) >= need) { seen = true; blank = 0; end = x; }
+      else if (seen && ++blank >= Math.max(2, Math.round(S * 0.25))) break;
+    }
+    return seen ? end : x0;
+  }
+
   /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
   function findBarlines(bin, W, H, staves) {
     const bars = [];
@@ -3308,7 +3331,11 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     // 各五線が横方向にどこからどこまで引かれているかを測る
     const minRun2 = Math.max(12, Math.round(W / 45));
     for (const st of staves) {
-      let lo = W, hi = 0;
+      // 見つけた横棒をいったん全部集める。紙の外の黒い縁も同じ行に出るので、
+      // いちばん長い棒（＝五線そのもの）に比べて短すぎるものは捨てる。
+      // これをしないと、切り取りを広めに取ったとき縁が五線の一部と見なされ、
+      // 段が紙の端から端まであることになって、音部記号の読み取りごと狂う。
+      const runs = [];
       for (const ly of st.lines) {
         for (let dy = -1; dy <= 1; dy++) {
           const y = Math.round(ly) + dy;
@@ -3319,10 +3346,19 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
             if (!bin[off + x]) { x++; continue; }
             let x2 = x;
             while (x2 + 1 < W && bin[off + x2 + 1]) x2++;
-            if (x2 - x + 1 >= minRun2) { if (x < lo) lo = x; if (x2 > hi) hi = x2; }
+            if (x2 - x + 1 >= minRun2) runs.push([x, x2]);
             x = x2 + 1;
           }
         }
+      }
+      let longest = 0;
+      for (const r of runs) longest = Math.max(longest, r[1] - r[0] + 1);
+      const need = Math.max(minRun2, longest * 0.25);
+      let lo = W, hi = 0;
+      for (const r of runs) {
+        if (r[1] - r[0] + 1 < need) continue;
+        if (r[0] < lo) lo = r[0];
+        if (r[1] > hi) hi = r[1];
       }
       st.xStart = lo < hi ? lo : 0;
       st.xEnd = hi > lo ? hi : W - 1;
@@ -3347,7 +3383,9 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     const fifths = (opts.fifths !== undefined && opts.fifths !== null)
       ? opts.fifths : detectKey(cleaned, W, H, staves);
     for (const st of staves) {
-      st.xMusic = (st.xStart || 0) + st.space * (3.2 + Math.abs(fifths) * 1.02);
+      const afterClef = clefRight(cleaned, W, H, st) + st.space * 0.35;
+      st.xMusic = Math.max((st.xStart || 0) + st.space * 2.6, afterClef)
+                + st.space * Math.abs(fifths) * 1.02;
     }
 
     let heads = findNoteheads(ii, W + 1, W, H, staves, runLen, vRunLen);
@@ -3397,7 +3435,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     });
 
     const cxAll = W / 2;
-    const notes = heads.map(h => {
+    let notes = heads.map(h => {
       const st = staves[h.staff];
       const S = st.space;
       // 段が傾いている場合、基準となる第1線の高さは x によって変わる
@@ -3425,6 +3463,11 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
       };
     });
+    // 塗りつぶした符頭には必ず符尾が付く。付いていないものは符頭ではない。
+    // 曲名や発想標語の文字（"Allegro" など）が符頭の大きさの黒い塊として
+    // 引っかかるので、この一手で落とす。
+    notes = notes.filter(n => n.hollow || n.stemDir !== 0);
+
     // 同じ梁につながる音符は同じ本数のはず。1音ずつの判定はぶれるので多数決で揃える。
     // これをしないと、ひと続きの16分音符が 2,1,0,1,2… とばらついてしまう。
     const linked = notes.filter(n => n.span);
