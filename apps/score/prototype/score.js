@@ -84,6 +84,13 @@
     const nMeasures = Math.max(parts[0].length, parts[1].length);
     for (const p of parts) while (p.length < nMeasures) p.push([]);
 
+    // その手でいちばん多く使われている音部記号を、パートの音部記号にする
+    const clefOf = hand => {
+      const tally = { G: 0, F: 0 };
+      for (const s of staves) if ((s.hand || 0) === hand) tally[s.clef === "F" ? "F" : "G"]++;
+      return tally.F > tally.G ? "F" : "G";
+    };
+
     const [beats, beatType] = (opts.time || "4/4").split("/").map(Number);
     const measureQ = opts.time ? beats * (4 / beatType) : 0;
 
@@ -126,17 +133,27 @@
           xml += `<attributes><divisions>${DIVISIONS}</divisions>` +
             `<key><fifths>${opts.key || 0}</fifths></key>` +
             (opts.time ? `<time><beats>${beats}</beats><beat-type>${beatType}</beat-type></time>` : "") +
-            (hand === 0 ? `<clef><sign>G</sign><line>2</line></clef>`
-                        : `<clef><sign>F</sign><line>4</line></clef>`) +
+            // 音部記号は読み取った形に合わせる。決めうちにすると、
+            // 左手がト音記号で書かれた楽譜が加線だらけになって読めなくなる
+            (clefOf(hand) === "F" ? `<clef><sign>F</sign><line>4</line></clef>`
+                                  : `<clef><sign>G</sign><line>2</line></clef>`) +
             `</attributes>`;
         }
         const chords = parts[hand][m] || [];
-        let filled = 0;
-        for (const c of chords) {
-          c.notes.forEach((n, i) => { xml += noteXML(n, i > 0, c.q, c.dot); });
-          filled += c.q;
+        // 拍子より長くなった小節は、音価を読み違えた音が混じっている。
+        // そのままにすると、その小節から後ろの全部が後ろにずれて、
+        // 鳴らしたときに左右の手が合わなくなる。小節に収まるよう詰める。
+        let qs = chords.map(c => measureQ ? Math.min(c.q, measureQ) : c.q);
+        let filled = qs.reduce((a, q) => a + q, 0);
+        if (measureQ && filled > measureQ + 1e-6) {
+          const k = measureQ / filled;
+          qs = qs.map(q => Math.max(1 / DIVISIONS, q * k));
+          filled = qs.reduce((a, q) => a + q, 0);
         }
-        // 拍子が指定されていれば、足りない/余る分を休符で辻褄合わせする
+        chords.forEach((c, ci) => {
+          c.notes.forEach((n, i) => { xml += noteXML(n, i > 0, qs[ci], c.dot); });
+        });
+        // 拍子が指定されていれば、足りない分を休符で辻褄合わせする
         if (measureQ) {
           if (!chords.length) xml += restXML(measureQ);
           else if (filled < measureQ - 1e-6) xml += restXML(measureQ - filled);
