@@ -305,6 +305,157 @@
     return found;
   }
 
+  /* ══════════ 音の長さを読む ══════════
+     符頭だけでは長さは分からない。符尾・梁・旗・付点を順に読み取る。 */
+
+  /** 符頭に付く符尾を探す。
+   *  符頭の中心から外へ辿るのではなく、符頭の高さに触れている縦の連なりを丸ごと取る。
+   *  符尾は符頭の左右どちらかの縁に付くので、中心から辿ると長さ0で終わってしまう。 */
+  function findStem(bin, W, H, n, S) {
+    const need = S * 1.8;
+    const cy = Math.round(n.y);
+    let best = null;
+    for (let d = Math.round(S * 0.30); d <= Math.round(S * 0.85); d++) {
+      for (const sgn of [1, -1]) {
+        const x = Math.round(n.x) + sgn * d;
+        if (x < 1 || x >= W - 1) continue;
+        // 符頭の高さのどこかで黒い所を探す
+        let y = -1;
+        for (let dy = 0; dy <= Math.round(S * 0.45); dy++) {
+          if (bin[(cy - dy) * W + x]) { y = cy - dy; break; }
+          if (bin[(cy + dy) * W + x]) { y = cy + dy; break; }
+        }
+        if (y < 0) continue;
+        let ya = y, yb = y;
+        while (ya > 0 && bin[(ya - 1) * W + x]) ya--;
+        while (yb < H - 1 && bin[(yb + 1) * W + x]) yb++;
+        const len = yb - ya;
+        if (len < need) continue;
+        // 符頭より上に長ければ上向き、下に長ければ下向き
+        const dir = (cy - ya) >= (yb - cy) ? 1 : -1;
+        const tip = dir > 0 ? ya : yb;
+        if (!best || len > best.len) best = { x, len, dir, tip, ya, yb };
+      }
+    }
+    return best;
+  }
+
+  /** 符尾に沿って走る梁（または旗）の本数を数える。
+   *  8分＝1本、16分＝2本、32分＝3本。太さは線間の半分ほど、間に白い隙間が入る。 */
+  function countBeams(bin, W, H, stem, S) {
+    if (!stem) return 0;
+    const thickMin = S * 0.20, thickMax = S * 1.00;
+    const depth = Math.round(S * 2.8);   // 先端からここまでの間に梁が並ぶ
+    let best = 0;
+    // 梁は水平ではなく傾いている。広い幅で平均すると、どの行も基準に届かず数え落とす。
+    // 3列ぶんだけならして雑音を消し、いくつかの距離で見て最も多い本数を採る。
+    for (const sgn of [1, -1]) {
+      for (const f of [0.40, 0.60, 0.85, 1.10, 1.35]) {
+        const xc = stem.x + sgn * Math.round(S * f);
+        if (xc < 1 || xc >= W - 1) continue;
+        let bands = 0, run = 0;
+        for (let k = 0; k < depth; k++) {
+          const y = stem.tip + stem.dir * k;
+          if (y < 0 || y >= H) break;
+          const c = bin[y * W + xc - 1] + bin[y * W + xc] + bin[y * W + xc + 1];
+          if (c >= 2) run++;
+          else {
+            if (run >= thickMin && run <= thickMax) bands++;
+            run = 0;
+          }
+        }
+        if (run >= thickMin && run <= thickMax) bands++;
+        if (bands > best) best = bands;
+      }
+    }
+    return Math.min(best, 3);
+  }
+
+  /** 符尾の先から梁が横にどこまで伸びているかを測る。
+   *  同じ梁につながる音符どうしをまとめるために使う。 */
+  function beamSpan(bin, W, H, stem, S) {
+    if (!stem) return null;
+    const y = stem.tip + stem.dir * Math.round(S * 0.25);
+    if (y < 0 || y >= H) return null;
+    const ok = x => {
+      if (x < 0 || x >= W) return false;
+      for (let d = -1; d <= 1; d++) {
+        const yy = y + d;
+        if (yy >= 0 && yy < H && bin[yy * W + x]) return true;
+      }
+      return false;
+    };
+    if (!ok(stem.x)) return null;
+    let xa = stem.x, xb = stem.x, gap = 0;
+    while (xa > 0) { if (ok(xa - 1)) { xa--; gap = 0; } else if (++gap <= 2) xa--; else break; }
+    gap = 0;
+    while (xb < W - 1) { if (ok(xb + 1)) { xb++; gap = 0; } else if (++gap <= 2) xb++; else break; }
+    return (xb - xa) >= S * 1.2 ? [xa, xb] : null;   // 短いものは旗であって梁ではない
+  }
+
+  /** 符頭の右にある付点。あれば長さが1.5倍になる。
+   *  付点は「小さくて、まわりが白い」。この孤立の条件を課さないと、
+   *  隣の符頭や符尾を付点と取り違えて大量に誤検出する。 */
+  function hasDot(ii, W1, W, H, n, S) {
+    const r = Math.max(1, Math.round(S * 0.15));      // 付点そのもの
+    const R = Math.max(r + 2, Math.round(S * 0.45));  // まわりの余白
+    const area = (r * 2 + 1) * (r * 2 + 1);
+    const bigArea = (R * 2 + 1) * (R * 2 + 1);
+    for (let dx = Math.round(S * 0.95); dx <= Math.round(S * 1.5); dx++) {
+      for (const dy of [0, -Math.round(S * 0.5), Math.round(S * 0.5)]) {
+        const x = Math.round(n.x + dx), y = Math.round(n.y + dy);
+        if (x - R < 0 || x + R >= W || y - R < 0 || y + R >= H) continue;
+        const inner = rectSum(ii, W1, x - r, y - r, x + r, y + r);
+        if (inner / area < 0.85) continue;
+        const outer = rectSum(ii, W1, x - R, y - R, x + R, y + R) - inner;
+        if (outer / (bigArea - area) < 0.10) return true;   // まわりがほぼ白なら付点
+      }
+    }
+    return false;
+  }
+
+  /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
+  function findBarlines(bin, W, H, staves) {
+    const bars = [];
+    for (const st of staves) {
+      const y0 = Math.round(st.top), y1 = Math.round(st.bottom);
+      const span = y1 - y0 + 1, S = st.space;
+      const cols = [];
+      for (let x = 0; x < W; x++) {
+        let c = 0;
+        for (let y = y0; y <= y1; y++) if (bin[y * W + x]) c++;
+        if (c >= span * 0.97) cols.push(x);         // 上から下まで隙間なく黒
+      }
+      const group = [];
+      for (const x of cols) {
+        const last = group[group.length - 1];
+        if (last && x - last.x1 <= 2) { last.x1 = x; } else group.push({ x0: x, x1: x });
+      }
+      const ym = (y0 + y1) >> 1;
+      const clearAt = x => {
+        // 小節線は左右が空いている。符尾は符頭や梁が隣接するので除ける
+        let c = 0, n = 0;
+        for (let d = Math.round(S * 0.55); d <= Math.round(S * 1.1); d++) {
+          for (const sgn of [-1, 1]) {
+            const xx = x + sgn * d;
+            if (xx < 0 || xx >= W) continue;
+            n++;
+            for (let y = ym - Math.round(S); y <= ym + Math.round(S); y++)
+              if (bin[y * W + xx]) { c++; break; }
+          }
+        }
+        return n ? c / n < 0.5 : true;
+      };
+      // 段の先頭にある縦線は小節線ではなく譜表の始まりの線。
+      // これを数えると、空っぽの1小節目ができてしまう。
+      const left = (st.xStart || 0) + S * 1.5;
+      bars.push(group
+        .filter(g => g.x1 - g.x0 <= S * 0.30 && (g.x0 + g.x1) / 2 > left && clearAt((g.x0 + g.x1) / 2))
+        .map(g => (g.x0 + g.x1) / 2));
+    }
+    return bars;
+  }
+
   const LETTER_SEMI = [0, 2, 4, 5, 7, 9, 11];   // C D E F G A B
   const LETTER_NAME = ["C", "D", "E", "F", "G", "A", "B"];
   /** 全音階の通し番号 → MIDI番号 */
@@ -385,22 +536,61 @@
     const clefs = opts.clefs || staves.map((_, i) => (i % 2 === 0 ? "G" : "F"));
     const BASE = { G: 30, F: 18 };   // ト音の第1線=E4(30) / ヘ音の第1線=G2(18)
 
+    const bars = findBarlines(bin, W, H, staves);
+
     const notes = heads.map(h => {
       const st = staves[h.staff];
-      const step = Math.round((st.bottom - h.y) / (st.space / 2));
+      const S = st.space;
+      const step = Math.round((st.bottom - h.y) / (S / 2));
+      const stem = findStem(cleaned, W, H, h, S);
+      const beams = h.hollow ? 0 : countBeams(cleaned, W, H, stem, S);
+      const span = h.hollow ? null : beamSpan(cleaned, W, H, stem, S);
+      const dot = hasDot(ii, W + 1, W, H, h, S);
+      // 白抜き＝2分/全音符、塗りつぶし＋梁の本数で8分・16分…と決まる
+      let q = h.hollow ? (stem ? 2 : 4) : (stem ? 1 / Math.pow(2, beams) : 1);
+      if (dot) q *= 1.5;
+      const myBars = bars[h.staff] || [];
+      let measure = 0;
+      for (const bx of myBars) if (bx < h.x) measure++;
       const d = (BASE[clefs[h.staff]] !== undefined ? BASE[clefs[h.staff]] : BASE.G) + step;
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
         yImg: h.y + shear * (h.x - W / 2),
-        space: st.space, system: h.staff >> 1,
+        space: S, system: h.staff >> 1,
+        q, beams, dot, measure, span,
+        stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
         dia: d, midi: diaToMidi(d),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
       };
     });
+    // 同じ梁につながる音符は同じ本数のはず。1音ずつの判定はぶれるので多数決で揃える。
+    // これをしないと、ひと続きの16分音符が 2,1,0,1,2… とばらついてしまう。
+    const linked = notes.filter(n => n.span);
+    linked.sort((a, b) => a.staff - b.staff || a.span[0] - b.span[0]);
+    for (let i = 0; i < linked.length; ) {
+      let j = i, hi = linked[i].span[1];
+      while (j + 1 < linked.length && linked[j + 1].staff === linked[i].staff &&
+             linked[j + 1].span[0] <= hi + 2) {
+        j++; hi = Math.max(hi, linked[j].span[1]);
+      }
+      const group = linked.slice(i, j + 1);
+      if (group.length > 1) {
+        const tally = new Map();
+        for (const g of group) if (g.beams > 0) tally.set(g.beams, (tally.get(g.beams) || 0) + 1);
+        let win = 0, cnt = 0;
+        for (const [k, v] of tally) if (v > cnt || (v === cnt && k > win)) { win = k; cnt = v; }
+        if (win > 0) for (const g of group) {
+          g.beams = win;
+          g.q = (1 / Math.pow(2, win)) * (g.dot ? 1.5 : 1);
+        }
+      }
+      i = j + 1;
+    }
+
     // 段ごと・左から順に並べる
     notes.sort((a, b) => (a.staff >> 1) - (b.staff >> 1) || a.x - b.x || a.midi - b.midi);
-    return { staves, notes, W, H, shear };
+    return { staves, notes, bars, W, H, shear };
   }
 
   /** 半音の増減を「全音階で何段動くか」に直す。
