@@ -647,8 +647,10 @@
         const g = group[group.length - 1];
         if (g && x - g.x1 <= 2) g.x1 = x; else group.push({ x0: x, x1: x });
       }
-      // 段の先頭の縦線は譜表の始まりであって小節線ではない。数えると空の小節ができる
-      const left = Math.min.apply(null, idx.map(i => staves[i].xStart || 0)) + S * 1.5;
+      // 音部記号・調号・拍子記号の前後にある縦線は、譜表の始まりや複縦線であって
+      // 小節線ではない。数えると先頭に空っぽの小節ができ、以降の小節が丸ごと1つずれる。
+      const left = Math.max.apply(null, idx.map(i =>
+        Math.max((staves[i].xStart || 0) + S * 1.5, (staves[i].xMusic || 0) - S * 0.4)));
       const found = group
         .filter(g => g.x1 - g.x0 <= S * 0.45 && (g.x0 + g.x1) / 2 > left)
         .map(g => (g.x0 + g.x1) / 2);
@@ -664,8 +666,14 @@
       while (merged.length && merged[merged.length - 1] > right) merged.pop();
       for (const i of idx) bars[i] = merged.slice();
     }
-    // どの段にも線が通らなかったシステムだけ、段ごとの見つけ方で埋める
-    for (let i = 0; i < staves.length; i++) if (!bars[i].length) bars[i] = perStaffBars(bin, W, H, staves[i]);
+    // 大譜表になっていない（1段だけの）システムだけ、段ごとの見つけ方で埋める。
+    // 大譜表で見つからなかったのは「その行が1小節だけ」という意味なので、
+    // ここで段ごとに探すと左右の手で小節の切れ目がずれてしまう。
+    for (const idx of bySys.values()) {
+      if (idx.length !== 1) continue;
+      const i = idx[0];
+      if (!bars[i].length) bars[i] = perStaffBars(bin, W, H, staves[i]);
+    }
     return bars;
   }
 
@@ -943,6 +951,28 @@
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
       };
     });
+    // 最初の音符より左にある「小節線」は、複縦線か譜表の始まりの線。
+    // 残すと空っぽの1小節目ができ、以降の小節が丸ごと1つずれて、
+    // 鳴らしたときに曲の頭に無音が入る。
+    {
+      const firstX = new Map();
+      for (const n of notes) {
+        const k = staves[n.staff].system || 0;
+        if (!firstX.has(k) || n.x < firstX.get(k)) firstX.set(k, n.x);
+      }
+      for (let i = 0; i < staves.length; i++) {
+        const lim = firstX.get(staves[i].system || 0);
+        if (lim === undefined || !bars[i]) continue;
+        while (bars[i].length && bars[i][0] < lim) bars[i].shift();
+      }
+      for (const n of notes) {
+        const my = bars[n.staff] || [];
+        let m = 0;
+        for (const bx of my) if (bx < n.x) m++;
+        n.measure = m;
+      }
+    }
+
     // 塗りつぶした符頭には必ず符尾が付く。付いていないものは符頭ではない。
     // 曲名や発想標語の文字（"Allegro" など）が符頭の大きさの黒い塊として
     // 引っかかるので、この一手で落とす。

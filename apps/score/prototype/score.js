@@ -87,12 +87,22 @@
     const [beats, beatType] = (opts.time || "4/4").split("/").map(Number);
     const measureQ = opts.time ? beats * (4 / beatType) : 0;
 
+    // 半音の上げ下げは、調号まかせにせず1音ずつ書き出す。
+    // 調号だけに頼ると、曲の途中の臨時記号を後から足せないし、
+    // 読み取った音の高さと楽譜データの音の高さがずれても気づけない。
+    const SEMI = [0, 2, 4, 5, 7, 9, 11];
     const noteXML = (n, isChord, q, dot) => {
       const type = typeOf(q);
       const dur = Math.max(1, Math.round(q * DIVISIONS));
       const oct = Math.floor(n.dia / 7), le = ((n.dia % 7) + 7) % 7;
+      let alter = 0;
+      if (typeof n.midi === "number") {
+        alter = Math.max(-2, Math.min(2, n.midi - ((oct + 1) * 12 + SEMI[le])));
+      }
       return `<note>${isChord ? "<chord/>" : ""}` +
-        `<pitch><step>${LETTER[le]}</step><octave>${oct}</octave></pitch>` +
+        `<pitch><step>${LETTER[le]}</step>` +
+        (alter ? `<alter>${alter}</alter>` : "") +
+        `<octave>${oct}</octave></pitch>` +
         `<duration>${dur}</duration><type>${type}</type>${dot ? "<dot/>" : ""}</note>`;
     };
     const restXML = q => {
