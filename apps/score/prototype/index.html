@@ -3238,10 +3238,62 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     return x;
   }
 
-  /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
+  /** 小節線を探す。
+   *
+   *  1つの段の中だけで「上から下まで黒い縦線」を探すと、符尾や音符の連なりが
+   *  同じ形に見えて大量に混じる（実測で、3本しかない段に13本の偽物が出た）。
+   *  ピアノ譜の小節線は大譜表の上の段から下の段まで貫いているので、
+   *  システム全体を通して見る。ついでに、左右の手で小節の切れ目がそろう。 */
   function findBarlines(bin, W, H, staves) {
+    const bars = staves.map(() => []);
+    const bySys = new Map();
+    for (let i = 0; i < staves.length; i++) {
+      const k = staves[i].system || 0;
+      if (!bySys.has(k)) bySys.set(k, []);
+      bySys.get(k).push(i);
+    }
+    for (const idx of bySys.values()) {
+      const first = staves[idx[0]], last = staves[idx[idx.length - 1]];
+      const y0 = Math.round(first.top), y1 = Math.round(last.bottom);
+      const span = y1 - y0 + 1;
+      const S = first.space;
+      const cols = [];
+      for (let x = 0; x < W; x++) {
+        let c = 0;
+        for (let y = y0; y <= y1; y++) if (bin[y * W + x]) c++;
+        if (c >= span * 0.96) cols.push(x);
+      }
+      const group = [];
+      for (const x of cols) {
+        const g = group[group.length - 1];
+        if (g && x - g.x1 <= 2) g.x1 = x; else group.push({ x0: x, x1: x });
+      }
+      // 段の先頭の縦線は譜表の始まりであって小節線ではない。数えると空の小節ができる
+      const left = Math.min.apply(null, idx.map(i => staves[i].xStart || 0)) + S * 1.5;
+      const found = group
+        .filter(g => g.x1 - g.x0 <= S * 0.45 && (g.x0 + g.x1) / 2 > left)
+        .map(g => (g.x0 + g.x1) / 2);
+      // 二重線・終止線は近い2本に見えるので1本にまとめる
+      const merged = [];
+      for (const x of found) {
+        if (merged.length && x - merged[merged.length - 1] < S * 1.2) merged[merged.length - 1] = x;
+        else merged.push(x);
+      }
+      // 行の終わりの縦線は、その小節の終わりであって次の小節の始まりではない。
+      // 残すと、どのシステムにも空っぽの小節が1つ増えてしまう。
+      const right = Math.max.apply(null, idx.map(i => staves[i].xEnd || W)) - S * 2.0;
+      while (merged.length && merged[merged.length - 1] > right) merged.pop();
+      for (const i of idx) bars[i] = merged.slice();
+    }
+    // どの段にも線が通らなかったシステムだけ、段ごとの見つけ方で埋める
+    for (let i = 0; i < staves.length; i++) if (!bars[i].length) bars[i] = perStaffBars(bin, W, H, staves[i]);
+    return bars;
+  }
+
+  /** 大譜表になっていない段のための、段ひとつぶんの小節線さがし */
+  function perStaffBars(bin, W, H, st) {
     const bars = [];
-    for (const st of staves) {
+    {
       const y0 = Math.round(st.top), y1 = Math.round(st.bottom);
       const span = y1 - y0 + 1, S = st.space;
       const cols = [];
@@ -3273,7 +3325,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       // 段の先頭にある縦線は小節線ではなく譜表の始まりの線。
       // これを数えると、空っぽの1小節目ができてしまう。
       const left = (st.xStart || 0) + S * 1.5;
-      bars.push(group
+      bars.push.apply(bars, group
         .filter(g => g.x1 - g.x0 <= S * 0.30 && (g.x0 + g.x1) / 2 > left && clearAt((g.x0 + g.x1) / 2))
         .map(g => (g.x0 + g.x1) / 2));
     }
@@ -4142,7 +4194,10 @@ async function loadMine(i) {
   g.drawImage(img, 0, 0);
   const t0 = performance.now();
   const omr = OMR.readScore(g.getImageData(0, 0, c.width, c.height));
-  curXML = omr.notes.length ? ScoreBuild.toMusicXML(omr, { time: curTime, title: o.label }) : null;
+  // 調号を渡し忘れると、♭4つの曲がハ長調として組み直され、音が半音ずれる
+  curXML = omr.notes.length
+    ? ScoreBuild.toMusicXML(omr, { time: curTime, key: omr.fifths || 0, title: o.label })
+    : null;
   const ms = Math.round(performance.now() - t0);
   if (!curXML) {
     $("#mineInfo").textContent = "音符を見つけられませんでした。「撮る」で四隅を紙の角に合わせ、白黒にしてから試してください。";

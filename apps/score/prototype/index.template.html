@@ -892,7 +892,10 @@ async function loadMine(i) {
   g.drawImage(img, 0, 0);
   const t0 = performance.now();
   const omr = OMR.readScore(g.getImageData(0, 0, c.width, c.height));
-  curXML = omr.notes.length ? ScoreBuild.toMusicXML(omr, { time: curTime, title: o.label }) : null;
+  // 調号を渡し忘れると、♭4つの曲がハ長調として組み直され、音が半音ずれる
+  curXML = omr.notes.length
+    ? ScoreBuild.toMusicXML(omr, { time: curTime, key: omr.fifths || 0, title: o.label })
+    : null;
   const ms = Math.round(performance.now() - t0);
   if (!curXML) {
     $("#mineInfo").textContent = "音符を見つけられませんでした。「撮る」で四隅を紙の角に合わせ、白黒にしてから試してください。";

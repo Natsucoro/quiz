@@ -5,6 +5,7 @@ import { chromium } from 'playwright'; import fs from 'fs'; import path from 'pa
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const load = f => JSON.parse(fs.readFileSync(path.join(HERE, f), 'utf8'));
 const PIECES = ['mozart', 'joplin'];
+const TIMESIG = { mozart: '4/4', joplin: '2/4' };   // アプリでは人が選ぶ
 // [四隅ごとの ずらし量(紙の幅に対する比)]  ぴったり / 外側に広め / 指がばらついた
 const VARIANTS = {
   'ぴったり': [[0,0],[0,0],[0,0],[0,0]],
@@ -22,6 +23,7 @@ for (const piece of PIECES) {
   const meta = load(`${piece}_corners.json`);
   const truthP = load(`${piece}_truth.json`);
   const truthPD = load(`${piece}_truthpd.json`);
+  const truthT = load(`${piece}_truthtime.json`);
   for (const [vname, offs] of Object.entries(VARIANTS)) {
     const pg = await b.newPage({ viewport:{width:390,height:844} });
     const errs=[]; pg.on('pageerror',e=>errs.push(e.message.slice(0,90)));
@@ -43,28 +45,64 @@ for (const piece of PIECES) {
     }
     await pg.locator('#btnCrop').click(); await pg.waitForTimeout(5200);
     const url = await pg.locator('#pageList img').first().getAttribute('src');
-    const r = await pg.evaluate(async (u)=>{
-      const im=new Image(); im.src=u; await im.decode();
+    const r = await pg.evaluate(async (a)=>{
+      const im=new Image(); im.src=a.u; await im.decode();
       const c=document.createElement('canvas'); c.width=im.width;c.height=im.height;
       c.getContext('2d').drawImage(im,0,0);
       const t0=performance.now();
       const o=OMR.readScore(c.getContext('2d').getImageData(0,0,c.width,c.height));
+      // 実際にアプリが鳴らすのは、この MusicXML。鳴り出す時刻もここから測る
+      const xml = o.notes.length
+        ? ScoreBuild.toMusicXML(o, { time:a.time, key:o.fifths||0 }) : null;
+      const times = [];
+      if (xml) {
+        const doc = new DOMParser().parseFromString(xml,'application/xml');
+        const STEP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+        for (const part of doc.querySelectorAll('part')) {
+          let div=1, t=0;
+          for (const m of part.querySelectorAll('measure')) {
+            const dv=m.querySelector('divisions'); if(dv) div=+dv.textContent;
+            let mt=0, prev=0, mmax=0;
+            for (const el of m.children) {
+              if (el.tagName==='backup'){ mt-=+el.querySelector('duration').textContent/div; prev=0; continue; }
+              if (el.tagName==='forward'){ mt+=+el.querySelector('duration').textContent/div; continue; }
+              if (el.tagName!=='note') continue;
+              const d=el.querySelector('duration');
+              const dur=d?+d.textContent/div:0;
+              const chord=!!el.querySelector('chord');
+              const at=chord?mt-prev:mt;
+              const p=el.querySelector('pitch');
+              if (p) {
+                const midi=(+p.querySelector('octave').textContent+1)*12
+                  + STEP[p.querySelector('step').textContent]
+                  + (+(p.querySelector('alter')?.textContent||0));
+                times.push(midi+'@'+(Math.round((t+at)*4)/4).toFixed(2));
+              }
+              if (!chord){ prev=dur; mt+=dur; }
+              if (mt>mmax) mmax=mt;
+            }
+            t+=mmax;
+          }
+        }
+      }
       return { ms:Math.round(performance.now()-t0), staves:o.staves.length,
-               shear:+(o.shear||0).toFixed(4),
+               shear:+(o.shear||0).toFixed(4), times,
                notes:o.notes.map(n=>({m:n.midi,q:n.q})) };
-    }, url);
+    }, { u:url, time: TIMESIG[piece] });
     const P = f1(truthP, r.notes.map(n=>n.m));
     const PD = f1(truthPD, r.notes.map(n=>n.m+'/'+n.q));
-    rows.push({piece, vname, ...r, P, PD, errs:errs.length});
+    const T = f1(truthT, r.times);
+    rows.push({piece, vname, ...r, P, PD, T, errs:errs.length});
     await pg.close();
   }
 }
 await b.close();
-console.log('曲       切り取り   五線 音符 |  音高:再現 適合  F1  | 音高+音価:再現 適合  F1 | 傾き   時間');
+console.log('曲       切り取り   五線 音符 |  音高:再現 適合  F1  | 音高+音価:再現 適合  F1 | 鳴り出し F1 | 傾き   時間');
 for (const r of rows) console.log(
   `${r.piece.padEnd(8)} ${r.vname.padEnd(9)} ${pad(r.staves,2)} ${pad(r.notes.length,4)} | ` +
   `${pad((r.P.r*100).toFixed(1),6)}%${pad((r.P.p*100).toFixed(1),6)}%${pad((r.P.f*100).toFixed(1),6)}% | ` +
   `${pad((r.PD.r*100).toFixed(1),9)}%${pad((r.PD.p*100).toFixed(1),6)}%${pad((r.PD.f*100).toFixed(1),6)}% |` +
+  `${pad((r.T.f*100).toFixed(1),9)}% |` +
   `${pad((r.shear*1000).toFixed(1),6)}‰${pad(r.ms,6)}ms`);
 const avg = k => (rows.reduce((a,r)=>a+r[k].f,0)/rows.length*100).toFixed(1);
-console.log(`\n★ 平均  音高F1 ${avg('P')}%   音高+音価F1 ${avg('PD')}%`);
+console.log(`\n★ 平均  音高F1 ${avg('P')}%   音高+音価F1 ${avg('PD')}%   鳴り出しF1 ${avg('T')}%`);
