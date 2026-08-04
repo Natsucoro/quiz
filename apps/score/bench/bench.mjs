@@ -26,6 +26,8 @@ for (const piece of PIECES) {
     const pg = await b.newPage({ viewport:{width:390,height:844} });
     const errs=[]; pg.on('pageerror',e=>errs.push(e.message.slice(0,90)));
     await pg.goto('file:///home/user/quiz/apps/score/prototype/index.html');
+    // 二値化の強さを試すとき用。既定はページの初期値のまま
+    if (process.env.C) await pg.evaluate(v=>{ document.querySelector('#thr').value = v; }, process.env.C);
     await pg.waitForTimeout(400);
     await pg.setInputFiles('#pick', `/home/user/quiz/apps/score/spike/samples/${piece}_photo.jpg`);
     await pg.waitForTimeout(800);
