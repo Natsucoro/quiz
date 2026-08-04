@@ -298,7 +298,8 @@
       const yTop = Math.max(hh + bh + 2, Math.round(st.top - S * 4.2));
       const yBot = Math.min(H - hh - bh - 3, Math.round(st.bottom + S * 4.2));
       // 段の頭には音部記号・調号・拍子記号が並ぶ。ここは符頭が来ないので飛ばす
-      const xFrom = Math.max(hw + bw, Math.round((st.xStart || 0) + S * 1.2));
+      const xFrom = Math.max(hw + bw, Math.round(
+        st.xMusic !== undefined ? st.xMusic : (st.xStart || 0) + S * 3.2));
       const xTo = Math.min(W - hw - bw - 1, Math.round(st.xEnd !== undefined ? st.xEnd : W));
       const cand = [];
       for (let y = yTop; y <= yBot; y++) {
@@ -658,6 +659,15 @@
     const ii = integral(cleaned, W, H);
     const runLen = horizontalRunLength(cleaned, W, H);
     const vRunLen = verticalRunLength(cleaned, W, H);
+
+    // 調号を先に読む。段の頭は「音部記号＋調号（＋拍子記号）」で埋まっており、
+    // ここに符頭は来ない。読み飛ばす幅は調号の数で変わるので、先に知る必要がある。
+    const fifths = (opts.fifths !== undefined && opts.fifths !== null)
+      ? opts.fifths : detectKey(cleaned, W, H, staves);
+    for (const st of staves) {
+      st.xMusic = (st.xStart || 0) + st.space * (3.2 + Math.abs(fifths) * 1.02);
+    }
+
     let heads = findNoteheads(ii, W + 1, W, H, staves, runLen, vRunLen);
 
     // 大譜表では上下の五線の走査範囲が重なるため、同じ符頭が二度出る。
@@ -679,11 +689,6 @@
     const BASE = { G: 30, F: 18 };   // ト音の第1線=E4(30) / ヘ音の第1線=G2(18)
 
     const bars = findBarlines(bin, W, H, staves);
-    // 調号は指定があればそれを、なければ自動で読む。
-    // 必ず五線を消した画像で調べること。五線が残っていると全部の列に黒があり、
-    // 記号のかたまりに切り分けられない。
-    const fifths = (opts.fifths !== undefined && opts.fifths !== null)
-      ? opts.fifths : detectKey(cleaned, W, H, staves);
 
     // 検出した位置は、判定窓が最も黒くなる場所であって符頭の中心ではない。
     // 符頭のまわりの黒の重心を取り直して、中心をより正確にする。
