@@ -3703,6 +3703,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     // 段を「右手（上）」「左手（下）」の2つのパートに束ね直す。
     // どの段がどちらの手かは、段番号ではなく OMR が求めたシステム内の位置で決める。
     const parts = [[], []];         // parts[hand] = 小節の配列
+    const clefs = [[], []];         // clefs[hand] = 小節ごとの音部記号
     for (let sys = 0; sys < nSystems; sys++) {
       const before = [parts[0].length, parts[1].length];
       let added = 0;
@@ -3710,30 +3711,35 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         const si = staves.findIndex(s => (s.system || 0) === sys && (s.hand || 0) === hand);
         if (si < 0) continue;
         const S = staves[si].space;
+        const cl = staves[si].clef === "F" ? "F" : "G";
         const mine = (omr.notes || []).filter(n => n.staff === si);
         const nBars = ((omr.bars && omr.bars[si]) || []).length;
         for (let m = 0; m <= nBars; m++) {
           parts[hand].push(toChords(mine.filter(n => n.measure === m), S));
+          clefs[hand].push(cl);
         }
         added = Math.max(added, nBars + 1);
       }
       // 片手ぶんしか無いシステムでも、小節数がそろうように空小節で埋める
       for (let hand = 0; hand < 2; hand++) {
-        while (parts[hand].length < before[hand] + added) parts[hand].push([]);
+        while (parts[hand].length < before[hand] + added) {
+          parts[hand].push([]);
+          clefs[hand].push(clefs[hand][clefs[hand].length - 1] || (hand ? "F" : "G"));
+        }
       }
     }
     // 末尾にできた空の小節は落とす
-    for (const pt of parts) while (pt.length && !pt[pt.length - 1].length) pt.pop();
+    for (let h = 0; h < 2; h++) {
+      while (parts[h].length && !parts[h][parts[h].length - 1].length) { parts[h].pop(); clefs[h].pop(); }
+    }
     // 小節数を両手でそろえる
     const nMeasures = Math.max(parts[0].length, parts[1].length);
-    for (const p of parts) while (p.length < nMeasures) p.push([]);
-
-    // その手でいちばん多く使われている音部記号を、パートの音部記号にする
-    const clefOf = hand => {
-      const tally = { G: 0, F: 0 };
-      for (const s of staves) if ((s.hand || 0) === hand) tally[s.clef === "F" ? "F" : "G"]++;
-      return tally.F > tally.G ? "F" : "G";
-    };
+    for (let h = 0; h < 2; h++) {
+      while (parts[h].length < nMeasures) {
+        parts[h].push([]);
+        clefs[h].push(clefs[h][clefs[h].length - 1] || (h ? "F" : "G"));
+      }
+    }
 
     const [beats, beatType] = (opts.time || "4/4").split("/").map(Number);
     const measureQ = opts.time ? beats * (4 / beatType) : 0;
@@ -3773,15 +3779,18 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       xml += `<part id="P${hand + 1}">`;
       for (let m = 0; m < nMeasures; m++) {
         xml += `<measure number="${m + 1}">`;
+        // 音部記号は読み取った形に合わせ、途中で変わったらそこで書き直す。
+        // 決めうちにすると、左手がト音記号で書かれた箇所が加線だらけになって読めない。
+        const cl = clefs[hand][m] || (hand ? "F" : "G");
+        const clefXML = cl === "F" ? `<clef><sign>F</sign><line>4</line></clef>`
+                                   : `<clef><sign>G</sign><line>2</line></clef>`;
         if (m === 0) {
           xml += `<attributes><divisions>${DIVISIONS}</divisions>` +
             `<key><fifths>${opts.key || 0}</fifths></key>` +
             (opts.time ? `<time><beats>${beats}</beats><beat-type>${beatType}</beat-type></time>` : "") +
-            // 音部記号は読み取った形に合わせる。決めうちにすると、
-            // 左手がト音記号で書かれた楽譜が加線だらけになって読めなくなる
-            (clefOf(hand) === "F" ? `<clef><sign>F</sign><line>4</line></clef>`
-                                  : `<clef><sign>G</sign><line>2</line></clef>`) +
-            `</attributes>`;
+            clefXML + `</attributes>`;
+        } else if (cl !== clefs[hand][m - 1]) {
+          xml += `<attributes>${clefXML}</attributes>`;
         }
         const chords = parts[hand][m] || [];
         // 拍子より長くなった小節は、音価を読み違えた音が混じっている。
