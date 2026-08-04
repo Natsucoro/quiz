@@ -1,6 +1,9 @@
 /* 改善の効果を毎回同じ物差しで測る。
    紙の真の四隅を基準に、指の置き方のばらつきを3通り再現する。楽譜は必ず全部入る。 */
-import { chromium } from 'playwright'; import fs from 'fs';
+import { chromium } from 'playwright'; import fs from 'fs'; import path from 'path';
+// どこから実行しても同じものを測れるように、正解データはこのファイルの隣から読む
+const HERE = path.dirname(new URL(import.meta.url).pathname);
+const load = f => JSON.parse(fs.readFileSync(path.join(HERE, f), 'utf8'));
 const PIECES = ['mozart', 'joplin'];
 // [四隅ごとの ずらし量(紙の幅に対する比)]  ぴったり / 外側に広め / 指がばらついた
 const VARIANTS = {
@@ -16,9 +19,9 @@ const pad=(s,n)=>String(s).padStart(n);
 const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium' });
 const rows=[];
 for (const piece of PIECES) {
-  const meta = JSON.parse(fs.readFileSync(`omr/${piece}_corners.json`,'utf8'));
-  const truthP = JSON.parse(fs.readFileSync(`omr/${piece}_truth.json`,'utf8'));
-  const truthPD = JSON.parse(fs.readFileSync(`omr/${piece}_truthpd.json`,'utf8'));
+  const meta = load(`${piece}_corners.json`);
+  const truthP = load(`${piece}_truth.json`);
+  const truthPD = load(`${piece}_truthpd.json`);
   for (const [vname, offs] of Object.entries(VARIANTS)) {
     const pg = await b.newPage({ viewport:{width:390,height:844} });
     const errs=[]; pg.on('pageerror',e=>errs.push(e.message.slice(0,90)));

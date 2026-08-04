@@ -187,20 +187,29 @@
 
     ls = join(ls, S * 0.45);
 
-    const staves = [];
-    for (let i = 0; i + 4 < ls.length; ) {
+    // どの5本を1つの段とするかは、上から順にではなく「濃さと等間隔さ」で決める。
+    // 濃い線と薄い線が6本以上並ぶ所を上から詰めて取ると、薄い線を巻き込んで
+    // 段全体が1本ぶんずれる。ずれた段の音は丸ごと3度ずれる（実測でジョプリンの2段がこれ）。
+    const cands = [];
+    for (let i = 0; i + 4 < ls.length; i++) {
       const five = ls.slice(i, i + 5);
       const g = [];
       for (let k = 1; k < 5; k++) g.push(five[k].y - five[k - 1].y);
-      const ok = g.every(v => v >= S * 0.72 && v <= S * 1.28);
-      if (ok) {
-        const mean = g.reduce((a, b) => a + b) / 4;
-        staves.push({ lines: five.map(l => l.y), space: mean,
-                      top: five[0].y, bottom: five[4].y,
-                      strength: five.reduce((a, l) => a + (l.span || 1), 0) });
-        i += 5;
-      } else i++;
+      if (!g.every(v => v >= S * 0.72 && v <= S * 1.28)) continue;
+      const mean = g.reduce((a, b) => a + b) / 4;
+      const dev = g.reduce((a, v) => a + Math.abs(v - mean), 0) / 4 / mean;
+      const strength = five.reduce((a, l) => a + (l.span || 1), 0);
+      cands.push({ i, five, mean, strength, score: strength * (1 - dev) });
     }
+    cands.sort((a, b) => b.score - a.score);
+    const staves = [], taken = [];
+    for (const c of cands) {
+      if (taken.some(t => Math.abs(t - c.i) <= 4)) continue;   // 線を分け合う組は採らない
+      taken.push(c.i);
+      staves.push({ lines: c.five.map(l => l.y), space: c.mean,
+                    top: c.five[0].y, bottom: c.five[4].y, strength: c.strength });
+    }
+    staves.sort((a, b) => a.top - b.top);
     // 縦に重なる段は、線を掴み損ねてできた偽物。濃いほうを残す。
     // 重なったまま残すと大譜表の組が狂い、低音部が高音部として読まれる。
     for (let i = staves.length - 2; i >= 0; i--) {
@@ -455,7 +464,7 @@
     const votes = new Map(), detail = [];
     for (const st of staves) {
       const S = st.space;
-      const shift = (st.hand === 1) ? -2 : 0;        // ヘ音記号では2段ぶん下がる
+      const shift = (st.clef === "F") ? -2 : 0;      // ヘ音記号では2段ぶん下がる
       const bw = Math.max(1, Math.round(S * 0.32));  // 見る箱の半幅
       const bh = Math.max(1, Math.round(S * 0.70));  // 半高
       const area = (bw * 2 + 1) * (bh * 2 + 1);
@@ -499,6 +508,37 @@
     for (const [f, v] of votes) if (v > cnt) { cnt = v; best = f; }
     detectKey.detail = detail;
     return best;
+  }
+
+  /** 段の頭の音部記号を見分ける。
+   *
+   *  「上の段はト音、下の段はヘ音」と決めうちにはできない。実際の楽譜では
+   *  左手が高い所を弾く間だけト音になったり、曲の途中で入れ替わったりする。
+   *  （手元の2曲とも、下の段がト音の箇所があった。決めうちだと丸ごと1オクターブ半ずれる）
+   *
+   *  見分け方は形の照合ではなく、はみ出し方。ト音記号は五線の下へ長く垂れ、
+   *  ヘ音記号は五線の上半分に収まって下へは出ない。この差は写真がぼけても残る。
+   */
+  function clefFeatures(bin, W, H, st) {
+    const S = st.space;
+    const x0 = Math.max(0, Math.round((st.xStart || 0) + S * 0.4));
+    const x1 = Math.min(W - 1, Math.round((st.xStart || 0) + S * 3.2));
+    const band = (ya, yb) => {
+      const y0 = Math.max(0, Math.round(ya)), y1 = Math.min(H - 1, Math.round(yb));
+      let c = 0, n = 0;
+      for (let y = y0; y <= y1; y++)
+        for (let x = x0; x <= x1; x++) { n++; if (bin[y * W + x]) c++; }
+      return n ? c / n : 0;
+    };
+    return {
+      below: band(st.bottom + S * 0.55, st.bottom + S * 1.7),   // ト音の垂れ
+      above: band(st.top - S * 1.4, st.top - S * 0.35),         // ト音の頭
+      lower: band(st.bottom - S * 1.2, st.bottom),              // 五線の下寄り（ヘ音は空く）
+    };
+  }
+  function detectClef(bin, W, H, st) {
+    const f = clefFeatures(bin, W, H, st);
+    return (f.below > 0.12) ? "G" : "F";
   }
 
   /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
@@ -672,6 +712,15 @@
     const runLen = horizontalRunLength(cleaned, W, H);
     const vRunLen = verticalRunLength(cleaned, W, H);
 
+    // 音部記号は、置かれている位置ではなく形から決める。
+    // 「下の段はヘ音」と決めうちにすると、下の段がト音の楽譜で全部の音が狂う。
+    const clefDetail = staves.map(st => clefFeatures(cleaned, W, H, st));
+    const clefs = opts.clefs || staves.map((st, i) => {
+      st.clef = detectClef(cleaned, W, H, st);
+      return st.clef;
+    });
+    for (let i = 0; i < staves.length; i++) staves[i].clef = clefs[i];
+
     // 調号を先に読む。段の頭は「音部記号＋調号（＋拍子記号）」で埋まっており、
     // ここに符頭は来ない。読み飛ばす幅は調号の数で変わるので、先に知る必要がある。
     const fifths = (opts.fifths !== undefined && opts.fifths !== null)
@@ -695,9 +744,6 @@
     }
     heads = kept;
 
-    // 音部記号は、段の番号の偶奇ではなく「大譜表の中で上か下か」で決める。
-    // 段を1つ取りこぼすと偶奇がずれ、以降すべての段の音部記号が入れ替わってしまう。
-    const clefs = opts.clefs || staves.map(st => (st.hand === 1 ? "F" : "G"));
     const BASE = { G: 30, F: 18 };   // ト音の第1線=E4(30) / ヘ音の第1線=G2(18)
 
     const bars = findBarlines(bin, W, H, staves);
@@ -784,7 +830,7 @@
 
     // 段ごと・左から順に並べる
     notes.sort((a, b) => (a.staff >> 1) - (b.staff >> 1) || a.x - b.x || a.midi - b.midi);
-    return { staves, notes, bars, fifths, keyDetail: detectKey.detail, W, H, shear };
+    return { staves, notes, bars, fifths, clefs, clefDetail, keyDetail: detectKey.detail, W, H, shear };
   }
 
   /** 半音の増減を「全音階で何段動くか」に直す。
@@ -796,5 +842,7 @@
     return sign * (Math.floor(a / 12) * 7 + STEP_OF_SEMI[a % 12]);
   }
 
-  global.OMR = { readScore, diaToMidi, semiToSteps, keyAlter, LETTER_NAME };
+  global.OMR = { readScore, diaToMidi, semiToSteps, keyAlter, LETTER_NAME,
+                 // 中身を目で確かめるため（bench/diag.mjs から使う）
+                 _internal: { binarize, estimateShear, deshear, findStaffLines, groupStaves } };
 })(typeof window !== "undefined" ? window : globalThis);
