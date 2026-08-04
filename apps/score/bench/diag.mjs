@@ -69,7 +69,7 @@ const out = await pg.evaluate(async (u) => {
   return { binPng: oc.toDataURL('image/png'), W, H, shear, rep,
            final: full.staves.map(s => ({ top:+s.top.toFixed(1), bot:+s.bottom.toFixed(1),
                      sp:+s.space.toFixed(2), sys:s.system, hand:s.hand,
-                     x0:s.xStart, x1:s.xEnd, str:s.strength, clef:s.clef })),
+                     x0:s.xStart, x1:s.xEnd, xm:Math.round(s.xMusic), str:s.strength, clef:s.clef })),
            clefDetail: full.clefDetail.map(f=>({b:+f.below.toFixed(3),a:+f.above.toFixed(3),l:+f.lower.toFixed(3)})),
            fifths: full.fifths, nNotes: full.notes.length,
            notes: full.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,sd:n.stemDir})) };
@@ -87,7 +87,7 @@ for (const k of Object.keys(out.rep)) {
   console.log('  線: ' + r.lines.map(l=>`${l.y}:${l.sp}`).join(' '));
 }
 console.log(`\n最終 ${out.final.length}段  調号 ${out.fifths}  音符 ${out.nNotes}`);
-for (const s of out.final) console.log(`  y ${s.top}-${s.bot} 線間${s.sp} 系${s.sys} 手${s.hand} 記号${s.clef} x ${s.x0}-${s.x1}`);
+for (const s of out.final) console.log(`  y ${s.top}-${s.bot} 線間${s.sp} 系${s.sys} 手${s.hand} 記号${s.clef} x ${s.x0}..(音符は${s.xm}から)..${s.x1}`);
 
 console.log('記号の手がかり(下/上/五線下寄り): ' + out.clefDetail.map(f=>`${f.b}/${f.a}/${f.l}`).join('  '));
 // 音価の内訳と、正解とのつき合わせ
@@ -104,5 +104,12 @@ for (const n of out.notes) { const list = tp[String(n.m)]; if(!list||!list.lengt
   let bi=0; for(let i=1;i<list.length;i++) if(Math.abs(list[i]-n.q)<Math.abs(list[bi]-n.q)) bi=i;
   const k = `正${list[bi]}→検${n.q}`; conf[k]=(conf[k]||0)+1; list.splice(bi,1); }
 console.log('音価の食い違い: ' + Object.entries(conf).sort((a,b)=>b[1]-a[1]).slice(0,14).map(([k,v])=>`${k}(${v})`).join(' '));
-const missing = Object.entries(tp).filter(([m,l])=>l.length).map(([m,l])=>`${m}x${l.length}`);
-console.log('取りこぼした音高: ' + missing.join(' '));
+const missing = Object.entries(tp).filter(([m,l])=>l.length).map(([m,l])=>[+m,l.length]);
+console.log('取りこぼした音高: ' + missing.map(([m,c])=>`${m}x${c}`).join(' '));
+// 余計に拾った音高（正解に無い、または多すぎる）
+{
+  const need = {}; for (const t of truthP) need[t]=(need[t]||0)+1;
+  const extra = {};
+  for (const n of out.notes) { if (need[n.m]) need[n.m]--; else extra[n.m]=(extra[n.m]||0)+1; }
+  console.log('余計に拾った音高: ' + Object.entries(extra).sort((a,b)=>b[1]-a[1]).map(([m,c])=>`${m}x${c}`).join(' '));
+}

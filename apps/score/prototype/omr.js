@@ -491,7 +491,7 @@
         return c / area;
       };
       // 音部記号の幅は版によって違うので、調号の始まる位置を少し探す
-      let bestN = 0, bestSign = 0, bestScore = 0;
+      let bestN = 0, bestSign = 0, bestScore = 0, bestEnd = 0;
       for (let start = S * 1.8; start <= S * 5.0; start += S * 0.12) {
         for (const sign of [-1, 1]) {
           const steps = sign < 0 ? KEY_STEPS_FLAT : KEY_STEPS_SHARP;
@@ -510,11 +510,16 @@
           // 次の枠にも記号があるなら、まだ続いている
           const nxt = n < 7 ? inkAt(Math.round((st.xStart || 0) + start + n * S * 1.02), steps[n]) : 0;
           const score = sum - (nxt > 0.40 ? 0.5 : 0);
-          if (score > bestScore) { bestScore = score; bestN = n; bestSign = sign; }
+          if (score > bestScore) {
+            bestScore = score; bestN = n; bestSign = sign;
+            bestEnd = (st.xStart || 0) + start + n * S * 1.02;
+          }
         }
       }
       // 平均の黒さが薄いものは調号ではないとみなす
       const f = (bestN && bestScore / bestN >= 0.50) ? bestSign * bestN : 0;
+      // 調号がどこで終わるかを覚えておく。ここまでは符頭が来ない
+      st.keyEnd = f ? bestEnd : 0;
       detail.push({ n: bestN, sign: bestSign, score: +bestScore.toFixed(2) });
       votes.set(f, (votes.get(f) || 0) + 1);
     }
@@ -576,6 +581,40 @@
       else if (seen && ++blank >= Math.max(2, Math.round(S * 0.25))) break;
     }
     return seen ? end : x0;
+  }
+
+  /** その段で音符が始まる x を決める。
+   *  音部記号・調号・拍子記号は、どれも符頭ほどの黒い塊を持っている。
+   *  ここを読み飛ばさないと、段の頭で必ず何音か誤検出する（実測でジョプリンの
+   *  ♭4つがそのまま4つの音として拾われていた）。 */
+  function musicStart(bin, W, H, st, fifths) {
+    const S = st.space;
+    const x0 = st.xStart || 0;
+    // 調号の終わりは detectKey が実測している。読めなかったときだけ記号の数から見積もる
+    const keyEnd = st.keyEnd || (clefRight(bin, W, H, st) + S * Math.abs(fifths || 0) * 1.02);
+    let x = Math.max(x0 + S * 2.6, clefRight(bin, W, H, st), keyEnd) + S * 0.4;
+
+    // 拍子記号は五線の上半分と下半分の両方にまたがる、幅のある塊。
+    // 符尾も上下にまたがるが、幅が細いので見分けられる。
+    const y0 = Math.round(st.top), y1 = Math.round(st.bottom), ym = (y0 + y1) / 2;
+    const tall = xx => {
+      if (xx < 0 || xx >= W) return false;
+      let up = false, dn = false;
+      for (let y = y0; y <= y1; y++) {
+        if (!bin[y * W + xx]) continue;
+        if (y < ym - S * 0.5) up = true; else if (y > ym + S * 0.5) dn = true;
+      }
+      return up && dn;
+    };
+    const limit = Math.min(W - 1, Math.round(x + S * 4.5));
+    let a = -1, b = -1, gap = 0;
+    for (let xx = Math.round(x); xx <= limit; xx++) {
+      if (tall(xx)) { if (a < 0) a = xx; b = xx; gap = 0; }
+      else if (a >= 0 && ++gap > Math.round(S * 0.4)) break;
+      else if (a < 0 && xx > x + S * 1.6) break;    // すぐ後ろに無ければ拍子記号は無い
+    }
+    if (a >= 0 && b - a + 1 >= S * 0.5) x = b + S * 0.4;
+    return x;
   }
 
   /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
@@ -775,11 +814,7 @@
     // ここに符頭は来ない。読み飛ばす幅は調号の数で変わるので、先に知る必要がある。
     const fifths = (opts.fifths !== undefined && opts.fifths !== null)
       ? opts.fifths : detectKey(cleaned, W, H, staves);
-    for (const st of staves) {
-      const afterClef = clefRight(cleaned, W, H, st) + st.space * 0.35;
-      st.xMusic = Math.max((st.xStart || 0) + st.space * 2.6, afterClef)
-                + st.space * Math.abs(fifths) * 1.02;
-    }
+    for (const st of staves) st.xMusic = musicStart(cleaned, W, H, st, fifths);
 
     let heads = findNoteheads(ii, W + 1, W, H, staves, runLen, vRunLen);
 
