@@ -104,8 +104,14 @@
       if (run >= minRun) score += run;
       dens[y] = score;
     }
-    let peak = 0;
-    for (let y = 0; y < H; y++) if (dens[y] > peak) peak = dens[y];
+    // 基準は最大値ではなく上位値で取る。
+    // 紙の外の暗い縁は幅いっぱいに連なるため最大値を押し上げ、
+    // 基準が高くなりすぎて本物の五線が切り捨てられる。
+    const nz = [];
+    for (let y = 0; y < H; y++) if (dens[y] > 0) nz.push(dens[y]);
+    if (!nz.length) return [];
+    nz.sort((a, b) => a - b);
+    const peak = nz[Math.min(nz.length - 1, Math.floor(nz.length * 0.97))];
     if (peak < W * 0.10) return [];
 
     // しきい値で切ると、線の周りの強い行まで拾って1本の帯に融合してしまう。
@@ -194,6 +200,15 @@
                       strength: five.reduce((a, l) => a + (l.span || 1), 0) });
         i += 5;
       } else i++;
+    }
+    // 縦に重なる段は、線を掴み損ねてできた偽物。濃いほうを残す。
+    // 重なったまま残すと大譜表の組が狂い、低音部が高音部として読まれる。
+    for (let i = staves.length - 2; i >= 0; i--) {
+      const a = staves[i], b = staves[i + 1];
+      if (Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > S * 0.5) {
+        if ((a.strength || 0) >= (b.strength || 0)) staves.splice(i + 1, 1);
+        else staves.splice(i, 1);
+      }
     }
     return staves;
   }
@@ -567,8 +582,11 @@
     for (const st of staves) st.slope = 0;
     const more = groupStaves(findStaffLines(bin, W, H, 0.30), S)
       .filter(s => Math.abs(s.space - S) <= S * 0.2);
+    // 「重なり」は本当に食い込んでいる場合だけ。隣り合っているだけの段を落とさない
+    const overlaps = (a, b) =>
+      Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > S * 0.5;
     for (const c of more) {
-      if (!staves.some(s => Math.abs(s.top - c.top) < S * 2)) { c.slope = 0; staves.push(c); }
+      if (!staves.some(s => overlaps(s, c))) { c.slope = 0; staves.push(c); }
     }
 
     // 3回目: 段ごとに残る傾きを吸収する。
@@ -579,24 +597,36 @@
       const found = groupStaves(findStaffLines(tilted, W, H, 0.30), S)
         .filter(s => Math.abs(s.space - S) <= S * 0.2);
       for (const c of found) {
-        if (staves.some(s => Math.abs(s.top - c.top) < S * 2.2)) continue;
+        if (staves.some(s => overlaps(s, c))) continue;
         c.slope = d;           // この段は全体より d だけ傾いている
         staves.push(c);
       }
     }
     staves.sort((a, b) => a.top - b.top);
 
-    // 大譜表の中の隙間は狭く、段と段の間は広い。この差でシステムに束ねる。
-    // 段番号で機械的に2つずつ組むと、1段取りこぼした瞬間に右手と左手が入れ替わる。
+    // 大譜表かどうかは「小節線が2つの段をつないでいるか」で決める。
+    // 隙間の広さで決めると危うい。実測では段の中の隙間が5.9線間、段と段の間が
+    // 7.8線間しかなく、この差では判定できずに全段が右手扱いになっていた。
+    // 低音部の段を高音部として読むと、音高が丸ごと狂う。
     {
-      const S0 = staves.reduce((a, s) => a + s.space, 0) / staves.length;
+      const linked = (a, b) => {
+        const y0 = Math.round(a.bottom) + 1, y1 = Math.round(b.top) - 1;
+        if (y1 <= y0) return true;
+        const need = (y1 - y0 + 1) * 0.92;
+        for (let x = 0; x < W; x++) {
+          let c = 0;
+          for (let y = y0; y <= y1; y++) if (bin[y * W + x]) c++;
+          if (c >= need) return true;     // 上下をつなぐ縦線がある
+        }
+        return false;
+      };
       let sys = 0;
       staves[0].system = 0;
       staves[0].hand = 0;
       for (let i = 1; i < staves.length; i++) {
-        const gap = staves[i].top - staves[i - 1].bottom;
-        if (gap > S0 * 3.2) { sys++; staves[i].hand = 0; }
-        else staves[i].hand = Math.min(1, (staves[i - 1].hand || 0) + 1);
+        if (staves[i - 1].hand === 0 && linked(staves[i - 1], staves[i])) {
+          staves[i].hand = 1;
+        } else { sys++; staves[i].hand = 0; }
         staves[i].system = sys;
       }
     }
@@ -643,8 +673,9 @@
     }
     heads = kept;
 
-    // 音部記号。指定がなければ大譜表とみなし、段の中で上をト音・下をヘ音にする
-    const clefs = opts.clefs || staves.map((_, i) => (i % 2 === 0 ? "G" : "F"));
+    // 音部記号は、段の番号の偶奇ではなく「大譜表の中で上か下か」で決める。
+    // 段を1つ取りこぼすと偶奇がずれ、以降すべての段の音部記号が入れ替わってしまう。
+    const clefs = opts.clefs || staves.map(st => (st.hand === 1 ? "F" : "G"));
     const BASE = { G: 30, F: 18 };   // ト音の第1線=E4(30) / ヘ音の第1線=G2(18)
 
     const bars = findBarlines(bin, W, H, staves);
