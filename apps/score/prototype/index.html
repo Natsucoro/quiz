@@ -4055,26 +4055,80 @@ $("#tempo").addEventListener("input", e => {
 });
 
 /* ══════════ 音を鳴らす ══════════ */
-/* ピアノに寄せた音づくり：基音＋倍音を重ね、高い音ほど速く減衰させる */
+/* ピアノに寄せた音づくり。
+   単純に正弦波を重ねるとオルガンのように鳴る。ピアノらしさは次の3つから来る。
+     ・弦の非調和性 — 倍音は整数倍より少しずつ高くずれる
+     ・倍音ごとに違う減衰 — 高い倍音ほど速く消え、音色が時間とともに丸くなる
+     ・打鍵の音 — 鍵を叩いた瞬間の短い雑音 */
+let master = null, noiseBuf = null;
+function initAudio() {
+  if (master) return;
+  master = ac.createGain();
+  master.gain.value = 0.34;
+  // 和音が重なると音が割れる。実測では10音同時で最大1.19まで振れた。
+  const comp = ac.createDynamicsCompressor();
+  comp.threshold.value = -20;
+  comp.ratio.value = 10;
+  comp.knee.value = 6;
+  comp.attack.value = 0.002;
+  comp.release.value = 0.18;
+  master.connect(comp).connect(ac.destination);
+  // 打鍵音のもとになる雑音を一度だけ作る
+  const n = Math.floor(ac.sampleRate * 0.06);
+  noiseBuf = ac.createBuffer(1, n, ac.sampleRate);
+  const d = noiseBuf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+}
+
 function pluck(midi, at, dur) {
-  const f = 440 * Math.pow(2, (midi - 69) / 12);
-  const g = ac.createGain();
-  g.connect(ac.destination);
-  const peak = 0.15 * Math.pow(0.5, (midi - 60) / 34);
-  g.gain.setValueAtTime(0.0001, at);
-  g.gain.exponentialRampToValueAtTime(peak, at + 0.008);
-  g.gain.exponentialRampToValueAtTime(peak * 0.28, at + 0.16);
-  g.gain.exponentialRampToValueAtTime(0.0001, at + Math.max(0.32, dur));
-  [[1, 1], [2, 0.34], [3, 0.13], [4.02, 0.06]].forEach(h => {
+  const f0 = 440 * Math.pow(2, (midi - 69) / 12);
+  const out = ac.createGain();
+  out.gain.value = 1;
+  out.connect(master);
+
+  // 低い音ほど長く響く
+  const life = Math.min(7, 1.1 + 320 / f0);
+  // 弦の非調和性。低音ほど強い
+  const B = 0.00042 * Math.pow(261.6 / f0, 0.7);
+  const N = f0 > 1100 ? 4 : (f0 > 500 ? 6 : 9);
+  const vol = 0.30 * Math.pow(0.62, (midi - 60) / 24);   // 高音は控えめに
+
+  for (let n = 1; n <= N; n++) {
+    const f = f0 * n * Math.sqrt(1 + B * n * n);
+    if (f > 16000) break;
     const o = ac.createOscillator();
-    o.type = h[0] === 1 ? "triangle" : "sine";
-    o.frequency.value = f * h[0];
-    const og = ac.createGain();
-    og.gain.value = h[1];
-    o.connect(og).connect(g);
-    o.start(at); o.stop(at + Math.max(0.4, dur) + 0.1);
+    o.type = "sine";
+    o.frequency.value = f;
+    const g = ac.createGain();
+    const amp = vol / Math.pow(n, 1.28);
+    const decay = Math.max(0.12, life / (1 + 0.62 * (n - 1)));
+    g.gain.setValueAtTime(0.00008, at);
+    g.gain.exponentialRampToValueAtTime(amp, at + 0.005 + n * 0.0006);
+    g.gain.exponentialRampToValueAtTime(0.00008, at + decay);
+    o.connect(g).connect(out);
+    o.start(at);
+    o.stop(at + decay + 0.03);
     sources.push(o);
-  });
+  }
+
+  // 打鍵の音
+  const nz = ac.createBufferSource();
+  nz.buffer = noiseBuf;
+  const nf = ac.createBiquadFilter();
+  nf.type = "bandpass";
+  nf.frequency.value = Math.min(6000, f0 * 4.5);
+  nf.Q.value = 0.9;
+  const ng = ac.createGain();
+  ng.gain.setValueAtTime(0.10 * vol / 0.30, at);
+  ng.gain.exponentialRampToValueAtTime(0.0001, at + 0.055);
+  nz.connect(nf).connect(ng).connect(out);
+  nz.start(at);
+  sources.push(nz);
+
+  // 鍵を離したあとの減衰。音符が短ければ早めに閉じる
+  const rel = Math.max(0.28, Math.min(life, dur * 1.35 + 0.45));
+  out.gain.setValueAtTime(1, at + rel * 0.78);
+  out.gain.exponentialRampToValueAtTime(0.0006, at + rel + 0.30);
 }
 function stop() {
   playing = false;
@@ -4109,6 +4163,7 @@ $("#btnPlay").addEventListener("click", () => {
   const rate = +$("#tempo").value / 100;
   ac = ac || new (window.AudioContext || window.webkitAudioContext)();
   ac.resume();
+  initAudio();
   playing = true;
   $("#playIcon").innerHTML = '<rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/>';
   const t0 = ac.currentTime + 0.12;
