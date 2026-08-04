@@ -551,10 +551,25 @@
 
     // 2回目は緩く。小節数の少ない最終段は線が短く、音符で寸断されて
     // 1回目のしきい値に届かないことがある。線間が分かった今なら緩めても取り違えない
-    const more = groupStaves(findStaffLines(bin, W, H, 0.45), S)
+    for (const st of staves) st.slope = 0;
+    const more = groupStaves(findStaffLines(bin, W, H, 0.30), S)
       .filter(s => Math.abs(s.space - S) <= S * 0.2);
     for (const c of more) {
-      if (!staves.some(s => Math.abs(s.top - c.top) < S * 2)) staves.push(c);
+      if (!staves.some(s => Math.abs(s.top - c.top) < S * 2)) { c.slope = 0; staves.push(c); }
+    }
+
+    // 3回目: 段ごとに残る傾きを吸収する。
+    // 紙は完全な平面ではないので、四隅を合わせても段ごとに傾きが少しずつ違う。
+    // 全体を一律に直しただけでは、傾きの違う段の五線が行に揃わず取りこぼす。
+    for (const d of [-0.010, -0.006, -0.003, 0.003, 0.006, 0.010]) {
+      const tilted = deshear(bin, W, H, d);
+      const found = groupStaves(findStaffLines(tilted, W, H, 0.30), S)
+        .filter(s => Math.abs(s.space - S) <= S * 0.2);
+      for (const c of found) {
+        if (staves.some(s => Math.abs(s.top - c.top) < S * 2.2)) continue;
+        c.slope = d;           // この段は全体より d だけ傾いている
+        staves.push(c);
+      }
     }
     staves.sort((a, b) => a.top - b.top);
 
@@ -648,14 +663,18 @@
     // 重心を取り直したうえで、五線の位置から大きく外れるものだけ落とす
     heads = heads.filter(h => {
       const st = staves[h.staff];
-      const raw = (st.bottom - h.y) / (st.space / 2);
+      const baseY = st.bottom + (st.slope || 0) * (h.x - W / 2);
+      const raw = (baseY - h.y) / (st.space / 2);
       return Math.abs(raw - Math.round(raw)) <= 0.34;
     });
 
+    const cxAll = W / 2;
     const notes = heads.map(h => {
       const st = staves[h.staff];
       const S = st.space;
-      const step = Math.round((st.bottom - h.y) / (S / 2));
+      // 段が傾いている場合、基準となる第1線の高さは x によって変わる
+      const baseY = st.bottom + (st.slope || 0) * (h.x - cxAll);
+      const step = Math.round((baseY - h.y) / (S / 2));
       const stem = findStem(cleaned, W, H, h, S);
       const beams = h.hollow ? 0 : countBeams(cleaned, W, H, stem, S);
       const span = h.hollow ? null : beamSpan(cleaned, W, H, stem, S);
