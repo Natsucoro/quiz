@@ -54,20 +54,28 @@
     opts = opts || {};
     const staves = omr.staves || [];
     if (!staves.length) return null;
-    const nSystems = Math.ceil(staves.length / 2);
+    const nSystems = Math.max.apply(null, staves.map(s => s.system || 0)) + 1;
 
-    // 段を「右手（上）」「左手（下）」の2つのパートに束ね直す
+    // 段を「右手（上）」「左手（下）」の2つのパートに束ね直す。
+    // どの段がどちらの手かは、段番号ではなく OMR が求めたシステム内の位置で決める。
     const parts = [[], []];         // parts[hand] = 小節の配列
     for (let sys = 0; sys < nSystems; sys++) {
+      const before = [parts[0].length, parts[1].length];
+      let added = 0;
       for (let hand = 0; hand < 2; hand++) {
-        const si = sys * 2 + hand;
-        if (si >= staves.length) { parts[hand].push([]); continue; }
+        const si = staves.findIndex(s => (s.system || 0) === sys && (s.hand || 0) === hand);
+        if (si < 0) continue;
         const S = staves[si].space;
         const mine = (omr.notes || []).filter(n => n.staff === si);
         const nBars = ((omr.bars && omr.bars[si]) || []).length;
         for (let m = 0; m <= nBars; m++) {
           parts[hand].push(toChords(mine.filter(n => n.measure === m), S));
         }
+        added = Math.max(added, nBars + 1);
+      }
+      // 片手ぶんしか無いシステムでも、小節数がそろうように空小節で埋める
+      for (let hand = 0; hand < 2; hand++) {
+        while (parts[hand].length < before[hand] + added) parts[hand].push([]);
       }
     }
     // 末尾にできた空の小節は落とす

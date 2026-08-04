@@ -3035,6 +3035,64 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     return false;
   }
 
+  /** 段の頭に並ぶ調号を読む。
+   *  調号を無視すると、♭4つの曲では音の半分近くが半音ずれる（実測でF1が26%→52%変わった）。
+   *
+   *  記号を切り分けて数える方法は、隣り合う♭がくっついて1つに融合するため使えない。
+   *  代わりに「♯と♭で並ぶ高さが決まっている」ことを使い、その位置に黒があるかで採点する。
+   *  ♭は シ ミ ラ レ ソ ド ファ、♯は ファ ド ソ レ ラ ミ シ の順に並ぶ。 */
+  const KEY_STEPS_FLAT = [4, 7, 3, 6, 2, 5, 1];    // ト音の第1線を0とした高さ
+  const KEY_STEPS_SHARP = [8, 5, 9, 6, 3, 7, 4];
+  function detectKey(bin, W, H, staves) {
+    const votes = new Map(), detail = [];
+    for (const st of staves) {
+      const S = st.space;
+      const shift = (st.hand === 1) ? -2 : 0;        // ヘ音記号では2段ぶん下がる
+      const bw = Math.max(1, Math.round(S * 0.32));  // 見る箱の半幅
+      const bh = Math.max(1, Math.round(S * 0.70));  // 半高
+      const area = (bw * 2 + 1) * (bh * 2 + 1);
+      const inkAt = (cx, step) => {
+        const cy = Math.round(st.bottom - (step + shift) * (S / 2));
+        if (cx - bw < 0 || cx + bw >= W || cy - bh < 0 || cy + bh >= H) return 0;
+        let c = 0;
+        for (let y = cy - bh; y <= cy + bh; y++)
+          for (let x = cx - bw; x <= cx + bw; x++) if (bin[y * W + x]) c++;
+        return c / area;
+      };
+      // 音部記号の幅は版によって違うので、調号の始まる位置を少し探す
+      let bestN = 0, bestSign = 0, bestScore = 0;
+      for (let start = S * 1.8; start <= S * 5.0; start += S * 0.12) {
+        for (const sign of [-1, 1]) {
+          const steps = sign < 0 ? KEY_STEPS_FLAT : KEY_STEPS_SHARP;
+          let n = 0, sum = 0;
+          for (let i = 0; i < 7; i++) {
+            const cx = Math.round((st.xStart || 0) + start + i * S * 1.02);
+            const v = inkAt(cx, steps[i]);
+            if (v < 0.40) break;
+            // 本来その記号が無いはずの高さも見る。
+            // 拍子記号は縦に広いのでここにも黒が出るが、♯♭は出ない。
+            const off = Math.max(inkAt(cx, steps[i] + 4), inkAt(cx, steps[i] - 4));
+            if (off > 0.34) break;
+            n++; sum += v - off;
+          }
+          if (!n) continue;
+          // 次の枠にも記号があるなら、まだ続いている
+          const nxt = n < 7 ? inkAt(Math.round((st.xStart || 0) + start + n * S * 1.02), steps[n]) : 0;
+          const score = sum - (nxt > 0.40 ? 0.5 : 0);
+          if (score > bestScore) { bestScore = score; bestN = n; bestSign = sign; }
+        }
+      }
+      // 平均の黒さが薄いものは調号ではないとみなす
+      const f = (bestN && bestScore / bestN >= 0.50) ? bestSign * bestN : 0;
+      detail.push({ n: bestN, sign: bestSign, score: +bestScore.toFixed(2) });
+      votes.set(f, (votes.get(f) || 0) + 1);
+    }
+    let best = 0, cnt = 0;
+    for (const [f, v] of votes) if (v > cnt) { cnt = v; best = f; }
+    detectKey.detail = detail;
+    return best;
+  }
+
   /** 小節線を探す。五線の高さいっぱいに伸びる細い縦線 */
   function findBarlines(bin, W, H, staves) {
     const bars = [];
@@ -3079,10 +3137,20 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 
   const LETTER_SEMI = [0, 2, 4, 5, 7, 9, 11];   // C D E F G A B
   const LETTER_NAME = ["C", "D", "E", "F", "G", "A", "B"];
+  const FLAT_ORDER = [6, 2, 5, 1, 4, 0, 3];    // シ ミ ラ レ ソ ド ファ
+  const SHARP_ORDER = [3, 0, 4, 1, 5, 2, 6];   // ファ ド ソ レ ラ ミ シ
+  /** 調号による半音のずれ。♭4つなら シミラレ が半音下がる */
+  function keyAlter(letter, fifths) {
+    if (!fifths) return 0;
+    const order = fifths > 0 ? SHARP_ORDER : FLAT_ORDER;
+    const n = Math.min(7, Math.abs(fifths));
+    for (let i = 0; i < n; i++) if (order[i] === letter) return fifths > 0 ? 1 : -1;
+    return 0;
+  }
   /** 全音階の通し番号 → MIDI番号 */
-  function diaToMidi(d) {
+  function diaToMidi(d, fifths) {
     const oct = Math.floor(d / 7), le = ((d % 7) + 7) % 7;
-    return (oct + 1) * 12 + LETTER_SEMI[le];
+    return (oct + 1) * 12 + LETTER_SEMI[le] + keyAlter(le, fifths || 0);
   }
 
   /**
@@ -3110,6 +3178,21 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       if (!staves.some(s => Math.abs(s.top - c.top) < S * 2)) staves.push(c);
     }
     staves.sort((a, b) => a.top - b.top);
+
+    // 大譜表の中の隙間は狭く、段と段の間は広い。この差でシステムに束ねる。
+    // 段番号で機械的に2つずつ組むと、1段取りこぼした瞬間に右手と左手が入れ替わる。
+    {
+      const S0 = staves.reduce((a, s) => a + s.space, 0) / staves.length;
+      let sys = 0;
+      staves[0].system = 0;
+      staves[0].hand = 0;
+      for (let i = 1; i < staves.length; i++) {
+        const gap = staves[i].top - staves[i - 1].bottom;
+        if (gap > S0 * 3.2) { sys++; staves[i].hand = 0; }
+        else staves[i].hand = Math.min(1, (staves[i - 1].hand || 0) + 1);
+        staves[i].system = sys;
+      }
+    }
 
     // 各五線が横方向にどこからどこまで引かれているかを測る
     const minRun2 = Math.max(12, Math.round(W / 45));
@@ -3158,6 +3241,37 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     const BASE = { G: 30, F: 18 };   // ト音の第1線=E4(30) / ヘ音の第1線=G2(18)
 
     const bars = findBarlines(bin, W, H, staves);
+    // 調号は指定があればそれを、なければ自動で読む。
+    // 必ず五線を消した画像で調べること。五線が残っていると全部の列に黒があり、
+    // 記号のかたまりに切り分けられない。
+    const fifths = (opts.fifths !== undefined && opts.fifths !== null)
+      ? opts.fifths : detectKey(cleaned, W, H, staves);
+
+    // 検出した位置は、判定窓が最も黒くなる場所であって符頭の中心ではない。
+    // 符頭のまわりの黒の重心を取り直して、中心をより正確にする。
+    // 音の高さは五線からの高さで決まるので、ここのわずかなズレが音を1つ変える。
+    for (const h of heads) {
+      const S = staves[h.staff].space;
+      const rx = Math.max(1, Math.round(S * 0.22));
+      const lim = Math.round(S * 0.85);
+      let sum = 0, n = 0;
+      for (let x = Math.round(h.x) - rx; x <= Math.round(h.x) + rx; x++) {
+        if (x < 0 || x >= W) continue;
+        let y = Math.round(h.y);
+        if (!cleaned[y * W + x]) continue;
+        let ya = y, yb = y;
+        while (ya > 0 && cleaned[(ya - 1) * W + x] && y - ya < lim) ya--;
+        while (yb < H - 1 && cleaned[(yb + 1) * W + x] && yb - y < lim) yb++;
+        sum += (ya + yb) / 2; n++;
+      }
+      if (n) h.y = sum / n;
+    }
+    // 重心を取り直したうえで、五線の位置から大きく外れるものだけ落とす
+    heads = heads.filter(h => {
+      const st = staves[h.staff];
+      const raw = (st.bottom - h.y) / (st.space / 2);
+      return Math.abs(raw - Math.round(raw)) <= 0.34;
+    });
 
     const notes = heads.map(h => {
       const st = staves[h.staff];
@@ -3178,10 +3292,10 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
         yImg: h.y + shear * (h.x - W / 2),
-        space: S, system: h.staff >> 1,
+        space: S, system: st.system, hand: st.hand,
         q, beams, dot, measure, span,
         stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
-        dia: d, midi: diaToMidi(d),
+        dia: d, midi: diaToMidi(d, fifths),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
       };
     });
@@ -3211,7 +3325,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 
     // 段ごと・左から順に並べる
     notes.sort((a, b) => (a.staff >> 1) - (b.staff >> 1) || a.x - b.x || a.midi - b.midi);
-    return { staves, notes, bars, W, H, shear };
+    return { staves, notes, bars, fifths, keyDetail: detectKey.detail, W, H, shear };
   }
 
   /** 半音の増減を「全音階で何段動くか」に直す。
@@ -3223,7 +3337,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     return sign * (Math.floor(a / 12) * 7 + STEP_OF_SEMI[a % 12]);
   }
 
-  global.OMR = { readScore, diaToMidi, semiToSteps, LETTER_NAME };
+  global.OMR = { readScore, diaToMidi, semiToSteps, keyAlter, LETTER_NAME };
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
 <script>/* 読み取り結果を MusicXML に組み立てる。
@@ -3282,20 +3396,28 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     opts = opts || {};
     const staves = omr.staves || [];
     if (!staves.length) return null;
-    const nSystems = Math.ceil(staves.length / 2);
+    const nSystems = Math.max.apply(null, staves.map(s => s.system || 0)) + 1;
 
-    // 段を「右手（上）」「左手（下）」の2つのパートに束ね直す
+    // 段を「右手（上）」「左手（下）」の2つのパートに束ね直す。
+    // どの段がどちらの手かは、段番号ではなく OMR が求めたシステム内の位置で決める。
     const parts = [[], []];         // parts[hand] = 小節の配列
     for (let sys = 0; sys < nSystems; sys++) {
+      const before = [parts[0].length, parts[1].length];
+      let added = 0;
       for (let hand = 0; hand < 2; hand++) {
-        const si = sys * 2 + hand;
-        if (si >= staves.length) { parts[hand].push([]); continue; }
+        const si = staves.findIndex(s => (s.system || 0) === sys && (s.hand || 0) === hand);
+        if (si < 0) continue;
         const S = staves[si].space;
         const mine = (omr.notes || []).filter(n => n.staff === si);
         const nBars = ((omr.bars && omr.bars[si]) || []).length;
         for (let m = 0; m <= nBars; m++) {
           parts[hand].push(toChords(mine.filter(n => n.measure === m), S));
         }
+        added = Math.max(added, nBars + 1);
+      }
+      // 片手ぶんしか無いシステムでも、小節数がそろうように空小節で埋める
+      for (let hand = 0; hand < 2; hand++) {
+        while (parts[hand].length < before[hand] + added) parts[hand].push([]);
       }
     }
     // 末尾にできた空の小節は落とす
