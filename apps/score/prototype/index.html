@@ -2728,18 +2728,28 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     let peak = 0;
     for (let y = 0; y < H; y++) if (dens[y] > peak) peak = dens[y];
     if (peak < W * 0.10) return [];
-    // しきい値はページ幅ではなく「いちばん長い五線」を基準にする。
-    // ページ幅を基準にすると、余白の取り方が変わっただけで検出が崩れる。
-    const thr = peak * 0.22 * k;
+
+    // しきい値で切ると、線の周りの強い行まで拾って1本の帯に融合してしまう。
+    // （実測: 間隔13pxの完璧な5本が、90px幅の1本の塊になって消えていた）
+    // 代わりに「まわりより高い山」を線とみなす。線の強さがまちまちでも取りこぼさない。
+    const floor = peak * 0.10 * k;
+    const win = 3;
     const lines = [];
-    let y = 0;
-    while (y < H) {
-      if (dens[y] >= thr) {
-        let y2 = y;
-        while (y2 + 1 < H && dens[y2 + 1] >= thr) y2++;
-        lines.push({ y: (y + y2) / 2, thickness: y2 - y + 1, span: dens[(y + y2) >> 1] });
-        y = y2 + 1;
-      } else y++;
+    for (let y = win; y < H - win; y++) {
+      const v = dens[y];
+      if (v < floor) continue;
+      let isTop = true;
+      for (let d = -win; d <= win; d++) {
+        if (!d) continue;
+        if (dens[y + d] > v) { isTop = false; break; }
+        if (dens[y + d] === v && d < 0) { isTop = false; break; }   // 平らな頂は先頭だけ採る
+      }
+      if (!isTop) continue;
+      // 同じ高さが続くときは、その真ん中を線の位置にする
+      let y2 = y;
+      while (y2 + 1 < H && dens[y2 + 1] === v) y2++;
+      lines.push({ y: (y + y2) / 2, thickness: Math.max(1, y2 - y + 1), span: v });
+      y = y2;
     }
     return lines;
   }
@@ -2758,7 +2768,8 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           const w = last.thickness + l.thickness;
           last.y = (last.y * last.thickness + l.y * l.thickness) / w;
           last.thickness = w;
-        } else out.push({ y: l.y, thickness: l.thickness });
+          last.span = Math.max(last.span || 1, l.span || 1);
+        } else out.push({ y: l.y, thickness: l.thickness, span: l.span || 1 });
       }
       return out;
     };
@@ -2799,7 +2810,9 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const ok = g.every(v => v >= S * 0.72 && v <= S * 1.28);
       if (ok) {
         const mean = g.reduce((a, b) => a + b) / 4;
-        staves.push({ lines: five.map(l => l.y), space: mean, top: five[0].y, bottom: five[4].y });
+        staves.push({ lines: five.map(l => l.y), space: mean,
+                      top: five[0].y, bottom: five[4].y,
+                      strength: five.reduce((a, l) => a + (l.span || 1), 0) });
         i += 5;
       } else i++;
     }
