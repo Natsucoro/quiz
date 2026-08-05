@@ -240,6 +240,78 @@
     return out;
   }
 
+  /** 休符を探す。
+   *
+   *  休符が読めないと、小節の途中で音が前に詰まり、そこから後ろが全部ずれる。
+   *  鳴らしたときにいちばん耳につくのがこれ。
+   *
+   *  見分け方は形の照合ではなく、置かれ方。休符は
+   *    ・左右が空いている（符尾も梁も繋がっていない）
+   *    ・五線のまん中あたりに、縦に細長く立っている
+   *    ・縦にまっすぐ長い線を持たない（符尾や小節線と違う）
+   *  4分休符は線間の2倍ほど、8分休符は1.3倍ほどの高さになる。
+   *
+   *  @param {Array} heads すでに見つけた符頭。臨時記号を休符と取り違えないため、
+   *                       符頭のすぐ左にあるものは除く。
+   */
+  function findRests(bin, vRunLen, W, H, staves, heads) {
+    const out = [];
+    for (let si = 0; si < staves.length; si++) {
+      const st = staves[si];
+      const S = st.space;
+      const y0 = Math.max(0, Math.round(st.top - S * 0.6));
+      const y1 = Math.min(H - 1, Math.round(st.bottom + S * 0.6));
+      const mid = (st.top + st.bottom) / 2;
+      const xa = Math.max(0, Math.round(st.xMusic || 0));
+      const xb = Math.min(W - 1, Math.round(st.xEnd || W - 1));
+      const mine = heads.filter(h => h.staff === si);
+
+      // 列ごとの黒の量を数え、白で切れる区間に分ける
+      const col = new Int32Array(xb - xa + 1);
+      for (let x = xa; x <= xb; x++) {
+        let c = 0;
+        for (let y = y0; y <= y1; y++) if (bin[y * W + x]) c++;
+        col[x - xa] = c;
+      }
+      let i = 0;
+      while (i < col.length) {
+        if (!col[i]) { i++; continue; }
+        let j = i;
+        let gap = 0;
+        while (j + 1 < col.length && (col[j + 1] || ++gap <= 1)) { j++; if (col[j]) gap = 0; }
+        const x0 = xa + i, x1 = xa + j, w = x1 - x0 + 1;
+        i = j + 1;
+        if (w < S * 0.40 || w > S * 1.45) continue;
+        // 縦の広がりと、まっすぐな縦線の長さを測る
+        let ya = -1, yb = -1, vmax = 0;
+        for (let x = x0; x <= x1; x++) {
+          let run = 0;
+          for (let y = y0; y <= y1; y++) {
+            if (!bin[y * W + x]) { run = 0; continue; }
+            if (ya < 0 || y < ya) ya = y;
+            if (y > yb) yb = y;
+            // 縦の連なりは五線の帯の中だけで測る。画像全体で測ると、
+            // 帯の外へ伸びた符尾の長さを休符の一部と数えてしまう
+            if (++run > vmax) vmax = run;
+          }
+        }
+        if (ya < 0) continue;
+        const h = yb - ya + 1;
+        if (vmax > S * 3.6) continue;             // 小節線・段をまたぐ縦線はここで落ちる
+        if (Math.abs((ya + yb) / 2 - mid) > S * 1.1) continue;   // 休符は五線のまん中に立つ
+        // 符頭がすぐ近くにあるものは、臨時記号か符頭そのもの
+        if (mine.some(n => n.x > x0 - S * 0.6 && n.x < x1 + S * 2.0)) continue;
+        let q = 0;
+        // 4分休符は五線の中2間ぶん、8分休符はその半分ほどの高さになる
+        if (h >= S * 2.1 && h <= S * 3.7 && w >= S * 0.70) q = 1;
+        else if (h >= S * 1.1 && h < S * 2.1 && w >= S * 0.55) q = 0.5;
+        if (!q) continue;
+        out.push({ x: (x0 + x1) / 2, staff: si, q });
+      }
+    }
+    return out;
+  }
+
   /** 各画素が属する「横に連なる黒の長さ」を求める。
    *  符頭は横に短く独立しているが、梁は横に長く続く。これが両者を分ける決め手になる。 */
   function horizontalRunLength(bin, W, H) {
@@ -1002,9 +1074,19 @@
       i = j + 1;
     }
 
+    // 休符も拾う。読めないと、そこから後ろの音が全部前に詰まる
+    const rests = findRests(cleaned, vRunLen, W, H, staves, notes);
+    for (const r of rests) {
+      const my = bars[r.staff] || [];
+      let m = 0;
+      for (const bx of my) if (bx < r.x) m++;
+      r.measure = m;
+    }
+
     // 段ごと・左から順に並べる
     notes.sort((a, b) => (a.staff >> 1) - (b.staff >> 1) || a.x - b.x || a.midi - b.midi);
-    return { staves, notes, bars, fifths, clefs, clefDetail, keyDetail: detectKey.detail, W, H, shear };
+    return { staves, notes, rests, bars, fifths, clefs, clefDetail,
+             keyDetail: detectKey.detail, W, H, shear };
   }
 
   /** 半音の増減を「全音階で何段動くか」に直す。
@@ -1018,5 +1100,5 @@
 
   global.OMR = { readScore, diaToMidi, semiToSteps, keyAlter, LETTER_NAME,
                  // 中身を目で確かめるため（bench/diag.mjs から使う）
-                 _internal: { binarize, estimateShear, deshear, findStaffLines, groupStaves } };
+                 _internal: { binarize, estimateShear, deshear, findStaffLines, groupStaves, findRests } };
 })(typeof window !== "undefined" ? window : globalThis);

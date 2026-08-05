@@ -75,6 +75,7 @@ const out = await pg.evaluate(async (u) => {
            clefDetail: full.clefDetail.map(f=>({b:+f.below.toFixed(3),a:+f.above.toFixed(3),l:+f.lower.toFixed(3)})),
            xml: xmlOut,
            bars: (full.bars||[]).map(b=>b.map(Math.round)),
+           rests: (full.rests||[]).map(r=>({x:Math.round(r.x),st:r.staff,q:r.q,m:r.measure})),
            fifths: full.fifths, nNotes: full.notes.length,
            notes: full.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,sd:n.stemDir})) };
 }, url);
@@ -94,6 +95,7 @@ for (const k of Object.keys(out.rep)) {
 console.log(`\n最終 ${out.final.length}段  調号 ${out.fifths}  音符 ${out.nNotes}`);
 for (const s of out.final) console.log(`  y ${s.top}-${s.bot} 線間${s.sp} 系${s.sys} 手${s.hand} 記号${s.clef} x ${s.x0}..(音符は${s.xm}から)..${s.x1}`);
 
+console.log('休符: ' + (out.rests.length ? out.rests.map(r=>`段${r.st}@${r.x}(${r.q})`).join(' ') : 'なし'));
 console.log('小節線: ' + out.bars.map((b,i)=>`段${i}[${b.join(',')}]`).join(' '));
 console.log('記号の手がかり(下/上/五線下寄り): ' + out.clefDetail.map(f=>`${f.b}/${f.a}/${f.l}`).join('  '));
 // 音価の内訳と、正解とのつき合わせ

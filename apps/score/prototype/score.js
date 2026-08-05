@@ -69,9 +69,15 @@
         const S = staves[si].space;
         const cl = staves[si].clef === "F" ? "F" : "G";
         const mine = (omr.notes || []).filter(n => n.staff === si);
+        const myRests = (omr.rests || []).filter(r => r.staff === si);
         const nBars = ((omr.bars && omr.bars[si]) || []).length;
         for (let m = 0; m <= nBars; m++) {
-          parts[hand].push(toChords(mine.filter(n => n.measure === m), S));
+          // 休符も音符と同じ列に並べる。並べないと、休んでいるあいだの音が
+          // 前に詰まって、そこから後ろが丸ごとずれる
+          const cs = toChords(mine.filter(n => n.measure === m), S);
+          for (const r of myRests) if (r.measure === m) cs.push({ x: r.x, rest: true, q: r.q, notes: [] });
+          cs.sort((a, b) => a.x - b.x);
+          parts[hand].push(cs);
           clefs[hand].push(cl);
         }
         added = Math.max(added, nBars + 1);
@@ -160,6 +166,7 @@
           filled = qs.reduce((a, q) => a + q, 0);
         }
         chords.forEach((c, ci) => {
+          if (c.rest) { xml += restXML(qs[ci]); return; }
           c.notes.forEach((n, i) => { xml += noteXML(n, i > 0, qs[ci], c.dot); });
         });
         // 拍子が指定されていれば、足りない分を休符で辻褄合わせする
