@@ -1,3 +1,10 @@
 .env
 .venv/
 node_modules/
+
+# 楽譜アプリの検証で出る一時ファイル
+apps/score/bench/diag_*.png
+apps/score/bench/diag.musicxml
+apps/score/bench/crop_out.png
+apps/score/bench/look_out.png
+apps/score/bench/e2e_view.png
