@@ -4035,6 +4035,39 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 
     const bars = findBarlines(bin, W, H, staves);
 
+    // 符頭に癒着した臨時記号。記号と符頭の間に白い隙間が無いと、
+    // 前処理の記号消しでは切り分けられず、検出の中心が記号側に引っ張られて
+    // 音の高さが半段ずれる（実測でE♮がFに化けていた）。
+    // 「符頭の左上と左下の両方に、符頭の高さを越えてはみ出す黒」が癒着の印。
+    // 見つけたら中心を右（符頭側）へ寄せ、記号は♮として効かせる。
+    for (const h of heads) {
+      if (h.hollow || h.split) continue;
+      const st = staves[h.staff];
+      const S = st.space;
+      // 五線の外の音は見ない。加線や梁が「はみ出し」に見えて誤爆する
+      if (h.y < st.top - S * 0.5 || h.y > st.bottom + S * 0.5) continue;
+      const box = (x0, y0, x1, y1) => {
+        let c = 0;
+        for (let y = Math.max(0, Math.round(y0)); y <= Math.min(H - 1, Math.round(y1)); y++)
+          for (let x = Math.max(0, Math.round(x0)); x <= Math.min(W - 1, Math.round(x1)); x++)
+            if (cleaned[y * W + x]) c++;
+        return c;
+      };
+      const xl = h.x - S * 1.30, xr = h.x - S * 0.62;
+      const ul = box(xl, h.y - S * 1.55, xr, h.y - S * 0.75);
+      const ll = box(xl, h.y + S * 0.75, xr, h.y + S * 1.55);
+      const need = S * S * 0.16;
+      if (ul < need || ll < need) continue;
+      // 上下のはみ出しが横に長いなら梁。細い縦棒（記号のはみ出し）だけを認める
+      const wideUl = box(h.x - S * 2.3, h.y - S * 1.55, xl - 1, h.y - S * 0.75);
+      const wideLl = box(h.x - S * 2.3, h.y + S * 0.75, xl - 1, h.y + S * 1.55);
+      if (wideUl > need * 1.2 || wideLl > need * 1.2) continue;
+      // 高さの測り直しにだけ、記号ぶん右に寄せた x を使う。
+      // 音符の位置そのものを動かすと、小節や和音の割り付けが崩れる
+      h.xc = h.x + S * 0.30;
+      h.accFused = 0;           // ♮とみなす（癒着するのはほぼ♮）
+    }
+
     // 検出した位置は、判定窓が最も黒くなる場所であって符頭の中心ではない。
     // 符頭のまわりの黒の重心を取り直して、中心をより正確にする。
     // 音の高さは五線からの高さで決まるので、ここのわずかなズレが音を1つ変える。
@@ -4042,8 +4075,9 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const S = staves[h.staff].space;
       const rx = Math.max(1, Math.round(S * 0.22));
       const lim = Math.round(S * 0.85);
+      const cx0 = Math.round(h.xc !== undefined ? h.xc : h.x);
       let sum = 0, n = 0;
-      for (let x = Math.round(h.x) - rx; x <= Math.round(h.x) + rx; x++) {
+      for (let x = cx0 - rx; x <= cx0 + rx; x++) {
         if (x < 0 || x >= W) continue;
         let y = Math.round(h.y);
         if (!cleaned[y * W + x]) continue;
@@ -4059,7 +4093,14 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const st = staves[h.staff];
       const baseY = st.bottom + (st.slope || 0) * (h.x - W / 2);
       const raw = (baseY - h.y) / (st.space / 2);
-      return Math.abs(raw - Math.round(raw)) <= 0.34;
+      if (Math.abs(raw - Math.round(raw)) <= 0.34) return true;
+      // 癒着した記号を切り離した音は、測り直しがぶれやすい。
+      // 落とすと小節の中身が変わって後ろ全部がずれるので、最寄りの段に吸着させる
+      if (h.accFused !== undefined) {
+        h.y = baseY - Math.round(raw) * (st.space / 2);
+        return true;
+      }
+      return false;
     });
     // 3度で積んだ和音は真っ黒なひとつの塊になり、検出は1〜2個しか出ない。
     // 塊の縦の長さを測り、2音ぶん以上あれば1線間おきに符頭を置き直す。
@@ -4160,14 +4201,16 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       for (const bx of myBars) if (bx < h.x) measure++;
       const clefHere = st.clefAt ? st.clefAt(h.x) : clefs[h.staff];
       const d = (BASE[clefHere] !== undefined ? BASE[clefHere] : BASE.G) + step;
-      const acc = h.accG !== undefined ? h.accG
+      let acc = h.accG !== undefined ? h.accG
         : findAccidental(cleaned0, vRunLen0, runLen0, W, H, st, h, heads);
+      let accOnly = false;
+      if (acc === undefined && h.accFused !== undefined) { acc = h.accFused; accOnly = true; }
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
         yImg: h.y + shear * (h.x - W / 2),
         space: S, system: st.system, hand: st.hand,
-        q, beams, dot, measure, span, acc, split: h.split,
+        q, beams, dot, measure, span, acc, accOnly, split: h.split, accFused: h.accFused,
         stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
         dia: d, midi: diaToMidi(d, fifths),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
@@ -4202,8 +4245,10 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const live = new Map();      // "staff:measure:dia" → -1|0|1
       for (const n of sorted) {
         const k = n.staff + ":" + n.measure + ":" + n.dia;
-        if (n.acc !== undefined) live.set(k, n.acc);
-        const a = live.get(k);
+        // 癒着から推定した♮は確度が低いので、その音にだけ効かせて伝播させない
+        if (n.acc !== undefined && !n.accOnly) live.set(k, n.acc);
+        let a = live.get(k);
+        if (n.accOnly && n.acc !== undefined) a = n.acc;
         if (a === undefined) continue;
         const oct = Math.floor(n.dia / 7), le = ((n.dia % 7) + 7) % 7;
         n.midi = (oct + 1) * 12 + LETTER_SEMI[le] + a;

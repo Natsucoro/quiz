@@ -78,7 +78,7 @@ const out = await pg.evaluate(async (u) => {
            bars: (full.bars||[]).map(b=>b.map(Math.round)),
            rests: (full.rests||[]).map(r=>({x:Math.round(r.x),st:r.staff,q:r.q,m:r.measure})),
            fifths: full.fifths, nNotes: full.notes.length,
-           notes: full.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,sd:n.stemDir,a:n.acc,sp2:n.split})) };
+           notes: full.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,sd:n.stemDir,a:n.acc,sp2:n.split,fu:n.accFused})) };
 }, url);
 await b.close();
 
@@ -104,6 +104,7 @@ const hist = m => { const h={}; for(const v of m) h[v]=(h[v]||0)+1;
   return Object.entries(h).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}:${v}`).join(' '); };
 const truthP = JSON.parse(fs.readFileSync(path.join(HERE,`${piece}_truth.json`),'utf8'));
 const truthPD = JSON.parse(fs.readFileSync(path.join(HERE,`${piece}_truthpd.json`),'utf8'));
+console.log('癒着の♮と判定: ' + out.notes.filter(n=>n.fu!==undefined&&n.fu!==null).map(n=>`段${n.st}@${n.x},${n.y}`).join(' '));
 console.log('分割で足した音: ' + out.notes.filter(n=>n.sp2).map(n=>`段${n.st}@${n.x},${n.y}→${n.m}`).join(' '));
 console.log('臨時記号と読んだ音: ' + out.notes.filter(n=>n.a!==undefined&&n.a!==null).map(n=>`段${n.st}@${n.x},${n.y}(${n.a>0?'♯':n.a<0?'♭':'♮'})`).join(' '));
 console.log('\n検出の音価: ' + hist(out.notes.map(n=>n.q)));
