@@ -384,7 +384,9 @@
           if (is && !inStroke) strokes++;
           inStroke = is;
         }
-        const acc = strokes <= 1 ? -1 : (fill >= 0.52 ? 1 : 0);
+        // 12px級の小さな記号では縦棒の数え損ねが起きる。
+        // ♭は下半分の膨らみで塗りが濃い。棒1本でもすかすかなら♮とみなす
+        const acc = strokes <= 1 ? (fill < 0.38 ? 0 : -1) : (fill >= 0.52 ? 1 : 0);
         out.push({ x0: xa + seg.i, x1: gx1, y0: top, y1: bot,
                    x: (xa + seg.i + gx1) / 2, y: cy, staff: si, acc });
       }
