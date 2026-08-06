@@ -312,6 +312,86 @@
     return out;
   }
 
+  /** 臨時記号（♯♭♮）の形をした塊を、段じゅうから先に見つけておく。
+   *
+   *  記号が符頭にぴったり癒着している楽譜では、あとから符頭ごとに左を
+   *  探しても手遅れで、符頭の検出そのものが記号に引っ張られて
+   *  高さも長さも狂う（実測でE♮の音がFと2分音符に化けていた）。
+   *  先に見つけて画像から消し、符頭探しは記号の無い画像で行う。
+   *
+   *  記号の見分け方:
+   *    ・幅 0.42〜1.05線間（符頭の塊はもっと太い）
+   *    ・高さ 1.45〜3.4線間（符頭は短く、符尾は長い）
+   *    ・塗りがすかすか（0.18〜0.62。符頭の塊は0.8超）
+   *    ・すぐ右に符頭級の黒がある（休符と見分ける決め手）
+   */
+  function findAccidentalGlyphs(bin, runLen, W, H, staves) {
+    const out = [];
+    for (let si = 0; si < staves.length; si++) {
+      const st = staves[si];
+      const S = st.space;
+      const y0 = Math.max(0, Math.round(st.top - S * 2.0));
+      const y1 = Math.min(H - 1, Math.round(st.bottom + S * 2.0));
+      const xa = Math.round(st.xMusic || st.xStart || 0);
+      const xb = Math.min(W - 1, Math.round(st.xEnd || W - 1));
+      const cols = [];
+      for (let x = xa; x <= xb; x++) {
+        let ink = 0, top = -1, bot = -1, run = 0, vmax = 0, beamy = 0;
+        for (let y = y0; y <= y1; y++) {
+          if (bin[y * W + x]) {
+            ink++; if (top < 0) top = y; bot = y;
+            if (++run > vmax) vmax = run;
+            if (runLen[y * W + x] > S * 2.2) beamy++;
+          } else run = 0;
+        }
+        cols.push({ ink, top, bot, vmax, beamy });
+      }
+      let i = 0;
+      while (i < cols.length) {
+        if (!cols[i].ink) { i++; continue; }
+        let j = i;
+        while (j + 1 < cols.length && cols[j + 1].ink) j++;
+        const seg = { i, j }; const w = j - i + 1;
+        const walk = cols.slice(i, j + 1);
+        i = j + 1;
+        if (w < S * 0.42 || w > S * 1.05) continue;
+        let top = 1e9, bot = -1, vmax = 0, ink = 0, beamy = 0;
+        for (const c of walk) {
+          if (c.top >= 0 && c.top < top) top = c.top;
+          if (c.bot > bot) bot = c.bot;
+          if (c.vmax > vmax) vmax = c.vmax;
+          ink += c.ink; beamy += c.beamy;
+        }
+        const hgt = bot - top + 1;
+        if (hgt < S * 1.45 || hgt > S * 3.4) continue;
+        if (vmax < S * 1.15 || vmax > S * 3.2) continue;
+        if (ink && beamy / ink > 0.30) continue;
+        const fill = ink / (w * hgt);
+        if (fill < 0.18 || fill > 0.62) continue;
+        const cy = (top + bot) / 2;
+        if (cy < st.top - S * 1.2 || cy > st.bottom + S * 1.2) continue;
+        // すぐ右に符頭級の黒があるか。無ければ休符や飾りの類
+        const gx1 = xa + j;
+        let headInk = 0;
+        for (let x = gx1 + 2; x <= Math.min(W - 1, gx1 + Math.round(S * 1.7)); x++)
+          for (let y = Math.max(0, Math.round(cy - S * 0.9)); y <= Math.min(H - 1, Math.round(cy + S * 0.9)); y++)
+            if (bin[y * W + x]) headInk++;
+        if (headInk < S * S * 0.5) continue;
+        // 種類: 縦の棒の本数で ♭(1本) と ♮♯(2本) を分け、♮と♯は塗りの濃さで分ける
+        let strokes = 0, inStroke = false;
+        for (const c of walk) {
+          const is = c.vmax >= S * 1.15;
+          if (is && !inStroke) strokes++;
+          inStroke = is;
+        }
+        const acc = strokes <= 1 ? -1 : (fill >= 0.52 ? 1 : 0);
+        out.push({ x0: xa + seg.i, x1: gx1, y0: top, y1: bot,
+                   x: (xa + seg.i + gx1) / 2, y: cy, staff: si, acc });
+      }
+    }
+    return out;
+  }
+
   /** 符頭のすぐ左にある臨時記号（♯♭♮）を読む。
    *
    *  調号は読めても、曲の途中の記号を無視すると、その音が丸ごと半音ずれる。
@@ -1160,9 +1240,9 @@
     }
 
     const cleaned = eraseStaffLines(bin, W, H, staves);
-    const ii = integral(cleaned, W, H);
-    const runLen = horizontalRunLength(cleaned, W, H);
-    const vRunLen = verticalRunLength(cleaned, W, H);
+    let ii = integral(cleaned, W, H);
+    let runLen = horizontalRunLength(cleaned, W, H);
+    let vRunLen = verticalRunLength(cleaned, W, H);
 
     // 音部記号は、置かれている位置ではなく形から決める。
     // 「下の段はヘ音」と決めうちにすると、下の段がト音の楽譜で全部の音が狂う。
@@ -1192,6 +1272,24 @@
         for (const mc of this.midClefs) if (mc.x < x) c = mc.clef;
         return c;
       };
+    }
+
+    // 臨時記号を先に見つけて消す。符頭に癒着した記号は、符頭の位置も
+    // 音価も狂わせるので、記号の無い画像で符頭を探す
+    const accGlyphs = findAccidentalGlyphs(cleaned, runLen, W, H, staves);
+    // 消す前の画像も取っておく。癒着せず独立して立つ記号は、
+    // 符頭ごとに左を探す従来のやり方のほうが取りこぼしが少ない
+    const cleaned0 = accGlyphs.length ? Uint8Array.from(cleaned) : cleaned;
+    const runLen0 = runLen, vRunLen0 = vRunLen;
+    if (accGlyphs.length) {
+      for (const g of accGlyphs) {
+        for (let y = Math.max(0, g.y0 - 1); y <= Math.min(H - 1, g.y1 + 1); y++)
+          for (let x = Math.max(0, g.x0 - 1); x <= Math.min(W - 1, g.x1 + 1); x++)
+            cleaned[y * W + x] = 0;
+      }
+      ii = integral(cleaned, W, H);
+      runLen = horizontalRunLength(cleaned, W, H);
+      vRunLen = verticalRunLength(cleaned, W, H);
     }
 
     let heads = findNoteheads(ii, W + 1, W, H, staves, runLen, vRunLen);
@@ -1307,6 +1405,21 @@
       return false;
     });
 
+    // 記号は「右隣のいちばん近い符頭ひとつ」にだけ効かせる。
+    // 範囲で全部に効かせると、和音の他の音まで巻き添えで半音ずれる
+    for (const g of accGlyphs) {
+      let best = null, bd = 1e9;
+      for (const h of heads) {
+        if (h.staff !== g.staff) continue;
+        const dx = h.x - g.x1;
+        if (dx < S0 * 0.25 || dx > S0 * 1.6) continue;
+        if (Math.abs(h.y - g.y) > S0 * 1.0) continue;
+        const d = dx + Math.abs(h.y - g.y) * 2;   // 高さの一致を重く見る
+        if (d < bd) { bd = d; best = h; }
+      }
+      if (best) best.accG = g.acc;
+    }
+
     const cxAll = W / 2;
     let notes = heads.map(h => {
       const st = staves[h.staff];
@@ -1326,7 +1439,8 @@
       for (const bx of myBars) if (bx < h.x) measure++;
       const clefHere = st.clefAt ? st.clefAt(h.x) : clefs[h.staff];
       const d = (BASE[clefHere] !== undefined ? BASE[clefHere] : BASE.G) + step;
-      const acc = findAccidental(cleaned, vRunLen, runLen, W, H, st, h, heads);
+      const acc = h.accG !== undefined ? h.accG
+        : findAccidental(cleaned0, vRunLen0, runLen0, W, H, st, h, heads);
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
