@@ -390,7 +390,14 @@
           if (vRunLen[idx] > maxVRun) continue;  // 音部記号・小節線・符尾を除く
           const fill = rectSum(ii, W1, x - hw, y - hh, x + hw, y + hh) / area;
           if (fill >= 0.88) {
-            if (openSide(x, y)) cand.push({ x, y, s: fill, staff: si, hollow: false });
+            // 真っ黒に見えても、2分音符の穴が塗りつぶされているだけのことがある。
+            // 五線の上に乗った符頭では線が穴を横切るので、穴はごく細い筋になる。
+            // 中心のまわりに残る白の量で、塗りつぶしと白抜きを分ける。
+            // （これをしないと、この楽譜の左手の付点2分音符が全部4分音符になった）
+            const cw = Math.max(2, Math.round(S * 0.34)), ch = Math.max(1, Math.round(S * 0.30));
+            const carea = (cw * 2 + 1) * (ch * 2 + 1);
+            const white = 1 - rectSum(ii, W1, x - cw, y - ch, x + cw, y + ch) / carea;
+            if (openSide(x, y)) cand.push({ x, y, s: fill, staff: si, hollow: white >= 0.06 });
           } else if (fill >= 0.42 && fill <= 0.78) {
             // 白抜き（2分・全音符）。中が白く、左右が黒い輪であること
             const inner = rectSum(ii, W1, x - ihw, y - ihh, x + ihw, y + ihh) / iarea;
@@ -460,8 +467,12 @@
     const ests = [];
     // 梁は水平ではなく傾いている。広い幅で平均すると、どの行も基準に届かず数え落とす。
     // 3列ぶんだけならして雑音を消し、いくつかの距離で見る。
-    for (const sgn of [1, -1]) {
-      for (const f of [0.40, 0.60, 0.85, 1.10, 1.35]) {
+    // 梁につながっていない音符に付くのは旗だけ。旗は符尾のすぐ右にしか出ない。
+    // 遠くまで見にいくと、五線や譜表の下の括弧を旗と数えて、4分音符が8分になる。
+    const signs = beamed ? [1, -1] : [1];
+    const offs = beamed ? [0.40, 0.60, 0.85, 1.10, 1.35] : [0.40, 0.55];
+    for (const sgn of signs) {
+      for (const f of offs) {
         const xc = stem.x + sgn * Math.round(S * f);
         if (xc < 1 || xc >= W - 1) continue;
         let bands = 0, run = 0, last = -1, first = -1;
@@ -567,6 +578,12 @@
       for (let start = S * 1.8; start <= S * 5.0; start += S * 0.12) {
         for (const sign of [-1, 1]) {
           const steps = sign < 0 ? KEY_STEPS_FLAT : KEY_STEPS_SHARP;
+          // 調号の1つ目の記号の左は必ず空いている。空いていなければ、
+          // それは音部記号そのものの一部（ヘ音記号の胴や点）を見ている。
+          // これを見ないと、ヘ音記号が「♯が1つ」に化けて調が丸ごと変わる。
+          const before = inkAt(Math.round((st.xStart || 0) + start - S * 0.62),
+                               (sign < 0 ? KEY_STEPS_FLAT : KEY_STEPS_SHARP)[0]);
+          if (before > 0.35) continue;
           let n = 0, sum = 0;
           for (let i = 0; i < 7; i++) {
             const cx = Math.round((st.xStart || 0) + start + i * S * 1.02);
@@ -588,10 +605,12 @@
           }
         }
       }
-      // 平均の黒さが薄いものは調号ではないとみなす
-      const f = (bestN && bestScore / bestN >= 0.50) ? bestSign * bestN : 0;
+      // 平均の黒さが薄いものは調号ではないとみなす。
+      // 基準を上げすぎると、♭1つの譜面（この曲がそう）を読み落とす
+      const f = (bestN && bestScore / bestN >= 0.42) ? bestSign * bestN : 0;
       // 調号がどこで終わるかを覚えておく。ここまでは符頭が来ない
       st.keyEnd = f ? bestEnd : 0;
+      st.keyOwn = f;                 // この段が自分で読み取った調号
       detail.push({ n: bestN, sign: bestSign, score: +bestScore.toFixed(2) });
       votes.set(f, (votes.get(f) || 0) + 1);
     }
@@ -662,9 +681,14 @@
   function musicStart(bin, W, H, st, fifths) {
     const S = st.space;
     const x0 = st.xStart || 0;
-    // 調号の終わりは detectKey が実測している。読めなかったときだけ記号の数から見積もる
-    const keyEnd = st.keyEnd || (clefRight(bin, W, H, st) + S * Math.abs(fifths || 0) * 1.02);
-    let x = Math.max(x0 + S * 2.6, clefRight(bin, W, H, st), keyEnd) + S * 0.4;
+    const clefEnd = st.clefEnd !== undefined ? st.clefEnd : clefRight(bin, W, H, st);
+    // 調号の終わりは detectKey が実測している。ただし、その段が自分で読んだ調号が
+    // 曲全体の調号と食い違うときは当てにならない（見当違いの場所を指している）ので、
+    // 記号の数から見積もり直す。
+    const trust = st.keyOwn === fifths && st.keyEnd;
+    const keyEnd = trust ? st.keyEnd
+                         : (clefEnd + S * (0.35 + Math.abs(fifths || 0) * 1.02));
+    let x = Math.max(x0 + S * 2.6, clefEnd, keyEnd) + S * 0.4;
 
     // 拍子記号は五線の上半分と下半分の両方にまたがる、幅のある塊。
     // 符尾も上下にまたがるが、幅が細いので見分けられる。
@@ -940,7 +964,11 @@
       st.clef = detectClef(cleaned, W, H, st);
       return st.clef;
     });
-    for (let i = 0; i < staves.length; i++) staves[i].clef = clefs[i];
+    // 音部記号がどこで終わるかは、この先の調号さがしでも符頭さがしでも使う
+    for (let i = 0; i < staves.length; i++) {
+      staves[i].clef = clefs[i];
+      staves[i].clefEnd = clefRight(cleaned, W, H, staves[i]);
+    }
 
     // 調号を先に読む。段の頭は「音部記号＋調号（＋拍子記号）」で埋まっており、
     // ここに符頭は来ない。読み飛ばす幅は調号の数で変わるので、先に知る必要がある。
