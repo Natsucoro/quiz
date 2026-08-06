@@ -4136,8 +4136,14 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         const span = yb - ya + 1;
         if (span < S * 2.55) continue;   // 2音の3度は元の検出で拾える。3音以上の塊だけ割る
         const k = Math.max(3, Math.min(4, Math.round(span / S)));
+        // 等分割だと中の音が半段ずれる。いちばん上の音を段の格子に吸着させ、
+        // そこから正確に1線間（3度）ずつ下へ置く
+        const baseY = st.bottom + (st.slope || 0) * (h.x - W / 2);
+        const topRaw = (baseY - (ya + S * 0.5)) / (S / 2);
+        const topY = baseY - Math.round(topRaw) * (S / 2);
         for (let i = 0; i < k; i++) {
-          const y = ya + (span / k) * (i + 0.5);
+          const y = topY + i * S;
+          if (y > yb + S * 0.3) continue;
           if (Math.abs(y - h.y) < S * 0.5) continue;   // 自分自身
           const near = o => o.staff === h.staff &&
                 Math.abs(o.x - h.x) < S * 0.7 && Math.abs(o.y - y) < S * 0.55;
