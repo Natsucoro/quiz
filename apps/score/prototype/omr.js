@@ -451,12 +451,31 @@
       const bw = Math.max(2, Math.round(S * 0.34));   // 空きを見る帯の半幅
       const bh = Math.max(1, Math.round(S * 0.22));   // 帯の高さ
       const barea = (bw * 2 + 1) * (bh + 1);
+      // 上下の帯が黒いとき、それが「梁」なのか「和音の隣の符頭」なのかを、
+      // 横への広がりで見分ける。梁は符頭より横に長く伸びるが、
+      // 積み重なった和音は符頭の幅に収まる。
+      // これを見ないと、3度で積んだ和音の内側の音が全部落ちる
+      // （実測でジョプリンの左手の和音が丸ごと欠けていた）。
+      const wing = (x, y0b, y1b) => {
+        const wa = Math.max(1, Math.round(S * 0.5));
+        const lx0 = x - bw - wa - 2, lx1 = x - bw - 2;
+        const rx0 = x + bw + 2, rx1 = x + bw + wa + 2;
+        const area2 = (wa + 1) * (y1b - y0b + 1);
+        if (lx0 < 0 || rx1 >= W) return 1;
+        const lf = rectSum(ii, W1, lx0, y0b, lx1, y1b) / area2;
+        const rf = rectSum(ii, W1, rx0, y0b, rx1, y1b) / area2;
+        return Math.max(lf, rf);
+      };
       const openSide = (x, y) => {
         const ay0 = y - hh - 1 - bh, by0 = y + hh + 1;
         if (ay0 < 0 || by0 + bh >= H) return true;
         const up = rectSum(ii, W1, x - bw, ay0, x + bw, ay0 + bh) / barea;
         const dn = rectSum(ii, W1, x - bw, by0, x + bw, by0 + bh) / barea;
-        return Math.min(up, dn) < 0.45;
+        if (Math.min(up, dn) < 0.45) return true;
+        // 上下とも黒い。どちらかが「横に広がらない黒」なら、それは和音の続き
+        const upWing = up >= 0.45 ? wing(x, ay0, ay0 + bh) : 1;
+        const dnWing = dn >= 0.45 ? wing(x, by0, by0 + bh) : 1;
+        return Math.min(upWing, dnWing) < 0.30;
       };
 
       const yTop = Math.max(hh + bh + 2, Math.round(st.top - S * 4.2));
@@ -469,8 +488,20 @@
       for (let y = yTop; y <= yBot; y++) {
         for (let x = xFrom; x <= xTo; x++) {
           const idx = y * W + x;
+          // 行の途中の音部記号の上は探さない。ト音記号の胴は符頭そっくりの塊を持つ
+          if (st.midClefs && st.midClefs.some(mc => x >= mc.x0 - S * 0.4 && x <= mc.x1 + S * 0.4)) continue;
           if (runLen[idx] > maxRun) continue;    // 梁・加線の伸びた所を除く
-          if (vRunLen[idx] > maxVRun) continue;  // 音部記号・小節線・符尾を除く
+          // 縦に長い黒は符尾・小節線として除くが、それは細い線の話。
+          // 3度で積んだ和音は縦に長くても横幅があり、その幅が縦に続く。
+          // 幅ごと弾くと和音が全滅する。一方、旗や梁の付け根は一瞬だけ幅が出るが
+          // 上下の行では細いので、そこまで見て区別する
+          if (vRunLen[idx] > maxVRun) {
+            const dy2 = Math.round(S * 0.5);
+            const wide = runLen[idx] >= S * 0.7 &&
+              (y - dy2 >= 0 && runLen[idx - dy2 * W] >= S * 0.6) &&
+              (y + dy2 < H && runLen[idx + dy2 * W] >= S * 0.6);
+            if (!wide) continue;
+          }
           const fill = rectSum(ii, W1, x - hw, y - hh, x + hw, y + hh) / area;
           if (fill >= 0.88) {
             // 真っ黒に見えても、2分音符の穴が塗りつぶされているだけのことがある。
@@ -493,11 +524,16 @@
           }
         }
       }
-      // 重なりを間引く
+      // 重なりを間引く。ほぼ同じ列に縦に近く並ぶ2つは同じ符頭の重複。
+      // 本物の3度の堆積はちょうど1線間離れるので、それは残る
       cand.sort((a, b) => b.s - a.s);
       const rx = S * 1.05, ry = S * 0.55, keep = [];
+      const dup = (k, c) => {
+        const dx = Math.abs(k.x - c.x), dy = Math.abs(k.y - c.y);
+        return (dx < rx && dy < ry) || (dx < S * 0.45 && dy < S * 0.85);
+      };
       for (const c of cand) {
-        if (keep.some(k => Math.abs(k.x - c.x) < rx && Math.abs(k.y - c.y) < ry)) continue;
+        if (keep.some(k => dup(k, c))) continue;
         keep.push(c);
       }
       found.push(...keep);
@@ -796,6 +832,90 @@
     return x;
   }
 
+  /** 行の途中の音部記号の変更を探す。
+   *
+   *  実際の楽譜では、左手が高い所を弾く間だけ行の途中でト音記号に変わる。
+   *  これを見落とすと、その先の音が丸ごと1オクターブ半ずれる
+   *  （実測でジョプリンの左手の和音が全部 G2〜Eb3 と読まれていた。正しくは D4〜C5）。
+   *
+   *  ト音記号は五線よりずっと縦に長い（約7線間）。五線の高さいっぱいの小節線
+   *  （4線間）とも、符尾（3線間台）とも、この長さで見分けられる。 */
+  function findMidClefs(bin, W, H, st, runLen) {
+    const S = st.space;
+    const out = [];
+    const x0 = Math.round(st.xMusic || st.xStart || 0);
+    const x1 = Math.min(W - 1, Math.round(st.xEnd || W - 1));
+    const yTop = Math.max(0, Math.round(st.top - S * 2.4));
+    const yBot = Math.min(H - 1, Math.round(st.bottom + S * 3.0));
+    // 列ごとに、黒の量と上下の届き先を測る
+    const colInk = [], colTop = [], colBot = [];
+    for (let x = x0; x <= x1; x++) {
+      let ink = 0, top = -1, bot = -1;
+      for (let y = yTop; y <= yBot; y++) {
+        if (bin[y * W + x]) { ink++; if (top < 0) top = y; bot = y; }
+      }
+      colInk.push(ink); colTop.push(top); colBot.push(bot);
+    }
+    // 「黒がそこそこある列」のかたまりを拾う
+    let i = 0;
+    while (i < colInk.length) {
+      if (colInk[i] < S * 1.5) { i++; continue; }
+      let j = i;
+      while (j + 1 < colInk.length && colInk[j + 1] >= S * 1.5) j++;
+      const w = j - i + 1;
+      let top = 1e9, bot = -1;
+      for (let k = i; k <= j; k++) {
+        if (colTop[k] >= 0 && colTop[k] < top) top = colTop[k];
+        if (colBot[k] > bot) bot = colBot[k];
+      }
+      const seg = { i, j }; i = j + 1;
+      // ト音記号の証拠3つ:
+      //  ・幅がある（符尾や小節線は細い）
+      //  ・五線の下へ尻尾が出る（小節線は下に出ない）
+      //  ・上のほうにも黒がある＆縦に長い（和音の塊は下に尻尾が出ない）
+      if (w < S * 1.0 || w > S * 3.5) continue;
+      if (bot < st.bottom + S * 0.8) continue;
+      if (top > st.top + S * 1.2) continue;
+      if (bot - top < S * 4.8) continue;
+      // 音部記号の尻尾は細い曲線。五線の下に「横に長い黒」があるなら、
+      // それは下向きの符尾をつなぐ梁で、音符のかたまりを記号と見間違えている
+      let beam = false;
+      const yb0 = Math.round(st.bottom + S * 0.5);
+      for (let x = x0 + seg.i; x <= x0 + seg.j && !beam; x++)
+        for (let y = yb0; y <= Math.min(yBot, bot); y++)
+          if (bin[y * W + x] && runLen[y * W + x] >= S * 2.0) { beam = true; break; }
+      if (beam) continue;
+      // 五線の下の帯での幅。ト音記号の尻尾は鉤の形で幅があるが、
+      // 下向きの符尾は1〜2画素の線でしかない。
+      // これを見ないと、オクターブの和音（高い符頭＋長い符尾）が記号に化ける
+      let wTail = 0;
+      {
+        const ta = Math.round(st.bottom + S * 0.8);
+        const tb = Math.min(yBot, Math.round(st.bottom + S * 2.0), bot);
+        for (let x = x0 + seg.i; x <= x0 + seg.j; x++) {
+          for (let y = ta; y <= tb; y++) if (bin[y * W + x]) { wTail++; break; }
+        }
+      }
+      if (wTail < S * 0.7) continue;
+      // 五線の下の黒が、この塊の外へ続いているなら、それは隣の符尾へ渡る梁。
+      // 記号の尻尾はまわりが白い。斜めの梁は1行ずつの連なりが短く
+      // runLen では捕まらないので、この「外へ続くか」で見る
+      {
+        const ya = Math.round(st.bottom + S * 0.5);
+        const yb = Math.min(yBot, Math.round(st.bottom + S * 3.0));
+        const spill = (xs, xe) => {
+          for (let x = Math.max(0, xs); x <= Math.min(W - 1, xe); x++)
+            for (let y = ya; y <= yb; y++) if (bin[y * W + x]) return true;
+          return false;
+        };
+        const m1 = Math.round(S * 0.15), m2 = Math.round(S * 0.9);
+        if (spill(x0 + seg.i - m2, x0 + seg.i - m1) || spill(x0 + seg.j + m1, x0 + seg.j + m2)) continue;
+      }
+      out.push({ x: x0 + (seg.i + seg.j) / 2, x0: x0 + seg.i, x1: x0 + seg.j, clef: "G" });
+    }
+    return out;
+  }
+
   /** 小節線を探す。
    *
    *  1つの段の中だけで「上から下まで黒い縦線」を探すと、符尾や音符の連なりが
@@ -1059,6 +1179,17 @@
       ? opts.fifths : detectKey(cleaned, W, H, staves);
     for (const st of staves) st.xMusic = musicStart(cleaned, W, H, st, fifths);
 
+    // 行の途中で音部記号が変わる場合に備える。clefAt(x) が「その位置での記号」を返す
+    for (const st of staves) {
+      st.midClefs = findMidClefs(cleaned, W, H, st, runLen)
+        .filter(c => c.x0 > (st.xMusic || 0) + st.space * 0.5);
+      st.clefAt = function (x) {
+        let c = this.clef;
+        for (const mc of this.midClefs) if (mc.x < x) c = mc.clef;
+        return c;
+      };
+    }
+
     let heads = findNoteheads(ii, W + 1, W, H, staves, runLen, vRunLen);
 
     // 大譜表では上下の五線の走査範囲が重なるため、同じ符頭が二度出る。
@@ -1069,7 +1200,10 @@
       Math.abs(a.y - mid[a.staff]) - Math.abs(b.y - mid[b.staff]));
     const kept = [];
     for (const h of heads) {
-      if (kept.some(k => Math.abs(k.x - h.x) < S0 * 1.05 && Math.abs(k.y - h.y) < S0 * 0.55)) continue;
+      if (kept.some(k => {
+        const dx = Math.abs(k.x - h.x), dy = Math.abs(k.y - h.y);
+        return (dx < S0 * 1.05 && dy < S0 * 0.55) || (dx < S0 * 0.45 && dy < S0 * 0.85);
+      })) continue;
       kept.push(h);
     }
     heads = kept;
@@ -1122,7 +1256,8 @@
       const myBars = bars[h.staff] || [];
       let measure = 0;
       for (const bx of myBars) if (bx < h.x) measure++;
-      const d = (BASE[clefs[h.staff]] !== undefined ? BASE[clefs[h.staff]] : BASE.G) + step;
+      const clefHere = st.clefAt ? st.clefAt(h.x) : clefs[h.staff];
+      const d = (BASE[clefHere] !== undefined ? BASE[clefHere] : BASE.G) + step;
       const acc = findAccidental(cleaned, vRunLen, runLen, W, H, st, h, heads);
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,

@@ -66,11 +66,12 @@
       for (let hand = 0; hand < 2; hand++) {
         const si = staves.findIndex(s => (s.system || 0) === sys && (s.hand || 0) === hand);
         if (si < 0) continue;
-        const S = staves[si].space;
-        const cl = staves[si].clef === "F" ? "F" : "G";
+        const st = staves[si];
+        const S = st.space;
         const mine = (omr.notes || []).filter(n => n.staff === si);
         const myRests = (omr.rests || []).filter(r => r.staff === si);
-        const nBars = ((omr.bars && omr.bars[si]) || []).length;
+        const myBars = (omr.bars && omr.bars[si]) || [];
+        const nBars = myBars.length;
         for (let m = 0; m <= nBars; m++) {
           // 休符も音符と同じ列に並べる。並べないと、休んでいるあいだの音が
           // 前に詰まって、そこから後ろが丸ごとずれる
@@ -78,7 +79,11 @@
           for (const r of myRests) if (r.measure === m) cs.push({ x: r.x, rest: true, q: r.q, notes: [] });
           cs.sort((a, b) => a.x - b.x);
           parts[hand].push(cs);
-          clefs[hand].push(cl);
+          // 行の途中で音部記号が変わる楽譜があるので、小節ごとに
+          // 「その小節の終わりの位置での記号」を使う
+          const mEnd = m < nBars ? myBars[m] : (st.xEnd || 1e9);
+          const cl = st.clefAt ? st.clefAt(mEnd - 1) : st.clef;
+          clefs[hand].push(cl === "F" ? "F" : "G");
         }
         added = Math.max(added, nBars + 1);
       }

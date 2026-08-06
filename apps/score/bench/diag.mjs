@@ -71,7 +71,8 @@ const out = await pg.evaluate(async (u) => {
   return { binPng: oc.toDataURL('image/png'), W, H, shear, rep,
            final: full.staves.map(s => ({ top:+s.top.toFixed(1), bot:+s.bottom.toFixed(1),
                      sp:+s.space.toFixed(2), sys:s.system, hand:s.hand,
-                     x0:s.xStart, x1:s.xEnd, xm:Math.round(s.xMusic), str:s.strength, clef:s.clef })),
+                     x0:s.xStart, x1:s.xEnd, xm:Math.round(s.xMusic), str:s.strength, clef:s.clef,
+                     mid:(s.midClefs||[]).map(c=>Math.round(c.x)) })),
            clefDetail: full.clefDetail.map(f=>({b:+f.below.toFixed(3),a:+f.above.toFixed(3),l:+f.lower.toFixed(3)})),
            xml: xmlOut,
            bars: (full.bars||[]).map(b=>b.map(Math.round)),
@@ -93,7 +94,7 @@ for (const k of Object.keys(out.rep)) {
   console.log('  線: ' + r.lines.map(l=>`${l.y}:${l.sp}`).join(' '));
 }
 console.log(`\n最終 ${out.final.length}段  調号 ${out.fifths}  音符 ${out.nNotes}`);
-for (const s of out.final) console.log(`  y ${s.top}-${s.bot} 線間${s.sp} 系${s.sys} 手${s.hand} 記号${s.clef} x ${s.x0}..(音符は${s.xm}から)..${s.x1}`);
+for (const s of out.final) console.log(`  y ${s.top}-${s.bot} 線間${s.sp} 系${s.sys} 手${s.hand} 記号${s.clef}${s.mid.length?'(途中で変更@'+s.mid.join(',')+')':''} x ${s.x0}..(音符は${s.xm}から)..${s.x1}`);
 
 console.log('休符: ' + (out.rests.length ? out.rests.map(r=>`段${r.st}@${r.x}(${r.q})`).join(' ') : 'なし'));
 console.log('小節線: ' + out.bars.map((b,i)=>`段${i}[${b.join(',')}]`).join(' '));
