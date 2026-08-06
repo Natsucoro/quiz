@@ -11,3 +11,7 @@ apps/score/bench/e2e_view.png
 apps/score/bench/croptest*.jpg
 apps/score/bench/croptest.png
 apps/score/bench/shotui.png
+apps/score/bench/real_*.png
+apps/score/bench/real.musicxml
+apps/score/bench/edit*.png
+apps/score/bench/flow*.png

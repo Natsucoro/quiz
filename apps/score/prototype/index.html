@@ -243,6 +243,32 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 .todo .mk{color:var(--shu); font-weight:700; flex:0 0 auto; font-size:12px; padding-top:3px}
 .todo .mk.done{color:var(--ink-faint)}
 
+.zoombar{display:flex; align-items:center; gap:9px; margin-top:9px; flex-wrap:wrap}
+.zoombar .btn{padding:7px 15px; font-size:16px; line-height:1}
+.zoombar span{font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+.zoombar .hint{flex:1; text-align:right; min-width:9em}
+
+/* ─────────── 音符を直す道具 ─────────── */
+.sheet svg .note{cursor:pointer}
+.pick{position:absolute; border-radius:4px; background:var(--shu-soft);
+  box-shadow:0 0 0 2px var(--shu); pointer-events:none}
+.fixer{position:fixed; left:0; right:0; bottom:0; z-index:60;
+  background:color-mix(in srgb, var(--surface) 96%, transparent);
+  backdrop-filter:blur(14px); border-top:1px solid var(--line-strong);
+  box-shadow:0 -6px 24px rgba(22,35,58,.10);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  animation:rise .18s cubic-bezier(.2,.7,.3,1);
+}
+.fixer-in{max-width:760px; margin:0 auto}
+.fx-head{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.fx-head span{flex:1; font-family:var(--mincho); font-size:15px; letter-spacing:.05em}
+.fx-head .btn{padding:6px 12px; font-size:13px}
+.fx-row{display:flex; gap:6px; margin-bottom:6px}
+.fx-row .btn{flex:1; padding:11px 4px; font-size:14px}
+.fx-big{font-size:15px !important}
+.fx-len .btn{font-size:13px}
+.fx-len .btn[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+
 .busy{position:fixed; inset:0; z-index:80; background:rgba(10,14,22,.55);
   display:none; place-items:center; backdrop-filter:blur(2px)}
 .busy.on{display:grid}
@@ -321,7 +347,9 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <span>曲名</span>
           <input type="text" id="title" placeholder="れんしゅう曲" autocomplete="off">
         </div>
-        <button class="btn primary wide" id="btnSave">本棚にしまう</button>
+        <button class="btn primary wide" id="btnRead">読み取って、直す</button>
+        <div style="height:9px"></div>
+        <button class="btn wide" id="btnSave">本棚にしまうだけ</button>
       </div>
     </section>
 
@@ -360,6 +388,26 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <p class="hint" id="mineInfo"></p>
         </div>
 
+        <div class="sheet" id="sheet"><p class="hint" style="padding:14px">浄書エンジンを起動しています…</p></div>
+        <div class="zoombar">
+          <button class="btn" id="zOut" aria-label="小さく">－</button>
+          <span id="zLabel">100%</span>
+          <button class="btn" id="zIn" aria-label="大きく">＋</button>
+          <span class="hint" id="editHint" hidden>音符をタップすると直せます</span>
+        </div>
+
+        <div class="transport">
+          <button class="play" id="btnPlay" aria-label="再生">
+            <svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
+          </button>
+          <div class="tempo">
+            <input type="range" id="tempo" min="50" max="150" value="100">
+            <span id="tempoLabel">はやさ 100%</span>
+          </div>
+          <button class="btn" id="btnPrintScore">印刷</button>
+        </div>
+
+        <div style="height:16px"></div>
         <div class="keybar">
           <span class="from" id="keyFrom">ハ長調</span>
           <span class="arrow" id="keyArrow">→</span>
@@ -375,20 +423,6 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <button class="step" data-jump="0" aria-pressed="true">原調</button>
           <button class="step" data-jump="2">＋2度</button>
           <button class="step" data-jump="12">1オクターブ上</button>
-        </div>
-
-        <div style="height:14px"></div>
-        <div class="sheet" id="sheet"><p class="hint" style="padding:14px">浄書エンジンを起動しています…</p></div>
-
-        <div class="transport">
-          <button class="play" id="btnPlay" aria-label="再生">
-            <svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
-          </button>
-          <div class="tempo">
-            <input type="range" id="tempo" min="50" max="150" value="100">
-            <span id="tempoLabel">はやさ 100%</span>
-          </div>
-          <button class="btn" id="btnPrintScore">印刷</button>
         </div>
 
         <div id="origWrap" hidden>
@@ -452,6 +486,29 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     <button class="btn shu" id="vDel">削除</button>
   </div>
   <div class="vscroll" id="vScroll"></div>
+</div>
+
+<!-- 音符を直す道具。音符をタップすると下からせり上がる -->
+<div class="fixer" id="fixer" hidden>
+  <div class="fixer-in">
+    <div class="fx-head">
+      <span id="fxWhat">音符</span>
+      <button class="btn" id="fxClose">とじる</button>
+    </div>
+    <div class="fx-row">
+      <button class="btn fx-big" id="fxUp" aria-label="半音ではなく1つ上へ">▲ 上へ</button>
+      <button class="btn fx-big" id="fxDown" aria-label="1つ下へ">▼ 下へ</button>
+      <button class="btn shu fx-big" id="fxDel">消す</button>
+    </div>
+    <div class="fx-row fx-len">
+      <button class="btn" data-len="4">全</button>
+      <button class="btn" data-len="2">2分</button>
+      <button class="btn" data-len="1">4分</button>
+      <button class="btn" data-len="0.5">8分</button>
+      <button class="btn" data-len="0.25">16分</button>
+      <button class="btn" id="fxDot">付点</button>
+    </div>
+  </div>
 </div>
 
 <div id="printArea"></div>
@@ -3889,6 +3946,10 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       return `<note><rest/><duration>${dur}</duration><type>${typeOf(q)}</type></note>`;
     };
 
+    // 書き出した音符を手ごとに順番どおり控える（画面から音符を引き当てるため）
+    const trace = [[], []];
+    toMusicXML.trace = trace;
+
     let xml = `<?xml version="1.0" encoding="UTF-8"?>` +
       `<score-partwise version="3.1"><part-list>` +
       `<part-group number="1" type="start"><group-symbol>brace</group-symbol></part-group>` +
@@ -3927,7 +3988,12 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         }
         chords.forEach((c, ci) => {
           if (c.rest) { xml += restXML(qs[ci]); return; }
-          c.notes.forEach((n, i) => { xml += noteXML(n, i > 0, qs[ci], c.dot); });
+          c.notes.forEach((n, i) => {
+            xml += noteXML(n, i > 0, qs[ci], c.dot);
+            // 書き出した順を覚えておく。画面の音符を叩いたとき、
+            // どの音のことなのかを引き当てるのに使う
+            trace[hand].push(n);
+          });
         });
         // 拍子が指定されていれば、足りない分を休符で辻褄合わせする
         if (measureQ) {
@@ -4341,15 +4407,45 @@ function renderBundle() {
   }));
 }
 
-$("#btnSave").addEventListener("click", async () => {
-  if (!bundlePages.length) return;
+async function stash() {
   const title = ($("#title").value || "").trim() || "なまえのない楽譜";
-  await putScore({id: "s" + Date.now(), title, pages: bundlePages, at: Date.now()});
+  const pages = bundlePages.slice();
+  await putScore({ id: "s" + Date.now(), title, pages, at: Date.now() });
   bundlePages = []; $("#title").value = "";
   renderBundle();
   await renderShelf();
-  if (src === "mine") await fillMineSel();
+  await fillMineSel();
+  return { title, pages };
+}
+
+$("#btnSave").addEventListener("click", async () => {
+  if (!bundlePages.length) return;
+  await stash();
   $$(".tab")[1].click();
+});
+
+// 取り込んだらそのまま読み取って直す画面へ。
+// いったん本棚にしまってタブを移って選び直す、をやめるための入口。
+$("#btnRead").addEventListener("click", async () => {
+  if (!bundlePages.length) return;
+  $("#busy").querySelector("div").textContent = "音符を読み取っています…";
+  $("#busy").classList.add("on");
+  try {
+    const saved = await stash();
+    $$(".tab")[2].click();
+    await vrReady();
+    // いま取り込んだ1ページ目を選んだ状態にする
+    src = "mine";
+    $$("#p-key .segb").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.src === "mine")));
+    const idx = mineList.findIndex(m => m.url === saved.pages[0]);
+    $("#mineSel").value = String(Math.max(0, idx));
+    paint();
+    await loadMine(Math.max(0, idx));
+    sheet.scrollIntoView({ behavior: "smooth", block: "center" });
+  } finally {
+    $("#busy").classList.remove("on");
+    $("#busy").querySelector("div").textContent = "まっすぐに直しています…";
+  }
 });
 
 /* ══════════ 本棚 ══════════ */
@@ -4433,6 +4529,8 @@ function engrave() {
   // 鳴らす音は、浄書エンジン自身が出す時刻と音高から作る。
   // 自前でXMLを数えると、小節が拍子どおりに埋まっていない楽譜で時刻がずれる。
   schedule = scheduleFrom(tk.getMEI(), tm);
+  applyZoom();
+  if (src === "mine") armEditing();
 }
 
 /** 楽譜データから、鳴らす音の一覧を作る（和音は同じ時刻にまとめる） */
@@ -4489,14 +4587,27 @@ async function fillMineSel() {
     : '<option value="">（本棚がまだ空です）</option>';
 }
 
+/** 読み取った結果そのものを持っておく。
+ *  ここを直して組み直すことで「音符を直す」を実現する。
+ *  画像から読み直すと直したところが消えてしまうので、一度読んだら持ち続ける。 */
+let curOmr = null;
+
+function rebuild() {
+  if (!curOmr || !curOmr.notes.length) { curXML = null; return; }
+  curXML = ScoreBuild.toMusicXML(curOmr,
+    { time: curTime, key: curOmr.fifths || 0, title: curOmr.title || "" });
+  noteTrace = ScoreBuild.toMusicXML.trace;
+}
+
 async function loadMine(i) {
   const o = mineList[i];
   if (!o) {
-    curXML = null; curPhoto = null;
+    curXML = null; curPhoto = null; curOmr = null;
     $("#mineInfo").textContent = "「撮る」から楽譜を取り込むと、ここで楽譜データにできます。";
     sheet.innerHTML = '<p class="hint" style="padding:14px">まだ楽譜がありません。</p>';
     return;
   }
+  closeFixer();
   $("#mineInfo").textContent = "音符を読み取って、楽譜データに起こしています…";
   const img = new Image();
   img.src = o.url;
@@ -4508,23 +4619,179 @@ async function loadMine(i) {
   const g = c.getContext("2d");
   g.drawImage(img, 0, 0);
   const t0 = performance.now();
-  const omr = OMR.readScore(g.getImageData(0, 0, c.width, c.height));
+  curOmr = OMR.readScore(g.getImageData(0, 0, c.width, c.height));
+  curOmr.title = o.label;
   // 調号を渡し忘れると、♭4つの曲がハ長調として組み直され、音が半音ずれる
-  curXML = omr.notes.length
-    ? ScoreBuild.toMusicXML(omr, { time: curTime, key: omr.fifths || 0, title: o.label })
-    : null;
+  rebuild();
   const ms = Math.round(performance.now() - t0);
   if (!curXML) {
     $("#mineInfo").textContent = "音符を見つけられませんでした。「撮る」で四隅を紙の角に合わせ、白黒にしてから試してください。";
     sheet.innerHTML = '<p class="hint" style="padding:14px">読み取れませんでした。</p>';
     return;
   }
-  const bars = (omr.bars || []).reduce((a, b) => a + b.length, 0);
+  // 拍子を人に選ばせる前に、読み取った音の長さから見当をつける。
+  // 1小節ぶんの長さは小節ごとにばらつくので、いちばん多く出た値を採る。
+  {
+    const per = new Map();
+    for (const n of curOmr.notes) {
+      const k = n.staff + ":" + n.measure;
+      per.set(k, (per.get(k) || 0) + n.q);
+    }
+    const tally = new Map();
+    for (const v of per.values()) {
+      const r = Math.round(v * 2) / 2;         // 0.5拍きざみに丸める
+      if (r >= 1 && r <= 6) tally.set(r, (tally.get(r) || 0) + 1);
+    }
+    let win = 0, cnt = 0;
+    for (const [k, v] of tally) if (v > cnt) { cnt = v; win = k; }
+    const guess = { 2: "2/4", 3: "3/4", 4: "4/4" }[Math.round(win)];
+    if (guess && cnt >= 3) {
+      curTime = guess;
+      $$("#timeRow .step").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.time === guess)));
+      rebuild();
+    }
+  }
+  const bars = (curOmr.bars || []).reduce((a, b) => a + b.length, 0);
   $("#mineInfo").textContent =
-    "五線 " + omr.staves.length + "段・音符 " + omr.notes.length + "個・小節線 " + bars +
-    "本 を読み取り、楽譜データにしました（" + ms + "ミリ秒）";
+    "五線 " + curOmr.staves.length + "段・音符 " + curOmr.notes.length + "個・小節線 " + bars +
+    "本 を読み取りました（" + ms + "ミリ秒）。おかしい音符はタップして直せます。";
   engrave();
 }
+
+/* 楽譜の大きさ。スマホの幅に合わせると符頭が3画素ほどになり、
+   見るのも触るのもつらい。横スクロールしてでも大きくできるようにする。 */
+let zoom = 100;
+function applyZoom() {
+  const svg = sheet.querySelector("svg");
+  if (svg) { svg.style.width = zoom + "%"; svg.style.maxWidth = "none"; }
+  $("#zLabel").textContent = zoom + "%";
+  markPicked();
+}
+$("#zIn").addEventListener("click", () => { zoom = Math.min(400, zoom + 40); applyZoom(); });
+$("#zOut").addEventListener("click", () => { zoom = Math.max(100, zoom - 40); applyZoom(); });
+
+/* ══════════ 音符を直す ══════════
+   画面の音符と、読み取った音符とを結びつける。
+   浄書エンジンは段ごとに順番を保つので、「上の段のn番目」で引き当てられる。 */
+let noteTrace = [[], []], picked = null;
+
+function mapNotes() {
+  // 組み直した楽譜の中の音符を、段ごとに並んだ順で拾う
+  const mei = new DOMParser().parseFromString(tk.getMEI(), "application/xml");
+  const byStaff = {};
+  mei.querySelectorAll("staff").forEach(st => {
+    const n = +st.getAttribute("n") || 1;
+    (byStaff[n] = byStaff[n] || []).push(...st.querySelectorAll("note"));
+  });
+  const map = new Map();
+  for (const n of [1, 2]) {
+    const ids = byStaff[n] || [];
+    const mine = noteTrace[n - 1] || [];
+    for (let k = 0; k < Math.min(ids.length, mine.length); k++) {
+      const id = ids[k].getAttributeNS("http://www.w3.org/XML/1998/namespace", "id")
+              || ids[k].getAttribute("xml:id") || ids[k].id;
+      if (id) map.set(id, mine[k]);
+    }
+  }
+  return map;
+}
+
+let svgToNote = new Map();
+function armEditing() {
+  if (!curOmr) { $("#editHint").hidden = true; return; }
+  $("#editHint").hidden = false;
+  try { svgToNote = mapNotes(); } catch (_) { svgToNote = new Map(); }
+  // 符頭は画面の上では3×10画素ほどしかない。狙って押すのは無理なので、
+  // 押した場所からいちばん近い音符を選ぶ。指で触れる大きさに合わせる。
+  const svg = sheet.querySelector("svg");
+  if (svg) svg.addEventListener("click", ev => {
+    let best = null, bd = 1e9;
+    for (const [id, n] of svgToNote) {
+      const el = sheet.querySelector("#" + CSS.escape(id));
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      const dx = ev.clientX - (r.left + r.width / 2), dy = ev.clientY - (r.top + r.height / 2);
+      const d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; best = n; }
+    }
+    if (best && bd < 44 * 44) openFixer(best);
+  });
+  if (picked) markPicked();
+}
+
+function markPicked() {
+  sheet.querySelectorAll(".pick").forEach(e => e.remove());
+  if (!picked) return;
+  let el = null;
+  for (const [id, n] of svgToNote) if (n === picked) { el = sheet.querySelector("#" + CSS.escape(id)); break; }
+  if (!el) return;
+  const r = el.getBoundingClientRect(), box = sheet.getBoundingClientRect();
+  if (!r.width) return;
+  const d = document.createElement("div");
+  d.className = "pick";
+  d.style.left = (r.left - box.left + sheet.scrollLeft - 4) + "px";
+  d.style.top = (r.top - box.top - 4) + "px";
+  d.style.width = (r.width + 8) + "px";
+  d.style.height = (r.height + 8) + "px";
+  sheet.appendChild(d);
+  el.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
+const LEN_NAME = { 4: "全音符", 2: "2分音符", 1: "4分音符", 0.5: "8分音符", 0.25: "16分音符" };
+function openFixer(n) {
+  picked = n;
+  $("#fixer").hidden = false;
+  showFixer();
+  markPicked();
+}
+function showFixer() {
+  if (!picked) return;
+  const base = picked.dot ? picked.q / 1.5 : picked.q;
+  $("#fxWhat").textContent = picked.name + "  " + (LEN_NAME[base] || "") + (picked.dot ? "・付点" : "");
+  $$("#fixer .fx-len .btn[data-len]").forEach(b =>
+    b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.len - base) < 1e-6)));
+  $("#fxDot").setAttribute("aria-pressed", String(!!picked.dot));
+}
+function closeFixer() {
+  picked = null;
+  $("#fixer").hidden = true;
+  sheet.querySelectorAll(".pick").forEach(e => e.remove());
+}
+/** 直したら組み直して描き直す。選んでいた音符は選んだまま残す */
+function applyFix() {
+  rebuild();
+  engrave();
+  showFixer();
+}
+$("#fxClose").addEventListener("click", closeFixer);
+$("#fxUp").addEventListener("click", () => { if (!picked) return; movePicked(1); });
+$("#fxDown").addEventListener("click", () => { if (!picked) return; movePicked(-1); });
+function movePicked(d) {
+  picked.dia += d;
+  picked.midi = OMR.diaToMidi(picked.dia, curOmr.fifths || 0);
+  picked.name = OMR.LETTER_NAME[((picked.dia % 7) + 7) % 7] + Math.floor(picked.dia / 7);
+  applyFix();
+}
+$$("#fixer .fx-len .btn[data-len]").forEach(b => b.addEventListener("click", () => {
+  if (!picked) return;
+  picked.q = +b.dataset.len * (picked.dot ? 1.5 : 1);
+  applyFix();
+}));
+$("#fxDot").addEventListener("click", () => {
+  if (!picked) return;
+  picked.dot = !picked.dot;
+  picked.q = picked.dot ? picked.q * 1.5 : picked.q / 1.5;
+  applyFix();
+});
+$("#fxDel").addEventListener("click", () => {
+  if (!picked) return;
+  const i = curOmr.notes.indexOf(picked);
+  if (i >= 0) curOmr.notes.splice(i, 1);
+  closeFixer();
+  rebuild();
+  engrave();
+});
 
 /* ══════════ 表示の切り替えと移調 ══════════ */
 function paint() {

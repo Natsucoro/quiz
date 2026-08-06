@@ -129,6 +129,10 @@
       return `<note><rest/><duration>${dur}</duration><type>${typeOf(q)}</type></note>`;
     };
 
+    // 書き出した音符を手ごとに順番どおり控える（画面から音符を引き当てるため）
+    const trace = [[], []];
+    toMusicXML.trace = trace;
+
     let xml = `<?xml version="1.0" encoding="UTF-8"?>` +
       `<score-partwise version="3.1"><part-list>` +
       `<part-group number="1" type="start"><group-symbol>brace</group-symbol></part-group>` +
@@ -167,7 +171,12 @@
         }
         chords.forEach((c, ci) => {
           if (c.rest) { xml += restXML(qs[ci]); return; }
-          c.notes.forEach((n, i) => { xml += noteXML(n, i > 0, qs[ci], c.dot); });
+          c.notes.forEach((n, i) => {
+            xml += noteXML(n, i > 0, qs[ci], c.dot);
+            // 書き出した順を覚えておく。画面の音符を叩いたとき、
+            // どの音のことなのかを引き当てるのに使う
+            trace[hand].push(n);
+          });
         });
         // 拍子が指定されていれば、足りない分を休符で辻褄合わせする
         if (measureQ) {

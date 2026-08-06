@@ -1,0 +1,17 @@
+import { chromium } from 'playwright'; import path from 'path';
+const HERE = path.dirname(new URL(import.meta.url).pathname);
+const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium' });
+const pg = await b.newPage({ viewport:{width:390,height:844} });
+pg.on('pageerror',e=>console.log('ERR', e.message.slice(0,160)));
+await pg.goto('file:///home/user/quiz/apps/score/prototype/index.html');
+await pg.waitForTimeout(500);
+await pg.setInputFiles('#pick', path.join(HERE,'samples','itsumo_p1.png'));
+await pg.waitForTimeout(900);
+await pg.locator('#btnCrop').click(); await pg.waitForTimeout(5500);
+await pg.locator('#title').fill('いつも何度でも');
+await pg.locator('#btnRead').click(); await pg.waitForTimeout(9000);
+console.log('選ばれた拍子:', await pg.evaluate(()=>curTime));
+await pg.screenshot({ path: path.join(HERE,'flow1.png') });
+await pg.locator('#zIn').click(); await pg.locator('#zIn').click(); await pg.waitForTimeout(500);
+await pg.screenshot({ path: path.join(HERE,'flow2.png') });
+await b.close();
