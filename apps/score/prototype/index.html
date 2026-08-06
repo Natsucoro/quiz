@@ -3922,6 +3922,26 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const raw = (baseY - h.y) / (st.space / 2);
       return Math.abs(raw - Math.round(raw)) <= 0.34;
     });
+    // 五線の外の符頭には、加線の証拠を求める。
+    // 加線は符頭より横に長い線として符頭を貫くか、すぐ隣に見える。
+    // これが無い「符頭らしき塊」は、曲名・発想標語の文字やスラーの弧
+    // （実測で "Allegro" の文字が音符として9個拾われていた）。
+    heads = heads.filter(h => {
+      const st = staves[h.staff];
+      const S = st.space;
+      const dist = h.y < st.top ? st.top - h.y : (h.y > st.bottom ? h.y - st.bottom : 0);
+      if (dist <= S * 1.35) return true;
+      const x0 = Math.max(0, Math.round(h.x - S * 0.3));
+      const x1 = Math.min(W - 1, Math.round(h.x + S * 0.3));
+      const ya = Math.max(0, Math.round(h.y - S * 0.85));
+      const yb = Math.min(H - 1, Math.round(h.y + S * 0.85));
+      for (let y = ya; y <= yb; y++)
+        for (let x = x0; x <= x1; x++) {
+          const r = runLen[y * W + x];
+          if (r >= S * 1.45 && r <= S * 3.2) return true;   // 加線の長さの横線がある
+        }
+      return false;
+    });
 
     const cxAll = W / 2;
     let notes = heads.map(h => {
