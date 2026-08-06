@@ -3030,49 +3030,90 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         }
         cols.push({ ink, top, bot, vmax, beamy });
       }
-      let i = 0;
-      while (i < cols.length) {
-        if (!cols[i].ink) { i++; continue; }
-        let j = i;
-        while (j + 1 < cols.length && cols[j + 1].ink) j++;
-        const seg = { i, j }; const w = j - i + 1;
-        const walk = cols.slice(i, j + 1);
-        i = j + 1;
-        if (w < S * 0.42 || w > S * 1.05) continue;
+      /** x列 [i..j]・行 [yLo..yHi] の範囲を記号として採点する */
+      const judge = (iSeg, jSeg, yLo, yHi) => {
+        const w = jSeg - iSeg + 1;
+        if (w < S * 0.42 || w > S * 1.05) return null;
         let top = 1e9, bot = -1, vmax = 0, ink = 0, beamy = 0;
-        for (const c of walk) {
-          if (c.top >= 0 && c.top < top) top = c.top;
-          if (c.bot > bot) bot = c.bot;
-          if (c.vmax > vmax) vmax = c.vmax;
-          ink += c.ink; beamy += c.beamy;
+        const colV = [];
+        for (let ci = iSeg; ci <= jSeg; ci++) {
+          const x = xa + ci;
+          let cInk = 0, cTop = -1, cBot = -1, run = 0, cV = 0;
+          for (let y = yLo; y <= yHi; y++) {
+            if (bin[y * W + x]) {
+              cInk++; if (cTop < 0) cTop = y; cBot = y;
+              if (++run > cV) cV = run;
+              if (runLen[y * W + x] > S * 2.2) beamy++;
+            } else run = 0;
+          }
+          colV.push(cV);
+          if (cTop >= 0 && cTop < top) top = cTop;
+          if (cBot > bot) bot = cBot;
+          if (cV > vmax) vmax = cV;
+          ink += cInk;
         }
+        if (bot < 0) return null;
         const hgt = bot - top + 1;
-        if (hgt < S * 1.45 || hgt > S * 3.4) continue;
-        if (vmax < S * 1.15 || vmax > S * 3.2) continue;
-        if (ink && beamy / ink > 0.30) continue;
+        if (hgt < S * 1.45 || hgt > S * 3.4) return null;
+        if (vmax < S * 1.15 || vmax > S * 3.2) return null;
+        if (ink && beamy / ink > 0.30) return null;
         const fill = ink / (w * hgt);
-        if (fill < 0.18 || fill > 0.62) continue;
+        if (fill < 0.18 || fill > 0.62) return null;
         const cy = (top + bot) / 2;
-        if (cy < st.top - S * 1.2 || cy > st.bottom + S * 1.2) continue;
+        if (cy < st.top - S * 1.2 || cy > st.bottom + S * 1.2) return null;
         // すぐ右に符頭級の黒があるか。無ければ休符や飾りの類
-        const gx1 = xa + j;
+        const gx1 = xa + jSeg;
         let headInk = 0;
         for (let x = gx1 + 2; x <= Math.min(W - 1, gx1 + Math.round(S * 1.7)); x++)
           for (let y = Math.max(0, Math.round(cy - S * 0.9)); y <= Math.min(H - 1, Math.round(cy + S * 0.9)); y++)
             if (bin[y * W + x]) headInk++;
-        if (headInk < S * S * 0.5) continue;
+        if (headInk < S * S * 0.5) return null;
         // 種類: 縦の棒の本数で ♭(1本) と ♮♯(2本) を分け、♮と♯は塗りの濃さで分ける
         let strokes = 0, inStroke = false;
-        for (const c of walk) {
-          const is = c.vmax >= S * 1.15;
+        for (const cV of colV) {
+          const is = cV >= S * 1.15;
           if (is && !inStroke) strokes++;
           inStroke = is;
         }
         // 12px級の小さな記号では縦棒の数え損ねが起きる。
         // ♭は下半分の膨らみで塗りが濃い。棒1本でもすかすかなら♮とみなす
         const acc = strokes <= 1 ? (fill < 0.38 ? 0 : -1) : (fill >= 0.52 ? 1 : 0);
-        out.push({ x0: xa + seg.i, x1: gx1, y0: top, y1: bot,
-                   x: (xa + seg.i + gx1) / 2, y: cy, staff: si, acc });
+        return { x0: xa + iSeg, x1: gx1, y0: top, y1: bot,
+                 x: (xa + iSeg + gx1) / 2, y: cy, staff: si, acc };
+      };
+
+      let i = 0;
+      while (i < cols.length) {
+        if (!cols[i].ink) { i++; continue; }
+        let j = i;
+        while (j + 1 < cols.length && cols[j + 1].ink) j++;
+        const iSeg = i, jSeg = j;
+        i = j + 1;
+        const g = judge(iSeg, jSeg, y0, y1);
+        if (g) { out.push(g); continue; }
+        // 和音の前では記号どうしが縦に重なって並ぶ（D と B に♮、など）。
+        // ひとつぶんの高さを超える塊は、黒のいちばん薄い行で上下に割って
+        // それぞれをもう一度採点する
+        let top = 1e9, bot = -1;
+        for (let ci = iSeg; ci <= jSeg; ci++) {
+          const c = cols[ci];
+          if (c.top >= 0 && c.top < top) top = c.top;
+          if (c.bot > bot) bot = c.bot;
+        }
+        if (bot < 0) continue;
+        const hgt = bot - top + 1;
+        if (hgt <= S * 3.4 || hgt > S * 6.2) continue;
+        let cut = -1, cutInk = 1e9;
+        for (let y = Math.round(top + S * 1.2); y <= Math.round(bot - S * 1.2); y++) {
+          let rowInk = 0;
+          for (let ci = iSeg; ci <= jSeg; ci++) if (bin[y * W + xa + ci]) rowInk++;
+          if (rowInk < cutInk) { cutInk = rowInk; cut = y; }
+        }
+        if (cut < 0) continue;
+        const gA = judge(iSeg, jSeg, top, cut - 1);
+        const gB = judge(iSeg, jSeg, cut + 1, bot);
+        if (gA) out.push(gA);
+        if (gB) out.push(gB);
       }
     }
     return out;
