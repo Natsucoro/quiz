@@ -1252,6 +1252,29 @@
       st.xStart = lo < hi ? lo : 0;
       st.xEnd = hi > lo ? hi : W - 1;
     }
+    // 大譜表の上下の段は、紙の上では同じ長さに印刷されている。
+    // 片方の五線が音符に寸断されて短く測れたときは、相方の長さに合わせる。
+    // これをしないと、短く測れた段の最後の小節が探索範囲の外に出て丸ごと欠ける
+    // （実測でジョプリンの「広め」の左手の右端が1373、相方は1498だった）。
+    {
+      const bySys = new Map();
+      for (const st of staves) {
+        const k = st.system || 0;
+        if (!bySys.has(k)) bySys.set(k, []);
+        bySys.get(k).push(st);
+      }
+      for (const group of bySys.values()) {
+        if (group.length < 2) continue;
+        const lo = Math.min.apply(null, group.map(s => s.xStart));
+        const hi = Math.max.apply(null, group.map(s => s.xEnd));
+        const S2 = group[0].space;
+        for (const st of group) {
+          // 差がわずかなら実測を信じる。大きく短いときだけ寸断とみなす
+          if (st.xEnd < hi - S2 * 3) st.xEnd = hi;
+          if (st.xStart > lo + S2 * 3) st.xStart = lo;
+        }
+      }
+    }
 
     const cleaned = eraseStaffLines(bin, W, H, staves);
     let ii = integral(cleaned, W, H);
