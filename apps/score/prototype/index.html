@@ -3180,10 +3180,14 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           // 幅ごと弾くと和音が全滅する。一方、旗や梁の付け根は一瞬だけ幅が出るが
           // 上下の行では細いので、そこまで見て区別する
           if (vRunLen[idx] > maxVRun) {
+            // 五線を大きく越えて続く縦の黒は、段をつなぐ小節線か終止線。
+            // 太い終止線は幅もあるので、幅の条件だけでは和音と見分けられない
+            if (vRunLen[idx] > S * 5) continue;
             const dy2 = Math.round(S * 0.5);
-            const wide = runLen[idx] >= S * 0.7 &&
-              (y - dy2 >= 0 && runLen[idx - dy2 * W] >= S * 0.6) &&
-              (y + dy2 < H && runLen[idx + dy2 * W] >= S * 0.6);
+            // 幅の下限は休符より太く。4分休符(幅0.6〜0.8線間)が符頭に化ける
+            const wide = runLen[idx] >= S * 0.95 &&
+              (y - dy2 >= 0 && runLen[idx - dy2 * W] >= S * 0.8) &&
+              (y + dy2 < H && runLen[idx + dy2 * W] >= S * 0.8);
             if (!wide) continue;
           }
           const fill = rectSum(ii, W1, x - hw, y - hh, x + hw, y + hh) / area;
@@ -3922,6 +3926,50 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const raw = (baseY - h.y) / (st.space / 2);
       return Math.abs(raw - Math.round(raw)) <= 0.34;
     });
+    // 3度で積んだ和音は真っ黒なひとつの塊になり、検出は1〜2個しか出ない。
+    // 塊の縦の長さを測り、2音ぶん以上あれば1線間おきに符頭を置き直す。
+    // （実測でジョプリンの左手の4音和音が、1個の音としか読まれていなかった）
+    {
+      const extra = [];
+      for (const h of heads) {
+        const st = staves[h.staff];
+        const S = st.space;
+        const xs = [Math.round(h.x - S * 0.25), Math.round(h.x), Math.round(h.x + S * 0.25)]
+          .filter(x => x >= 0 && x < W);
+        // 行ごとに「符頭の幅で黒いか」を見ながら上下に伸ばす。
+        // 符尾だけの行は中央しか黒くないので、そこで止まる
+        const rowDark = y => {
+          if (y < 0 || y >= H) return false;
+          let c = 0;
+          for (const x of xs) {
+            const i = y * W + x;
+            if (!cleaned[i]) continue;
+            // 横に長い黒は梁や加線。ここを「和音の続き」と数えて突き抜けると、
+            // 梁の中に偽の音が生まれる
+            if (runLen[i] > S * 2.2) return false;
+            c++;
+          }
+          return c >= xs.length;
+        };
+        let ya = Math.round(h.y), yb = Math.round(h.y), gap = 0;
+        while (ya - 1 >= 0 && (rowDark(ya - 1) || ++gap <= 1) && h.y - ya < S * 3.6) { ya--; if (rowDark(ya)) gap = 0; }
+        gap = 0;
+        while (yb + 1 < H && (rowDark(yb + 1) || ++gap <= 1) && yb - h.y < S * 3.6) { yb++; if (rowDark(yb)) gap = 0; }
+        const span = yb - ya + 1;
+        if (span < S * 2.55) continue;   // 2音の3度は元の検出で拾える。3音以上の塊だけ割る
+        const k = Math.max(3, Math.min(4, Math.round(span / S)));
+        for (let i = 0; i < k; i++) {
+          const y = ya + (span / k) * (i + 0.5);
+          if (Math.abs(y - h.y) < S * 0.5) continue;   // 自分自身
+          const near = o => o.staff === h.staff &&
+                Math.abs(o.x - h.x) < S * 0.7 && Math.abs(o.y - y) < S * 0.55;
+          if (heads.some(near) || extra.some(near)) continue;
+          extra.push({ x: h.x, y, s: 0.8, staff: h.staff, hollow: false, split: true });
+        }
+      }
+      heads.push(...extra);
+    }
+
     // 五線の外の符頭には、加線の証拠を求める。
     // 加線は符頭より横に長い線として符頭を貫くか、すぐ隣に見える。
     // これが無い「符頭らしき塊」は、曲名・発想標語の文字やスラーの弧
@@ -3968,7 +4016,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
         yImg: h.y + shear * (h.x - W / 2),
         space: S, system: st.system, hand: st.hand,
-        q, beams, dot, measure, span, acc,
+        q, beams, dot, measure, span, acc, split: h.split,
         stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
         dia: d, midi: diaToMidi(d, fifths),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
