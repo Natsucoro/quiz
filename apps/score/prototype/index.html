@@ -3489,18 +3489,29 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
    *  付点は「小さくて、まわりが白い」。この孤立の条件を課さないと、
    *  隣の符頭や符尾を付点と取り違えて大量に誤検出する。 */
   function hasDot(ii, W1, W, H, n, S) {
-    const r = Math.max(1, Math.round(S * 0.15));      // 付点そのもの
-    const R = Math.max(r + 2, Math.round(S * 0.45));  // まわりの余白
+    const r = Math.max(1, Math.round(S * 0.14));      // 付点そのもの
     const area = (r * 2 + 1) * (r * 2 + 1);
-    const bigArea = (R * 2 + 1) * (R * 2 + 1);
-    for (let dx = Math.round(S * 0.95); dx <= Math.round(S * 1.5); dx++) {
-      for (const dy of [0, -Math.round(S * 0.5), Math.round(S * 0.5)]) {
+    // 孤立の検査は上・右・下だけ見る。左は符頭そのものがあるのが正常なので、
+    // 左まで見ると付点が全部落ちる（実測で、付点だらけの楽譜で検出0件だった）。
+    // 検査の帯は点の縁から1画素あけて置く。点自身の縁を数えると必ず落ちる
+    const m1 = r + 1, m2 = r + 3;
+    for (let dx = Math.round(S * 0.78); dx <= Math.round(S * 1.55); dx++) {
+      for (let dy = -Math.round(S * 0.65); dy <= Math.round(S * 0.65); dy++) {
+        // 付点は必ず「間」に打たれる。符頭から見て 0（同じ間）か ±半線間の
+        // 近くにしか来ない。それ以外の高さで見つかる黒は付点ではない
+        const g = Math.abs(dy) / S;
+        if (Math.min(g, Math.abs(g - 0.5)) > 0.17) continue;
         const x = Math.round(n.x + dx), y = Math.round(n.y + dy);
-        if (x - R < 0 || x + R >= W || y - R < 0 || y + R >= H) continue;
+        if (x - r < 0 || x + m2 >= W || y - m2 < 0 || y + m2 >= H) continue;
         const inner = rectSum(ii, W1, x - r, y - r, x + r, y + r);
-        if (inner / area < 0.85) continue;
-        const outer = rectSum(ii, W1, x - R, y - R, x + R, y + R) - inner;
-        if (outer / (bigArea - area) < 0.10) return true;   // まわりがほぼ白なら付点
+        if (inner / area < 0.78) continue;
+        const right = rectSum(ii, W1, x + m1, y - r, x + m2, y + r) /
+                      ((m2 - m1 + 1) * (r * 2 + 1));
+        const top = rectSum(ii, W1, x - r, y - m2, x + r, y - m1) /
+                    ((r * 2 + 1) * (m2 - m1 + 1));
+        const bot = rectSum(ii, W1, x - r, y + m1, x + r, y + m2) /
+                    ((r * 2 + 1) * (m2 - m1 + 1));
+        if (right < 0.20 && top < 0.20 && bot < 0.20) return true;
       }
     }
     return false;
