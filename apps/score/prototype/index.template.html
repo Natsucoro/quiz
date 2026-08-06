@@ -120,10 +120,14 @@ label.file input{position:absolute; width:1px; height:1px; opacity:0; pointer-ev
 label.file .btn{display:block; text-align:center}
 
 /* ─────────── 撮る ─────────── */
+/* 縦長の写真でも四隅が全部画面に入るように、高さを画面の中に収める。
+   はみ出すと下の2つの丸に指が届かず、角を合わせようがなくなる。 */
 .stage{position:relative; background:var(--sunken); border-radius:var(--r);
-  overflow:hidden; touch-action:none; margin-bottom:14px}
-.stage img{display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none}
-.stage svg.guide{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+  overflow:hidden; touch-action:none; margin-bottom:14px;
+  display:flex; justify-content:center; align-items:center}
+.stage img{display:block; max-width:100%; max-height:56vh; width:auto; height:auto;
+  user-select:none; -webkit-user-drag:none}
+.stage svg.guide{position:absolute; pointer-events:none}
 .stage .grip{
   position:absolute; width:38px; height:38px; margin:-19px 0 0 -19px;
   border-radius:50%; border:2.5px solid var(--shu);
@@ -291,7 +295,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       <div class="card" id="cropCard" hidden>
         <p class="eyebrow">2. 四隅を合わせる</p>
         <h2>紙の角に印を動かす</h2>
-        <p class="hint" style="margin:-2px 0 10px">赤い丸を指でドラッグして、紙の4つの角に合わせてください。丸を選んでから矢印キーでも動かせます。</p>
+        <p class="hint" style="margin:-2px 0 10px" id="autoNote">赤い丸を指でドラッグして、紙の4つの角に合わせてください。</p>
         <div class="stage" id="stage">
           <img id="shot" alt="撮った楽譜">
           <svg class="guide" id="guide" preserveAspectRatio="none"></svg>
@@ -301,9 +305,11 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           <input type="range" id="thr" min="-30" max="30" value="8">
         </div>
         <div class="row">
+          <button class="btn" id="btnAll">写真ぜんぶ</button>
           <button class="btn" id="btnGray" aria-pressed="true">白黒にする</button>
-          <button class="btn primary" id="btnCrop">この形で取り込む</button>
         </div>
+        <div style="height:9px"></div>
+        <button class="btn primary wide" id="btnCrop">この形で取り込む</button>
       </div>
 
       <div class="card" id="bundle" hidden>
@@ -494,6 +500,111 @@ const delScore = id => tx("readwrite", s => s.delete(id));
 const stage = $("#stage"), shot = $("#shot"), guide = $("#guide");
 let corners = null, srcImg = null, gray = true;
 
+/** 紙のあるところを自分で見つけて、四隅の初期位置にする。
+ *
+ *  画像の四隅から始めると、結局4つとも手で動かすことになる。
+ *  紙は「まわりより明るく、ひとかたまりで、大きい」ので、そこを探す。
+ *  スマホの画面を撮った写真では、上下の黒い帯がきれいに外れる。
+ *
+ *  自信が持てないときは何も返さない。あてずっぽうの枠を出すくらいなら、
+ *  今までどおり内側に少し入った四角から始めたほうが直しやすい。
+ */
+function guessPaper(im) {
+  const W = 180, H = Math.max(1, Math.round(W * im.naturalHeight / im.naturalWidth));
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d", { willReadFrequently: true });
+  g.drawImage(im, 0, 0, W, H);
+  const d = g.getImageData(0, 0, W, H).data;
+  const lum = new Uint8Array(W * H);
+  const hist = new Int32Array(256);
+  for (let i = 0, p = 0; i < W * H; i++, p += 4) {
+    const v = (d[p] * 0.299 + d[p + 1] * 0.587 + d[p + 2] * 0.114) | 0;
+    lum[i] = v; hist[v]++;
+  }
+  // 明るい側と暗い側にいちばんきれいに割れる境目を選ぶ（大津の方法）
+  let total = W * H, sum = 0;
+  for (let v = 0; v < 256; v++) sum += v * hist[v];
+  let sumB = 0, wB = 0, best = -1, thr = 128;
+  for (let v = 0; v < 256; v++) {
+    wB += hist[v];
+    if (!wB) continue;
+    const wF = total - wB;
+    if (!wF) break;
+    sumB += v * hist[v];
+    const mB = sumB / wB, mF = (sum - sumB) / wF;
+    const between = wB * wF * (mB - mF) * (mB - mF);
+    if (between > best) { best = between; thr = v; }
+  }
+
+  // 明るい画素のかたまりのうち、いちばん大きいものを紙とみなす
+  const seen = new Uint8Array(W * H);
+  let bestPix = null, bestN = 0;
+  const stack = new Int32Array(W * H);
+  for (let s = 0; s < W * H; s++) {
+    if (seen[s] || lum[s] <= thr) continue;
+    let top = 0, n = 0;
+    stack[top++] = s; seen[s] = 1;
+    const pix = [];
+    while (top) {
+      const q = stack[--top];
+      pix.push(q); n++;
+      const x = q % W, y = (q / W) | 0;
+      if (x > 0 && !seen[q - 1] && lum[q - 1] > thr) { seen[q - 1] = 1; stack[top++] = q - 1; }
+      if (x < W - 1 && !seen[q + 1] && lum[q + 1] > thr) { seen[q + 1] = 1; stack[top++] = q + 1; }
+      if (y > 0 && !seen[q - W] && lum[q - W] > thr) { seen[q - W] = 1; stack[top++] = q - W; }
+      if (y < H - 1 && !seen[q + W] && lum[q + W] > thr) { seen[q + W] = 1; stack[top++] = q + W; }
+    }
+    if (n > bestN) { bestN = n; bestPix = pix; }
+  }
+  if (!bestPix || bestN < W * H * 0.18) return null;   // 小さすぎるものは紙ではない
+
+  // かたまりの中で、四隅にいちばん近い点を角とする（斜めに撮っていても取れる）
+  const pick = f => {
+    let bi = bestPix[0], bv = Infinity;
+    for (const q of bestPix) {
+      const v = f(q % W, (q / W) | 0);
+      if (v < bv) { bv = v; bi = q; }
+    }
+    return [bi % W, (bi / W) | 0];
+  };
+  const quad = [
+    pick((x, y) => x + y),          // 左上
+    pick((x, y) => (W - x) + y),    // 右上
+    pick((x, y) => (W - x) + (H - y)), // 右下
+    pick((x, y) => x + (H - y)),    // 左下
+  ];
+  // ここから先は「本当に紙を見つけたのか」の確かめ。
+  // あてずっぽうの枠を出すくらいなら、何も見つけなかったことにしたほうがいい。
+  const side = (a, b) => Math.hypot(quad[b][0] - quad[a][0], quad[b][1] - quad[a][1]);
+  const top = side(0, 1), bottom = side(3, 2), left = side(0, 3), right = side(1, 2);
+  if (top < W * 0.35 || left < H * 0.35) return null;          // つぶれている
+  // 紙は長方形なので、向かい合う辺の長さは近いはず。
+  // 明るさのムラを紙と見間違えると、ここが大きく食い違う。
+  if (Math.min(top, bottom) / Math.max(top, bottom) < 0.72) return null;
+  if (Math.min(left, right) / Math.max(left, right) < 0.72) return null;
+
+  let area2 = 0;
+  for (let i = 0; i < 4; i++) {
+    const [x1, y1] = quad[i], [x2, y2] = quad[(i + 1) % 4];
+    area2 += x1 * y2 - x2 * y1;
+  }
+  const area = Math.abs(area2) / 2;
+  // 画面いっぱいなら、紙とまわりの明るさが同じで区別できなかったということ
+  if (area > W * H * 0.90) return null;
+  // 四角の中がすかすかなら、それは長方形の紙ではなくただの明るい染み
+  if (bestN < area * 0.78) return null;
+
+  const sx = im.naturalWidth / W, sy = im.naturalHeight / H;
+  // 紙のふちが1画素ぶん欠けるので、ほんの少し外へ広げる
+  const cx = (quad[0][0] + quad[1][0] + quad[2][0] + quad[3][0]) / 4;
+  const cy = (quad[0][1] + quad[1][1] + quad[2][1] + quad[3][1]) / 4;
+  return quad.map(([x, y]) => [
+    Math.max(0, Math.min(im.naturalWidth, (x + (x - cx) * 0.012) * sx)),
+    Math.max(0, Math.min(im.naturalHeight, (y + (y - cy) * 0.012) * sy)),
+  ]);
+}
+
 function loadFile(file) {
   if (!file) return;
   const url = URL.createObjectURL(file);
@@ -502,7 +613,13 @@ function loadFile(file) {
     srcImg = im;
     $("#cropCard").hidden = false;
     const w = im.naturalWidth, h = im.naturalHeight, m = 0.07;
-    corners = [[w*m, h*m], [w*(1-m), h*m], [w*(1-m), h*(1-m)], [w*m, h*(1-m)]];
+    let auto = null;
+    try { auto = guessPaper(im); } catch (_) {}
+    corners = auto ||
+      [[w*m, h*m], [w*(1-m), h*m], [w*(1-m), h*(1-m)], [w*m, h*(1-m)]];
+    $("#autoNote").textContent = auto
+      ? "紙のふちを自動で見つけました。ずれていたら赤い丸を動かしてください。"
+      : "赤い丸を紙の4つの角に合わせてください。";
     const ready = () => { buildGrips(); drawGuide(); };
     shot.onload = ready;
     shot.src = url;
@@ -572,19 +689,34 @@ function buildGrips() {
 function drawGuide() {
   if (!srcImg || !corners) return;
   const w = srcImg.naturalWidth, h = srcImg.naturalHeight;
+  const r = shot.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  if (!r.width) return;
+  // 写真は画面に収まるよう縮めて中央に置くので、枠も写真の場所にぴったり重ねる。
+  // 枠だけ台紙いっぱいに広げると、角の丸と線がずれて合わせられなくなる。
+  guide.style.left = (r.left - sr.left) + "px";
+  guide.style.top = (r.top - sr.top) + "px";
+  guide.style.width = r.width + "px";
+  guide.style.height = r.height + "px";
   guide.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  guide.setAttribute("preserveAspectRatio", "none");
   const pts = corners.map(p => p.join(",")).join(" ");
   const sw = Math.max(w, h) / 260;
   guide.innerHTML =
     `<polygon points="${pts}" fill="rgba(180,52,42,.10)" stroke="#B4342A" stroke-width="${sw}"/>`;
-  const r = shot.getBoundingClientRect(), sr = stage.getBoundingClientRect();
-  if (!r.width) return;
   grips.forEach((g, i) => {
     g.style.left = (r.left - sr.left + corners[i][0] / w * r.width) + "px";
     g.style.top = (r.top - sr.top + corners[i][1] / h * r.height) + "px";
   });
 }
 window.addEventListener("resize", () => { if (srcImg) drawGuide(); });
+
+// 自動で見つけた枠が的外れだったときの逃げ道。写真の外枠まで一気に戻す
+$("#btnAll").addEventListener("click", () => {
+  if (!srcImg) return;
+  const w = srcImg.naturalWidth, h = srcImg.naturalHeight;
+  corners = [[0, 0], [w, 0], [w, h], [0, h]];
+  drawGuide();
+});
 
 $("#btnGray").addEventListener("click", e => {
   gray = !gray;

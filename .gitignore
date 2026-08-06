@@ -8,3 +8,6 @@ apps/score/bench/diag.musicxml
 apps/score/bench/crop_out.png
 apps/score/bench/look_out.png
 apps/score/bench/e2e_view.png
+apps/score/bench/croptest*.jpg
+apps/score/bench/croptest.png
+apps/score/bench/shotui.png
