@@ -760,6 +760,19 @@
     if (!stem) return null;
     const y = stem.tip + stem.dir * Math.round(S * 0.25);
     if (y < 0 || y >= H) return null;
+    // 符尾の先から梁まで黒が続いていること。
+    // 隣の音の梁がたまたま近くを通っているだけの4分音符を巻き込まない
+    {
+      let dark = 0, n = 0;
+      for (let k = 0; k <= Math.round(S * 0.25); k++) {
+        const yy = stem.tip + stem.dir * k;
+        if (yy < 0 || yy >= H) break;
+        n++;
+        if (bin[yy * W + stem.x] || (stem.x + 1 < W && bin[yy * W + stem.x + 1]) ||
+            (stem.x - 1 >= 0 && bin[yy * W + stem.x - 1])) dark++;
+      }
+      if (n && dark / n < 0.7) return null;
+    }
     // 梁は太い（線間の0.4倍前後）。細い横の線はスラーの弧やタイで、
     // これを梁と数えると4分音符が梁の仲間に巻き込まれて16分になる
     {
