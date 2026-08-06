@@ -437,8 +437,9 @@
       const seg = cols.slice(j, i + 1);
       i = j - 1;
       const w = seg.length;
-      // 符尾1本は幅2画素ほどしかない。記号は必ず幅がある
-      if (w < S * 0.42 || w > S * 1.25) continue;
+      // 符尾1本は幅2画素ほどしかない。記号は必ず幅がある。
+      // 上限も本物の記号の寸法まで。和音の塊(幅1.15線間〜)を拾わない
+      if (w < S * 0.42 || w > S * 1.02) continue;
       let top = 1e9, bot = -1, vmax = 0, ink = 0, beamy = 0;
       for (const c of seg) {
         if (c.top >= 0 && c.top < top) top = c.top;
@@ -450,7 +451,8 @@
       // 黒の多くが「横に長い連なり」なら、それは梁の断片であって記号ではない
       if (ink && beamy / ink > 0.30) continue;
       const hgt = bot - top + 1;
-      if (hgt < S * 1.45 || hgt > S * 3.4) continue;   // 符頭は短く、符尾はもっと長い
+      // 高さの上限も締める。3音の和音の塊は3線間を超える
+      if (hgt < S * 1.45 || hgt > S * 2.9) continue;
       if (vmax > S * 3.2) continue;                    // 途切れない長い縦線は符尾・小節線
       if (Math.abs((top + bot) / 2 - yc) > S * 1.0) continue;  // 記号は符頭の高さに立つ
       // その場所に別の符頭があるなら、それは臨時記号ではなく隣の音符（と符尾）。
@@ -715,6 +717,18 @@
     if (!stem) return null;
     const y = stem.tip + stem.dir * Math.round(S * 0.25);
     if (y < 0 || y >= H) return null;
+    // 梁は太い（線間の0.4倍前後）。細い横の線はスラーの弧やタイで、
+    // これを梁と数えると4分音符が梁の仲間に巻き込まれて16分になる
+    {
+      const x = stem.x;
+      let thick = 0;
+      for (let dy = -Math.round(S * 0.7); dy <= Math.round(S * 0.7); dy++) {
+        const yy = y + dy;
+        if (yy < 0 || yy >= H) continue;
+        if (bin[yy * W + x]) thick++; else if (thick >= S * 0.26) break; else thick = 0;
+      }
+      if (thick < S * 0.26) return null;
+    }
     const ok = x => {
       if (x < 0 || x >= W) return false;
       for (let d = -1; d <= 1; d++) {
