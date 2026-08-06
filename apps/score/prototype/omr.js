@@ -312,6 +312,89 @@
     return out;
   }
 
+  /** 符頭のすぐ左にある臨時記号（♯♭♮）を読む。
+   *
+   *  調号は読めても、曲の途中の記号を無視すると、その音が丸ごと半音ずれる。
+   *  ラグタイムのような曲では1ページに10個近くあり、無視できない。
+   *
+   *  見分け方は置かれ方と形のあらまし。臨時記号は
+   *    ・符頭の左、線間の0.5〜1.9倍のところに立つ
+   *    ・符頭（高さ1線間）より縦に長く、符尾（3線間超）より短い
+   *  種類は縦の棒の本数で分ける。♭は1本、♮と♯は2本。
+   *  ♮と♯は塗りの濃さで分ける。♯は横棒が2本通るぶん濃い。
+   *
+   *  @returns {-1|0|1|undefined}  ♭|♮|♯、無ければ undefined
+   */
+  function findAccidental(bin, vRunLen, runLen, W, H, st, h, heads) {
+    const S = st.space;
+    const yc = Math.round(h.y);
+    const band = Math.round(S * 1.8);
+    const y0 = Math.max(0, yc - band), y1 = Math.min(H - 1, yc + band);
+    // 探すのは符頭のすぐ左だけ。臨時記号は符頭に寄り添って立つ。
+    // 遠くまで見ると、前の音の符尾がちょうどこの距離に来てしまう
+    const xa = Math.max(Math.round((st.xMusic || 0)) - 2, Math.round(h.x - S * 1.55));
+    const xb = Math.round(h.x - S * 0.62);
+    if (xb <= xa) return undefined;
+
+    const cols = [];
+    for (let x = xa; x <= xb; x++) {
+      let ink = 0, top = -1, bot = -1, run = 0, vmax = 0, beamy = 0;
+      for (let y = y0; y <= y1; y++) {
+        if (bin[y * W + x]) {
+          ink++; if (top < 0) top = y; bot = y;
+          if (++run > vmax) vmax = run;
+          if (runLen[y * W + x] > S * 2.2) beamy++;   // 横に長い黒＝梁や加線
+        } else run = 0;
+      }
+      cols.push({ x, ink, top, bot, vmax, beamy });
+    }
+    // 白で切れる区間ごとに見る（符頭に近い側から）
+    let i = cols.length - 1;
+    while (i >= 0) {
+      if (!cols[i].ink) { i--; continue; }
+      let j = i;
+      while (j - 1 >= 0 && cols[j - 1].ink) j--;
+      const seg = cols.slice(j, i + 1);
+      i = j - 1;
+      const w = seg.length;
+      // 符尾1本は幅2画素ほどしかない。記号は必ず幅がある
+      if (w < S * 0.42 || w > S * 1.25) continue;
+      let top = 1e9, bot = -1, vmax = 0, ink = 0, beamy = 0;
+      for (const c of seg) {
+        if (c.top >= 0 && c.top < top) top = c.top;
+        if (c.bot > bot) bot = c.bot;
+        if (c.vmax > vmax) vmax = c.vmax;
+        ink += c.ink;
+        beamy += c.beamy;
+      }
+      // 黒の多くが「横に長い連なり」なら、それは梁の断片であって記号ではない
+      if (ink && beamy / ink > 0.30) continue;
+      const hgt = bot - top + 1;
+      if (hgt < S * 1.45 || hgt > S * 3.4) continue;   // 符頭は短く、符尾はもっと長い
+      if (vmax > S * 3.2) continue;                    // 途切れない長い縦線は符尾・小節線
+      if (Math.abs((top + bot) / 2 - yc) > S * 1.0) continue;  // 記号は符頭の高さに立つ
+      // その場所に別の符頭があるなら、それは臨時記号ではなく隣の音符（と符尾）。
+      // 8分音符の連なりでは前の音がちょうどこの距離に来る。
+      // この一手を入れないと、連なりの2音目以降が軒並み半音下がる。
+      const sx0 = seg[0].x - S * 0.7, sx1 = seg[seg.length - 1].x + S * 0.7;
+      if (heads.some(o => o !== h && o.staff === h.staff &&
+                          o.x > sx0 && o.x < sx1 &&
+                          o.y > y0 - S * 0.6 && o.y < y1 + S * 0.6)) continue;
+      // 縦の棒の本数。棒は「その列の縦の連なりが1.2線間以上」
+      let strokes = 0, inStroke = false;
+      for (const c of seg) {
+        const is = c.vmax >= S * 1.15;
+        if (is && !inStroke) strokes++;
+        inStroke = is;
+      }
+      if (!strokes) continue;
+      if (strokes === 1) return -1;                    // ♭
+      const fill = ink / (w * hgt);
+      return fill >= 0.64 ? 1 : 0;                     // 濃ければ♯、すかすかなら♮
+    }
+    return undefined;
+  }
+
   /** 各画素が属する「横に連なる黒の長さ」を求める。
    *  符頭は横に短く独立しているが、梁は横に長く続く。これが両者を分ける決め手になる。 */
   function horizontalRunLength(bin, W, H) {
@@ -1040,12 +1123,13 @@
       let measure = 0;
       for (const bx of myBars) if (bx < h.x) measure++;
       const d = (BASE[clefs[h.staff]] !== undefined ? BASE[clefs[h.staff]] : BASE.G) + step;
+      const acc = findAccidental(cleaned, vRunLen, runLen, W, H, st, h, heads);
       return {
         x: h.x, y: h.y, staff: h.staff, hollow: h.hollow,
         // 傾きを戻した座標。元の写真の上に重ねて描くときはこちらを使う
         yImg: h.y + shear * (h.x - W / 2),
         space: S, system: st.system, hand: st.hand,
-        q, beams, dot, measure, span,
+        q, beams, dot, measure, span, acc,
         stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
         dia: d, midi: diaToMidi(d, fifths),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
@@ -1070,6 +1154,22 @@
         let m = 0;
         for (const bx of my) if (bx < n.x) m++;
         n.measure = m;
+      }
+    }
+
+    // 臨時記号を音の高さに反映する。
+    // 記号は「その音から小節の終わりまで、同じ高さの音」に効く。
+    {
+      const sorted = notes.slice().sort((a, b) => a.staff - b.staff || a.x - b.x);
+      const live = new Map();      // "staff:measure:dia" → -1|0|1
+      for (const n of sorted) {
+        const k = n.staff + ":" + n.measure + ":" + n.dia;
+        if (n.acc !== undefined) live.set(k, n.acc);
+        const a = live.get(k);
+        if (a === undefined) continue;
+        const oct = Math.floor(n.dia / 7), le = ((n.dia % 7) + 7) % 7;
+        n.midi = (oct + 1) * 12 + LETTER_SEMI[le] + a;
+        n.acc = a;
       }
     }
 
