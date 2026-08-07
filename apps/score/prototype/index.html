@@ -2965,7 +2965,10 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         while (j + 1 < col.length && (col[j + 1] || ++gap <= 1)) { j++; if (col[j]) gap = 0; }
         const x0 = xa + i, x1 = xa + j, w = x1 - x0 + 1;
         i = j + 1;
-        if (w < S * 0.40 || w > S * 1.45) continue;
+        if (w < S * 0.40 || w > S * 1.75) continue;
+        // 幅が符頭1個ぶんを超える区間は、休符に偽の符頭が重なって
+        // 膨らんでいる場合だけ休符として扱う（下の取り消し判定で決める）
+        const wideSeg = w > S * 1.45;
         // 縦の広がりと、まっすぐな縦線の長さを測る
         let ya = -1, yb = -1, vmax = 0;
         for (let x = x0; x <= x1; x++) {
@@ -2984,8 +2987,10 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         if (vmax > S * 3.6) continue;             // 小節線・段をまたぐ縦線はここで落ちる
         if (Math.abs((ya + yb) / 2 - mid) > S * 1.1) continue;   // 休符は五線のまん中に立つ
         let q = 0;
-        // 4分休符は五線の中2間ぶん、8分休符はその半分ほどの高さになる
-        if (h >= S * 2.1 && h <= S * 3.7 && w >= S * 0.70) q = 1;
+        // 4分休符は五線の中2間ぶん、8分休符はその半分ほどの高さになる。
+        // にじみで3.7線間を超えて写ることがあり、その分（〜4.0）は
+        // 下の「偽符頭の取り消し」が成立した場合だけ休符と認める
+        if (h >= S * 2.1 && h <= S * 4.0 && w >= S * 0.70) q = 1;
         else if (h >= S * 1.1 && h < S * 2.1 && w >= S * 0.55) q = 0.5;
         if (!q) continue;
         // 符頭がすぐ近くにあるものは、臨時記号か符頭そのもの……のことが多いが、
@@ -3008,7 +3013,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           const fill = ink / (w * h);
           if (fill < 0.25 || fill > 0.70 || vmax > S * 3.35) continue;  // 密なら和音
           for (const n of inside) n._restKill = true;
-        }
+        } else if (wideSeg || h > S * 3.7) continue;   // 広い・高すぎる区間は取り消しの根拠が無ければ休符にしない
         out.push({ x: (x0 + x1) / 2, staff: si, q });
       }
     }
@@ -3158,8 +3163,12 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
     const y0 = Math.max(0, yc - band), y1 = Math.min(H - 1, yc + band);
     // 探すのは符頭のすぐ左だけ。臨時記号は符頭に寄り添って立つ。
     // 遠くまで見ると、前の音の符尾がちょうどこの距離に来てしまう
-    const xa = Math.max(Math.round((st.xMusic || 0)) - 2, Math.round(h.x - S * 1.55));
+    let xa = Math.max(Math.round((st.xMusic || 0)) - 2, Math.round(h.x - S * 1.55));
     const xb = Math.round(h.x - S * 0.62);
+    // 行の途中の音部記号の胴は♭そっくり。記号変更の直後の音に
+    // 偽の♭が付いて半音下がる（実測でF3の和音がE3に化けた）
+    if (st.midClefs) for (const mc of st.midClefs)
+      if (mc.x1 + S * 0.4 > xa && mc.x0 < xb) xa = Math.max(xa, Math.round(mc.x1 + S * 0.4));
     if (xb <= xa) return undefined;
 
     const cols = [];
