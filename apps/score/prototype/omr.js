@@ -1772,14 +1772,14 @@
                   len++;
                 }
               }
-              if (len >= S2 * 2.6) return true;
+              if (len >= S2 * 2.2) return true;
             }
             return false;
           };
           for (const g of group) {
             if (g.stemDir === maj) continue;
-            if (((maj === 1 && g.y < lo - S2 * 1.2) ||
-                 (maj === -1 && g.y > hi2 + S2 * 1.2)) && onBeam(g)) g._beamGhost = true;
+            if (((maj === 1 && g.y < lo - S2 * 0.8) ||
+                 (maj === -1 && g.y > hi2 + S2 * 0.8)) && onBeam(g)) g._beamGhost = true;
           }
         }
         const tally = new Map();
