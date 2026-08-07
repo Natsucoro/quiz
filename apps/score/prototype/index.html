@@ -2983,13 +2983,32 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         const h = yb - ya + 1;
         if (vmax > S * 3.6) continue;             // 小節線・段をまたぐ縦線はここで落ちる
         if (Math.abs((ya + yb) / 2 - mid) > S * 1.1) continue;   // 休符は五線のまん中に立つ
-        // 符頭がすぐ近くにあるものは、臨時記号か符頭そのもの
-        if (mine.some(n => n.x > x0 - S * 0.6 && n.x < x1 + S * 2.0)) continue;
         let q = 0;
         // 4分休符は五線の中2間ぶん、8分休符はその半分ほどの高さになる
         if (h >= S * 2.1 && h <= S * 3.7 && w >= S * 0.70) q = 1;
         else if (h >= S * 1.1 && h < S * 2.1 && w >= S * 0.55) q = 0.5;
         if (!q) continue;
+        // 符頭がすぐ近くにあるものは、臨時記号か符頭そのもの……のことが多いが、
+        // 休符の塊そのものの上に符頭が生まれていることがある（4分休符のジグザグや
+        // 8分休符の頭は符頭と同じ密度で、偽の音符＋偽の32分になっていた）。
+        // 近くの符頭が「全部この塊の内側」で、塊が符頭の和音にしては
+        // すかすか・縦線も短いなら、休符のほうを信じて符頭を取り消す
+        const conflict = mine.filter(n => n.x > x0 - S * 0.6 && n.x < x1 + S * 2.0);
+        if (conflict.length) {
+          const inside = conflict.filter(n => !n.hollow &&
+            n.x >= x0 - S * 0.2 && n.x <= x1 + S * 0.2 &&
+            n.y >= ya - S * 0.3 && n.y <= yb + S * 0.3);
+          if (inside.length !== conflict.length) continue;   // 本物の符頭が近い
+          // 休符の腕を梁と数えた符頭は梁2本以上（16分・32分）になる。
+          // 本物の和音（4分・8分、梁0〜1本）はこの条件で守られる
+          if (!inside.every(n => n.split || (n.beams || 0) >= 2)) continue;
+          let ink = 0;
+          for (let x = x0; x <= x1; x++)
+            for (let y = ya; y <= yb; y++) if (bin[y * W + x]) ink++;
+          const fill = ink / (w * h);
+          if (fill < 0.25 || fill > 0.70 || vmax > S * 3.35) continue;  // 密なら和音
+          for (const n of inside) n._restKill = true;
+        }
         out.push({ x: (x0 + x1) / 2, staff: si, q });
       }
     }
@@ -3718,6 +3737,30 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         if (colBot[k] > bot) bot = colBot[k];
       }
       const seg = { i, j }; i = j + 1;
+      // 行の途中のヘ音記号。胴は五線の上半分に収まり（符尾が無いので
+      // 下線まで届かない）、すぐ右の1つ目・2つ目の間に点が2つ並ぶ。
+      // 左手がト音で始まりヘ音に戻る楽譜で、これを見ないと以降の
+      // 左手が2オクターブ近く上に化ける
+      if (w >= S * 1.2 && w <= S * 2.8 &&
+          top >= st.top - S * 0.9 && top <= st.top + S * 0.5 &&
+          bot <= st.bottom - S * 0.25 &&
+          bot - top >= S * 2.0 && bot - top <= S * 3.7) {
+        const dotAt = stepFromTop => {
+          const cy = Math.round(st.top + stepFromTop * S);
+          const xa = x0 + seg.j + Math.max(1, Math.round(S * 0.1));
+          const xb = Math.min(W - 1, x0 + seg.j + Math.round(S * 0.9));
+          const dv = Math.round(S * 0.3);
+          for (let x = xa; x <= xb; x++)
+            for (let y = Math.max(0, cy - dv); y <= Math.min(H - 1, cy + dv); y++)
+              if (bin[y * W + x]) return true;
+          return false;
+        };
+        if (dotAt(0.5) && dotAt(1.5)) {
+          out.push({ x: x0 + (seg.i + seg.j) / 2, x0: x0 + seg.i,
+                     x1: x0 + seg.j, clef: "F" });
+          continue;
+        }
+      }
       // ト音記号の証拠3つ:
       //  ・幅がある（符尾や小節線は細い）
       //  ・五線の下へ尻尾が出る（小節線は下に出ない）
@@ -4213,6 +4256,15 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
           const near = o => o.staff === h.staff &&
                 Math.abs(o.x - h.x) < S * 0.7 && Math.abs(o.y - y) < S * 0.55;
           if (heads.some(near) || extra.some(near)) continue;
+          // 置こうとする位置に符頭ぶんの黒が実際にあることを確かめる。
+          // 縦の走査は1行おきの隙間を許すので、白地の上まで歩いて
+          // 幻の音符を置くことがある（実測でほぼ白地に3音の偽和音が出た）
+          const bw = Math.round(S * 0.45), bh = Math.round(S * 0.32);
+          const xx = Math.round(h.x), yy = Math.round(y);
+          if (xx - bw < 0 || xx + bw >= W || yy - bh < 0 || yy + bh >= H) continue;
+          const fill = rectSum(ii, W + 1, xx - bw, yy - bh, xx + bw, yy + bh) /
+                       ((bw * 2 + 1) * (bh * 2 + 1));
+          if (fill < 0.55) continue;
           extra.push({ x: h.x, y, s: 0.8, staff: h.staff, hollow: false, split: true });
         }
       }
@@ -4385,6 +4437,8 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
 
     // 休符も拾う。読めないと、そこから後ろの音が全部前に詰まる
     const rests = findRests(cleaned, vRunLen, W, H, staves, notes);
+    // 休符の塊の上に生まれていた偽の符頭は、休符を採って取り消す
+    notes = notes.filter(n => !n._restKill);
     for (const r of rests) {
       const my = bars[r.staff] || [];
       let m = 0;

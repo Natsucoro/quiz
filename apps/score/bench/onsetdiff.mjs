@@ -98,6 +98,6 @@ for (let m=0;m<Math.max(nM, Math.ceil(Math.max(0,...r.times.map(x=>x.t+0.01))/MQ
     const extra=[...DC].filter(([k,v])=>(TC.get(k)||0)<v).map(([k,v])=>k+(v-(TC.get(k)||0)>1?'x'+(v-(TC.get(k)||0)):''));
     detail = `欠:${miss.join(' ')||'-'} 余:${extra.join(' ')||'-'}`;
   }
-  console.log(`${String(m+1).padStart(3)} ${flag} | ${String(T.length).padStart(4)} ${String(D.length).padStart(6)} ${String(hit).padStart(4)} | ${detail.slice(0,150)}`);
+  console.log(`${String(m+1).padStart(3)} ${flag} | ${String(T.length).padStart(4)} ${String(D.length).padStart(6)} ${String(hit).padStart(4)} | ${detail.slice(0,(process.env.FULL?9999:150))}`);
 }
 console.log(`一致合計 ${totHit}/${truth.length} (再現率 ${(totHit/truth.length*100).toFixed(1)}%)`);
