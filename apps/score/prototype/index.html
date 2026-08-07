@@ -4432,8 +4432,42 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       }
       const group = linked.slice(i, j + 1);
       if (group.length > 1) {
+        // 梁の角や付け根が「反対向きの符尾の音符」として拾われることがある
+        // （実測で16分の連なりの上に偽のソが5個、どれも0.25拍ずつ後ろへずらしていた）。
+        // 群れの符尾の向きの多数決に反し、符頭の位置を梁そのもの（長い斜めの帯）が
+        // 貫いているものは、梁を符頭と見ているだけなので棄てる。
+        // 2声部の連桁で向きが割れても、本物の符頭は梁に貫かれないので巻き添えにならない
+        const dirSum = group.reduce((a, g) => a + (g.stemDir || 0), 0);
+        if (dirSum !== 0) {
+          const maj = dirSum > 0 ? 1 : -1;
+          const majY = group.filter(g => g.stemDir === maj).map(g => g.y);
+          const S2 = staves[group[0].staff].space;
+          const lo = Math.min.apply(null, majY), hi2 = Math.max.apply(null, majY);
+          const onBeam = g => {
+            const cx = Math.round(g.x), cy = Math.round(g.y);
+            for (let s = -0.45; s <= 0.46; s += 0.15) {
+              let len = 1;
+              for (const dir of [-1, 1]) {
+                for (let k = 1; k < S2 * 3.5; k++) {
+                  const xx = cx + dir * k, yy = Math.round(cy + s * dir * k);
+                  if (xx < 0 || xx >= W || yy < 1 || yy >= H - 1) break;
+                  if (!cleaned[yy * W + xx] && !cleaned[(yy - 1) * W + xx] &&
+                      !cleaned[(yy + 1) * W + xx]) break;
+                  len++;
+                }
+              }
+              if (len >= S2 * 2.6) return true;
+            }
+            return false;
+          };
+          for (const g of group) {
+            if (g.stemDir === maj) continue;
+            if (((maj === 1 && g.y < lo - S2 * 1.2) ||
+                 (maj === -1 && g.y > hi2 + S2 * 1.2)) && onBeam(g)) g._beamGhost = true;
+          }
+        }
         const tally = new Map();
-        for (const g of group) if (g.beams > 0) tally.set(g.beams, (tally.get(g.beams) || 0) + 1);
+        for (const g of group) if (g.beams > 0 && !g._beamGhost) tally.set(g.beams, (tally.get(g.beams) || 0) + 1);
         let win = 0, cnt = 0;
         for (const [k, v] of tally) if (v > cnt || (v === cnt && k > win)) { win = k; cnt = v; }
         if (win > 0) for (const g of group) {
@@ -4444,8 +4478,21 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       i = j + 1;
     }
 
+    // 梁を符頭と見ていた偽の音を外す。ただし多くの場合、その位置には
+    // 読めていない何か（休符・付点ぶんの間）が本当にあるので、
+    // 単独で立っていた偽音は同じ長さの休符に置き換えて時間を保つ
+    const ghostRests = [];
+    for (const n of notes) {
+      if (!n._beamGhost) continue;
+      const alone = !notes.some(o => o !== n && !o._beamGhost &&
+        o.staff === n.staff && Math.abs(o.x - n.x) <= n.space * 0.6);
+      if (alone) ghostRests.push({ x: n.x, staff: n.staff, q: n.q });
+    }
+    notes = notes.filter(n => !n._beamGhost);
+
     // 休符も拾う。読めないと、そこから後ろの音が全部前に詰まる
     const rests = findRests(cleaned, vRunLen, W, H, staves, notes);
+    rests.push(...ghostRests);
     // 休符の塊の上に生まれていた偽の符頭は、休符を採って取り消す
     notes = notes.filter(n => !n._restKill);
     for (const r of rests) {
