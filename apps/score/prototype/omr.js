@@ -1786,9 +1786,14 @@
         for (const g of group) if (g.beams > 0 && !g._beamGhost) tally.set(g.beams, (tally.get(g.beams) || 0) + 1);
         let win = 0, cnt = 0;
         for (const [k, v] of tally) if (v > cnt || (v === cnt && k > win)) { win = k; cnt = v; }
-        if (win > 0) for (const g of group) {
-          g.beams = win;
-          g.q = (1 / Math.pow(2, win)) * (g.dot ? 1.5 : 1);
+        if (win > 0) {
+          // 端の音だけは「1本少ない」自己申告を信じる。付点8分+16分の群れでは
+          // 2本目の梁が端の音まで届かないのが普通で、多数決で上書きすると
+          // 先頭の8分が16分になり、小節全体が0.25拍前へずれる（実測で頻発）
+          for (const g of group) {
+            g.beams = win;
+            g.q = (1 / Math.pow(2, win)) * (g.dot ? 1.5 : 1);
+          }
         }
       }
       i = j + 1;
