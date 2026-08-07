@@ -735,7 +735,7 @@
 
   /** 符尾に沿って走る梁（または旗）の本数を数える。
    *  8分＝1本、16分＝2本、32分＝3本。太さは線間の半分ほど、間に白い隙間が入る。 */
-  function countBeams(bin, W, H, stem, S, beamed) {
+  function countBeams(bin, W, H, stem, S, beamed, side) {
     if (!stem) return 0;
     const thickMin = S * 0.20, thickMax = S * 1.00;
     const depth = Math.round(S * 3.0);   // 先端からここまでの間に梁が並ぶ
@@ -745,7 +745,9 @@
     // 3列ぶんだけならして雑音を消し、いくつかの距離で見る。
     // 梁につながっていない音符に付くのは旗だけ。旗は符尾のすぐ右にしか出ない。
     // 遠くまで見にいくと、五線や譜表の下の括弧を旗と数えて、4分音符が8分になる。
-    const signs = beamed ? [1, -1] : [1];
+    // side を指定すると、その側の列だけで数える（連なりの端の音は、
+    // 隣の16分の部分梁を巻き込まない側だけを見るのに使う）
+    const signs = side ? [side] : (beamed ? [1, -1] : [1]);
     const offs = beamed ? [0.40, 0.60, 0.85, 1.10, 1.35] : [0.40, 0.55];
     for (const sgn of signs) {
       for (const f of offs) {
@@ -1686,7 +1688,7 @@
         yImg: h.y + shear * (h.x - W / 2),
         space: S, system: st.system, hand: st.hand,
         q, beams, dot, measure, span, acc, accOnly, split: h.split, accFused: h.accFused,
-        stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x,
+        stemDir: stem ? stem.dir : 0, stemX: stem ? stem.x : h.x, _stem: stem,
         dia: d, midi: diaToMidi(d, fifths),
         name: LETTER_NAME[((d % 7) + 7) % 7] + Math.floor(d / 7),
       };
@@ -1787,9 +1789,10 @@
         let win = 0, cnt = 0;
         for (const [k, v] of tally) if (v > cnt || (v === cnt && k > win)) { win = k; cnt = v; }
         if (win > 0) {
-          // 先頭の音だけは「1本少ない」自己申告を信じる。8分+16分の群れでは
-          // 2本目の梁が先頭の音まで届かないのが普通で、多数決で上書きすると
-          // 先頭の8分が16分になり、小節全体が0.25拍前へずれる
+          // 先頭の音は、右隣の16分の部分梁を巻き込まない「左側の列」だけで
+          // 数え直した本数を信じる。8分+16分の群れでは2本目の梁が先頭の音まで
+          // 届かないのが普通で、多数決で上書きすると先頭の8分が16分になり、
+          // 小節全体が0.25拍前へずれる
           const xs = group.slice().sort((a, b) => a.x - b.x);
           for (const g of group) {
             if (g === xs[0] && g.beams === win - 1) continue;
