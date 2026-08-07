@@ -83,6 +83,7 @@ const out = await pg.evaluate(async (u) => {
 await b.close();
 
 fs.writeFileSync(path.join(HERE,'diag.musicxml'), out.xml||''); delete out.xml;
+fs.writeFileSync(path.join(HERE,'diag_notes.json'), JSON.stringify(out.notes));
 fs.writeFileSync(path.join(HERE,'diag_bin.png'), Buffer.from(out.binPng.split(',')[1],'base64'));
 fs.writeFileSync(path.join(HERE,'diag_crop.png'), Buffer.from(url.split(',')[1],'base64'));
 delete out.binPng;

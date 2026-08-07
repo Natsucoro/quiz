@@ -4227,7 +4227,7 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       const st = staves[h.staff];
       const S = st.space;
       const dist = h.y < st.top ? st.top - h.y : (h.y > st.bottom ? h.y - st.bottom : 0);
-      if (dist <= S * 1.35) return true;
+      if (dist <= S * 0.85) return true;
       const x0 = Math.max(0, Math.round(h.x - S * 0.3));
       const x1 = Math.min(W - 1, Math.round(h.x + S * 0.3));
       const ya = Math.max(0, Math.round(h.y - S * 0.85));
@@ -4239,6 +4239,31 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
         }
       return false;
     });
+
+    // 五線の外の「白抜きの符頭」が単語の中の1文字でないことを確かめる。
+    // 発想標語（Allegro 等）の e・g・o は白抜きの符頭そっくりで、
+    // 加線の高さより五線に近いと上の検査をすり抜ける。文字は単語として
+    // 並ぶので、同じ高さの左右両方に別の文字のインクが見えたら棄てる。
+    // 塗りつぶしの符頭は文字と紛れないので対象にしない（16分の連なりを守る）
+    heads = heads.filter(h => {
+      if (!h.hollow) return true;
+      const st = staves[h.staff];
+      const S = st.space;
+      const dist = h.y < st.top ? st.top - h.y : (h.y > st.bottom ? h.y - st.bottom : 0);
+      if (dist <= S * 0.35) return true;
+      const band = side => {
+        const xa = Math.round(h.x + (side < 0 ? -S * 2.4 : S * 1.1));
+        const xb = Math.round(h.x + (side < 0 ? -S * 1.1 : S * 2.4));
+        const ya = Math.max(0, Math.round(h.y - S * 0.25));
+        const yb = Math.min(H - 1, Math.round(h.y + S * 0.25));
+        let ink = 0, n = 0;
+        for (let y = ya; y <= yb; y++)
+          for (let x = Math.max(0, xa); x <= Math.min(W - 1, xb); x++) { n++; if (cleaned[y * W + x]) ink++; }
+        return n ? ink / n : 0;
+      };
+      return !(band(-1) >= 0.22 && band(1) >= 0.22);
+    });
+
 
     // 記号は「右隣のいちばん近い符頭ひとつ」にだけ効かせる。
     // 範囲で全部に効かせると、和音の他の音まで巻き添えで半音ずれる
