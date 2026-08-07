@@ -1852,8 +1852,11 @@
             // 白抜きが混ざる組は、輪の形なら白抜きが本物。相手が薄ければ棄てる
             const hn = na.hollow ? na : nb, on = na.hollow ? nb : na;
             if (on.hollow) continue;             // 両方白抜きは触らない
-            if (ringOK(hn)) { if (headFill(on) < 0.80) kill.add(on); }
-            else kill.add(hn);
+            if (ringOK(hn)) {
+              // 相手が薄い、または白抜きの符尾の柱に張り付いているなら偽物
+              if (headFill(on) < 0.80 ||
+                  (Math.abs(on.x - hn.stemX) <= on.space * 0.8 && (on.beams || 0) >= 2)) kill.add(on);
+            } else kill.add(hn);
             continue;
           }
           const fa = headFill(na), fb = headFill(nb);
