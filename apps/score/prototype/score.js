@@ -115,9 +115,9 @@
     // 調号だけに頼ると、曲の途中の臨時記号を後から足せないし、
     // 読み取った音の高さと楽譜データの音の高さがずれても気づけない。
     const SEMI = [0, 2, 4, 5, 7, 9, 11];
-    const noteXML = (n, isChord, q, dot) => {
+    const noteXML = (n, isChord, q, dot, dur) => {
       const type = typeOf(q);
-      const dur = Math.max(1, Math.round(q * DIVISIONS));
+      if (dur === undefined) dur = Math.max(1, Math.round(q * DIVISIONS));
       const oct = Math.floor(n.dia / 7), le = ((n.dia % 7) + 7) % 7;
       let alter = 0;
       if (typeof n.midi === "number") {
@@ -129,8 +129,8 @@
         `<octave>${oct}</octave></pitch>` +
         `<duration>${dur}</duration><type>${type}</type>${dot ? "<dot/>" : ""}</note>`;
     };
-    const restXML = q => {
-      const dur = Math.max(1, Math.round(q * DIVISIONS));
+    const restXML = (q, dur) => {
+      if (dur === undefined) dur = Math.max(1, Math.round(q * DIVISIONS));
       return `<note><rest/><duration>${dur}</duration><type>${typeOf(q)}</type></note>`;
     };
 
@@ -174,10 +174,30 @@
           qs = qs.map(q => Math.max(1 / DIVISIONS, q * k));
           filled = qs.reduce((a, q) => a + q, 0);
         }
+        // 書き出す長さは整数の刻み（DIVISIONS分割）に丸めるので、そのままだと
+        // 小節の合計が拍子とずれる（実測で96のはずが91になり、以降の小節が
+        // 全部0.2拍ずれて、両手も合わなくなっていた）。丸めの余りを配って
+        // 合計をきっかり拍子に合わせる
+        let durs = qs.map(q => Math.max(1, Math.round(q * DIVISIONS)));
+        if (measureQ && chords.length) {
+          const target = Math.round(measureQ * DIVISIONS);
+          let sum = durs.reduce((a, d) => a + d, 0);
+          if (sum > target) {
+            // 大きい音から1刻みずつ削る（最低1は残す）
+            while (sum > target) {
+              let bi = -1;
+              for (let k = 0; k < durs.length; k++)
+                if (durs[k] > 1 && (bi < 0 || durs[k] > durs[bi])) bi = k;
+              if (bi < 0) break;
+              durs[bi]--; sum--;
+            }
+          }
+          // 足りない分は末尾の休符で埋める（下でまとめて出す）
+        }
         chords.forEach((c, ci) => {
-          if (c.rest) { xml += restXML(qs[ci]); return; }
+          if (c.rest) { xml += restXML(qs[ci], durs[ci]); return; }
           c.notes.forEach((n, i) => {
-            xml += noteXML(n, i > 0, qs[ci], c.dot);
+            xml += noteXML(n, i > 0, qs[ci], c.dot, durs[ci]);
             // 書き出した順を覚えておく。画面の音符を叩いたとき、
             // どの音のことなのかを引き当てるのに使う
             trace[hand].push(n);
@@ -185,8 +205,12 @@
         });
         // 拍子が指定されていれば、足りない分を休符で辻褄合わせする
         if (measureQ) {
-          if (!chords.length) xml += restXML(measureQ);
-          else if (filled < measureQ - 1e-6) xml += restXML(measureQ - filled);
+          const target = Math.round(measureQ * DIVISIONS);
+          if (!chords.length) xml += restXML(measureQ, target);
+          else {
+            const sum = durs.reduce((a, d) => a + d, 0);
+            if (sum < target) xml += restXML((target - sum) / DIVISIONS, target - sum);
+          }
         } else if (!chords.length) {
           xml += restXML(1);
         }
