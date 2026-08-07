@@ -58,11 +58,13 @@ const out = await pg.evaluate(async (a) => {
            fifths: o.fifths, n: o.notes.length, hollow: o.notes.filter(n=>n.hollow).length,
            beamed: o.notes.filter(n=>n.span).length,
            lh: o.notes.filter(n=>o.staves[n.staff].hand===1).map(n=>({q:n.q,b:n.beams,sp:!!n.span})),
-           q: (() => { const h = {}; o.notes.forEach(n => h[n.q] = (h[n.q] || 0) + 1); return h; })() };
+           q: (() => { const h = {}; o.notes.forEach(n => h[n.q] = (h[n.q] || 0) + 1); return h; })(),
+           allNotes: o.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,a:n.acc,ao:n.accOnly,fu:n.accFused,sp2:n.split})) };
 }, { u: url, time });
 
 fs.writeFileSync(path.join(HERE, 'real_over.png'), Buffer.from(out.over.split(',')[1], 'base64'));
 if (out.xml) fs.writeFileSync(path.join(HERE, 'real.musicxml'), out.xml);
+fs.writeFileSync(path.join(HERE, 'real_notes.json'), JSON.stringify(out.allNotes));
 console.log('白抜きと数えた符頭:', out.hollow, ' 梁があると判定:', out.beamed);
 {const h={};out.lh.forEach(n=>{const k=`q${n.q}/梁${n.b}/span${n.sp?'有':'無'}`;h[k]=(h[k]||0)+1});
  console.log('左手の内訳:', JSON.stringify(h));}

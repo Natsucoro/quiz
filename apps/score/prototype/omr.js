@@ -472,7 +472,7 @@
    *
    *  @returns {-1|0|1|undefined}  ♭|♮|♯、無ければ undefined
    */
-  function findAccidental(bin, vRunLen, runLen, W, H, st, h, heads) {
+  function findAccidental(bin, vRunLen, runLen, W, H, st, h, heads, stem) {
     const S = st.space;
     const yc = Math.round(h.y);
     const band = Math.round(S * 1.8);
@@ -511,6 +511,11 @@
       // 符尾1本は幅2画素ほどしかない。記号は必ず幅がある。
       // 上限も本物の記号の寸法まで。和音の塊(幅1.15線間〜)を拾わない
       if (w < S * 0.42 || w > S * 1.02) continue;
+      // 下向きの符尾は符頭の左に付く。自分の符尾（と符頭の左肩）を
+      // ♭と読むと、その音が丸ごと半音下がる（実測で付点4分のドが
+      // 全部シに化けていた）。符尾の列が入っている区間は見ない
+      if (stem && stem.dir < 0 &&
+          seg[0].x <= stem.x + 1 && seg[seg.length - 1].x >= stem.x - 1) continue;
       let top = 1e9, bot = -1, vmax = 0, ink = 0, beamy = 0;
       for (const c of seg) {
         if (c.top >= 0 && c.top < top) top = c.top;
@@ -1679,7 +1684,7 @@
       const clefHere = st.clefAt ? st.clefAt(h.x) : clefs[h.staff];
       const d = (BASE[clefHere] !== undefined ? BASE[clefHere] : BASE.G) + step;
       let acc = h.accG !== undefined ? h.accG
-        : findAccidental(cleaned0, vRunLen0, runLen0, W, H, st, h, heads);
+        : findAccidental(cleaned0, vRunLen0, runLen0, W, H, st, h, heads, stem);
       let accOnly = false;
       if (acc === undefined && h.accFused !== undefined) { acc = h.accFused; accOnly = true; }
       return {
