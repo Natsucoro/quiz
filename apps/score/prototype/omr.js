@@ -1838,7 +1838,9 @@
           const py = Math.round(y + Math.sin(th) * S * 0.38);
           if (cleaned[py * W + px] || cleaned[py * W + px + 1] || cleaned[(py + 1) * W + px]) dark++;
         }
-        return dark >= 9;
+        // 12点中11点。旗の巻きと符尾が作る「白い輪もどき」は一部が欠けるが、
+        // 本物の白抜き符頭の輪はぼけても閉じている
+        return dark >= 11;
       };
       const kill = new Set();
       for (let a = 0; a < notes.length; a++) {
