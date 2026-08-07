@@ -59,7 +59,7 @@ const out = await pg.evaluate(async (a) => {
            beamed: o.notes.filter(n=>n.span).length,
            lh: o.notes.filter(n=>o.staves[n.staff].hand===1).map(n=>({q:n.q,b:n.beams,sp:!!n.span})),
            q: (() => { const h = {}; o.notes.forEach(n => h[n.q] = (h[n.q] || 0) + 1); return h; })(),
-           allNotes: o.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,a:n.acc,ao:n.accOnly,fu:n.accFused,sp2:n.split})) };
+           allNotes: o.notes.map(n=>({m:n.midi,q:n.q,st:n.staff,x:Math.round(n.x),y:Math.round(n.y),b:n.beams,d:n.dot,h:n.hollow,a:n.acc,ao:n.accOnly,sd:n.stemDir,sx:n.stemX,fu:n.accFused,sp2:n.split})) };
 }, { u: url, time });
 
 fs.writeFileSync(path.join(HERE, 'real_over.png'), Buffer.from(out.over.split(',')[1], 'base64'));

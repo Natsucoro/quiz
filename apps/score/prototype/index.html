@@ -4493,6 +4493,61 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
       i = j + 1;
     }
 
+    // 同じ符尾の柱を「上向き」と「下向き」で取り合う2音は、片方が
+    // 旗の巻き尻や符尾の付け根を符頭と見た偽物（実測で8分の旗の先が
+    // 1音上の音符に化けていた）。符頭の窓の黒の詰まりが薄いほうを棄てる
+    {
+      const W1f = W + 1;
+      const headFill = n => {
+        const S = n.space;
+        const bw = Math.round(S * 0.42), bh = Math.round(S * 0.30);
+        const x = Math.round(n.x), y = Math.round(n.y);
+        if (x - bw < 0 || x + bw >= W || y - bh < 0 || y + bh >= H) return 1;
+        return rectSum(ii, W1f, x - bw, y - bh, x + bw, y + bh) /
+               ((bw * 2 + 1) * (bh * 2 + 1));
+      };
+      // 白抜きの符頭は「白い芯を黒い輪が囲む」形をしているかで本物かを見る
+      const ringOK = n => {
+        const S = n.space;
+        const x = Math.round(n.x), y = Math.round(n.y);
+        const ibx = Math.max(1, Math.round(S * 0.22)), iby = Math.max(1, Math.round(S * 0.18));
+        if (x - S < 1 || x + S >= W - 1 || y - S < 1 || y + S >= H - 1) return false;
+        const inner = rectSum(ii, W1f, x - ibx, y - iby, x + ibx, y + iby) /
+                      ((ibx * 2 + 1) * (iby * 2 + 1));
+        if (inner > 0.55) return false;
+        let dark = 0;
+        for (let a2 = 0; a2 < 12; a2++) {
+          const th = a2 * Math.PI / 6;
+          const px = Math.round(x + Math.cos(th) * S * 0.50);
+          const py = Math.round(y + Math.sin(th) * S * 0.38);
+          if (cleaned[py * W + px] || cleaned[py * W + px + 1] || cleaned[(py + 1) * W + px]) dark++;
+        }
+        return dark >= 9;
+      };
+      const kill = new Set();
+      for (let a = 0; a < notes.length; a++) {
+        for (let b = a + 1; b < notes.length; b++) {
+          const na = notes[a], nb = notes[b];
+          if (na.staff !== nb.staff) continue;
+          if (!na.stemDir || !nb.stemDir || na.stemDir === nb.stemDir) continue;
+          if (Math.abs(na.stemX - nb.stemX) > 2) continue;
+          if (Math.abs(na.y - nb.y) < na.space * 1.5) continue;
+          if (na.hollow || nb.hollow) {
+            // 白抜きが混ざる組は、輪の形なら白抜きが本物。相手が薄ければ棄てる
+            const hn = na.hollow ? na : nb, on = na.hollow ? nb : na;
+            if (on.hollow) continue;             // 両方白抜きは触らない
+            if (ringOK(hn)) { if (headFill(on) < 0.80) kill.add(on); }
+            else kill.add(hn);
+            continue;
+          }
+          const fa = headFill(na), fb = headFill(nb);
+          if (fa < 0.68 && fb >= 0.68) kill.add(na);
+          else if (fb < 0.68 && fa >= 0.68) kill.add(nb);
+        }
+      }
+      if (kill.size) notes = notes.filter(n => !kill.has(n));
+    }
+
     // 梁を符頭と見ていた偽の音を外す。ただし多くの場合、その位置には
     // 読めていない何か（休符・付点ぶんの間）が本当にあるので、
     // 単独で立っていた偽音は同じ長さの休符に置き換えて時間を保つ
