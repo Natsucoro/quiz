@@ -385,6 +385,13 @@ input[type=range]{flex:1; accent-color:var(--shu); height:26px}
               <button class="step" data-time="6/8">8分の6</button>
             </div>
           </div>
+          <div class="field" id="engineField" hidden>
+            <span>読み取りかた ― 見くらべて良いほうを選べます</span>
+            <div class="steps" id="engineRow">
+              <button class="step" data-eng="server">サーバー(高精度)</button>
+              <button class="step" data-eng="local">この端末</button>
+            </div>
+          </div>
           <p class="hint" id="mineInfo"></p>
         </div>
 
@@ -1098,8 +1105,46 @@ async function fillMineSel() {
  *  ここを直して組み直すことで「音符を直す」を実現する。
  *  画像から読み直すと直したところが消えてしまうので、一度読んだら持ち続ける。 */
 let curOmr = null;
+let serverImp = null;                 // サーバー読み取りの結果(取り込み正規化済み)
+let engine = "local";                 // いまどちらの読み取りを表示しているか
+
+// サーバー読み取りの設定。一度 ?server=URL&key=合言葉 付きで開くと覚える
+(function () {
+  const q = new URLSearchParams(location.search);
+  if (q.get("server") !== null) localStorage.setItem("omrServer", q.get("server"));
+  if (q.get("key") !== null) localStorage.setItem("omrKey", q.get("key"));
+})();
+const omrServer = () => ({
+  url: (localStorage.getItem("omrServer") || "").replace(/\/+$/, ""),
+  key: localStorage.getItem("omrKey") || "",
+});
+
+// 読み取り結果の「小節の埋まり具合」。拍子どおりに埋まった小節の割合で、
+// どちらのエンジンの結果を信じるかを決める手がかりにする
+function omrSanity(omr, time) {
+  if (!omr || !omr.notes || !omr.notes.length) return 0;
+  const [b, t] = (time || "4/4").split("/").map(Number);
+  const q = b * 4 / t;
+  const per = new Map();
+  for (const n of omr.notes) {
+    const k = n.staff + ":" + n.measure;
+    per.set(k, (per.get(k) || 0) + n.q);
+  }
+  for (const r of omr.rests || []) {
+    const k = r.staff + ":" + r.measure;
+    per.set(k, (per.get(k) || 0) + r.q);
+  }
+  let ok = 0;
+  for (const v of per.values()) if (Math.abs(v - q) <= q * 0.15) ok++;
+  return per.size ? ok / per.size : 0;
+}
 
 function rebuild() {
+  if (engine === "server" && serverImp) {
+    curXML = serverImp.xml;
+    noteTrace = [];                   // サーバー読み取りはタップ修整に未対応
+    return;
+  }
   if (!curOmr || !curOmr.notes.length) { curXML = null; return; }
   curXML = ScoreBuild.toMusicXML(curOmr,
     { time: curTime, key: curOmr.fifths || 0, title: curOmr.title || "" });
@@ -1158,12 +1203,65 @@ async function loadMine(i) {
       rebuild();
     }
   }
+  // ── サーバー(高精度エンジン)でも読み取り、良いほうを選ぶ ──
+  serverImp = null; engine = "local";
+  const srv = omrServer();
+  if (srv.url) {
+    $("#mineInfo").textContent = "サーバーの高精度エンジンでも読み取っています…";
+    try {
+      const blob = await (await fetch(o.url)).blob();
+      const fd = new FormData();
+      fd.append("image", blob, "page.png");
+      const ctl = new AbortController();
+      const tid = setTimeout(() => ctl.abort(), 240000);
+      const resp = await fetch(srv.url + "/read", {
+        method: "POST",
+        headers: srv.key ? { "X-Api-Key": srv.key } : {},
+        body: fd, signal: ctl.signal,
+      });
+      clearTimeout(tid);
+      const j = await resp.json();
+      if (resp.ok && j.musicxml) {
+        const imp = ImportXML.importMusicXML(j.musicxml, curTime, o.label);
+        if (imp && imp.nNotes >= 8) serverImp = imp;
+      }
+    } catch (e) { /* サーバーに届かなければ、この端末の読み取りだけで続ける */ }
+  }
+  if (serverImp) {
+    const localSan = omrSanity(curOmr, curTime);
+    // サーバーの結果が拍子どおりに整っているなら、そちらを採る。
+    // ぼけた写真ではサーバーが崩れる(実測)ので、その時は端末の読み取りが残る
+    if (serverImp.sanity >= 0.55 && serverImp.sanity >= localSan - 0.10) {
+      engine = "server";
+      if (serverImp.time && serverImp.time !== curTime) {
+        curTime = serverImp.time;
+        $$("#timeRow .step").forEach(b =>
+          b.setAttribute("aria-pressed", String(b.dataset.time === curTime)));
+      }
+    }
+  }
+  $("#engineField").hidden = !serverImp;
+  $$("#engineRow .step").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.eng === engine)));
+  rebuild();
+
   const bars = (curOmr.bars || []).reduce((a, b) => a + b.length, 0);
-  $("#mineInfo").textContent =
-    "五線 " + curOmr.staves.length + "段・音符 " + curOmr.notes.length + "個・小節線 " + bars +
-    "本 を読み取りました（" + ms + "ミリ秒）。おかしい音符はタップして直せます。";
+  $("#mineInfo").textContent = engine === "server"
+    ? "サーバーの高精度エンジンで読み取りました（音符 " + serverImp.nNotes +
+      "個）。音符の修整はいったん「この端末」に切り替えると使えます。"
+    : "五線 " + curOmr.staves.length + "段・音符 " + curOmr.notes.length + "個・小節線 " + bars +
+      "本 を読み取りました（" + ms + "ミリ秒）。おかしい音符はタップして直せます。";
   engrave();
 }
+
+// 読み取りエンジンの切り替え(見くらべ用)
+$$("#engineRow .step").forEach(b => b.addEventListener("click", () => {
+  if (b.dataset.eng === "server" && !serverImp) return;
+  engine = b.dataset.eng;
+  $$("#engineRow .step").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  if (playing) stop();
+  rebuild(); engrave();
+}));
 
 /* 楽譜の大きさ。スマホの幅に合わせると符頭が3画素ほどになり、
    見るのも触るのもつらい。横スクロールしてでも大きくできるようにする。 */

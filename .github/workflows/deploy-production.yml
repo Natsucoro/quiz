@@ -23,6 +23,13 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      # 楽譜カメラアプリを /gakufu/ に同居させる(1枚のHTMLに全部入り)
+      - name: Build 楽譜カメラ (gakufu)
+        run: |
+          python3 apps/score/prototype/build.py
+          mkdir -p frontend/dist/gakufu
+          cp apps/score/prototype/index.html frontend/dist/gakufu/index.html
+
       - name: Deploy to Firebase Hosting (production)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

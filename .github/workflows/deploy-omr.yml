@@ -1,0 +1,55 @@
+name: Deploy OMR Server
+
+# 楽譜カメラの読み取りサーバー(Audiveris)を Cloud Run にデプロイする。
+# - apps/score/server/ に変更が入って main にpushされたとき
+# - GitHubの画面から「Run workflow」ボタンで手動実行したとき
+#
+# 必要な下準備(初回のみ・失敗したらこれが原因):
+#   GitHub Secret「FIREBASE_SERVICE_ACCOUNT_WATASHIHADARE_QUIZ」のサービスアカウントに
+#   Google Cloud コンソールで次の役割を足す:
+#     ・Cloud Run 管理者 (roles/run.admin)
+#     ・サービス アカウント ユーザー (roles/iam.serviceAccountUser)
+#     ・Cloud Build 編集者 (roles/cloudbuild.builds.editor)
+#     ・Artifact Registry 管理者 (roles/artifactregistry.admin)
+#   また「Cloud Run API」「Cloud Build API」を有効にする。
+#
+# 合言葉(APIキー)は Secret「OMR_API_KEY」。未設定ならデプロイは失敗する。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/score/server/**'
+      - '.github/workflows/deploy-omr.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy_omr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WATASHIHADARE_QUIZ }}'
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        env:
+          OMR_API_KEY: ${{ secrets.OMR_API_KEY }}
+        run: |
+          if [ -z "$OMR_API_KEY" ]; then
+            echo "::error::GitHub Secret OMR_API_KEY が未設定です(楽譜サーバーの合言葉)"; exit 1
+          fi
+          gcloud run deploy gakufu-omr \
+            --project watashihadare-quiz \
+            --region asia-northeast1 \
+            --source apps/score/server \
+            --memory 2Gi --cpu 2 --timeout 300 \
+            --min-instances 0 --max-instances 2 \
+            --allow-unauthenticated \
+            --set-env-vars "API_KEY=$OMR_API_KEY,ALLOW_ORIGIN=*"
+          echo "デプロイ完了。URL:"
+          gcloud run services describe gakufu-omr \
+            --project watashihadare-quiz --region asia-northeast1 \
+            --format 'value(status.url)'
