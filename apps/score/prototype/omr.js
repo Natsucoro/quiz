@@ -782,6 +782,9 @@
     // 梁の見えない位置（梁の外側など）は数えない。見えた所だけで多数決する。
     const seen = ests.filter(e => e > 0);
     if (!seen.length) return 0;
+    // 連桁の無い音（旗）は、旗のS字が1本の縦線を2回横切って2本に見える
+    // ことがある。近い列と遠い列の少ないほうを採る（8分が16分に化けない）
+    if (!beamed) return Math.min(Math.min.apply(null, seen), 3);
     const tally = new Map();
     for (const e of seen) tally.set(e, (tally.get(e) || 0) + 1);
     let win = 0, cnt = 0;
