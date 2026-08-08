@@ -16,6 +16,7 @@ parts = {
     "__VEROVIO_JS__": (here / "verovio.js").read_text(encoding="utf-8"),
     "__OMR_JS__": (here / "omr.js").read_text(encoding="utf-8"),
     "__SCORE_JS__": (here / "score.js").read_text(encoding="utf-8"),
+    "__IMPORT_XML_JS__": (here / "import_xml.js").read_text(encoding="utf-8"),
 }
 # MusicXML は <script type="text/plain"> に入れるので、閉じタグと解釈されないようにする
 demo = (here / "demo.musicxml").read_text(encoding="utf-8")
