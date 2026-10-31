@@ -27,6 +27,24 @@ const ANDROID_PACKAGE_NAME = "app.web.watashihadare_quiz.twa";
 // 常にテストキーを使う。誤って開発中にテスト以外の決済が発生しないようにするため。
 const PROD_ORIGINS = ["https://watashihadare-quiz.web.app", "https://watashihadare-quiz.firebaseapp.com"];
 
+// 決済後の戻り先として許可するオリジン(本番・プレビューチャンネル・ローカル開発)。
+// これ以外を戻り先に指定させると、決済完了後に偽サイトへ誘導されるおそれがある。
+function isAllowedReturnOrigin(origin: string): boolean {
+  if (PROD_ORIGINS.includes(origin)) return true;
+  if (/^https:\/\/watashihadare-quiz--[a-z0-9-]+\.web\.app$/.test(origin)) return true;
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true;
+  return false;
+}
+
+// テストモード(テスト用カードで支払える)の決済で解放を付与してよいアカウント。
+// Originヘッダーは誰でも偽装できるため、テストモードの決済をそのまま信用すると
+// テスト用カードで本番の有料コンテンツを無料解放できてしまう。
+// frontend/src/store/purchaseStore.ts の DEBUG_ACCOUNTS と一致させること。
+const TEST_MODE_ALLOWED_EMAILS = [
+  "watashihadare.quiz@gmail.com",
+  "nakaharanatsumi+test1@gmail.com",
+];
+
 function getStripe(req: functions.https.Request): Stripe {
   const origin = req.get("origin") || "";
   const isProd = PROD_ORIGINS.includes(origin);
@@ -123,8 +141,8 @@ export const createCheckoutSession = functions.region('asia-northeast1').runWith
       const uid = await getUidFromAuthHeader(req.headers.authorization);
       const { origin } = req.body;
       const bundleType: 'single' | 'genre' | 'all' = req.body.bundleType || 'single';
-      if (!origin) {
-        res.status(400).json({ error: 'Missing origin' });
+      if (!origin || typeof origin !== 'string' || !isAllowedReturnOrigin(origin)) {
+        res.status(400).json({ error: 'Invalid origin' });
         return;
       }
 
@@ -223,6 +241,15 @@ export const verifyPayment = functions.region('asia-northeast1').runWith({ secre
       if (session.payment_status !== 'paid') {
         res.status(400).json({ error: 'Payment not completed or invalid session' });
         return;
+      }
+
+      // テストモードの決済は、テスト用アカウント以外には解放を付与しない。
+      if (!session.livemode) {
+        const requester = await admin.auth().getUser(uid);
+        if (!requester.email || !TEST_MODE_ALLOWED_EMAILS.includes(requester.email)) {
+          res.status(403).json({ error: 'Test-mode payments are not accepted for this account' });
+          return;
+        }
       }
 
       // クライアントの自己申告ではなく、Stripe側に記録されたmetadataを信頼する。
