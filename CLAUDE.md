@@ -66,7 +66,8 @@ Firestore同期・未回答優先機能も未実装。PaywallModal等のUI文言
 - **監査ステータス**: `/docs/audit-status.json`（ジャンル×チェック項目ごとに、現行チェックリストのどのバージョンで検証済みかを記録。新しい監査を始める前に必ず確認し、既にstatus=sweptの組み合わせは再チェックしない。監査後はこのファイルも更新すること）
 
 ## 4. テストアカウント / デバッグ用アカウント
-- `watashihadare.quiz@gmail.com` / `nakaharanatsumi+test1@gmail.com` でログインした場合、
+- テスト用アカウント（クイズ集の問い合わせ用 Gmail と、なつみのテスト用アドレスの2つ）でログインした場合、
   全16ジャンル×全難易度(Lv1〜10)を「購入済み」として扱う(クライアント側の解放のみ。
-  `frontend/src/store/purchaseStore.ts`の`DEBUG_ACCOUNTS`で管理)。デバッグ用アカウントを
-  追加したい場合は同配列に追記する。itemIdは`${日本語ジャンル名}_${難易度}`形式(例: `魚類_3`)。
+  `frontend/src/store/purchaseStore.ts`の`DEBUG_ACCOUNT_HASHES`と`functions/src/index.ts`の
+  `TEST_MODE_ALLOWED_EMAIL_HASHES`で管理)。このリポジトリは公開なので、**メールアドレスそのものは
+  リポジトリに書かず**、小文字にしたアドレスの SHA-256（`printf '%s' 'アドレス' | sha256sum`）を両方に追記する。itemIdは`${日本語ジャンル名}_${難易度}`形式(例: `魚類_3`)。

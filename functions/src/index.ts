@@ -5,6 +5,7 @@ import * as cors from "cors";
 import { google } from "googleapis";
 import * as nodemailer from "nodemailer";
 import { getGenreFromSlug } from "./genreSlugs";
+import { createHash } from "crypto";
 
 // Firebase Admin SDK の初期化
 admin.initializeApp();
@@ -39,11 +40,18 @@ function isAllowedReturnOrigin(origin: string): boolean {
 // テストモード(テスト用カードで支払える)の決済で解放を付与してよいアカウント。
 // Originヘッダーは誰でも偽装できるため、テストモードの決済をそのまま信用すると
 // テスト用カードで本番の有料コンテンツを無料解放できてしまう。
-// frontend/src/store/purchaseStore.ts の DEBUG_ACCOUNTS と一致させること。
-const TEST_MODE_ALLOWED_EMAILS = [
-  "watashihadare.quiz@gmail.com",
-  "nakaharanatsumi+test1@gmail.com",
+// frontend/src/store/purchaseStore.ts の DEBUG_ACCOUNT_HASHES と一致させること。
+// 公開リポジトリなのでアドレスそのものは書かず、小文字にしたアドレスの SHA-256 を置く。
+const TEST_MODE_ALLOWED_EMAIL_HASHES = [
+  "e4c6d5a17e685a37d212b68982c1433fe744bacb42a885a86df7cb933a3dfd54",
+  "1d8fa7148cb8381d3af31a0ca45aca30d61d570082162d84b8fd737d99833546",
 ];
+
+function isTestModeAllowedEmail(email: string | undefined): boolean {
+  if (!email) return false;
+  const hash = createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+  return TEST_MODE_ALLOWED_EMAIL_HASHES.includes(hash);
+}
 
 function getStripe(req: functions.https.Request): Stripe {
   const origin = req.get("origin") || "";
@@ -246,7 +254,7 @@ export const verifyPayment = functions.region('asia-northeast1').runWith({ secre
       // テストモードの決済は、テスト用アカウント以外には解放を付与しない。
       if (!session.livemode) {
         const requester = await admin.auth().getUser(uid);
-        if (!requester.email || !TEST_MODE_ALLOWED_EMAILS.includes(requester.email)) {
+        if (!isTestModeAllowedEmail(requester.email)) {
           res.status(403).json({ error: 'Test-mode payments are not accepted for this account' });
           return;
         }
