@@ -1,3 +1,7 @@
 .env
 .venv/
 node_modules/
+
+# ビルドの出力（GitHub Actions がその都度作る。古いものに個人情報が残らないよう追跡しない）
+frontend/dist/
+functions/lib/
